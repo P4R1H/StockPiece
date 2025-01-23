@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { INITIAL_CHARACTER_STOCKS } from './assets/data/characterStock';
 import { CharacterStock, UserPortfolio } from './types/CharacterStock';
-import CharacterStockCard from './components/CharacterStockCard.tsx';
-import PortfolioOverview from './components/PortfolioOverview.tsx';
-import PriceHistoryGraph from './components/PriceHistoryGraph.tsx';
+import CharacterStockCard from './components/Card/CharacterStockCard.tsx';
+import PortfolioOverview from './components/PortfolioOverview/PortfolioOverview.tsx';
+import PriceHistoryGraph from './components/StockGraph/PriceHistoryGraph.tsx';
 
 import './App.css';
 
@@ -50,13 +50,22 @@ const OnePieceStockMarket: React.FC = () => {
 
   return (
     <div className="one-piece-stock-market">
-      <header className="market-header">
-        <div className="pirate-banner">
-          <img src="/assets/skull-flag.png" alt="Pirate Flag" className="pirate-flag" />
-          <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
-        </div>
-      </header>
-      <div className="dashboard">
+    <header className="market-header">
+      <div className="pirate-banner">
+        <img src="/assets/skull-flag.png" alt="Pirate Flag" className="pirate-flag" />
+        <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
+      </div>
+      
+      <nav className="nav-links">
+        <button className="nav-btn">Leaderboard</button>
+      </nav>
+
+      <div className="user-controls">
+        <button className="nav-btn">Settings</button>
+        <button className="nav-btn logout-btn">Logout</button>
+      </div>
+    </header>      
+    <div className="dashboard">
         <PortfolioOverview portfolio={portfolio} />
         <PriceHistoryGraph stocks={stocks} />
       </div>

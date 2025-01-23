@@ -1,5 +1,5 @@
 import React from 'react';
-import { CharacterStock } from '../types/CharacterStock';
+import { CharacterStock } from '../../types/CharacterStock';
 import './CharacterStockCard.css';
 
 interface CharacterStockCardProps {

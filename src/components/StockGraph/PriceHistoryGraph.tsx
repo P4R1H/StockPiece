@@ -1,6 +1,6 @@
 import React from 'react';
 import { Line } from 'react-chartjs-2';
-import { CharacterStock } from '../types/CharacterStock';
+import { CharacterStock } from '../../types/CharacterStock';
 import 'chart.js/auto'; // Automatically register Chart.js components
 import './PriceHistoryGraph.css';
 

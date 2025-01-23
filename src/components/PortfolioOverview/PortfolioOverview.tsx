@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserPortfolio } from '../types/CharacterStock';
+import { UserPortfolio } from '../../types/CharacterStock';
 import './PortfolioOverview.css';
 
 interface PortfolioOverviewProps {
