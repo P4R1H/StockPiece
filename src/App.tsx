@@ -12,7 +12,6 @@ const OnePieceStockMarket: React.FC = () => {
     cash: 100000,
     stocks: {}
   });
-
   const handleBuy = (characterId: string) => {
     const stock = stocks.find(s => s.id === characterId);
     if (stock && portfolio.cash >= stock.currentPrice) {
@@ -47,6 +46,7 @@ const OnePieceStockMarket: React.FC = () => {
     }
   };
 
+  
   return (
     <Router>
       <div className="one-piece-stock-market">
@@ -60,7 +60,7 @@ const OnePieceStockMarket: React.FC = () => {
             <Link to="/leaderboard" className="nav-btn">Leaderboard</Link>
           </nav>
           <div className="user-controls">
-            <button className="nav-btn">Settings</button>
+            <button className="nav-btn" onClick={() => setStocks(INITIAL_CHARACTER_STOCKS)}>Settings</button>
             <button className="nav-btn logout-btn">Logout</button>
           </div>
         </header>
