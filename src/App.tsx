@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { INITIAL_CHARACTER_STOCKS } from './assets/data/characterStock';
 import { CharacterStock, UserPortfolio } from './types/CharacterStock';
-import CharacterStockCard from './components/characterStockCard';
+import CharacterStockCard from './components/CharacterStockCard.tsx';
+import PortfolioOverview from './components/PortfolioOverview.tsx';
+import PriceHistoryGraph from './components/PriceHistoryGraph.tsx';
+
 import './App.css';
 
 const OnePieceStockMarket: React.FC = () => {
   const [stocks, setStocks] = useState<CharacterStock[]>(INITIAL_CHARACTER_STOCKS);
   const [portfolio, setPortfolio] = useState<UserPortfolio>({
-    cash: 100000, // Bellies as currency
+    cash: 100000,
     stocks: {}
   });
 
@@ -52,11 +55,11 @@ const OnePieceStockMarket: React.FC = () => {
           <img src="/assets/skull-flag.png" alt="Pirate Flag" className="pirate-flag" />
           <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
         </div>
-        <div className="portfolio-summary">
-          <img src="/assets/beli-icon.png" alt="Beli Coin" className="beli-icon" />
-          <span>{portfolio.cash.toLocaleString()} Bellies</span>
-        </div>
       </header>
+      <div className="dashboard">
+        <PortfolioOverview portfolio={portfolio} />
+        <PriceHistoryGraph stocks={stocks} />
+      </div>
       <main className="stock-market-main">
         <div className="stock-grid">
           {stocks.map(stock => (
