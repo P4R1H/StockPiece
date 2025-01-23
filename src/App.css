@@ -87,11 +87,3 @@ body {
   background: var(--crimson);
   color: var(--gold);
 }
-
-.market-footer {
-  background: var(--dark-blue);
-  color: var(--gold);
-  text-align: center;
-  padding: 10px;
-  font-size: 0.8rem;
-}

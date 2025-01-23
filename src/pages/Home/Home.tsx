@@ -3,7 +3,7 @@ import CharacterStockCard from '../../components/Card/CharacterStockCard';
 import PortfolioOverview from '../../components/PortfolioOverview/PortfolioOverview';
 import PriceHistoryGraph from '../../components/StockGraph/PriceHistoryGraph';
 import { CharacterStock, UserPortfolio } from '../../types/CharacterStock';
-import 'Home.css'
+import './Home.css'
 
 interface HomePageProps {
   stocks: CharacterStock[];

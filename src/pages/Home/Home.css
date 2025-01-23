@@ -15,3 +15,70 @@
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
   }
+
+  .portfolio-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 20px;
+  }
+  
+  .beli-icon {
+    width: 40px;
+  }
+  
+  .stock-market-main {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .market-footer {
+    background: var(--dark-blue);
+    color: var(--gold);
+    text-align: center;
+    padding: 10px;
+    font-size: 0.8rem;
+  }
+  
+  .dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .portfolio-overview {
+    width: 40%;
+    background: var(--parchment);
+    border: 3px solid var(--crimson);
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .treasure-chest img {
+    width: 100px;
+    margin-bottom: 15px;
+  }
+  
+  .portfolio-details {
+    font-family: 'Pirata One', cursive;
+  }
+  
+  .price-history-graph {
+    width: 95%;
+    background: var(--parchment);
+    border: 3px solid var(--gold);
+    border-radius: 10px;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    padding: 20px;
+  }
