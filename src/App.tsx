@@ -2,11 +2,8 @@ import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { INITIAL_CHARACTER_STOCKS } from './assets/data/characterStock';
 import { CharacterStock, UserPortfolio } from './types/CharacterStock';
-import CharacterStockCard from './components/Card/CharacterStockCard';
-import PortfolioOverview from './components/PortfolioOverview/PortfolioOverview';
-import PriceHistoryGraph from './components/StockGraph/PriceHistoryGraph';
-import LeaderboardPage from './components/Leaderboard/Leaderboard';
-
+import HomePage from './pages/Home/Home';
+import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import './App.css';
 
 const OnePieceStockMarket: React.FC = () => {
@@ -69,24 +66,12 @@ const OnePieceStockMarket: React.FC = () => {
         </header>
         <Routes>
           <Route path="/" element={
-            <div>
-              <div className="dashboard">
-                <PortfolioOverview portfolio={portfolio} />
-                <PriceHistoryGraph stocks={stocks} />
-              </div>
-              <main className="stock-market-main">
-                <div className="stock-grid">
-                  {stocks.map(stock => (
-                    <CharacterStockCard 
-                      key={stock.id}
-                      stock={stock}
-                      onBuy={handleBuy}
-                      onSell={handleSell}
-                    />
-                  ))}
-                </div>
-              </main>
-            </div>
+            <HomePage
+              stocks={stocks}
+              portfolio={portfolio}
+              onBuy={handleBuy}
+              onSell={handleSell}
+            />
           } />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
         </Routes>

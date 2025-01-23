@@ -1,0 +1,17 @@
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  .stock-market-main {
+    flex-grow: 1;
+    padding: 20px;
+  }
+  
+  .stock-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
