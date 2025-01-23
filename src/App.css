@@ -1,42 +1,82 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
+
+:root {
+  --dark-blue: #081B33; 
+  --gold: #FFD700; 
+  --parchment: #FAF3E0; 
+  --crimson: #A30000;
+  --ocean-blue: #125D98; 
+}
+
+body {
+  margin: 0;
+  font-family: 'Treasure Map', cursive;
+  background: var(--parchment);
+  color: var(--dark-blue);
+  overflow-x: hidden;
+}
+
+.one-piece-stock-market {
+  background: url('/assets/ocean-bg.jpg') center/cover no-repeat fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.market-header {
+  background: var(--ocean-blue);
+  color: var(--gold);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 4px solid var(--crimson);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.pirate-banner {
+  display: flex;
+  align-items: center;
+}
+
+.pirate-banner .pirate-flag {
+  width: 60px;
+  margin-right: 15px;
+}
+
+.market-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 2rem;
+}
+
+.portfolio-summary {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+.beli-icon {
+  width: 40px;
+}
+
+.stock-market-main {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.market-footer {
+  background: var(--dark-blue);
+  color: var(--gold);
   text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  padding: 10px;
+  font-size: 0.8rem;
 }
