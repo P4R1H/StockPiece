@@ -1,19 +1,7 @@
-.portfolio-overview {
-    width: 40%;
-    background: var(--parchment);
-    border: 3px solid var(--crimson);
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .treasure-chest img {
-    width: 100px;
-    margin-bottom: 15px;
-  }
-  
-  .portfolio-details {
-    font-family: 'Pirata One', cursive;
-  }
-  
+.price-history-graph {
+  width: 100%;
+  border: 3px solid #3e2f28;
+  border-radius: 10px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+}

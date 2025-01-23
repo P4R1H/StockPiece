@@ -1,19 +1,67 @@
-.portfolio-overview {
-    width: 40%;
-    background: var(--parchment);
-    border: 3px solid var(--crimson);
-    border-radius: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .treasure-chest img {
-    width: 100px;
-    margin-bottom: 15px;
-  }
-  
-  .portfolio-details {
-    font-family: 'Pirata One', cursive;
-  }
-  
+.bounty-card {
+  background: url('/assets/bounty-template.png') no-repeat center center;
+  background-size: contain;
+  width: 400px;
+  min-height: 585px;
+  aspect-ratio: 3/4;
+  font-family: 'Pirata One', cursive;
+  position: relative;
+  text-align: center;
+  border: 3px solid #3e2f28; /* Reduced border thickness */
+  border-radius: 8px; /* Added border radius */
+  margin: auto;
+  padding: 0;
+}
+.bounty-image-container {
+  position: absolute;
+  top: 130px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 330px;
+  height: 235px;
+  background-color: #f9f0e0;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.bounty-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bounty-details {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+}
+
+.bounty-name {
+  font-size: 26px;
+  text-transform: uppercase;
+  margin: 10px 0;
+}
+
+.bounty-status {
+  font-size: 18px;
+  margin: 5px 0;
+  color: #7c5648;
+  font-weight: bold;
+}
+
+.bounty-net-worth {
+  font-size: 16px;
+  margin: 10px 0;
+}
+
+.bounty-profit-loss {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.profit-loss-last-chapter {
+  font-size: 14px;
+  color: #8b4e4e;
+}

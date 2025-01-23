@@ -1,31 +1,43 @@
 import React from 'react';
-import { UserPortfolio } from '../../types/CharacterStock';
 import './PortfolioOverview.css';
 
-interface PortfolioOverviewProps {
-  portfolio: UserPortfolio;
+interface BountyProfileCardProps {
+  userName: string;
+  netWorth: string;
+  profitLossOverall: string;
+  profitLossLastChapter: string;
+  profileImage?: string;
 }
 
-const PortfolioOverview: React.FC<PortfolioOverviewProps> = ({ portfolio }) => {
+const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
+  userName,
+  netWorth,
+  profitLossOverall,
+  profitLossLastChapter,
+  profileImage,
+}) => {
   return (
-    <div className="portfolio-overview">
-      <div className="treasure-chest">
-        <img src="/assets/treasure-chest.png" alt="Treasure Chest" />
+    <div className="bounty-card">
+      <div className="bounty-image-container">
+        <img
+          src={profileImage || '/assets/placeholder-profile.png'}
+          alt="User"
+          className="bounty-image"
+        />
       </div>
-      <div className="portfolio-details">
-        <h2>Your Treasure</h2>
-        <p><strong>Cash:</strong> {portfolio.cash.toLocaleString()} Bellies</p>
-        <h3>Stocks:</h3>
-        <ul>
-          {Object.entries(portfolio.stocks).map(([characterId, holding]) => (
-            <li key={characterId}>
-              {characterId}: {holding.quantity} shares
-            </li>
-          ))}
-        </ul>
+      <div className="bounty-details">
+        <h1 className="bounty-name">{userName}</h1>
+        <p className="bounty-status">Gamer vipul</p>
+        <p className="bounty-net-worth">Net Worth: {netWorth} Bellies</p>
+        <p className="bounty-profit-loss">
+          Profit/Loss Overall: {profitLossOverall}{' '}
+          <span className="profit-loss-last-chapter">
+            (Last Chapter: {profitLossLastChapter})
+          </span>
+        </p>
       </div>
     </div>
   );
 };
 
-export default PortfolioOverview;
+export default BountyProfileCard;
