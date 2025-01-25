@@ -1,7 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 import { extractPublicId } from "cloudinary-build-url";
 import fs from "node:fs";
-import ApiError from "./ApiError.utils";
+import ApiError from "./ApiError.utils.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -15,7 +15,7 @@ const deleteTempFile = async (localFilePath) => {
   try {
     if (localFilePath) {
       await fs.promises.unlink(localFilePath);
-      console.log("temp file deleted: ", fs.existsSync(localFilePath));
+      console.log("temp file deleted: ", !fs.existsSync(localFilePath));
     }
   } catch (error) {
     console.log("error deleting temp file", error.message);

@@ -3,6 +3,7 @@ import errorHandler from "./middlewares/errorHandler.middlewares.js";
 import cookieParser from "cookie-parser";
 import path from "node:path";
 import { __dirname } from "./constants.js";
+import userRouter from "./routes/user.routes.js";
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.get("/", (_req, res, _next) => {
     message: "hello",
   });
 });
+
+app.use('/api/v1/user',userRouter);
 
 app.use(errorHandler);
 

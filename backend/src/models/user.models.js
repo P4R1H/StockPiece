@@ -1,36 +1,38 @@
 import mongoose from "mongoose";
-import argon from 'argon2'
-import ApiError from "../utils/ApiError.utils";
-import jwt from 'jsonwebtoken'
+import argon from "argon2";
+import ApiError from "../utils/ApiError.utils.js";
+import jwt from "jsonwebtoken";
+import { defaultAvatarUrl } from "../constants.js";
 
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: [true,'username is required'],
-    unique:[true,'username already exists'],
-    lowercase: true,
-    trim: true,
-    minLength: [3,'username should be minimum 3 characters'],
-    index: true
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: [true, "username is required"],
+      unique: [true, "username already exists"],
+      lowercase: true,
+      trim: true,
+      minLength: [3, "username should be minimum 3 characters"],
+      index: true,
+    },
+    password: {
+      type: String,
+      required: [true, "username is required"],
+      minLength: [6, "password should be minimum 6 characters"],
+    },
+    avatar: {
+      type: String, //cloudinary
+      default: defaultAvatarUrl,
+    },
+    refreshToken: {
+      type: String,
+    },
   },
-  password: {
-    type: String,
-    required: [true,'username is required'],
-    minLength: [6,'password should be minimum 6 characters']
-  },
-  avatar: {
-    type: String, //cloudinary
-    default: "/images/defaultAvatar.jpg"
-  },
-  refreshToken: {
-    type: String
-  }
-},{timestamps: true})
-
-const User = mongoose.model("User",userSchema);
+  { timestamps: true }
+);
 
 //hash the password before saving
-User.pre("save",async function (next) {
+userSchema.pre("save", async function (next) {
   try {
     const user = this;
 
@@ -44,33 +46,33 @@ User.pre("save",async function (next) {
   } catch (error) {
     next(error);
   }
-})
+});
 
-userSchema.static("verifyUser",async function(username,password) {
-  const user = await User.findOne({username});
+userSchema.static("verifyUser", async function (username, password) {
+  const user = await User.findOne({ username });
   if (!user) {
-    throw new ApiError(404,'user not found');
+    throw new ApiError(404, "user not found");
   }
-  if (!await argon.verify(user.password,password)) {
-    throw new ApiError(401,'invalid password');
+  if (!(await argon.verify(user.password, password))) {
+    throw new ApiError(401, "invalid password");
   }
   return user;
-})
+});
 
-userSchema.methods.generateAccessToken = async () => {
+userSchema.methods.generateAccessToken = function () {
   const token = jwt.sign(
     {
       _id: this._id,
       username: this.username,
-      avatar: this.avatar
+      avatar: this.avatar,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
       expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     }
-  )
+  );
   return token;
-}
+};
 
 userSchema.methods.generateRefreshToken = function () {
   const token = jwt.sign(
@@ -85,5 +87,8 @@ userSchema.methods.generateRefreshToken = function () {
 
   return token;
 };
+
+//we need to create the user model at last after we add all the methods
+const User = mongoose.model("User", userSchema);
 
 export default User;

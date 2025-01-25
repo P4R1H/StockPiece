@@ -11,13 +11,21 @@ const errorHandler = (err, _req, res, _next) => {
     data: null,
   };
 
-  if (process.env.NODE_ENV == "devlopment") {
-    response.debug = {
-      stack: err.stack,
-      name: err.name || "UnkownError",
-      rawError: isApiError ? undefined : err,
-    };
-  }
+  // if (process.env.NODE_ENV == "devlopment") {
+  //   response.debug = {
+  //     stack: err.stack,
+  //     name: err.name || "UnkownError",
+  //     rawError: isApiError ? undefined : err,
+  //   };
+  // }
+
+  response.debug = {
+    stack: err.stack,
+    name: err.name || "UnkownError",
+    rawError: isApiError ? undefined : err,
+  };
+
+  console.log(process.env.NODE_ENV);
 
   res.status(statusCode).json(response);
 };

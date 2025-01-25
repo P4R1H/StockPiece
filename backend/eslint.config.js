@@ -34,7 +34,7 @@ export default [
           varsIgnorePattern: "^_",
         },
       ],
-      "no-console": "off",
+      "no-console": "on",
       "prettier/prettier": "error",
     },
   },
