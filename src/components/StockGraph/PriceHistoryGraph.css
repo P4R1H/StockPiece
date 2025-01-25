@@ -1,7 +1,10 @@
 .price-history-graph {
-  width: 100%;
   border: 3px solid #3e2f28;
   border-radius: 10px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
   padding: 20px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+
 }

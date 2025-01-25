@@ -33,7 +33,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks }) => {
 
   return (
     <div className="price-history-graph">
-      <h2>Stock Price History</h2>
       <Line data={data} options={options} />
     </div>
   );
