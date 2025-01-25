@@ -27,7 +27,7 @@ app.get("/", (_req, res, _next) => {
   });
 });
 
-app.use('/api/v1/user',userRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use(errorHandler);
 
