@@ -1,0 +1,44 @@
+{
+  "name": "stockpiece-backend",
+  "version": "1.0.0",
+  "description": "this is the backend for our stockpiece application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "dev": "nodemon NODE_ENV=development ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/P4R1H/StockPiece.git"
+  },
+  "author": "vc252",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/P4R1H/StockPiece/issues"
+  },
+  "type": "module",
+  "homepage": "https://github.com/P4R1H/StockPiece#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.4.2"
+  },
+  "dependencies": {
+    "argon2": "^0.41.1",
+    "cloudinary": "^2.5.1",
+    "cloudinary-build-url": "^0.2.4",
+    "cookie-parser": "^1.4.7",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.5",
+    "multer": "^1.4.5-lts.1"
+  }
+}
