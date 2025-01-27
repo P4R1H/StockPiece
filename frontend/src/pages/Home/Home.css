@@ -14,10 +14,9 @@
 .stock-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 10px;
+  gap: 30px; /* Increase gap from 10px to 20px for more spacing */
   padding: 10px;
-}
-  
+}  
   .beli-icon {
     width: 40px;
   }

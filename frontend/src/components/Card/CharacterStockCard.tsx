@@ -6,7 +6,7 @@ interface CharacterStockCardProps {
   stock: CharacterStock;
   onBuy: (characterId: string) => void;
   onSell: (characterId: string) => void;
-  ownedCount?: number; // Add this prop
+  ownedCount?: number;
 }
 
 const CharacterStockCard: React.FC<CharacterStockCardProps> = ({ stock, onBuy, onSell, ownedCount = 0 }) => {
@@ -27,4 +27,5 @@ const CharacterStockCard: React.FC<CharacterStockCardProps> = ({ stock, onBuy, o
     </div>
   );
 };
+
 export default CharacterStockCard;

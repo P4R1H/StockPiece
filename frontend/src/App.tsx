@@ -12,6 +12,7 @@ const OnePieceStockMarket: React.FC = () => {
     cash: 100000,
     stocks: {}
   });
+
   const handleBuy = (characterId: string) => {
     const stock = stocks.find(s => s.id === characterId);
     if (stock && portfolio.cash >= stock.currentPrice) {
@@ -46,7 +47,6 @@ const OnePieceStockMarket: React.FC = () => {
     }
   };
 
-  
   return (
     <Router>
       <div className="one-piece-stock-market">
