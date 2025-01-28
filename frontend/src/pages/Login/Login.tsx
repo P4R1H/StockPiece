@@ -21,7 +21,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       setIsLoading(false);
       onLogin();
       navigate('/');
-    }, 2000);
+    }, 1000);
   };
 
   return (

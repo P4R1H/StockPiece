@@ -12,7 +12,8 @@
   margin: auto;
   padding: 0;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  background-color: #f9f0e0; /* Fallback background */
+  background-color: #f9f0e0; 
+  animation: floatIn 0.8s ease-out;
 }
 
 .bounty-image-container {
@@ -81,4 +82,15 @@
 .highlight {
   color: #c41e3a; /* Red for emphasis */
   font-weight: bold;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

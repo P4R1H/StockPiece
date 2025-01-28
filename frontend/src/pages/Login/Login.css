@@ -246,7 +246,7 @@
   
   @keyframes sail-ship {
     from {
-      right: -55%; /* Start from right edge */
+      right: -50%; /* Start from right edge */
     }
     to {
       right: 100%; /* Move to left edge */
