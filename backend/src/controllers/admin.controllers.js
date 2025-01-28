@@ -41,6 +41,23 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     );
 });
 
+const adminLogout = asyncHandler(async (req, res, _) => {
+  //i just need to delete token in cookies
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", "", options)
+    .json(new ApiResponse(200, null, "Admin logged out successfully"));
+});
+
 const addAdmin = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthorized access");
@@ -173,5 +190,6 @@ export {
   addAdmin,
   addCharacterStock,
   removeCharacterStock,
-  removeAdmin
+  removeAdmin,
+  adminLogout
 };

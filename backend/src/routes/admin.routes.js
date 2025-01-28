@@ -3,8 +3,9 @@ import {
   addAdmin,
   addCharacterStock,
   adminLogin,
-  deleteCharacterStock,
-  removeAdmin
+  removeCharacterStock,
+  removeAdmin,
+  adminLogout
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
@@ -18,6 +19,9 @@ adminRouter
 adminRouter.use(verifyAdminJWT);
 
 adminRouter
+  .route('/logout')
+  .post(adminLogout)
+adminRouter
   .route("/add-admin")
   .post(addAdmin);
 adminRouter
@@ -27,7 +31,7 @@ adminRouter
   .route('/add-character-stock')
   .post(addCharacterStock)
 adminRouter
-  .route("/delete-character-stock")
-  .post(deleteCharacterStock)
+  .route("/remove-character-stock")
+  .post(removeCharacterStock)
 
 export default adminRouter;
