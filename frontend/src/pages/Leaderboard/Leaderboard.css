@@ -1,112 +1,136 @@
-
 .page-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  /* ...existing leaderboard styles... */
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  background: url('/assets/grand-line-background.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  font-family: 'Pirata One', cursive;
+}
+
 .leaderboard-container {
-    background: var(--parchment);
-    border: 3px solid var(--crimson);
-    border-radius: 10px;
-    padding: 20px;
-    margin: 20px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  }
-  
-  .leaderboard-title {
-    font-family: 'Pirata One', cursive;
-    color: var(--dark-blue);
-    text-align: center;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
+  background: url('/assets/parchment.jpg') no-repeat center center;
+  background-size: cover;
+  border: 5px solid #3e2f28;
+  border-radius: 15px;
+  padding: 25px;
+  margin: 20px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
+
+.leaderboard-title {
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 25px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 2px solid #3e2f28;
+}
+
+.leaderboard-table th {
+  background: #3e2f28;
+  color: #ffcc00;
+  font-family: 'Pirata One', cursive;
+  font-size: 1.2rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.leaderboard-table tr:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.top-rank {
+  background: rgba(255, 215, 0, 0.2);
+  font-weight: bold;
+}
+
+.profit-high {
+  color: #2ecc71;
+  font-weight: bold;
+}
+
+.profit-normal {
+  color: #3498db;
+}
+
+@media (max-width: 768px) {
   .leaderboard-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(255, 255, 255, 0.9);
+    font-size: 0.9rem;
   }
-  
+
   .leaderboard-table th,
   .leaderboard-table td {
-    padding: 12px;
-    text-align: left;
-    border-bottom: 2px solid var(--ocean-blue);
-  }
-  
-  .leaderboard-table th {
-    background: var(--ocean-blue);
-    color: var(--gold);
-    font-family: 'Pirata One', cursive;
-  }
-  
-  .leaderboard-table tr:hover {
-    background: rgba(255, 215, 0, 0.1);
-  }
-  
-  .top-rank {
-    background: rgba(255, 215, 0, 0.2);
-    font-weight: bold;
-  }
-  
-  .profit-high {
-    color: #2ecc71;
-    font-weight: bold;
-  }
-  
-  .profit-normal {
-    color: #3498db;
-  }
-  
-  @media (max-width: 768px) {
-    .leaderboard-table {
-      font-size: 0.9rem;
-    }
-    
-    .leaderboard-table th,
-    .leaderboard-table td {
-      padding: 8px;
-    }
+    padding: 10px;
   }
 
-  .leaderboard-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    width: 80%;
-    max-width: 900px;
-    max-height: 80vh;
-    overflow-y: auto;
+  .leaderboard-title {
+    font-size: 2rem;
   }
-  
-  .modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 999;
-  }
-  
-  .close-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--crimson);
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 18px;
-  }
-  
-  .close-btn:hover {
-    background: var(--dark-crimson);
-  }
+}
+
+.leaderboard-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  width: 80%;
+  max-width: 900px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: url('/assets/parchment.jpg') no-repeat center center;
+  background-size: cover;
+  border: 5px solid #3e2f28;
+  border-radius: 15px;
+  padding: 25px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #c41e3a;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+  background: #9c1a2f;
+  transform: scale(1.1);
+}

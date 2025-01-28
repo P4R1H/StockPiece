@@ -7,11 +7,15 @@
   font-family: 'Pirata One', cursive;
   position: relative;
   text-align: center;
-  border: 3px solid #3e2f28; /* Reduced border thickness */
-  border-radius: 8px; /* Added border radius */
+  border: 5px solid #3e2f28;
+  border-radius: 12px;
   margin: auto;
   padding: 0;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+  background-color: #f9f0e0; 
+  animation: floatIn 0.8s ease-out;
 }
+
 .bounty-image-container {
   position: absolute;
   top: 130px;
@@ -22,12 +26,15 @@
   background-color: #f9f0e0;
   overflow: hidden;
   border-radius: 8px;
+  border: 3px solid #3e2f28;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .bounty-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: sepia(0.3) contrast(1.1); /* Adds a vintage effect */
 }
 
 .bounty-details {
@@ -36,32 +43,54 @@
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Adds subtle text shadow */
 }
 
 .bounty-name {
-  font-size: 26px;
+  font-size: 32px;
   text-transform: uppercase;
   margin: 10px 0;
+  color: #3e2f28;
+  letter-spacing: 2px; /* Adds a pirate-like feel */
 }
 
 .bounty-status {
-  font-size: 18px;
+  font-size: 20px;
   margin: 5px 0;
   color: #7c5648;
   font-weight: bold;
+  font-style: italic; /* Adds a playful touch */
 }
 
 .bounty-net-worth {
-  font-size: 16px;
+  font-size: 18px;
   margin: 10px 0;
+  color: #3e2f28;
 }
 
 .bounty-profit-loss {
-  font-size: 14px;
+  font-size: 16px;
   margin: 5px 0;
+  color: #3e2f28;
 }
 
 .profit-loss-last-chapter {
   font-size: 14px;
   color: #8b4e4e;
+}
+
+.highlight {
+  color: #c41e3a; /* Red for emphasis */
+  font-weight: bold;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

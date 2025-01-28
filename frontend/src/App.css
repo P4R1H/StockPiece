@@ -87,3 +87,78 @@ body {
   background: var(--crimson);
   color: var(--gold);
 }
+
+.one-piece-stock-market {
+  background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Pirata One', cursive;
+}
+
+.market-header {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #ffcc00;
+}
+
+.pirate-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pirate-flag {
+  width: 50px;
+  height: auto;
+  animation: wave 2s infinite;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}
+
+.market-title {
+  color: #ffcc00;
+  font-size: 2rem;
+  margin: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-btn {
+  color: #ffcc00;
+  border: 2px solid #ffcc00;
+  padding: 10px 20px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+  background: #ffcc00;
+  color: #3e2f28;
+  transform: scale(1.1);
+}
+
+.user-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.market-footer {
+  background: rgba(0, 0, 0, 0.8);
+  color: #ffcc00;
+  text-align: center;
+  padding: 10px;
+  border-top: 3px solid #ffcc00;
+  margin-top: auto;
+}
