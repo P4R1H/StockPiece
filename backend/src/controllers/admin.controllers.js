@@ -90,7 +90,8 @@ const addCharacterStock = asyncHandler( async (req, res, _) => {
 
   const characterStock = await CharacterStock.create({
     name: name.trim(),
-    initialValue: parseInt(initialValue)
+    initialValue: parseInt(initialValue),
+    currentValue: initialValue
   })
 
   if (!characterStock) {
