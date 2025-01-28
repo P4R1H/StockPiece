@@ -73,6 +73,36 @@ const addAdmin = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, createdAdmin, "admin added successfully"));
 });
 
+const removeAdmin = asyncHandler( async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  if (!req.admin.isSuperAdmin) {
+    throw new ApiError(403, "only super admin access");
+  }
+
+  const {username} = req.body;
+
+  if (!username?.trim()) {
+    throw new ApiError(400,"username is required");
+  }
+
+  const admin = await Admin.findOne({username});
+
+  if (!admin) {
+    throw new ApiError(404,`admin with username ${username} not found`);
+  }
+
+  const removedAdmin = await Admin.findByIdAndDelete(admin._id);
+
+  res
+  .status(200)
+  .json(
+    new ApiResponse(200,removedAdmin,"admin deleted successfully")
+  )
+})
+
 const addCharacterStock = asyncHandler( async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthorized access");
@@ -105,8 +135,43 @@ const addCharacterStock = asyncHandler( async (req, res, _) => {
   )
 })
 
+//need to request the super admin for permanent deletion
+//we can handle deleting referencings later
+const removeCharacterStock = asyncHandler( async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  const { name } = req.body;
+
+  if (!name?.trim()) {
+    throw new ApiError(400,'name is required');
+  }
+
+  const characterStock = await CharacterStock.findOne({name});
+
+  if (!characterStock) {
+    throw new ApiError(404,'character stock not found');
+  }
+
+  const removedCharacterStock = await CharacterStock.findByIdAndUpdate(
+    characterStock._id,
+    {isRemoved: true},
+    {new: true}
+  )
+
+  res
+  .status(200)
+  .json(
+    new ApiResponse(200,removedCharacterStock,"stock deleted successfully")
+  )
+})
+
+
 export { 
   adminLogin, 
   addAdmin,
-  addCharacterStock
+  addCharacterStock,
+  removeCharacterStock,
+  removeAdmin
 };
