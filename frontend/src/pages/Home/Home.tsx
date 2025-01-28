@@ -3,32 +3,36 @@ import CharacterStockCard from '../../components/Card/CharacterStockCard';
 import PortfolioOverview from '../../components/PortfolioOverview/PortfolioOverview';
 import PriceHistoryGraph from '../../components/StockGraph/PriceHistoryGraph';
 import { CharacterStock, UserPortfolio } from '../../types/CharacterStock';
-import './Home.css'
+import './Home.css';
 
 interface HomePageProps {
   stocks: CharacterStock[];
   portfolio: UserPortfolio;
   onBuy: (characterId: string) => void;
   onSell: (characterId: string) => void;
+  onToggleVisibility: (characterId: string) => void;
 }
 
-const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell }) => {
+const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, onToggleVisibility }) => {
   return (
-    <div>
+    <div className="dashboard-container">
       <div className="dashboard">
         <PortfolioOverview portfolio={portfolio} />
         <PriceHistoryGraph stocks={stocks} />
       </div>
       <main className="stock-market-main">
-        <div className="stock-grid">
-          {stocks.map(stock => (
-            <CharacterStockCard 
-              key={stock.id}
-              stock={stock}
-              onBuy={onBuy}
-              onSell={onSell}
-            />
-          ))}
+        <div className="stock-card-container">
+          <div className="stock-grid">
+            {stocks.map(stock => (
+              <CharacterStockCard 
+                key={stock.id}
+                stock={stock}
+                onBuy={onBuy}
+                onSell={onSell}
+                onToggleVisibility={onToggleVisibility}
+              />
+            ))}
+          </div>
         </div>
       </main>
     </div>

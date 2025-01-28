@@ -1,24 +1,23 @@
-/* Main Container Styles */
 .graph-container {
-  width: 90%;
-  max-width: 900px;
+  min-width: calc(100% - 400px - 1rem); /* Account for portfolio width + gap */
+  flex-grow: 1;
+  margin-left: 0; /* Remove any default margins */
   min-height: 550px;
-  margin: 0 auto;
-  padding: 15px;
-  position: relative;
-  overflow: hidden;
-  
-  /* Visual Styling */
-  background: #fff5e6 url('/assets/parchment.jpg');
   border: 5px solid #3e2f28;
   border-radius: 15px;
+  background: #fff5e6 url('/assets/parchment.jpg');
+  padding: 15px;
   box-shadow: 8px 8px 0 rgba(62, 47, 40, 0.2);
-  
-  /* Animation */
-  animation: floatIn 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
 }
 
-/* Controls Layout */
+.graph-container {
+  flex: 1; /* Take remaining space */
+  min-width: 500px; /* Minimum functional width */
+  max-width: calc(1400px - 400px - 1rem - 3rem); /* 1400 - portfolio - gap - paddings */
+}
+
 .graph-controls {
   display: flex;
   justify-content: space-between;
@@ -27,34 +26,27 @@
   padding: 0 10px;
 }
 
-/* Chart Container */
-.chart-wrapper {
-  height: 480px;
-  position: relative;
-}
 
-/* Select Dropdown Styling */
 .pirate-select {
   padding: 8px 12px;
   font-family: 'Pirata One', cursive;
   font-size: 1.1rem;
   color: #3e2f28;
-  background-color: #ffcc00;
+  background: #ffcc00;
   border: 2px solid #3e2f28;
   border-radius: 5px;
   cursor: pointer;
-  
-  /* Custom Dropdown Arrow */
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233e2f28'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px;
-  
-  /* Hover Effects */
+}
+
+.pirate-select {
+  transition: all 0.3s ease;
   position: relative;
   z-index: 1;
-  transition: all 0.3s ease;
 }
 
 .pirate-select:hover {
@@ -62,43 +54,8 @@
   box-shadow: 2px 2px 0 #3e2f28;
 }
 
-/* Slider Containers */
-.slider-container {
-  display: flex;
-  flex-direction: column;
-  width: 200px;
-}
-
-/* Common Slider Styles */
-.chapter-slider,
-.scale-slider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-}
-
-/* Range Input Styling */
-.chapter-slider input[type="range"],
-.scale-slider input[type="range"] {
-  -webkit-appearance: none;
-  width: 100px;
-  height: 5px;
-  background: #3e2f28;
-  border-radius: 5px;
-}
-
-/* Range Thumb Styling */
 .chapter-slider input[type="range"]::-webkit-slider-thumb,
 .scale-slider input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 15px;
-  height: 15px;
-  background: #ffcc00;
-  border: 2px solid #3e2f28;
-  border-radius: 50%;
-  cursor: pointer;
   transition: transform 0.2s ease;
 }
 
@@ -107,7 +64,66 @@
   transform: scale(1.1);
 }
 
-/* Tooltip Styling */
+.chapter-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+}
+
+.chapter-slider input[type="range"] {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 5px;
+  background: #3e2f28;
+  border-radius: 5px;
+}
+
+.chapter-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+/* Previous styles remain the same, add these new styles */
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+.scale-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+}
+
+.scale-slider input[type="range"] {
+  -webkit-appearance: none;
+  width: 100px;
+  height: 5px;
+  background: #3e2f28;
+  border-radius: 5px;
+}
+
+.scale-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .custom-tooltip {
   background-color: #fff5e6;
   border: 2px solid #3e2f28;
@@ -115,20 +131,8 @@
   padding: 8px;
   font-family: 'Pirata One', cursive;
   color: #3e2f28;
-  box-shadow: 3px 3px 0 #3e2f28;
-  position: relative;
 }
 
-.custom-tooltip::before {
-  content: '✪';
-  position: absolute;
-  left: -8px;
-  top: -8px;
-  color: #b22222;
-  font-size: 1.2em;
-}
-
-/* Character Image Styling */
 .character-image {
   width: 30px;
   height: 30px;
@@ -144,19 +148,26 @@
   object-fit: cover;
 }
 
-/* Animation Keyframes */
-@keyframes floatIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.chart-wrapper {
+  height: 480px;
+  position: relative;
 }
 
-/* Responsive Styles */
+.custom-tooltip {
+  /* Add pirate-style decorations */
+  position: relative;
+  box-shadow: 3px 3px 0 #3e2f28;
+}
+
+.custom-tooltip::before {
+  content: '✪';
+  position: absolute;
+  left: -8px;
+  top: -8px;
+  color: #b22222;
+  font-size: 1.2em;
+}
+
 @media (max-width: 768px) {
   .graph-controls {
     flex-direction: column;
@@ -171,3 +182,19 @@
     height: 350px;
   }
 }
+
+.graph-container {
+  animation: floatIn 0.8s ease-out;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

@@ -9,11 +9,13 @@
   text-align: center;
   border: 5px solid #3e2f28;
   border-radius: 12px;
-  margin: auto;
+  margin: 0;
   padding: 0;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
   background-color: #f9f0e0; 
   animation: floatIn 0.8s ease-out;
+  flex-shrink: 0; /* Prevent shrinking */
+  margin-right: 0; /* Remove any default margins */
 }
 
 .bounty-image-container {
