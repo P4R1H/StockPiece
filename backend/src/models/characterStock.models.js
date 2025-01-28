@@ -20,8 +20,8 @@ const characterStockSchema = new mongoose.Schema(
     },
     isRemoved: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   { timestamps: true }
 );
