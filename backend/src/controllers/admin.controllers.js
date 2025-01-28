@@ -1,10 +1,10 @@
 import Admin from "../models/admin.models.js";
 import ApiError from "../utils/ApiError.utils.js";
-import ApiResponse from "../utils/ApiResponse.utils";
-import asyncHandler from "../utils/asyncHandler.utils";
+import ApiResponse from "../utils/ApiResponse.utils.js";
+import asyncHandler from "../utils/asyncHandler.utils.js";
 
 //the super admin has already been registered we only need to have login
-const adminLogin = asyncHandler( async (req,res,_) => {
+const adminLogin = asyncHandler( async (req, res,_) => {
   const { username, password } = req.body;
 
   if (!username?.trim() || !password?.trim()) {
@@ -34,6 +34,8 @@ const adminLogin = asyncHandler( async (req,res,_) => {
     new ApiResponse(200,null,accessToken,"admin logged in successfully")
   )
 })
+
+
 
 export {
   adminLogin

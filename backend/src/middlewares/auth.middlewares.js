@@ -2,6 +2,7 @@ import ApiError from "../utils/ApiError.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import jwt from "jsonwebtoken";
 import User from "../models/user.models.js";
+import Admin from "../models/admin.models.js";
 
 const verifyJWT = asyncHandler(async (req, _, next) => {
   //we need to get the accessToken from cookies
@@ -10,7 +11,7 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     req.headers.authorization?.replace("Bearer ", "");
 
   if (!accessToken) {
-    throw new ApiError(401, "Unauthrized request");
+    throw new ApiError(401, "Unauthorized request");
   }
 
   const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -27,4 +28,31 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
   next();
 });
 
-export default verifyJWT;
+const verifyAdminJWT = asyncHandler(async (req, _, next) => {
+  //we need to get the accessToken from cookies
+  const accessToken =
+    req.cookies?.accessToken ||
+    req.headers.authorization?.replace("Bearer ", "");
+
+  if (!accessToken) {
+    throw new ApiError(401, "Unauthorized request");
+  }
+
+  const decodedToken = jwt.verify(accessToken, process.env.ADMIN_ACCESS_TOKEN_SECRET);
+
+  const admin = await Admin.findById(decodedToken?._id).select(
+    "-password"
+  );
+
+  if (!admin) {
+    throw new ApiError(401, "Invalid Access Token");
+  }
+
+  req.admin = admin;
+  next();
+});
+
+export {
+  verifyAdminJWT,
+  verifyJWT
+}

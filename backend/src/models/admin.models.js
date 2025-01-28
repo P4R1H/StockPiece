@@ -31,6 +31,7 @@ adminSchema.pre('save',async function(next) {
 
     const hash = await argon.hash(admin.password);
     admin.password = hash;
+    next();
   } catch (error) {
     next(error);
   }
@@ -47,9 +48,9 @@ userSchema.methods.generateAccessToken = function () {
       username: this.username,
       isSuperAdmin: this.isSuperAdmin
     },
-    process.env.ACCESS_TOKEN_SECRET,
+    process.env.ADMIN_ACCESS_TOKEN_SECRET,
     {
-      expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+      expiresIn: process.env.ADMIN_ACCESS_TOKEN_EXPIRY,
     }
   );
   return token;
