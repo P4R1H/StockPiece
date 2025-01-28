@@ -2,6 +2,7 @@ import Admin from "../models/admin.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
+import CharacterStock from "../models/characterStock.models.js";
 
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {
@@ -72,4 +73,39 @@ const addAdmin = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, createdAdmin, "admin added successfully"));
 });
 
-export { adminLogin, addAdmin };
+const addCharacterStock = asyncHandler( async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  const {name, initialValue} = req.body;
+
+  if (!name?.trim() || !initialValue?.trim()) {
+    throw new ApiError(400,'name and initial value required');
+  }
+
+  if (!parseInt(initialValue)) {
+    throw new ApiError(400,'enter a valid initial value');
+  }
+
+  const characterStock = await CharacterStock.create({
+    name: name.trim(),
+    initialValue: parseInt(initialValue)
+  })
+
+  if (!characterStock) {
+    throw new ApiError(500,'there was some error while creating character Stock');
+  }
+
+  res
+  .status(200)
+  .json(
+    new ApiResponse(200,characterStock,'character stock created successfully')
+  )
+})
+
+export { 
+  adminLogin, 
+  addAdmin,
+  addCharacterStock
+};
