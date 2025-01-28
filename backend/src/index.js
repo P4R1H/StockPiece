@@ -6,7 +6,7 @@ import initializeAdmin from "./scripts/initializeAdmin.js";
 const PORT = process.env.PORT || 8000;
 
 connectDB()
-  .then(()=>{
+  .then(() => {
     initializeAdmin();
   })
   .then(() => {

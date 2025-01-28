@@ -25,8 +25,6 @@ const errorHandler = (err, _req, res, _next) => {
     rawError: isApiError ? undefined : err,
   };
 
-  console.log(process.env.NODE_ENV);
-
   res.status(statusCode).json(response);
 };
 

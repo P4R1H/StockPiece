@@ -38,11 +38,12 @@ const verifyAdminJWT = asyncHandler(async (req, _, next) => {
     throw new ApiError(401, "Unauthorized request");
   }
 
-  const decodedToken = jwt.verify(accessToken, process.env.ADMIN_ACCESS_TOKEN_SECRET);
-
-  const admin = await Admin.findById(decodedToken?._id).select(
-    "-password"
+  const decodedToken = jwt.verify(
+    accessToken,
+    process.env.ADMIN_ACCESS_TOKEN_SECRET
   );
+
+  const admin = await Admin.findById(decodedToken?._id).select("-password");
 
   if (!admin) {
     throw new ApiError(401, "Invalid Access Token");
@@ -52,7 +53,4 @@ const verifyAdminJWT = asyncHandler(async (req, _, next) => {
   next();
 });
 
-export {
-  verifyAdminJWT,
-  verifyJWT
-}
+export { verifyAdminJWT, verifyJWT };
