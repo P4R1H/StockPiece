@@ -11,15 +11,19 @@ interface PriceHistoryGraphProps {
   ownedStocks: string[];
 }
 
+const getColorForCharacter = (name: string) => {
+  const colors = ['#3e2f28', '#b22222', '#1e90ff', '#228b22', '#8b4513', '#ffd700'];
+  const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  return colors[hash % colors.length];
+};
+
 const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStocks }) => {
   const [filter, setFilter] = useState<'all' | 'owned' | 'popular' | 'unowned'>('all');
   const [visibleChapters, setVisibleChapters] = useState<number>(10);
   const [chapterScale, setChapterScale] = useState<number>(1);
-
-  const generatePirateColor = () => {
-    const colors = ['#3e2f28', '#b22222', '#1e90ff', '#228b22', '#8b4513', '#ffd700'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
 
   const generateHistory = (length: number) => 
     Array.from({ length }, (_, i) => Math.floor(Math.random() * 5000000) + 1000000);
@@ -36,18 +40,20 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     (_, index) => index * chapterScale + 1
   );
 
-  const datasets = filteredStocks.map(stock => {
-    const history = generateHistory(visibleChapters);
-    const data = labels.map(chapter => history[chapter - 1]);
-    return {
-      label: stock.name,
-      data,
-      borderColor: generatePirateColor(),
-      borderWidth: 2,
-      pointRadius: 0,
-      tension: 0.4,
-    };
-  });
+  const datasets = filteredStocks
+    .filter(stock => selectedCharacters.length === 0 || selectedCharacters.includes(stock.name))
+    .map(stock => {
+      const history = generateHistory(visibleChapters);
+      const data = labels.map(chapter => history[chapter - 1]);
+      return {
+        label: stock.name,
+        data,
+        borderColor: getColorForCharacter(stock.name),
+        borderWidth: 2,
+        pointRadius: 0,
+        tension: 0.4,
+      };
+    });
 
   const plugins = [{
     id: 'endPointMarker',
@@ -62,13 +68,11 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         const x = lastPoint.x;
         const y = lastPoint.y;
 
-        // Draw pirate emblem
         ctx.beginPath();
         ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
         ctx.fillStyle = dataset.borderColor;
         ctx.fill();
         
-        // Draw initial letter
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 14px "Pirata One"';
         ctx.textAlign = 'center';
@@ -96,20 +100,22 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           }
         },
         displayColors: false,
-        backgroundColor: '#3e2f28',  // Changed to dark brown
-        titleColor: '#ffd700',      // Gold color for title
-        bodyColor: '#ffffff',       // White color for body text
-        titleFont: { family: 'Pirata One', size: 14 },
-        bodyFont: { family: 'Pirata One', size: 13 },
-        padding: 10,
-        cornerRadius: 6
+        backgroundColor: '#fff5e6',
+        titleFont: { family: 'Pirata One', size: 16 },
+        bodyFont: { family: 'Pirata One', size: 14 },
+        borderColor: '#3e2f28',
+        borderWidth: 2,
+        bodyColor: '#3e2f28',
+        titleColor: '#b22222',
+        padding: 12,
+        cornerRadius: 5,
+        boxShadow: '3px 3px 0 #3e2f28',
+        position: 'nearest' as const,
+        caretPadding: 10,
+        caretSize: 8
       },
       legend: {
-        labels: {
-          font: { family: 'Pirata One' },
-          color: '#3e2f28',
-          usePointStyle: true,
-        }
+        display: false
       }
     },
     scales: {
@@ -117,12 +123,12 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         title: {
           display: true,
           text: 'Chapters',
-          font: { family: 'Pirata One' },
+          font: { family: 'Pirata One', size: 14 },
           color: '#3e2f28'
         },
         ticks: {
           color: '#3e2f28',
-          font: { family: 'Pirata One' }
+          font: { family: 'Pirata One', size: 12 }
         },
         grid: { color: '#3e2f2833' }
       },
@@ -130,12 +136,12 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         title: {
           display: true,
           text: 'Belly (百万)',
-          font: { family: 'Pirata One' },
+          font: { family: 'Pirata One', size: 14 },
           color: '#3e2f28'
         },
         ticks: {
           color: '#3e2f28',
-          font: { family: 'Pirata One' },
+          font: { family: 'Pirata One', size: 12 },
           callback: (value: number) => `${(value / 1000000).toFixed(1)}M`
         },
         grid: { color: '#3e2f2833' }
@@ -143,19 +149,37 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
   };
 
+  const toggleCharacterSelection = (character: string) => {
+    setSelectedCharacters(prev => 
+      prev.includes(character) 
+        ? prev.filter(name => name !== character) 
+        : [...prev, character]
+    );
+  };
+
   return (
     <div className="graph-container">
       <div className="graph-controls">
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value as any)}
-          className="pirate-select"
-        >
-          <option value="all">All Stocks</option>
-          <option value="popular">Popular Stocks</option>
-          <option value="owned">My Crew</option>
-          <option value="unowned">Unowned</option>
-        </select>
+        <div className="advanced-options-button">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            className="pirate-select"
+          >
+            <option value="all">All Stocks</option>
+            <option value="popular">Popular Stocks</option>
+            <option value="owned">My Crew</option>
+            <option value="unowned">Unowned</option>
+          </select>
+          <div className="settings-tooltip-container">
+            <img
+              src="/assets/settings.png"
+              alt="Pirate Wheel"
+              className="pirate-wheel"
+              onClick={() => setIsSidePanelOpen(!isSidePanelOpen)}
+            />
+          </div>
+        </div>
 
         <div className="slider-container">
           <div className="chapter-slider">
@@ -179,6 +203,56 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
               onChange={(e) => setChapterScale(Number(e.target.value))}
             />
           </div>
+        </div>
+      </div>
+
+      <div className={`side-panel ${isSidePanelOpen ? 'open' : ''}`}>
+        <div className="panel-header">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value as any)}
+            className="pirate-select sidebar-select"
+          >
+            <option value="all">All Stocks</option>
+            <option value="popular">Popular Stocks</option>
+            <option value="owned">My Crew</option>
+            <option value="unowned">Unowned</option>
+          </select>
+          <button className="close-button" onClick={() => setIsSidePanelOpen(false)}>
+            ×
+          </button>
+        </div>
+
+        <div className="panel-controls">
+          <input
+            type="text"
+            className="search-bar"
+            placeholder="Search characters..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="character-list">
+          {stocks
+            .filter(stock => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map(stock => (
+              <div key={stock.name} className="character-checkbox">
+                <input
+                  type="checkbox"
+                  id={stock.name}
+                  checked={selectedCharacters.includes(stock.name)}
+                  onChange={() => toggleCharacterSelection(stock.name)}
+                />
+                <label htmlFor={stock.name}>
+                  <span 
+                    className="color-box"
+                    style={{ backgroundColor: getColorForCharacter(stock.name) }}
+                  />
+                  {stock.name}
+                </label>
+              </div>
+            ))}
         </div>
       </div>
 

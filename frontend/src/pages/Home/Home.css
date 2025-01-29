@@ -33,6 +33,8 @@
 }
 
 .stock-card-container {
+  animation: floatIn 0.8s ease-out;
+
   border: 5px solid #3e2f28;
   border-radius: 20px;
   background-image: 
@@ -126,5 +128,16 @@
   .graph-container {
     width: 100% !important; /* Full width on smaller screens */
     max-width: 100%;
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
