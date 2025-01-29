@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { CharacterStock } from '../../types/CharacterStock';
-import './PriceHistoryGraph.css';
+import { PriceHistoryGraphProps, Chart, ChartPlugin} from '../../types/Components';
+import './StockGraph.css';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
-
-interface PriceHistoryGraphProps {
-  stocks: CharacterStock[];
-  ownedStocks: string[];
-}
 
 const getColorForCharacter = (name: string) => {
   const colors = ['#3e2f28', '#b22222', '#1e90ff', '#228b22', '#8b4513', '#ffd700'];
@@ -54,34 +49,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         tension: 0.4,
       };
     });
-
-  interface Chart {
-    ctx: CanvasRenderingContext2D;
-    data: {
-      datasets: Dataset[];
-    };
-    getDatasetMeta: (index: number) => DatasetMeta;
-  }
-
-  interface Dataset {
-    label: string;
-    borderColor: string;
-  }
-
-  interface DatasetMeta {
-    hidden: boolean;
-    data: DataPoint[];
-  }
-
-  interface DataPoint {
-    x: number;
-    y: number;
-  }
-
-  interface ChartPlugin {
-    id: string;
-    afterDatasetsDraw: (chart: Chart) => void;
-  }
 
   const plugins: ChartPlugin[] = [{
     id: 'endPointMarker',

@@ -1,22 +1,7 @@
 import React from 'react';
 import { Eye, EyeOff, Crosshair } from 'lucide-react';
+import { CharacterCardProps } from '../../types/Stocks';
 import './CharacterCard.css';
-
-interface CharacterStock {
-  id: string;
-  name: string;
-  image: string;
-  currentPrice: number;
-  ownedCount: number;
-  visibility: 'show' | 'hide' | 'only';
-}
-
-interface CharacterCardProps {
-  stock: CharacterStock;
-  onBuy: (characterId: string) => void;
-  onSell: (characterId: string) => void;
-  onVisibilityChange: (characterId: string, newState: 'show' | 'hide' | 'only') => void;
-}
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ 
   stock, 

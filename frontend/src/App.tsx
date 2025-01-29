@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import { INITIAL_CHARACTER_STOCKS } from './assets/data/characterStock';
-import { CharacterStock, UserPortfolio } from './types/CharacterStock';
+import { CharacterStock, UserPortfolio } from './types/Stocks';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
-import LoginPage from './pages/Login/Login'; // Import the LoginPage component
+import LoginPage from './pages/Login/Login';
 import './App.css';
 
 const OnePieceStockMarket: React.FC = () => {

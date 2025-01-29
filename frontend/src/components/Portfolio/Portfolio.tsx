@@ -1,13 +1,6 @@
 import React from 'react';
-import './PortfolioOverview.css';
-
-interface BountyProfileCardProps {
-  userName: string;
-  netWorth: string;
-  profitLossOverall: string;
-  profitLossLastChapter: string;
-  profileImage?: string;
-}
+import './Portfolio.css';
+import { BountyProfileCardProps } from '../../types/Components'
 
 const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   userName,

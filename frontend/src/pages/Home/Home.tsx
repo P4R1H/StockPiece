@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import CharacterStockCard from '../../components/Card/CharacterCard';
-import PortfolioOverview from '../../components/PortfolioOverview/PortfolioOverview';
-import PriceHistoryGraph from '../../components/StockGraph/PriceHistoryGraph';
-import { CharacterStock, UserPortfolio } from '../../types/CharacterStock';
+import PortfolioOverview from '../../components/Portfolio/Portfolio';
+import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
+import { HomePageProps } from '../../types/Pages';
 import './Home.css';
 
 const NEWS_ITEMS = [
@@ -16,14 +16,6 @@ const NEWS_ITEMS = [
   "ALERT: Robin Finds Poneglyph Behind Couch, Marines Baffled",
   "UPDATE: Franky Upgrades Ship with Cola-Powered Time Machine (SUPER!)",
 ];
-
-interface HomePageProps {
-  stocks: CharacterStock[];
-  portfolio: UserPortfolio;
-  onBuy: (characterId: string) => void;
-  onSell: (characterId: string) => void;
-  onToggleVisibility: (characterId: string) => void;
-}
 
 const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, onToggleVisibility }) => {
   const [searchQuery, setSearchQuery] = useState('');

@@ -1,14 +1,6 @@
 import React from 'react';
 import './Leaderboard.css';
-
-interface LeaderboardEntry {
-  rank: number;
-  username: string;
-  totalValue: number;
-  topStock: string;
-  profitPercentage: number;
-}
-
+import { LeaderboardEntry } from '../../types/Pages'
 const mockLeaderboardData: LeaderboardEntry[] = [
   {
     rank: 1,
