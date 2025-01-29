@@ -1,30 +1,29 @@
 .bounty-card {
   background: url('/assets/bounty-template.png') no-repeat center center;
   background-size: contain;
-  width: 400px;
-  min-height: 585px;
+  width: min(90vw, 400px);
+  min-height: min(132vw, 585px);
   aspect-ratio: 3/4;
   font-family: 'Pirata One', cursive;
   position: relative;
   text-align: center;
   border: 5px solid #3e2f28;
   border-radius: 12px;
-  margin: 0;
+  margin: auto;
   padding: 0;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
   background-color: #f9f0e0; 
   animation: floatIn 0.8s ease-out;
-  flex-shrink: 0; /* Prevent shrinking */
-  margin-right: 0; /* Remove any default margins */
+  flex-shrink: 0;
 }
 
 .bounty-image-container {
   position: absolute;
-  top: 130px;
+  top: 22%;  /* Adjusted to align with transparent area */
   left: 50%;
   transform: translateX(-50%);
-  width: 330px;
-  height: 235px;
+  width: min(85%, 330px);
+  height: min(50vw, 235px);
   background-color: #f9f0e0;
   overflow: hidden;
   border-radius: 8px;
@@ -35,54 +34,49 @@
 .bounty-image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: sepia(0.3) contrast(1.1); /* Adds a vintage effect */
+  object-fit: contain;  /* Ensures full image fits */
+  filter: sepia(0.3) contrast(1.1);
 }
 
 .bounty-details {
   position: absolute;
-  bottom: 60px;
+  bottom: 10%;
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); /* Adds subtle text shadow */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .bounty-name {
-  font-size: 32px;
+  font-size: clamp(20px, 5vw, 32px);
   text-transform: uppercase;
   margin: 10px 0;
   color: #3e2f28;
-  letter-spacing: 2px; /* Adds a pirate-like feel */
+  letter-spacing: 2px;
 }
 
 .bounty-status {
-  font-size: 20px;
+  font-size: clamp(14px, 4vw, 20px);
   margin: 5px 0;
   color: #7c5648;
   font-weight: bold;
-  font-style: italic; /* Adds a playful touch */
+  font-style: italic;
 }
 
-.bounty-net-worth {
-  font-size: 18px;
-  margin: 10px 0;
-  color: #3e2f28;
-}
-
+.bounty-net-worth,
 .bounty-profit-loss {
-  font-size: 16px;
+  font-size: clamp(12px, 3vw, 18px);
   margin: 5px 0;
   color: #3e2f28;
 }
 
 .profit-loss-last-chapter {
-  font-size: 14px;
+  font-size: clamp(10px, 2.5vw, 14px);
   color: #8b4e4e;
 }
 
 .highlight {
-  color: #c41e3a; /* Red for emphasis */
+  color: #c41e3a;
   font-weight: bold;
 }
 
@@ -94,5 +88,16 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 500px) {
+  .bounty-card {
+    width: 90vw;
+    min-height: 120vw;
+  }
+  .bounty-image-container {
+    width: 80%;
+    height: 45vw;
   }
 }

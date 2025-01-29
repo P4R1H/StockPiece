@@ -173,7 +173,7 @@
   }
   
   .pirate-input input {
-    font-family: 'Monaco';
+    font-family: 'Pirata One', monospace;
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 0.75rem;
     background: rgba(0, 0, 0, 0.7);

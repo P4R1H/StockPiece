@@ -28,7 +28,9 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
       <div className="bounty-details">
         <h1 className="bounty-name">{userName}</h1>
         <p className="bounty-status">Pirate Investor</p>
-        <p className="bounty-net-worth">Net Worth: <span className="highlight">{netWorth} Bellies</span></p>
+        <p className="bounty-net-worth">
+          Net Worth: <span className="highlight">{netWorth} Bellies</span>
+        </p>
         <p className="bounty-profit-loss">
           Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>{' '}
           <span className="profit-loss-last-chapter">
