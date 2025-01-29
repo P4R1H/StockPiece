@@ -60,6 +60,7 @@
 .chapter-slider input[type="range"],
 .scale-slider input[type="range"] {
   -webkit-appearance: none;
+  appearance: none;
   width: 100px;
   height: 5px;
   background: #3e2f28;
