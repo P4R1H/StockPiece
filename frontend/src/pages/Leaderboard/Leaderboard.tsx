@@ -1,7 +1,7 @@
 import React from 'react';
 import './Leaderboard.css';
-import { LeaderboardEntry } from '../../types/Pages'
 import { mockLeaderboardData } from '../../assets/data/sampleLb'
+
 const LeaderboardPage: React.FC = () => {
   return (
     <div className="page-container">
