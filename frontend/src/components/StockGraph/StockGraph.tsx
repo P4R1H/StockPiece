@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Plugin } from 'chart.js';
 import { Line } from 'react-chartjs-2';
-import { PriceHistoryGraphProps, Chart, ChartPlugin} from '../../types/Components';
+import { PriceHistoryGraphProps } from '../../types/Components';
 import './StockGraph.css';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
@@ -21,7 +21,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
 
   const generateHistory = (length: number) => 
-    Array.from({ length }, (_, i) => Math.floor(Math.random() * 5000000) + 1000000);
+      Array.from({ length }, () => Math.floor(Math.random() * 5000000) + 1000000);
 
   const filteredStocks = stocks.filter(stock => {
     if (filter === 'owned') return ownedStocks.includes(stock.name);
@@ -50,34 +50,34 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       };
     });
 
-  const plugins: ChartPlugin[] = [{
-    id: 'endPointMarker',
-    afterDatasetsDraw: (chart: Chart) => {
-      const ctx = chart.ctx;
-      ctx.save();
-      chart.data.datasets.forEach((dataset, i) => {
-        const meta = chart.getDatasetMeta(i);
-        if (meta.hidden) return;
-        
-        const lastPoint = meta.data[meta.data.length - 1];
-        const x = lastPoint.x;
-        const y = lastPoint.y;
-
-        ctx.beginPath();
-        ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
-        ctx.fillStyle = dataset.borderColor;
-        ctx.fill();
-        
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px "Pirata One"';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(dataset.label[0], x, y - 10);
-      });
-      ctx.restore();
-    }
-  }];
-
+    const plugins: Plugin<'line'>[] = [{
+      id: 'endPointMarker',
+      afterDatasetsDraw: (chart) => {
+        const ctx = chart.ctx;
+        ctx.save();
+        chart.data.datasets.forEach((dataset, i) => {
+          const meta = chart.getDatasetMeta(i);
+          if (meta.hidden) return;
+          
+          const lastPoint = meta.data[meta.data.length - 1];
+          const x = lastPoint.x;
+          const y = lastPoint.y;
+  
+          ctx.beginPath();
+          ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
+          ctx.fillStyle = dataset.borderColor as string;
+          ctx.fill();
+          
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 14px "Pirata One"';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(dataset.label?.[0] || '', x, y - 10);
+        });
+        ctx.restore();
+      }
+    }];
+  
   const options = {
     responsive: true,
     maintainAspectRatio: false,
