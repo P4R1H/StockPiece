@@ -1,5 +1,5 @@
 .bounty-card {
-  background: url('/assets/bounty-template.png') no-repeat center center;
+  background: url('/assets/bounty-template.jpg') no-repeat center center;
   background-size: contain;
   width: min(90vw, 400px);
   min-height: min(132vw, 585px);
