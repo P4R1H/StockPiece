@@ -31,7 +31,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const filteredStocks = stocks.filter(stock => {
     if (filter === 'owned') return ownedStocks.includes(stock.name);
     if (filter === 'unowned') return !ownedStocks.includes(stock.name);
-    if (filter === 'popular') return stock.popularity > 75;
+    /*if (filter === 'popular') return stock.popularity > 75;*/
     return true;
   });
 
@@ -55,9 +55,37 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       };
     });
 
-  const plugins = [{
+  interface Chart {
+    ctx: CanvasRenderingContext2D;
+    data: {
+      datasets: Dataset[];
+    };
+    getDatasetMeta: (index: number) => DatasetMeta;
+  }
+
+  interface Dataset {
+    label: string;
+    borderColor: string;
+  }
+
+  interface DatasetMeta {
+    hidden: boolean;
+    data: DataPoint[];
+  }
+
+  interface DataPoint {
+    x: number;
+    y: number;
+  }
+
+  interface ChartPlugin {
+    id: string;
+    afterDatasetsDraw: (chart: Chart) => void;
+  }
+
+  const plugins: ChartPlugin[] = [{
     id: 'endPointMarker',
-    afterDatasetsDraw: (chart) => {
+    afterDatasetsDraw: (chart: Chart) => {
       const ctx = chart.ctx;
       ctx.save();
       chart.data.datasets.forEach((dataset, i) => {
@@ -142,7 +170,10 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         ticks: {
           color: '#3e2f28',
           font: { family: 'Pirata One', size: 12 },
-          callback: (value: number) => `${(value / 1000000).toFixed(1)}M`
+          callback: function(tickValue: number | string): string {
+            const value = Number(tickValue);
+            return `${(value / 1000000).toFixed(1)}M`;
+          }
         },
         grid: { color: '#3e2f2833' }
       }

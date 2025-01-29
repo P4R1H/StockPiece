@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/PortfolioOverview/PortfolioOverview';
 import PriceHistoryGraph from '../../components/StockGraph/PriceHistoryGraph';

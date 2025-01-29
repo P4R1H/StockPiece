@@ -30,32 +30,86 @@
 
 .stock-card-container {
   animation: floatIn 0.8s ease-out;
-  border: 5px solid #3e2f28;
-  border-radius: 20px;
+  border: 3px solid #2d4b6e; /* Deep sea blue border */
+  border-radius: 15px;
   background-image: 
     linear-gradient(
-      to bottom right,
-      rgba(10, 26, 42, 0.9),
-      rgba(16, 42, 67, 0.9)
-    ),
-    repeating-linear-gradient(
-      45deg,
-      transparent 0px,
-      transparent 4px,
-      rgba(58, 90, 122, 0.1) 4px,
-      rgba(58, 90, 122, 0.1) 8px
+      160deg,
+      #0a1a2a 20%,    /* Midnight ocean depth */
+      #12355b 50%,    /* Mid-water blue */
+      #1a4a7c 80%     /* Surface water */
     ),
     repeating-linear-gradient(
       -45deg,
-      transparent 0px,
-      transparent 4px,
-      rgba(58, 90, 122, 0.1) 4px,
-      rgba(58, 90, 122, 0.1) 8px
+      transparent,
+      transparent 2px,
+      rgba(173, 216, 230, 0.1) 3px,  /* Foam lines */
+      rgba(173, 216, 230, 0.1) 5px
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(211, 167, 40, 0.15) 0%,   /* Sunlight glint */
+      transparent 30%
     );
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
+  position: relative;
+  box-shadow: 
+    0 4px 15px rgba(0, 20, 40, 0.4),
+    inset 0 0 20px rgba(16, 66, 133, 0.3);
 }
+
+.stock-card-container::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border-radius: 18px;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    #3a5a7a 50%,      /* Wave crest color */
+    transparent 60%
+  );
+  animation: waveGlow 6s infinite linear;
+  z-index: 1;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+.stock-card-container::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 50% 0%, 
+      rgba(255, 255, 255, 0.1) 10%,
+      transparent 20%),
+    linear-gradient(
+      to bottom,
+      transparent 95%,
+      rgba(255, 255, 255, 0.2) 100%
+    );
+  pointer-events: none;
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 
 .market-controls-wrapper {
   display: flex;
