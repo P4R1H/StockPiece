@@ -7,9 +7,8 @@ export interface HomePageProps {
   portfolio: UserPortfolio;
   onBuy: (characterId: string) => void;
   onSell: (characterId: string) => void;
-  onToggleVisibility: (characterId: string) => void;
+  onVisibilityChange: (characterId: string, newState: 'show' | 'hide' | 'only') => void;
 }
-
 
 /* Leaderboard */
 

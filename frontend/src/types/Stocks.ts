@@ -3,10 +3,10 @@ export interface CharacterStock {
   name: string;
   image: string;
   currentPrice: number;
+  popularity: number;
   ownedCount: number;
   visibility: 'show' | 'hide' | 'only';
 }
-
 export interface CharacterCardProps {
   stock: CharacterStock;
   onBuy: (characterId: string) => void;

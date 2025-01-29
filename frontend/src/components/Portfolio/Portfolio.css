@@ -50,7 +50,7 @@
 .bounty-name {
   font-size: clamp(20px, 5vw, 32px);
   text-transform: uppercase;
-  margin: 10px 0;
+  margin: 20px 0 -5px 0;  /* Increased top margin from 10px to 20px */
   color: #3e2f28;
   letter-spacing: 2px;
 }

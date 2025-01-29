@@ -3,8 +3,8 @@ import { CharacterStock } from "./Stocks";
 
 /* Graph */
 export interface PriceHistoryGraphProps {
-    stocks: CharacterStock[];
-    ownedStocks: string[];
+  stocks: CharacterStock[];
+  ownedStocks: string[];
 }
   
 export interface Dataset {

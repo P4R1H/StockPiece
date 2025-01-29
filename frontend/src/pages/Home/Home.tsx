@@ -3,35 +3,44 @@ import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/Portfolio/Portfolio';
 import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
 import { HomePageProps } from '../../types/Pages';
+import { NEWS_ITEMS } from '../../assets/data/newsItems';
 import './Home.css';
 
-const NEWS_ITEMS = [
-  "BREAKING: Zoro Gets Lost in Bermuda Triangle, Claims It's a Shortcut to Wano",
-  "ALERT: Luffy Declares All-You-Can-Eat Buffets His New Territory",
-  "UPDATE: Nami Raises Interest Rates on Crew Debt by 3000%",
-  "FLASH: Sanji Discovers New Island, Names All Dishes After Nami-swan",
-  "URGENT: Chopper Mistaken for Emergency Food Supply Again",
-  "NEWS: Usopp Claims to Have Defeated 10,000 Marines with One Shot",
-  "REPORT: Mihawk runs out of black paint'",
-  "ALERT: Robin Finds Poneglyph Behind Couch, Marines Baffled",
-  "UPDATE: Franky Upgrades Ship with Cola-Powered Time Machine (SUPER!)",
-];
-
-const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, onToggleVisibility }) => {
+const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, onVisibilityChange }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
 
+  const calculatePortfolioStats = () => {
+    const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
+      .reduce((total, [stockId, holding]) => {
+        const stock = stocks.find(s => s.id === stockId);
+        return total + (stock?.currentPrice || 0) * holding.quantity;
+      }, 0);
+
+    // Placeholder values for profit/loss - you'll need to implement actual calculations
+    const profitLossOverall = "+15%";
+    const profitLossLastChapter = "+5%";
+
+    return {
+      netWorth: `${netWorth.toLocaleString()}`,
+      profitLossOverall,
+      profitLossLastChapter
+    };
+  };
+
+  const portfolioStats = calculatePortfolioStats();
+
   // Filter logic
   const filteredStocks = stocks.filter((stock) => {
     if (filter === 'Owned') {
-      return portfolio.ownedStocks.some((owned) => owned.id === stock.id);
+      return stock.id in portfolio.stocks; // Check if owned
     } else if (filter === 'Popular') {
       return stock.popularity > 7;
     }
     return true;
   });
-
+  
   // Search and sort logic
   const sortedStocks = filteredStocks
     .filter((stock) => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -44,8 +53,16 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
   return (
     <div className="dashboard-container">
       <div className="dashboard">
-        <PortfolioOverview portfolio={portfolio} />
-        <PriceHistoryGraph stocks={stocks} />
+      <PortfolioOverview 
+          userName="Pirate Trader"
+          netWorth={portfolioStats.netWorth}
+          profitLossOverall={portfolioStats.profitLossOverall}
+          profitLossLastChapter={portfolioStats.profitLossLastChapter}
+        />
+        <PriceHistoryGraph 
+  stocks={stocks} 
+  ownedStocks={Object.keys(portfolio.stocks)} // Pass owned stock IDs
+/>
       </div>
       <main className="stock-market-main">
         <div className="stock-card-container">
@@ -93,7 +110,7 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
                 stock={stock}
                 onBuy={onBuy}
                 onSell={onSell}
-                onToggleVisibility={onToggleVisibility}
+                onVisibilityChange={onVisibilityChange}
               />
             ))}
           </div>

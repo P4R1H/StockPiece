@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { INITIAL_CHARACTER_STOCKS } from './assets/data/characterStock';
+import { PLACEHOLDER_STOCKS } from './assets/data/sampleStocks';
 import { CharacterStock, UserPortfolio } from './types/Stocks';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
@@ -8,12 +8,20 @@ import LoginPage from './pages/Login/Login';
 import './App.css';
 
 const OnePieceStockMarket: React.FC = () => {
-  const [stocks, setStocks] = useState<CharacterStock[]>(INITIAL_CHARACTER_STOCKS);
+  const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
   const [portfolio, setPortfolio] = useState<UserPortfolio>({
     cash: 100000,
     stocks: {}
   });
 
+  const handleVisibilityChange = (characterId: string, newVisibility: 'show' | 'hide' | 'only') => {
+    setStocks(prevStocks => 
+      prevStocks.map(stock => 
+        stock.id === characterId ? { ...stock, visibility: newVisibility } : stock
+      )
+    );
+  };
+  
   const handleBuy = (characterId: string) => {
     const stock = stocks.find(s => s.id === characterId);
     if (stock && portfolio.cash >= stock.currentPrice) {
@@ -60,18 +68,19 @@ const OnePieceStockMarket: React.FC = () => {
           <Link to="/leaderboard" className="nav-btn">Leaderboard</Link>
         </nav>
         <div className="user-controls">
-          <button className="nav-btn" onClick={() => setStocks(INITIAL_CHARACTER_STOCKS)}>Settings</button>
+          <button className="nav-btn" onClick={() => setStocks(PLACEHOLDER_STOCKS)}>Settings</button>
           <button className="nav-btn logout-btn">Logout</button>
         </div>
       </header>
       <Routes>
         <Route path="/" element={
           <HomePage
-            stocks={stocks}
-            portfolio={portfolio}
-            onBuy={handleBuy}
-            onSell={handleSell}
-          />
+  stocks={stocks}
+  portfolio={portfolio}
+  onBuy={handleBuy}
+  onSell={handleSell}
+  onVisibilityChange={handleVisibilityChange} // Pass the handler
+/>
         } />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
