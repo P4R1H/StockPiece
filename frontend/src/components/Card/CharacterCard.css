@@ -156,3 +156,62 @@
 .op-sell-button:hover {
   background: linear-gradient(to bottom, #7a3a3a, #6e2d2d);
 }
+
+.op-stock-card {
+  width: 160px;
+  background: #0c1a2f; /* Darker oceanic blue */
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease;
+  border: 1px solid #d3a728; /* Gold border like the Straw Hat's edge */
+  position: relative;
+}
+
+.op-image-container {
+  background: #020e1b; /* Darker background for contrast */
+  border-bottom: 2px solid #d3a728; /* Gold accent */
+}
+
+.op-character-name {
+  color: #ffd700; /* Brighter gold like Luffy's straw hat */
+}
+
+
+
+.op-visibility-toggle {
+  background: rgba(211, 167, 40, 0.9); /* Straw Hat gold */
+  border: 1px solid #ffd700; /* Brighter gold border */
+  color: #2d1900;
+}
+
+.op-visibility-toggle[data-visibility="only"] {
+  background: #ffd700; /* Bright gold */
+}
+
+.op-divider {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 3px,
+    #d3a728 3px,  /* Gold stripes */
+    #d3a728 6px
+  );
+}
+
+/* Updated button colors */
+
+/* Hover effects */
+.op-buy-button:hover {
+  background: linear-gradient(to bottom, #3a7a6a, #2d6e5b); /* Deeper green */
+}
+
+.op-sell-button:hover {
+  background: linear-gradient(to bottom, #a00000, #8b0000); /* Brighter red */
+}
+
+.op-owned {
+  color: #add8e6; /* Light sky blue for secondary text */
+}
+
+

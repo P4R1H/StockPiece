@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { FaFilter, FaSort } from 'react-icons/fa';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/PortfolioOverview/PortfolioOverview';
 import PriceHistoryGraph from '../../components/StockGraph/PriceHistoryGraph';
@@ -13,7 +12,7 @@ const NEWS_ITEMS = [
   "FLASH: Sanji Discovers New Island, Names All Dishes After Nami-swan",
   "URGENT: Chopper Mistaken for Emergency Food Supply Again",
   "NEWS: Usopp Claims to Have Defeated 10,000 Marines with One Shot",
-  "REPORT: Brook Releases New Single 'Skull Jokes in B Minor'",
+  "REPORT: Mihawk runs out of black paint'",
   "ALERT: Robin Finds Poneglyph Behind Couch, Marines Baffled",
   "UPDATE: Franky Upgrades Ship with Cola-Powered Time Machine (SUPER!)",
 ];
@@ -30,18 +29,6 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
-  const [currentNewsIndex, setCurrentNewsIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentNewsIndex((prevIndex) => 
-        prevIndex === NEWS_ITEMS.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000);
-
-    return () => clearInterval(timer);
-  }, []);
 
   // Filter logic
   const filteredStocks = stocks.filter((stock) => {
@@ -99,7 +86,11 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
             </div>
             <div className="news-ticker">
               <div className="ticker-content">
-                <span>{NEWS_ITEMS[currentNewsIndex]}</span>
+                {NEWS_ITEMS.map((item, index) => (
+                  <span key={index} className="ticker-item">
+                    {item}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
