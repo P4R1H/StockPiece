@@ -34,7 +34,6 @@
 .bounty-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;  /* Ensures full image fits */
   filter: sepia(0.3) contrast(1.1);
 }
 

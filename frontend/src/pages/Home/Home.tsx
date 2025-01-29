@@ -58,6 +58,7 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
           netWorth={portfolioStats.netWorth}
           profitLossOverall={portfolioStats.profitLossOverall}
           profitLossLastChapter={portfolioStats.profitLossLastChapter}
+          profileImage="/assets/LockScreen.png"
         />
         <PriceHistoryGraph 
   stocks={stocks} 

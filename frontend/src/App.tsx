@@ -56,23 +56,49 @@ const OnePieceStockMarket: React.FC = () => {
     }
   };
 
-  return (
-    <div className="one-piece-stock-market">
-      <header className="market-header">
-        <div className="pirate-banner">
-          <img src="/assets/skull-flag.png" alt="Pirate Flag" className="pirate-flag" />
-          <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
-        </div>
-        <nav className="nav-links">
-          <Link to="/" className="nav-btn">Home</Link>
-          <Link to="/leaderboard" className="nav-btn">Leaderboard</Link>
-        </nav>
-        <div className="user-controls">
-          <button className="nav-btn" onClick={() => setStocks(PLACEHOLDER_STOCKS)}>Settings</button>
-          <button className="nav-btn logout-btn">Logout</button>
-        </div>
-      </header>
-      <Routes>
+    return (
+        <div className="one-piece-stock-market">
+          <header className="market-header">
+            <div className="pirate-banner">
+              <img 
+                src="/assets/skull-flag.png" 
+                alt="Pirate Flag" 
+                className="pirate-flag" 
+              />
+              <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
+            </div>
+            
+            <div className="nav-group">
+              <Link 
+                to="/" 
+                className="nav-btn" 
+                data-tooltip="Home"
+              >
+                <i className="fas fa-home"></i>
+              </Link>
+              <Link 
+                to="/leaderboard" 
+                className="nav-btn" 
+                data-tooltip="Leaderboard"
+              >
+                <i className="fas fa-trophy"></i>
+              </Link>
+              <button 
+                className="nav-btn" 
+                data-tooltip="Settings"
+                onClick={() => setStocks(PLACEHOLDER_STOCKS)}
+              >
+                <i className="fas fa-cog"></i>
+              </button>
+              <button 
+                className="nav-btn logout-btn" 
+                data-tooltip="Logout"
+              >
+                <i className="fas fa-door-open"></i>
+              </button>
+            </div>
+          </header>
+            <Routes>
         <Route path="/" element={
           <HomePage
   stocks={stocks}

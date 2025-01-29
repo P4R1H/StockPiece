@@ -1,11 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
 :root {
-  --dark-blue: #081B33; 
-  --gold: #FFD700; 
-  --parchment: #FAF3E0; 
+  --dark-blue: #081B33;
+  --gold: #FFD700;
+  --parchment: #FAF3E0;
   --crimson: #A30000;
-  --ocean-blue: #125D98; 
+  --ocean-blue: #125D98;
+  --deep-ocean: #0A1526;
 }
 
 body {
@@ -17,143 +19,129 @@ body {
 }
 
 .one-piece-stock-market {
-  background: url('/assets/ocean-bg.jpg') center/cover no-repeat fixed;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.market-header {
-  background: var(--ocean-blue);
-  color: var(--gold);
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 4px solid var(--crimson);
-  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
-}
-
-.pirate-banner {
-  display: flex;
-  align-items: center;
-}
-
-.pirate-banner .pirate-flag {
-  width: 60px;
-  margin-right: 15px;
-}
-
-.market-title {
-  font-family: 'Pirata One', cursive;
-  font-size: 2rem;
-}
-
-.nav-links {
-  display: flex;
-  gap: 20px;
-  align-items: center;
-}
-
-.user-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.nav-btn {
-  background: transparent;
-  color: var(--gold);
-  border: 2px solid var(--gold);
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-family: 'Pirata One', cursive;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.nav-btn:hover {
-  background: var(--gold);
-  color: var(--ocean-blue);
-}
-
-.logout-btn {
-  border-color: var(--crimson);
-  color: var(--crimson);
-}
-
-.logout-btn:hover {
-  background: var(--crimson);
-  color: var(--gold);
-}
-
-.one-piece-stock-market {
   background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   font-family: 'Pirata One', cursive;
+  position: relative;
 }
 
+/* Enhanced Navbar with Gradient */
 .market-header {
+  background: linear-gradient(145deg, var(--ocean-blue) 30%, #0e4a7a 100%);
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 3px solid #ffcc00;
+  border-bottom: 3px solid var(--gold);
+  position: relative;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 .pirate-banner {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
+  transition: transform 0.3s ease;
 }
 
 .pirate-flag {
   width: 50px;
   height: auto;
-  animation: wave 2s infinite;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
-@keyframes wave {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(5deg); }
-  75% { transform: rotate(-5deg); }
+.pirate-flag:hover {
+  animation: flagShake 0.5s ease-in-out infinite;
+}
+
+@keyframes flagShake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  25% { transform: translateX(-2px) rotate(-5deg); }
+  75% { transform: translateX(2px) rotate(5deg); }
 }
 
 .market-title {
-  color: #ffcc00;
-  font-size: 2rem;
+  color: var(--gold);
+  font-size: 2.2rem;
   margin: 0;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  letter-spacing: 1.5px;
+  position: relative;
 }
 
-.nav-links {
-  display: flex;
-  gap: 20px;
+/* Compact Icon Navigation */
+.nav-group {
+  align-items: center;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  border: 2px solid var(--gold);
 }
 
 .nav-btn {
-  color: #ffcc00;
-  border: 2px solid #ffcc00;
-  padding: 10px 20px;
-  font-size: 1rem;
+  color: var(--gold);
+  border: none;
+  padding: 12px 18px;
+  font-size: 1.4rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: transparent;
+  position: relative;
+  margin: 0 -2px;
+  border-radius: 0;
+}
+
+.nav-btn:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.nav-btn:last-child {
+  border-radius: 0 6px 6px 0;
 }
 
 .nav-btn:hover {
-  background: #ffcc00;
-  color: #3e2f28;
+  background: var(--gold);
+  color: var(--ocean-blue);
   transform: scale(1.1);
+  z-index: 2;
+  box-shadow: 0 0 15px rgba(255,215,0,0.4);
 }
 
-.user-controls {
-  display: flex;
-  gap: 10px;
+.nav-btn::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 2px;
+  background: var(--gold);
+  opacity: 0.3;
 }
 
+.nav-btn:last-child::after {
+  display: none;
+}
+
+.nav-btn:hover::after {
+  opacity: 0;
+}
+
+.logout-btn {
+  color: var(--crimson);
+}
+
+.logout-btn:hover {
+  color: var(--gold);
+  background: var(--crimson);
+}
+
+/* Footer Styling */
 .market-footer {
   background: rgba(0, 0, 0, 0.8);
   color: #ffcc00;
@@ -161,4 +149,20 @@ body {
   padding: 10px;
   border-top: 3px solid #ffcc00;
   margin-top: auto;
+}
+@media (max-width: 768px) {
+  .market-header {
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .nav-btn {
+    padding: 10px 14px;
+    font-size: 1.2rem;
+  }
+  
+  .market-title {
+    font-size: 1.8rem;
+  }
 }
