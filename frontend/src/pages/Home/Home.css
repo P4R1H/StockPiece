@@ -1,4 +1,3 @@
-/* Home.css */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -15,11 +14,9 @@
   gap: 1.5rem;
 }
 
-/* Home.css */
 .dashboard {
   display: flex;
   gap: 1rem;
-  padding: 0 calc(1rem); /* Matches stock-card-container's total horizontal padding */
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
@@ -27,107 +24,136 @@
 
 .stock-market-main {
   width: 100%;
-  padding: 0 1rem;
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .stock-card-container {
   animation: floatIn 0.8s ease-out;
-
   border: 5px solid #3e2f28;
   border-radius: 20px;
   background-image: 
-  linear-gradient(
-    to bottom right,
-    rgba(10, 26, 42, 0.9),
-    rgba(16, 42, 67, 0.9)
-  ),
-  repeating-linear-gradient(
-    45deg,
-    transparent 0px,
-    transparent 4px,
-    rgba(58, 90, 122, 0.1) 4px,
-    rgba(58, 90, 122, 0.1) 8px
-  ),
-  repeating-linear-gradient(
-    -45deg,
-    transparent 0px,
-    transparent 4px,
-    rgba(58, 90, 122, 0.1) 4px,
-    rgba(58, 90, 122, 0.1) 8px
-  ),
-  url('data:image/svg+xml,...');
-  padding: 1.5rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-    width: calc(100% ); /* 1.5rem padding on each side */
-    margin: 0 auto;
-    margin: 0 auto; /* Center the grid */
+    linear-gradient(
+      to bottom right,
+      rgba(10, 26, 42, 0.9),
+      rgba(16, 42, 67, 0.9)
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(58, 90, 122, 0.1) 4px,
+      rgba(58, 90, 122, 0.1) 8px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 4px,
+      rgba(58, 90, 122, 0.1) 4px,
+      rgba(58, 90, 122, 0.1) 8px
+    );
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+}
 
+.market-controls-wrapper {
+  display: flex;
+  width: 100%;
+  border-bottom: 5px solid #3e2f28;
+  background: #000;
+}
+
+.search-controls {
+  display: flex;
+  min-width: fit-content;
+  background: #d4a257;
+  border-right: 5px solid #3e2f28;
+}
+
+.stock-search {
+  border: none;
+  padding: 0.8rem 1rem;
+  font-size: 0.9rem;
+  width: 200px;
+  outline: none;
+  background: #f4f1ea;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+}
+
+.stock-filter-btn,
+.stock-sort-btn {
+  border: none;
+  border-left: 2px solid #3e2f28;
+  background: #d4a257;
+  padding: 0 1rem;
+  cursor: pointer;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+  transition: all 0.3s ease;
+}
+
+.stock-filter-btn:hover,
+.stock-sort-btn:hover {
+  background: #8b4513;
+  color: #fff;
+}
+
+.news-ticker {
+  flex-grow: 1;
+  background: #000;
+  overflow: hidden;
+  position: relative;
+}
+
+.news-ticker::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(
+      circle at center,
+      rgba(255, 0, 0, 0.1) 0%,
+      transparent 1%
+    );
+  background-size: 3px 3px;
+  pointer-events: none;
+}
+
+.ticker-content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  animation: ticker 30s linear infinite;
+}
+
+.ticker-content span {
+  white-space: nowrap;
+  color: #ff0000;
+  font-family: 'VT323', monospace;
+  font-size: 1.2rem;
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
 }
 
 .stock-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); /*do auto-fit if you want it to fill all available space*/
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   width: 100%;
   gap: 1.5rem;
-  margin: 0;
+  padding: 1.5rem;
 }
 
-/* Stock Controls Styles */
-.stock-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.stock-controls select,
-.stock-controls button {
-  background: #d4a257;
-  border: 2px solid #3e2f28;
-  border-radius: 25px;
-  padding: 0.5rem 1rem;
-  font-family: 'Pirata One', cursive;
-  font-size: 1rem;
-  color: #3e2f28;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.stock-controls select:hover,
-.stock-controls button:hover {
-  background: #8b4513;
-  color: #fff;
-  transform: scale(1.05);
-}
-
-/* Market Footer */
-.market-footer {
-  background: var(--dark-blue);
-  color: var(--gold);
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.8rem;
-  margin-top: auto;
-}
-
-/* Utility Classes */
-.beli-icon {
-  width: 40px;
-  height: auto;
-}
-
-@media (max-width: 1400px) {
-  .dashboard {
-    flex-wrap: wrap;
-    padding: 0 1.5rem;
+@keyframes ticker {
+  0% {
+    transform: translateX(100%);
   }
-  
-  .bounty-card,
-  .graph-container {
-    width: 100% !important; /* Full width on smaller screens */
-    max-width: 100%;
+  100% {
+    transform: translateX(-100%);
   }
 }
 
@@ -142,78 +168,22 @@
   }
 }
 
-/* Add these styles to Home.css */
-.stock-controls-top {
-  display: flex;
-  justify-content: flex-start; /* Changed to left */
-  margin-bottom: 1.5rem;
-  gap: 0; /* No space between elements */
+@media (max-width: 1400px) {
+  .dashboard {
+    flex-wrap: wrap;
+    padding: 0 1.5rem;
+  }
+  
+  .market-controls-wrapper {
+    flex-direction: column;
+  }
+  
+  .search-controls {
+    border-right: none;
+    border-bottom: 5px solid #3e2f28;
+  }
+  
+  .news-ticker {
+    padding: 0.5rem 0;
+  }
 }
-
-.stock-search {
-  border: 2px solid #3e2f28;
-  border-radius: 15px 0 0 15px;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  width: 200px;
-  height: 40px;
-  outline: none;
-  background: #f4f1ea;
-  transform: translateY(-1px);
-  box-shadow: 2px 2px 0 #3e2f28;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  transition: all 0.3s ease;
-}
-
-.stock-search::placeholder {
-  color: #3e2f28;
-  opacity: 0.7;
-}
-
-.stock-filter-btn,
-.stock-sort-btn {
-  border: 2px solid #3e2f28;
-  background: #d4a257;
-  height: 40px;
-  padding: 0 0.5rem;
-  cursor: pointer;
-  transform: translateY(-1px);
-  box-shadow: 2px 2px 0 #3e2f28;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  transition: all 0.3s ease;
-  appearance: none; /* Remove default select styling */
-  text-align: center;
-}
-
-.stock-filter-btn {
-  border-left: none;
-  border-right: none;
-  border-radius: 0;
-}
-
-.stock-sort-btn {
-  border-left: none;
-  border-radius: 0 15px 15px 0;
-}
-
-.stock-filter-btn:hover,
-.stock-sort-btn:hover,
-.stock-search:focus {
-  background: #8b4513;
-  transform: translateY(-2px);
-  box-shadow: 3px 3px 0 #3e2f28;
-  color: #fff;
-}
-
-.stock-filter-btn:hover,
-.stock-sort-btn:hover {
-  cursor: pointer;
-}
-
-.stock-filter-btn:focus,
-.stock-sort-btn:focus {
-  outline: none;
-}
-
