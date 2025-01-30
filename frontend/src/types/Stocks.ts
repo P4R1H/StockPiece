@@ -1,3 +1,4 @@
+
 export interface CharacterStock {
   id: string;
   name: string;
@@ -7,6 +8,7 @@ export interface CharacterStock {
   ownedCount: number;
   visibility: 'show' | 'hide' | 'only';
 }
+
 export interface CharacterCardProps {
   stock: CharacterStock;
   onBuy: (characterId: string) => void;

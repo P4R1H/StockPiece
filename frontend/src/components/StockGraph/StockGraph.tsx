@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Plugin } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { PriceHistoryGraphProps } from '../../types/Components';
@@ -12,31 +12,85 @@ const getColorForCharacter = (name: string) => {
   return colors[hash % colors.length];
 };
 
-const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStocks }) => {
-  const [filter, setFilter] = useState<'all' | 'owned' | 'popular' | 'unowned'>('all');
+const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ 
+  stocks, 
+  ownedStocks,
+  onVisibilityChange,
+  currentFilter
+}) => {
+  const [filter, setFilter] = useState<'all' | 'owned' | 'popular' | 'unowned' | 'custom'>('all');
   const [visibleChapters, setVisibleChapters] = useState<number>(10);
   const [chapterScale, setChapterScale] = useState<number>(1);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
+
+  useEffect(() => {
+    const newFilter = mapFilter(currentFilter);
+    handleFilterChange(newFilter, false);
+  }, [currentFilter]);
+
+  const mapFilter = (f: 'All' | 'Owned' | 'Popular') => {
+    switch (f) {
+      case 'All': return 'all';
+      case 'Owned': return 'owned';
+      case 'Popular': return 'popular';
+      default: return 'all';
+    }
+  };
+
+  const checkCustomState = () => {
+    const isCustom = !stocks.every(stock => {
+      if (filter === 'all') return stock.visibility === 'show';
+      if (filter === 'owned') return ownedStocks.includes(stock.id) ? stock.visibility === 'show' : stock.visibility === 'hide';
+      if (filter === 'popular') return stock.popularity > 7 ? stock.visibility === 'show' : stock.visibility === 'hide';
+      if (filter === 'unowned') return !ownedStocks.includes(stock.id) ? stock.visibility === 'show' : stock.visibility === 'hide';
+      return true;
+    });
+    
+    if (isCustom && filter !== 'custom') {
+      setFilter('custom');
+    }
+  };
+
+  useEffect(() => {
+    checkCustomState();
+  }, [stocks]);
 
   const generateHistory = (length: number) => 
-      Array.from({ length }, () => Math.floor(Math.random() * 5000000) + 1000000);
+    Array.from({ length }, () => Math.floor(Math.random() * 5000000) + 1000000);
 
-  const filteredStocks = stocks.filter(stock => {
-    if (filter === 'owned') return ownedStocks.includes(stock.name);
-    if (filter === 'unowned') return !ownedStocks.includes(stock.name);
-    /*if (filter === 'popular') return stock.popularity > 75;*/
-    return true;
-  });
+  const handleFilterChange = (newFilter: 'all' | 'owned' | 'popular' | 'unowned' | 'custom', updateVisibilities = true) => {
+    setFilter(newFilter);
+    
+    if (updateVisibilities && newFilter !== 'custom') {
+      stocks.forEach((stock) => {
+        let newVisibility: 'show' | 'hide' = 'show';
+        switch (newFilter) {
+          case 'all':
+            newVisibility = 'show';
+            break;
+          case 'owned':
+            newVisibility = ownedStocks.includes(stock.id) ? 'show' : 'hide';
+            break;
+          case 'unowned':
+            newVisibility = !ownedStocks.includes(stock.id) ? 'show' : 'hide';
+            break;
+          case 'popular':
+            newVisibility = stock.popularity > 7 ? 'show' : 'hide';
+            break;
+        }
+        onVisibilityChange(stock.id, newVisibility);
+      });
+    }
+  };
 
   const labels = Array.from(
     { length: Math.ceil(visibleChapters / chapterScale) },
     (_, index) => index * chapterScale + 1
   );
 
-  const datasets = filteredStocks
-    .filter(stock => selectedCharacters.length === 0 || selectedCharacters.includes(stock.name))
+  const datasets = stocks
+    .filter(stock => stock.visibility !== 'hide')
     .map(stock => {
       const history = generateHistory(visibleChapters);
       const data = labels.map(chapter => history[chapter - 1]);
@@ -50,41 +104,38 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       };
     });
 
-    const plugins: Plugin<'line'>[] = [{
-      id: 'endPointMarker',
-      afterDatasetsDraw: (chart) => {
-        const ctx = chart.ctx;
-        ctx.save();
-        chart.data.datasets.forEach((dataset, i) => {
-          const meta = chart.getDatasetMeta(i);
-          if (meta.hidden) return;
-          
-          const lastPoint = meta.data[meta.data.length - 1];
-          const x = lastPoint.x;
-          const y = lastPoint.y;
-  
-          ctx.beginPath();
-          ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
-          ctx.fillStyle = dataset.borderColor as string;
-          ctx.fill();
-          
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 14px "Pirata One"';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(dataset.label?.[0] || '', x, y - 10);
-        });
-        ctx.restore();
-      }
-    }];
-  
+  const plugins: Plugin<'line'>[] = [{
+    id: 'endPointMarker',
+    afterDatasetsDraw: (chart) => {
+      const ctx = chart.ctx;
+      ctx.save();
+      chart.data.datasets.forEach((dataset, i) => {
+        const meta = chart.getDatasetMeta(i);
+        if (meta.hidden) return;
+        
+        const lastPoint = meta.data[meta.data.length - 1];
+        const x = lastPoint.x;
+        const y = lastPoint.y;
+
+        ctx.beginPath();
+        ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
+        ctx.fillStyle = dataset.borderColor as string;
+        ctx.fill();
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px "Pirata One"';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(dataset.label?.[0] || '', x, y - 10);
+      });
+      ctx.restore();
+    }
+  }];
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    interaction: {
-      mode: 'nearest' as const,
-      intersect: false,
-    },
+    interaction: { mode: 'nearest' as const, intersect: false },
     plugins: {
       tooltip: {
         callbacks: {
@@ -104,14 +155,9 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         titleColor: '#b22222',
         padding: 12,
         cornerRadius: 5,
-        boxShadow: '3px 3px 0 #3e2f28',
-        position: 'nearest' as const,
-        caretPadding: 10,
-        caretSize: 8
+        boxShadow: '3px 3px 0 #3e2f28'
       },
-      legend: {
-        display: false
-      }
+      legend: { display: false }
     },
     scales: {
       x: {
@@ -121,10 +167,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           font: { family: 'Pirata One', size: 14 },
           color: '#3e2f28'
         },
-        ticks: {
-          color: '#3e2f28',
-          font: { family: 'Pirata One', size: 12 }
-        },
+        ticks: { color: '#3e2f28', font: { family: 'Pirata One', size: 12 } },
         grid: { color: '#3e2f2833' }
       },
       y: {
@@ -147,27 +190,20 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
   };
 
-  const toggleCharacterSelection = (character: string) => {
-    setSelectedCharacters(prev => 
-      prev.includes(character) 
-        ? prev.filter(name => name !== character) 
-        : [...prev, character]
-    );
-  };
-
   return (
     <div className="graph-container">
       <div className="graph-controls">
         <div className="advanced-options-button">
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value as any)}
+            onChange={(e) => handleFilterChange(e.target.value as any)}
             className="pirate-select"
           >
             <option value="all">All Stocks</option>
             <option value="popular">Popular Stocks</option>
             <option value="owned">My Crew</option>
             <option value="unowned">Unowned</option>
+            <option value="custom" style={{display: filter === 'custom' ? 'block' : 'none'}}>Custom</option>
           </select>
           <div className="settings-tooltip-container">
             <img
@@ -208,13 +244,14 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         <div className="panel-header">
           <select
             value={filter}
-            onChange={(e) => setFilter(e.target.value as any)}
+            onChange={(e) => handleFilterChange(e.target.value as any)}
             className="pirate-select sidebar-select"
           >
             <option value="all">All Stocks</option>
             <option value="popular">Popular Stocks</option>
             <option value="owned">My Crew</option>
             <option value="unowned">Unowned</option>
+            <option value="custom" style={{display: filter === 'custom' ? 'block' : 'none'}}>Custom</option>
           </select>
           <button className="close-button" onClick={() => setIsSidePanelOpen(false)}>
             ×
@@ -235,14 +272,19 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           {stocks
             .filter(stock => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
             .map(stock => (
-              <div key={stock.name} className="character-checkbox">
+              <div key={stock.id} className="character-checkbox">
                 <input
                   type="checkbox"
-                  id={stock.name}
-                  checked={selectedCharacters.includes(stock.name)}
-                  onChange={() => toggleCharacterSelection(stock.name)}
+                  id={stock.id}
+                  checked={stock.visibility !== 'hide'}
+                  onChange={(e) => {
+                    onVisibilityChange(
+                      stock.id,
+                      e.target.checked ? 'show' : 'hide'
+                    );
+                  }}
                 />
-                <label htmlFor={stock.name}>
+                <label htmlFor={stock.id}>
                   <span 
                     className="color-box"
                     style={{ backgroundColor: getColorForCharacter(stock.name) }}
