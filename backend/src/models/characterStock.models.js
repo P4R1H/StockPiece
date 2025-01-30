@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import mongooseAggregatePaginate from "mongoose-aggregate-paginate-v2";
+import { defaultAvatarUrl } from "../constants.js";
 
 //we can think of adding recent Value history later
 const characterStockSchema = new mongoose.Schema(
@@ -13,6 +14,10 @@ const characterStockSchema = new mongoose.Schema(
     initialValue: {
       type: Number,
       required: true,
+    },
+    imageURL: {
+      type: String, //cloudinary url
+      default: defaultAvatarUrl
     },
     currentValue: {
       type: Number,

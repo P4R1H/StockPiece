@@ -3,6 +3,8 @@ import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
+import { defaultAvatarUrl } from "../constants.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
 
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {
@@ -133,10 +135,26 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "enter a valid initial value");
   }
 
+  const existingCharacterStock = await CharacterStock.findOne({name});
+
+  if (existingCharacterStock) {
+    throw new ApiError(400,'character already created');
+  }
+
+  const imageLocalFilePath = req.file?.path;
+  const imageUrl = imageLocalFilePath
+    ? await uploadOnCloudinary(imageLocalFilePath)
+    : defaultAvatarUrl;
+
+  if (!imageUrl) {
+    throw new ApiError(500, "not able to upload image");
+  }
+
   const characterStock = await CharacterStock.create({
     name: name.trim(),
     initialValue: parseInt(initialValue),
     currentValue: initialValue,
+    imageURL: imageUrl
   });
 
   if (!characterStock) {

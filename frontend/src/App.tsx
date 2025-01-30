@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
 import './App.css';
+import { refreshUserToken, logoutUser } from './pages/Login/LoginServices';
 
 interface OnePieceStockMarketProps {
   isLoggedIn: boolean;
@@ -82,9 +83,25 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
   const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
 
-  // Set isLoggedIn based on cookies
+  const checkLoginStatus = async () => {
+    try {
+      await refreshUserToken();
+      setIsLoggedIn(true);
+    } catch {
+      setIsLoggedIn(false);
+    }
+  };
+  
+  checkLoginStatus();
 
   return (
     <Router>
