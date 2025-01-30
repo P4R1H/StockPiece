@@ -12,7 +12,8 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const defaultAvatarpublidId = "defaultAvatar_evaivb";
+const defaultAvatarpublidId = "defaultAvatar_hbexz5";
 const defaultAvatarUrl = cloudinary.url(defaultAvatarpublidId);
+
 
 export { DB_NAME, __dirname, defaultAvatarUrl };

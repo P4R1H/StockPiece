@@ -3,7 +3,7 @@ import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessRefreshToken = async (user) => {
@@ -206,4 +206,46 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     );
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken };
+const updateAvatar = asyncHandler(async (req, res, next) => {
+  const avatarLocalPath = req.file?.path;
+
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "no file uploaded");
+  }
+
+  // const oldAvatarUrl = req.user.avatar;
+  // if (oldAvatarUrl != defaultAvatarUrl) {
+  //   const result = await deleteFromCloudinary(oldAvatarUrl);
+  //   if (!result || result === "error") {
+  //     throw new ApiError(500, "error in deleting the avatar file", result);
+  //   }
+  // }
+
+  const newAvatar = await uploadOnCloudinary(avatarLocalPath);
+  if (!newAvatar) {
+    throw new ApiError(500, "not able to upload new avatar");
+  }
+
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        avatar: newAvatar,
+      },
+    },
+    { new: true }
+  ).select("-password -refreshToken");
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        user,
+        newAvatar,
+      },
+      "avatar updated successfully"
+    )
+  );
+});
+
+export { registerUser, loginUser, logoutUser, refreshAccessToken, updateAvatar };
