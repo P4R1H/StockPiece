@@ -50,18 +50,11 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     <div className="bounty-card">
 <div className="bounty-image-container">
   {profileImage || preview ? (
-    <div className="image-wrapper">
-      <img
-        src={preview || profileImage}
-        alt="User"
-        className="bounty-image"
-      />
-      {isLoggedIn && (
-        <div className="change-overlay">
-          <span>Change profile picture?</span>
-        </div>
-      )}
-    </div>
+    <img
+      src={preview || profileImage}
+      alt="User"
+      className="bounty-image"
+    />
   ) : (
     <div
       className={`upload-area ${isLoggedIn ? 'clickable' : 'disabled'}`}
@@ -83,7 +76,6 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     disabled={!isLoggedIn}
   />
 </div>
-
       <div className="bounty-details">
         <p className="bounty-name">{userName}</p>
         <p className="bounty-net-worth">

@@ -18,14 +18,14 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const fetchStocks = async () => {
-      // const stockData = getStockMarketData("tmp")
+      // const stockData = getStockMarketData()
       const stockData = PLACEHOLDER_STOCKS;
       setStocks(stockData);
     };
     fetchStocks();
 
     const fetchPortfolio = async () => {
-      const portfolioData = await getPortfolioData("tmp");
+      const portfolioData = await getPortfolioData();
       setPortfolio(portfolioData);
     }
     if(isLoggedIn) {
