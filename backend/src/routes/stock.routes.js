@@ -1,7 +1,19 @@
 import express from 'express'
-import { buyStock, checkOpenMarket, sellStock } from '../controllers/stock.controllers.js';
+import { buyStock, checkOpenMarket, getAllStocks, sellStock } from '../controllers/stock.controllers.js';
+import { verifyJWT } from '../middlewares/auth.middlewares.js';
 
 const stockRoute = express.Router();
+
+stockRoute
+  .route('/check-open-market')
+  .get(checkOpenMarket)
+
+stockRoute
+  .route('/all-stocks')
+  .get(getAllStocks)
+
+//safe routes
+stockRoute.use(verifyJWT)
 
 stockRoute
   .route('/buy')
@@ -10,9 +22,5 @@ stockRoute
 stockRoute
   .route('/sell')
   .post(sellStock)
-
-stockRoute
-  .route('/check-open-market')
-  .post(checkOpenMarket)
 
 export default stockRoute;

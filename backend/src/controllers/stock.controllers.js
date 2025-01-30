@@ -30,15 +30,15 @@ const buyStock = asyncHandler( async (req, res, _) => {
   }
 
   //now i need to check the price of the stock and check if there is enough balance
-  const { name, quantity } = req.params;
+  const { name, quantity } = req.body;
 
-  const characterStock = await CharacterStock.find({name});
+  const characterStock = await CharacterStock.findOne({name});
 
   if (!characterStock) {
     throw new ApiError(400,`${name} stock not available`);
   }
 
-  const totalPrice = characterStock.currentValue * quantity;
+  const totalPrice = characterStock.currentValue * parseInt(quantity);
 
   if (user.acountValue < totalPrice) {
     throw new ApiError(400,'insufficient funds')
@@ -48,19 +48,21 @@ const buyStock = asyncHandler( async (req, res, _) => {
   session.startTransaction();
 
   const transaction = await Transaction.create(
-    {
+    [{
       purchasedBy: user._id,
       stockID: characterStock._id,
-      quantity,
-      purchaseValue: totalPrice,
+      quantity: parseInt(quantity),
+      value: totalPrice,
+      type: 'buy',
       chapterPurchasedAt: latestChapter.chapter
-    }
+    }],
+    { session }
   )
 
   user.accountValue -= totalPrice;
   const stockIndex = user.ownedStocks.findIndex(item => item.stock.toString() === characterStock._id.toString());
   if (stockIndex>=0) {
-    user.ownedStocks[stockIndex].quantity += quantity
+    user.ownedStocks[stockIndex].quantity += parseInt(quantity)
   } else {
     user.ownedStocks.push(
       {
@@ -103,10 +105,10 @@ const sellStock = asyncHandler( async (req, res, _) => {
   }
 
   //now i need to check the price of the stock and check if there is enough balance
-  const { name, quantity } = req.params;
+  const { name, quantity } = req.body;
 
-  const characterStock = await CharacterStock.find({name});
-
+  const characterStock = await CharacterStock.findOne({name});
+  
   if (!characterStock) {
     throw new ApiError(400,`${name} stock not available`);
   }
@@ -117,30 +119,32 @@ const sellStock = asyncHandler( async (req, res, _) => {
     throw new ApiError(400,'user does not have this stock');
   }
   //check if the quantity we want to sell is even available
-  if (quantity > user.ownedStocks[stockIndex].quantity) {
+  if (parseInt(quantity) > user.ownedStocks[stockIndex].quantity) {
     throw new ApiError(400,'not enough stock to sell');
   }
 
-  const totalPrice = characterStock.currentValue * quantity;
+  const totalPrice = characterStock.currentValue * parseInt(quantity);
 
   const session = await mongoose.startSession();
   session.startTransaction();
 
   const transaction = await Transaction.create(
-    {
+    [{
       purchasedBy: user._id,
       stockID: characterStock._id,
-      quantity,
-      purchaseValue: totalPrice,
+      quantity: parseInt(quantity),
+      value: totalPrice,
+      type: 'sell',
       chapterPurchasedAt: latestChapter.chapter
-    }
+    }],
+    { session }
   )
 
   user.accountValue += totalPrice;
-  user.ownedStock[stockIndex].quantity -= quantity;
+  user.ownedStocks[stockIndex].quantity -= parseInt(quantity);
   //if user does not own any quantity then remove from the owned stock
-  if (user.ownedStock[stockIndex].quantity===0) {
-    user.ownedStock.splice(stockIndex,1)
+  if (user.ownedStocks[stockIndex].quantity===0) {
+    user.ownedStocks.splice(stockIndex,1)
   }
 
   await user.save({ session, validateModifiedOnly: true });
@@ -151,6 +155,15 @@ const sellStock = asyncHandler( async (req, res, _) => {
   .status(200)
   .json(
     new ApiResponse(200,transaction,"stock purchased successfully")
+  )
+})
+
+const getAllStocks = asyncHandler( async (req, res, _) => {
+  const allStocks = await CharacterStock.find();
+  res
+  .status(200)
+  .json(
+    new ApiResponse(200,allStocks,"all stocks fetched successfully")
   )
 })
 
@@ -170,5 +183,6 @@ const checkOpenMarket = asyncHandler( async (req, res, _) => {
 export {
   checkOpenMarket,
   buyStock,
-  sellStock
+  sellStock,
+  getAllStocks
 }

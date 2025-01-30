@@ -15,9 +15,14 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
     default: 1
   },
-  purchaseValue: {
+  value: {
     type: Number,
     default: 1
+  },
+  type: {
+    type: String,
+    enum: ['sell','buy'],
+    required: true
   },
   chapterPurchasedAt: {
     type: Number,
