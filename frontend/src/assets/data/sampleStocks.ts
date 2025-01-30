@@ -1,5 +1,11 @@
-import { CharacterStock } from '../../types/Stocks'
+import { CharacterStock, UserPortfolio } from '../../types/Stocks'
 
+export const PLACEHOLDER_PORTFOLIO: UserPortfolio = {
+  cash: 10000,
+  initialCash: 1000,
+  lastChapCash: 950,
+  stocks: {}
+}
 
 export const PLACEHOLDER_STOCKS: CharacterStock[] = [
   {

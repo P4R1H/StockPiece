@@ -4,7 +4,7 @@ import { CharacterCardProps } from '../../types/Stocks';
 import './CharacterCard.css';
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ 
-  stock, 
+  stock,  // Now includes visibility
   onBuy, 
   onSell,
   onVisibilityChange

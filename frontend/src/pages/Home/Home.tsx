@@ -1,20 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/Portfolio/Portfolio';
 import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
-import { HomePageProps } from '../../types/Pages';
+import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sampleStocks';
 import { NEWS_ITEMS } from '../../assets/data/newsItems';
+import { CharacterStock, UserPortfolio } from '../../types/Stocks';
+import { HomePageProps } from '../../types/Pages';
+import { getStockMarketData, getPortfolioData } from './HomeServices';
+
 import './Home.css';
 
-const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) => {
+const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
   const [isLoading, setLoading] = useState(false);
-  const [localStocks, setLocalStocks] = useState(stocks); 
+  const [stocks, setStocks] = useState<CharacterStock[]>([]);
+  const [portfolio, setPortfolio] = useState<UserPortfolio>(PLACEHOLDER_PORTFOLIO)
+
+  useEffect(() => {
+    const fetchStocks = async () => {
+      // const stockData = await getStockMarketData("tmp");
+      const stockData = PLACEHOLDER_STOCKS
+      setStocks(stockData);
+    };
+    fetchStocks();
+
+    const fetchPortfolio = async () => {
+      const portfolioData = await getPortfolioData("tmp");
+      setPortfolio(portfolioData);
+    }
+    if(isLoggedIn) {
+      fetchPortfolio()
+    }
+  }, []);
+
 
   const handleVisibilityChange = (characterId: string, newVisibility: 'show' | 'hide' | 'only') => {
-    setLocalStocks(prevStocks => 
+    setStocks(prevStocks => 
       prevStocks.map(stock => 
         stock.id === characterId ? { ...stock, visibility: newVisibility } : stock
       )
@@ -32,11 +55,11 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) =>
   const calculatePortfolioStats = () => {
     const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
       .reduce((total, [stockId, holding]) => {
-        const stock = localStocks.find(s => s.id === stockId);
+        const stock = stocks.find(s => s.id === stockId);
         return total + (stock?.currentPrice || 0) * holding.quantity;
       }, 0);
     
-      const profitLossOverall = "+15%";
+    const profitLossOverall = "+15%";
     const profitLossLastChapter = "+5%";
 
     return {
@@ -48,7 +71,6 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) =>
 
   const portfolioStats = calculatePortfolioStats();
 
-  // Filter logic
   const filteredStocks = stocks.filter((stock) => {
     if (filter === 'Owned') {
       return stock.id in portfolio.stocks; // Check if owned
@@ -58,7 +80,6 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) =>
     return true;
   });
   
-  // Search and sort logic
   const sortedStocks = filteredStocks
     .filter((stock) => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
     .sort((a, b) => {
@@ -122,7 +143,7 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) =>
             </div>
           </div>
           <div className="stock-grid">
-            {localStocks.map((stock) => (
+            {stocks.map((stock) => (
               <CharacterStockCard
                 key={stock.id}
                 stock={stock}

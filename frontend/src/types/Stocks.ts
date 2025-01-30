@@ -14,9 +14,10 @@ export interface CharacterCardProps {
   onVisibilityChange: (characterId: string, newState: 'show' | 'hide' | 'only') => void;
 }
 
-
 export interface UserPortfolio {
   cash: number;
+  initialCash: number;
+  lastChapCash: number;
   stocks: {
     [characterId: string]: {
       quantity: number;

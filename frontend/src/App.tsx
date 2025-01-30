@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { PLACEHOLDER_STOCKS } from './assets/data/sampleStocks';
-import { CharacterStock, UserPortfolio } from './types/Stocks';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
@@ -12,15 +10,7 @@ interface OnePieceStockMarketProps {
   onLogout: () => void;
 }
 
-const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {
-  const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
-  const [portfolio, setPortfolio] = useState<UserPortfolio>({
-    cash: 100000,
-    stocks: {}
-  });
-
-  // Get stocks and portfolio
-
+const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {  
   return (
     <div className="one-piece-stock-market">
       <header className="market-header">
@@ -76,8 +66,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       <Routes>
         <Route path="/" element={
           <HomePage
-            stocks={stocks}
-            portfolio={portfolio}
             isLoggedIn={isLoggedIn}
           />
         } />

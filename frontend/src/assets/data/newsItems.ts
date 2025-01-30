@@ -5,7 +5,7 @@ export const NEWS_ITEMS = [
   "FLASH: Sanji Discovers New Island, Names All Dishes After Nami-swan",
   "URGENT: Chopper Mistaken for Emergency Food Supply Again",
   "NEWS: Usopp Claims to Have Defeated 10,000 Marines with One Shot",
-  "REPORT: Mihawk runs out of black paint'",
+  "REPORT: Mihawk runs out of black paint",
   "ALERT: Robin Finds Poneglyph Behind Couch, Marines Baffled",
   "UPDATE: Franky Upgrades Ship with Cola-Powered Time Machine (SUPER!)",
 ];

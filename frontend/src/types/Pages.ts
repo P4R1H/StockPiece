@@ -1,10 +1,5 @@
-import { CharacterStock, UserPortfolio } from "./Stocks";
-
-
 /* Home */
 export interface HomePageProps {
-  stocks: CharacterStock[];
-  portfolio: UserPortfolio;
   isLoggedIn: boolean;
 }
 
