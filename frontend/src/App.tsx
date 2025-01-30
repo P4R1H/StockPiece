@@ -7,106 +7,79 @@ import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
 import './App.css';
 
-const OnePieceStockMarket: React.FC = ( {}) => {
+interface OnePieceStockMarketProps {
+  isLoggedIn: boolean;
+  onLogout: () => void;
+}
+
+const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {
   const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
   const [portfolio, setPortfolio] = useState<UserPortfolio>({
     cash: 100000,
     stocks: {}
   });
 
-  const handleVisibilityChange = (characterId: string, newVisibility: 'show' | 'hide' | 'only') => {
-    setStocks(prevStocks => 
-      prevStocks.map(stock => 
-        stock.id === characterId ? { ...stock, visibility: newVisibility } : stock
-      )
-    );
-  };
-  
-  const handleBuy = (characterId: string) => {
-    const stock = stocks.find(s => s.id === characterId);
-    if (stock && portfolio.cash >= stock.currentPrice) {
-      setPortfolio(prev => ({
-        cash: prev.cash - stock.currentPrice,
-        stocks: {
-          ...prev.stocks,
-          [characterId]: {
-            quantity: (prev.stocks[characterId]?.quantity || 0) + 1,
-            averagePurchasePrice: stock.currentPrice
-          }
-        }
-      }));
-    }
-  };
+  // Get stocks and portfolio
 
-  const handleSell = (characterId: string) => {
-    const stock = stocks.find(s => s.id === characterId);
-    const currentHolding = portfolio.stocks[characterId];
-
-    if (stock && currentHolding && currentHolding.quantity > 0) {
-      setPortfolio(prev => ({
-        cash: prev.cash + stock.currentPrice,
-        stocks: {
-          ...prev.stocks,
-          [characterId]: {
-            quantity: currentHolding.quantity - 1,
-            averagePurchasePrice: currentHolding.averagePurchasePrice
-          }
-        }
-      }));
-    }
-  };
-
-    return (
-        <div className="one-piece-stock-market">
-          <header className="market-header">
-            <div className="pirate-banner">
-              <img 
-                src="/assets/skull-flag.png" 
-                alt="Pirate Flag" 
-                className="pirate-flag" 
-              />
-              <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
-            </div>
-            
-            <div className="nav-group">
-              <Link 
-                to="/" 
-                className="nav-btn" 
-                data-tooltip="Home"
-              >
-                <i className="fas fa-home"></i>
-              </Link>
-              <Link 
-                to="/leaderboard" 
-                className="nav-btn" 
-                data-tooltip="Leaderboard"
-              >
-                <i className="fas fa-trophy"></i>
-              </Link>
-              <button 
-                className="nav-btn" 
-                data-tooltip="Settings"
-                onClick={() => setStocks(PLACEHOLDER_STOCKS)}
-              >
-                <i className="fas fa-cog"></i>
-              </button>
-              <button 
-                className="nav-btn logout-btn" 
-                data-tooltip="Logout"
-              >
-                <i className="fas fa-door-open"></i>
-              </button>
-            </div>
-          </header>
-            <Routes>
+  return (
+    <div className="one-piece-stock-market">
+      <header className="market-header">
+        <div className="pirate-banner">
+          <img 
+            src="/assets/skull-flag.png" 
+            alt="Pirate Flag" 
+            className="pirate-flag" 
+          />
+          <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
+        </div>
+        
+        <div className="nav-group">
+          <Link 
+            to="/" 
+            className="nav-btn" 
+            data-tooltip="Home"
+          >
+            <i className="fas fa-home"></i>
+          </Link>
+          <Link 
+            to="/leaderboard" 
+            className="nav-btn" 
+            data-tooltip="Leaderboard"
+          >
+            <i className="fas fa-trophy"></i>
+          </Link>
+          <button 
+            className="nav-btn" 
+            data-tooltip="Settings"
+          >
+          <i className="fas fa-cog"></i>
+          </button>
+          {isLoggedIn ? (
+            <button 
+              className="nav-btn logout-btn" 
+              data-tooltip="Logout"
+              onClick={onLogout}
+            >
+            <i className="fas fa-door-open"></i>
+            </button>
+          ) : (
+            <Link 
+              to="/login" 
+              className="nav-btn login-btn" 
+              data-tooltip="Login"
+            >
+              <i className="fas fa-sign-in-alt"></i>
+            </Link>
+          )}
+        </div>
+      </header>
+      <Routes>
         <Route path="/" element={
           <HomePage
-  stocks={stocks}
-  portfolio={portfolio}
-  onBuy={handleBuy}
-  onSell={handleSell}
-  onVisibilityChange={handleVisibilityChange} // Pass the handler
-/>
+            stocks={stocks}
+            portfolio={portfolio}
+            isLoggedIn={isLoggedIn}
+          />
         } />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
@@ -118,11 +91,12 @@ const OnePieceStockMarket: React.FC = ( {}) => {
 };
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // State to track login status
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
-  const handleLogin = () => {
-    setIsLoggedIn(true); // Simulate successful login
-  };
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogout = () => setIsLoggedIn(false);
+
+  // Set isLoggedIn based on cookies
 
   return (
     <Router>
@@ -133,7 +107,7 @@ const App: React.FC = () => {
         />
         <Route
           path="/*"
-          element={isLoggedIn ? <OnePieceStockMarket /> : <Navigate to="/login" />}
+          element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
         />
       </Routes>
     </Router>
