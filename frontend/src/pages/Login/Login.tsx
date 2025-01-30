@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, registerUser } from './LoginAPI';
+import { loginUser, registerUser } from './LoginServices';
 import './Login.css';
 
 interface LoginPageProps {
@@ -38,9 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   
     try {
       if (activeTab === 'login') {
-        const data = await loginUser(username, password);
-        localStorage.setItem('accessToken', data.data.accessToken);
-        localStorage.setItem('refreshToken', data.data.refreshToken);
+        await loginUser(username, password);
         onLogin();
         navigate('/');
       } else {

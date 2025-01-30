@@ -7,7 +7,7 @@ import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
 import './App.css';
 
-const OnePieceStockMarket: React.FC = () => {
+const OnePieceStockMarket: React.FC = ( {}) => {
   const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
   const [portfolio, setPortfolio] = useState<UserPortfolio>({
     cash: 100000,
@@ -127,12 +127,10 @@ const App: React.FC = () => {
   return (
     <Router>
       <Routes>
-        {/* Route for the login page */}
         <Route
           path="/login"
           element={!isLoggedIn ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/" />}
         />
-        {/* Route for the main app */}
         <Route
           path="/*"
           element={isLoggedIn ? <OnePieceStockMarket /> : <Navigate to="/login" />}

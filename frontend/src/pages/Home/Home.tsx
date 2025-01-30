@@ -10,6 +10,12 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [isLoading, setLoading] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const checkAuthentication = () => {
+
+  }
 
   const calculatePortfolioStats = () => {
     const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
@@ -18,7 +24,6 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
         return total + (stock?.currentPrice || 0) * holding.quantity;
       }, 0);
 
-    // Placeholder values for profit/loss - you'll need to implement actual calculations
     const profitLossOverall = "+15%";
     const profitLossLastChapter = "+5%";
 
