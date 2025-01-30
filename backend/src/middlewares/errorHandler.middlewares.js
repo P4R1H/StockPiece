@@ -5,7 +5,7 @@ const errorHandler = (err, _req, res, _next) => {
   const statusCode = isApiError ? err.statusCode : 500;
 
   const response = {
-    message: isApiError ? err.message : "Internal Server Error",
+    message: err.message || 'Internal server error',
     errors: isApiError ? err.errors : [],
     success: false,
     data: null,
@@ -24,7 +24,7 @@ const errorHandler = (err, _req, res, _next) => {
     name: err.name || "UnkownError",
     rawError: isApiError ? undefined : err,
   };
-
+  console.log(response);
   res.status(statusCode).json(response);
 };
 

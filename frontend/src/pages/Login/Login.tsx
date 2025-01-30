@@ -11,17 +11,93 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<{ username?: string; password?: string }>({});
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const validateForm = () => {
+    const errors: { username?: string; password?: string } = {};
+
+    if (username.length < 3) {
+      errors.username = 'Username must be at least 3 characters long.';
+    }
+
+    if (password.length < 6) {
+      errors.password = 'Password must be at least 6 characters long.';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  const clearErrors = () => {
+    setError(null);
+    setValidationErrors({});
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    clearErrors(); // Clear previous errors
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      if (activeTab === 'login') {
+        const response = await fetch('/api/v1/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username, password }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Login failed. Please check your credentials.');
+        }
+
+        localStorage.setItem('accessToken', data.data.accessToken);
+        localStorage.setItem('refreshToken', data.data.refreshToken);
+        onLogin();
+        navigate('/');
+
+      } else {
+        const response = await fetch('/api/v1/user/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username,
+            password,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 409) {
+            throw new Error('Username already exists. Please choose a different username.');
+          }
+          throw new Error(data.message || 'Registration failed. Please try again.');
+        }
+
+        console.log('User registered successfully');
+        setActiveTab('login');
+        setUsername('');
+        setPassword('');
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+    } finally {
       setIsLoading(false);
-      onLogin();
-      navigate('/');
-    }, 1000);
+    }
   };
 
   return (
@@ -51,39 +127,59 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         <h3 className="login-subtitle">Put your bellies where your agenda is</h3>
 
         <div className="tabs">
-          <button 
+          <button
             className={`tab ${activeTab === 'login' ? 'active' : ''}`}
-            onClick={() => setActiveTab('login')}
+            onClick={() => {
+              setActiveTab('login');
+              clearErrors();
+            }}
           >
             Login
           </button>
-          <button 
+          <button
             className={`tab ${activeTab === 'register' ? 'active' : ''}`}
-            onClick={() => setActiveTab('register')}
+            onClick={() => {
+              setActiveTab('register');
+              clearErrors();
+            }}
           >
             Register
           </button>
         </div>
+
+        {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group pirate-input">
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                clearErrors();
+              }}
               placeholder="Captain's Name"
               required
             />
+            {validationErrors.username && (
+              <div className="tooltip">{validationErrors.username}</div>
+            )}
           </div>
 
           <div className="input-group pirate-input">
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                clearErrors();
+              }}
               placeholder="Password"
               required
             />
+            {validationErrors.password && (
+              <div className="tooltip">{validationErrors.password}</div>
+            )}
           </div>
 
           <button type="submit" className="login-button pirate-button" disabled={isLoading}>

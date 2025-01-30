@@ -225,6 +225,21 @@
     animation: sheen 3s infinite;
   }
   
+  
+  .error-message {
+    font-family: 'Courier New', Courier, monospace;
+    color: red;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .tooltip {
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
+    color: #ff6b6b;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
+  
   @keyframes sheen {
     0% { transform: translateX(-100%) rotate(45deg); }
     100% { transform: translateX(100%) rotate(45deg); }
