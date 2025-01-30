@@ -87,7 +87,15 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  const loggedInUser = await User.findById(user._id).select(
+  const loggedInUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $inc: {
+        tokenVersion: 1
+      }
+    },
+    {new: true}
+  ).select(
     "-password -refreshToken"
   );
 

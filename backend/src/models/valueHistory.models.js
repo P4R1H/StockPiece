@@ -8,8 +8,8 @@ const valueHistorySchema = new mongoose.Schema({
     required: true,
   },
   chapter: {
-    type: Number,
-    required: true,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ReleaseChapter'
   },
   value: {
     type: Number,

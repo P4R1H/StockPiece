@@ -1,6 +1,11 @@
 import mongoose from 'mongoose'
 
 const purchasedStockSchema = new mongoose.Schema({
+  purchasedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   stockID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CharacterStock',
