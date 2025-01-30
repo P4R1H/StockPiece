@@ -1,0 +1,199 @@
+import Admin from "../models/admin.models.js";
+import ApiError from "../utils/ApiError.utils.js";
+import ApiResponse from "../utils/ApiResponse.utils.js";
+import asyncHandler from "../utils/asyncHandler.utils.js";
+import CharacterStock from "../models/characterStock.models.js";
+
+//the super admin has already been registered we only need to have login
+const adminLogin = asyncHandler(async (req, res, _) => {
+  const { username, password } = req.body;
+
+  if (!username?.trim() || !password?.trim()) {
+    throw new ApiError(400, "username and password is required");
+  }
+
+  const admin = await Admin.findOne({ username });
+  if (!admin) {
+    throw new ApiError(404, "invalid admin username");
+  }
+
+  if (!admin.validatePassword(password)) {
+    throw new ApiError(401, "invalid password");
+  }
+
+  const accessToken = await admin.generateAccessToken();
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", accessToken, options)
+    .json(
+      new ApiResponse(
+        200,
+        null,
+        { accessToken },
+        "admin logged in successfully"
+      )
+    );
+});
+
+const adminLogout = asyncHandler(async (req, res, _) => {
+  //i just need to delete token in cookies
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const options = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  res
+    .status(200)
+    .cookie("accessToken", "", options)
+    .json(new ApiResponse(200, null, "Admin logged out successfully"));
+});
+
+const addAdmin = asyncHandler(async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  //we also need to check if it is an super admin
+  if (!req.admin.isSuperAdmin) {
+    throw new ApiError(403, "only super admin access");
+  }
+
+  const { username, password } = req.body;
+
+  if (!username?.trim() || !password?.trim()) {
+    throw new ApiError(400, "username and password is required");
+  }
+
+  const admin = await Admin.create({
+    username: username?.trim().toLowerCase(),
+    password,
+  });
+
+  const createdAdmin = await Admin.findById(admin._id).select("-password");
+
+  if (!createdAdmin) {
+    throw new ApiError(500, "there was some error while adding admin");
+  }
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, createdAdmin, "admin added successfully"));
+});
+
+const removeAdmin = asyncHandler(async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  if (!req.admin.isSuperAdmin) {
+    throw new ApiError(403, "only super admin access");
+  }
+
+  const { username } = req.body;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "username is required");
+  }
+
+  const admin = await Admin.findOne({ username });
+
+  if (!admin) {
+    throw new ApiError(404, `admin with username ${username} not found`);
+  }
+
+  const removedAdmin = await Admin.findByIdAndDelete(admin._id);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, removedAdmin, "admin deleted successfully"));
+});
+
+const addCharacterStock = asyncHandler(async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  const { name, initialValue } = req.body;
+
+  if (!name?.trim() || !initialValue?.trim()) {
+    throw new ApiError(400, "name and initial value required");
+  }
+
+  if (!parseInt(initialValue)) {
+    throw new ApiError(400, "enter a valid initial value");
+  }
+
+  const characterStock = await CharacterStock.create({
+    name: name.trim(),
+    initialValue: parseInt(initialValue),
+    currentValue: initialValue,
+  });
+
+  if (!characterStock) {
+    throw new ApiError(
+      500,
+      "there was some error while creating character Stock"
+    );
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        characterStock,
+        "character stock created successfully"
+      )
+    );
+});
+
+//need to request the super admin for permanent deletion
+//we can handle deleting referencings later
+const removeCharacterStock = asyncHandler(async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthorized access");
+  }
+
+  const { name } = req.body;
+
+  if (!name?.trim()) {
+    throw new ApiError(400, "name is required");
+  }
+
+  const characterStock = await CharacterStock.findOne({ name });
+
+  if (!characterStock) {
+    throw new ApiError(404, "character stock not found");
+  }
+
+  const removedCharacterStock = await CharacterStock.findByIdAndUpdate(
+    characterStock._id,
+    { isRemoved: true },
+    { new: true }
+  );
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, removedCharacterStock, "stock deleted successfully")
+    );
+});
+
+export {
+  adminLogin,
+  addAdmin,
+  addCharacterStock,
+  removeCharacterStock,
+  removeAdmin,
+  adminLogout,
+};

@@ -3,7 +3,6 @@ import errorHandler from "./middlewares/errorHandler.middlewares.js";
 import cookieParser from "cookie-parser";
 import path from "node:path";
 import { __dirname } from "./constants.js";
-import userRouter from "./routes/user.routes.js";
 
 const app = express();
 
@@ -27,7 +26,11 @@ app.get("/", (_req, res, _next) => {
   });
 });
 
-app.use('/api/v1/user',userRouter);
+import userRouter from "./routes/user.routes.js";
+import adminRouter from "./routes/admin.routes.js";
+
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/admin", adminRouter);
 
 app.use(errorHandler);
 

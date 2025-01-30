@@ -8,11 +8,10 @@ import jwt from "jsonwebtoken";
 
 const generateAccessRefreshToken = async (user) => {
   try {
-    
     const accessToken = await user.generateAccessToken();
     const refreshToken = await user.generateRefreshToken();
 
-    const updatedUser = await User.findByIdAndUpdate(user._id, {
+    const _updatedUser = await User.findByIdAndUpdate(user._id, {
       $set: {
         refreshToken,
       },
@@ -55,7 +54,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
   }
 
   const user = await User.create({
-    username,
+    username: username?.trim().toLowerCase(),
     password,
     avatar: avatarUrl,
   });
@@ -156,9 +155,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Refresh token expired or invalid");
   }
 
-  const { accessToken, refreshToken } = await generateAccessRefreshToken(
-    user
-  );
+  const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
   const options = {
     httpOnly: true,
