@@ -6,6 +6,7 @@ import User from "../models/user.models.js";
 import mongoose from "mongoose";
 import CharacterStock from "../models/characterStock.models.js";
 import PurchasedStock from "../models/purchasedStock.models.js";
+import Transaction from "../models/transaction.models.js";
 
 const buyStock = asyncHandler( async (req, res, _) => {
   //we need to check if the chapter is active or not
@@ -46,7 +47,7 @@ const buyStock = asyncHandler( async (req, res, _) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  const purchasedStock = await PurchasedStock.create(
+  const transaction = await Transaction.create(
     {
       purchasedBy: user._id,
       stockID: characterStock._id,
@@ -58,7 +59,7 @@ const buyStock = asyncHandler( async (req, res, _) => {
 
   user.accountValue -= totalPrice;
   const stockIndex = user.ownedStocks.findIndex(item => item.stock.toString() === characterStock._id.toString());
-  if (stockToUpdate) {
+  if (stockIndex>=0) {
     user.ownedStocks[stockIndex].quantity += quantity
   } else {
     user.ownedStocks.push(
@@ -76,7 +77,80 @@ const buyStock = asyncHandler( async (req, res, _) => {
   res
   .status(200)
   .json(
-    new ApiResponse(200,purchasedStock,"stock purchased successfully")
+    new ApiResponse(200,transaction,"stock purchased successfully")
+  )
+})
+
+const sellStock = asyncHandler( async (req, res, _) => {
+  //we need to check if the chapter is active or not
+  //first check if the window is open
+  if (!req.user) {
+    throw new ApiError(400,'unauthorized request')
+  }
+
+  const latestChapter = await ChapterRelease.findOne().sort({releaseDate: -1});
+
+  if (Date.now() > latestChapter.windowEndDate.getTime()) {
+    throw new ApiError(400,'selling window is closed');
+  }
+
+  const user = await User.findById(req.user?._id).select(
+    "-password -refreshToken"
+  );
+  //only allow single logged in user to try
+  if (req.user.tokenVersion != user.tokenVersion) {
+    throw new ApiError(409,'user logged in another session')
+  }
+
+  //now i need to check the price of the stock and check if there is enough balance
+  const { name, quantity } = req.params;
+
+  const characterStock = await CharacterStock.find({name});
+
+  if (!characterStock) {
+    throw new ApiError(400,`${name} stock not available`);
+  }
+
+  const stockIndex = user.ownedStocks.findIndex(item => item.stock.toString() === characterStock._id.toString());
+
+  if (stockIndex<0) {
+    throw new ApiError(400,'user does not have this stock');
+  }
+  //check if the quantity we want to sell is even available
+  if (quantity > user.ownedStocks[stockIndex].quantity) {
+    throw new ApiError(400,'not enough stock to sell');
+  }
+
+  const totalPrice = characterStock.currentValue * quantity;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  const transaction = await Transaction.create(
+    {
+      purchasedBy: user._id,
+      stockID: characterStock._id,
+      quantity,
+      purchaseValue: totalPrice,
+      chapterPurchasedAt: latestChapter.chapter
+    }
+  )
+
+  user.accountValue += totalPrice;
+  user.ownedStock[stockIndex].quantity -= quantity;
+  //if user does not own any quantity then remove from the owned stock
+  if (user.ownedStock[stockIndex].quantity===0) {
+    user.ownedStock.splice(stockIndex,1)
+  }
+
+  await user.save({ session, validateModifiedOnly: true });
+  await session.commitTransaction();
+  session.endSession();
+
+  res
+  .status(200)
+  .json(
+    new ApiResponse(200,transaction,"stock purchased successfully")
   )
 })
 
@@ -95,5 +169,6 @@ const checkOpenMarket = asyncHandler( async (req, res, _) => {
 
 export {
   checkOpenMarket,
-  buyStock
+  buyStock,
+  sellStock
 }
