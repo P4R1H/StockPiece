@@ -24,7 +24,7 @@ const errorHandler = (err, _req, res, _next) => {
     name: err.name || "UnkownError",
     rawError: isApiError ? undefined : err,
   };
-  console.log(response);
+  // console.log(response);
   res.status(statusCode).json(response);
 };
 

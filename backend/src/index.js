@@ -11,7 +11,7 @@ connectDB()
   .then(() => {
     initializeAdmin();
     cron.schedule("0 0 * * 1",releaseChapter);
-    releaseChapter();
+    // releaseChapter();
   })
   .then(() => {
     app.on("error", (err) => {
