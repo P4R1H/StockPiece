@@ -5,7 +5,7 @@ const errorHandler = (err, _req, res, _next) => {
   const statusCode = isApiError ? err.statusCode : 500;
 
   const response = {
-    message: err.message || 'Internal server error',
+    message: err.message,
     errors: isApiError ? err.errors : [],
     success: false,
     data: null,

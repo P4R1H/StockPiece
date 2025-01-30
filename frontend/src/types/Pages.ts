@@ -5,9 +5,7 @@ import { CharacterStock, UserPortfolio } from "./Stocks";
 export interface HomePageProps {
   stocks: CharacterStock[];
   portfolio: UserPortfolio;
-  onBuy: (characterId: string) => void;
-  onSell: (characterId: string) => void;
-  onVisibilityChange: (characterId: string, newState: 'show' | 'hide' | 'only') => void;
+  isLoggedIn: boolean;
 }
 
 /* Leaderboard */

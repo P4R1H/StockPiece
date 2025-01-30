@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { loginUser, registerUser } from './LoginServices';
 import './Login.css';
 
 interface LoginPageProps {
@@ -17,15 +18,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
   const validateForm = () => {
     const errors: { username?: string; password?: string } = {};
-
-    if (username.length < 3) {
-      errors.username = 'Username must be at least 3 characters long.';
-    }
-
-    if (password.length < 6) {
-      errors.password = 'Password must be at least 6 characters long.';
-    }
-
+    if (username.length < 3) errors.username = 'Username must be at least 3 characters long.';
+    if (password.length < 6) errors.password = 'Password must be at least 6 characters long.';
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -37,57 +31,18 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    clearErrors(); // Clear previous errors
-
-    if (!validateForm()) {
-      return;
-    }
-
+    clearErrors();
+  
+    if (!validateForm()) return;
     setIsLoading(true);
-
+  
     try {
       if (activeTab === 'login') {
-        const response = await fetch('/api/v1/user/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.message || 'Login failed. Please check your credentials.');
-        }
-
-        localStorage.setItem('accessToken', data.data.accessToken);
-        localStorage.setItem('refreshToken', data.data.refreshToken);
+        await loginUser(username, password);
         onLogin();
         navigate('/');
-
       } else {
-        const response = await fetch('/api/v1/user/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username,
-            password,
-          }),
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          if (response.status === 409) {
-            throw new Error('Username already exists. Please choose a different username.');
-          }
-          throw new Error(data.message || 'Registration failed. Please try again.');
-        }
-
+        await registerUser(username, password);
         console.log('User registered successfully');
         setActiveTab('login');
         setUsername('');

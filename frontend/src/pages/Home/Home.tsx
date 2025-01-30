@@ -6,20 +6,37 @@ import { HomePageProps } from '../../types/Pages';
 import { NEWS_ITEMS } from '../../assets/data/newsItems';
 import './Home.css';
 
-const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, onVisibilityChange }) => {
+const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [isLoading, setLoading] = useState(false);
+  const [localStocks, setLocalStocks] = useState(stocks); 
+
+  const handleVisibilityChange = (characterId: string, newVisibility: 'show' | 'hide' | 'only') => {
+    setLocalStocks(prevStocks => 
+      prevStocks.map(stock => 
+        stock.id === characterId ? { ...stock, visibility: newVisibility } : stock
+      )
+    );
+  };
+
+  const onBuy = () => {
+
+  }
+
+  const onSell = () => {
+    
+  }
 
   const calculatePortfolioStats = () => {
     const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
       .reduce((total, [stockId, holding]) => {
-        const stock = stocks.find(s => s.id === stockId);
+        const stock = localStocks.find(s => s.id === stockId);
         return total + (stock?.currentPrice || 0) * holding.quantity;
       }, 0);
-
-    // Placeholder values for profit/loss - you'll need to implement actual calculations
-    const profitLossOverall = "+15%";
+    
+      const profitLossOverall = "+15%";
     const profitLossLastChapter = "+5%";
 
     return {
@@ -105,13 +122,13 @@ const HomePage: React.FC<HomePageProps> = ({ stocks, portfolio, onBuy, onSell, o
             </div>
           </div>
           <div className="stock-grid">
-            {sortedStocks.map((stock) => (
+            {localStocks.map((stock) => (
               <CharacterStockCard
                 key={stock.id}
                 stock={stock}
                 onBuy={onBuy}
                 onSell={onSell}
-                onVisibilityChange={onVisibilityChange}
+                onVisibilityChange={handleVisibilityChange}
               />
             ))}
           </div>
