@@ -43,4 +43,5 @@ export interface BountyProfileCardProps {
   profitLossOverall: string;
   profitLossLastChapter: string;
   profileImage?: string;
+  isLoggedIn: boolean;
 }

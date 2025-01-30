@@ -3,7 +3,7 @@ import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/Portfolio/Portfolio';
 import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
 import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sampleStocks';
-import { NEWS_ITEMS } from '../../assets/data/newsItems';
+import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
 import { getStockMarketData, getPortfolioData } from './HomeServices';
@@ -13,12 +13,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
-  const [isLoading, setLoading] = useState(false);
   const [stocks, setStocks] = useState<CharacterStock[]>([]);
   const [portfolio, setPortfolio] = useState<UserPortfolio>(PLACEHOLDER_PORTFOLIO);
 
   useEffect(() => {
     const fetchStocks = async () => {
+      // const stockData = getStockMarketData("tmp")
       const stockData = PLACEHOLDER_STOCKS;
       setStocks(stockData);
     };
@@ -87,7 +87,8 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           netWorth={portfolioStats.netWorth}
           profitLossOverall={portfolioStats.profitLossOverall}
           profitLossLastChapter={portfolioStats.profitLossLastChapter}
-          profileImage="/assets/LockScreen.png"
+          profileImage={portfolio.profilePicture}
+          isLoggedIn={isLoggedIn}
         />
         <PriceHistoryGraph 
           stocks={stocks} 
@@ -129,7 +130,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
             </div>
             <div className="news-ticker">
               <div className="ticker-content">
-                {NEWS_ITEMS.map((item, index) => (
+                {(isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS).map((item, index) => (
                   <span key={index} className="ticker-item">{item}</span>
                 ))}
               </div>

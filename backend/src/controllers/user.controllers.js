@@ -87,7 +87,15 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  const loggedInUser = await User.findById(user._id).select(
+  const loggedInUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $inc: {
+        tokenVersion: 1
+      }
+    },
+    {new: true}
+  ).select(
     "-password -refreshToken"
   );
 
@@ -119,11 +127,19 @@ const logoutUser = asyncHandler(async (req, res, _) => {
   if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
-  const _user = await User.findByIdAndUpdate(req.user?._id, {
-    $unset: {
-      refreshToken: "",
+  const _user = await User.findByIdAndUpdate(
+    req.user?._id,
+    {
+      $unset: {
+        refreshToken: "",
+      },
     },
-  });
+    {
+      $inc: {
+        tokenVersion: 1
+      }
+    }
+  );
 
   const options = {
     httpOnly: true,
@@ -157,6 +173,18 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
+  const loggedInUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      $inc: {
+        tokenVersion: 1
+      }
+    },
+    {new: true}
+  ).select(
+    "-password -refreshToken"
+  );
+
   const options = {
     httpOnly: true,
     secure: true,
@@ -169,6 +197,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
       new ApiResponse(
         200,
         {
+          user: loggedInUser,
           accessToken,
           refreshToken: refreshToken,
         },

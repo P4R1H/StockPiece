@@ -4,7 +4,9 @@ export const PLACEHOLDER_PORTFOLIO: UserPortfolio = {
   cash: 10000,
   initialCash: 1000,
   lastChapCash: 950,
-  stocks: {}
+  stocks: {},
+  profilePicture: undefined,
+  isLoggedIn: false
 }
 
 export const PLACEHOLDER_STOCKS: CharacterStock[] = [

@@ -26,4 +26,6 @@ export interface UserPortfolio {
       averagePurchasePrice: number;
     };
   };
+  profilePicture: string | undefined; 
+  isLoggedIn: boolean;
 }
