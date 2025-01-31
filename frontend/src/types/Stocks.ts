@@ -11,21 +11,22 @@ export interface CharacterStock {
 
 export interface CharacterCardProps {
   stock: CharacterStock;
-  onBuy: (characterId: string) => void;
-  onSell: (characterId: string) => void;
-  onVisibilityChange: (characterId: string, newState: 'show' | 'hide' | 'only') => void;
+  onBuy: (name: string) => void;
+  onSell: (name: string) => void;
+  onVisibilityChange: (id: string, visibility: 'show' | 'hide' | 'only') => void;
+  ownedQuantity: number;
 }
 
 export interface UserPortfolio {
   cash: number;
-  initialCash: number;
-  lastChapCash: number;
   stocks: {
     [characterId: string]: {
       quantity: number;
       averagePurchasePrice: number;
     };
   };
-  profilePicture: string | undefined; 
+  initialCash: number;
+  lastChapCash: number;
+  profilePicture?: string;
   isLoggedIn: boolean;
 }

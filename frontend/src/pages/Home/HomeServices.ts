@@ -23,9 +23,8 @@ export const getStockMarketData = async (): Promise<CharacterStock[]> => {
       name: stock.name,
       image: stock.imageURL,
       currentPrice: stock.currentValue,
-      popularity: 0, // Set default value as it's not in schema
-      ownedCount: 0, // Set default value as it's not in schema
-      visibility: 'show' // Set default value as it's not in schema
+      popularity: 0,
+      visibility: 'show'
     }));
   
     return stocks;
@@ -52,43 +51,40 @@ export const getPortfolioData = async (): Promise<UserPortfolio> => {
     return data.data; 
 };
 
-export const buyStock = async ( name : string )  => {
+export const buyStock = async (name: string, quantity: number) => {
   const response = await fetch('/api/v1/stock/buy', {
-    method : 'POST', 
-    credentials : "include", 
+    method: 'POST',
+    credentials: 'include',
     headers: {
-    'Content-Type': 'application/json',
-    }
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, quantity })
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error('Please login to view your portfolio');
-    }
-    throw new Error(0 || 'Failed to fetch portfolio data');
+    throw new Error(data.message || 'Failed to buy stock');
   }
 
-}
+  return data;
+};
 
-export const sellStock = async ( name : string ) => {
+export const sellStock = async (name: string, quantity: number) => {
   const response = await fetch('/api/v1/stock/sell', {
-    method : 'POST', 
-    credentials : "include", 
+    method: 'POST',
+    credentials: 'include',
     headers: {
-    'Content-Type': 'application/json',
-    }
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ name, quantity })
   });
 
   const data = await response.json();
 
   if (!response.ok) {
-    if (response.status === 401) {
-      throw new Error('Please login to view your portfolio');
-    }
-    throw new Error(data.message || 'Failed to fetch portfolio data');
+    throw new Error(data.message || 'Failed to sell stock');
   }
 
-}
-
+  return data;
+};

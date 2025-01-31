@@ -7,9 +7,10 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
   stock, 
   onBuy, 
   onSell,
-  onVisibilityChange
+  onVisibilityChange,
+  ownedQuantity 
 }) => {
-  const { id, name, image, currentPrice, ownedCount, visibility } = stock;
+  const { id, name, image, currentPrice, visibility } = stock;
 
   const getVisibilityIcon = () => {
     switch (visibility) {
@@ -23,15 +24,6 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
     const nextState = visibility === 'show' ? 'hide' : visibility === 'hide' ? 'only' : 'show';
     onVisibilityChange(id, nextState);
   };
-
-  const stockBought = async ( name : string ) => {
-   
-    
-  }
-
-  const stockSold = ( name : string) => {
-    
-  }
 
   return (
     <div className="op-stock-card">
@@ -55,18 +47,17 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
         </div>
 
         <div className="op-meta">
-          <span className="op-owned">Owned: {ownedCount}</span>
+          <span className="op-owned">Owned: {ownedQuantity}</span>
           <div className="op-actions">
             <button 
               className="op-buy-button"
-              onClick={() => stockBought(name)}
+              onClick={() => onBuy(name)}
             >
               Buy
             </button>
             <button 
               className="op-sell-button"
-              onClick={() => stockSold(name)}
-              
+              onClick={() => onSell(name)}
             >
               Sell
             </button>

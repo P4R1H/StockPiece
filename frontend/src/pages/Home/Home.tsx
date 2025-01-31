@@ -18,8 +18,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const fetchStocks = async () => {
-      const stockData = await getStockMarketData()
-      //const stockData = PLACEHOLDER_STOCKS;
+      const stockData = await getStockMarketData();
       setStocks(stockData);
     };
     fetchStocks();
@@ -48,13 +47,99 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     });
   };
 
-  const onBuy = ( name : string ) => {
-    buyStock( name );
+  const handleBuy = async (name: string) => {
+    const quantity = 1;
+    const stockToBuy = stocks.find(s => s.name === name);
+    if (!stockToBuy) return;
+  
+    const totalCost = stockToBuy.currentPrice * quantity;
+    
+    if (portfolio.cash < totalCost) {
+      alert('Insufficient funds');
+      return;
+    }
+  
+    const existingHolding = portfolio.stocks[stockToBuy.id];
+    const newQuantity = (existingHolding?.quantity || 0) + quantity;
+    const newAverage = existingHolding
+      ? ((existingHolding.averagePurchasePrice * existingHolding.quantity) + totalCost) / newQuantity
+      : stockToBuy.currentPrice;
+  
+    // Create a new stocks object without modifying the original
+    const updatedStocks = { ...portfolio.stocks };
+    updatedStocks[stockToBuy.id] = {
+      quantity: newQuantity,
+      averagePurchasePrice: newAverage
+    };
+  
+    setPortfolio(prev => ({
+      ...prev,
+      cash: prev.cash - totalCost,
+      stocks: updatedStocks
+    }));
+  
+    try {
+      await buyStock(name, quantity);
+    } catch (error: unknown) {
+      // Revert on error
+      setPortfolio(prev => ({
+        ...prev,
+        cash: prev.cash + totalCost,
+        stocks: existingHolding
+          ? { ...prev.stocks, [stockToBuy.id]: existingHolding }
+          : prev.stocks
+      }));
+      alert(error instanceof Error ? error.message : 'Failed to buy stock');
+    }
   };
-  const onSell =( name : string ) => {
-    sellStock( name );
+  
+  const handleSell = async (name: string) => {
+    const quantity = 1;
+    const stockToSell = stocks.find(s => s.name === name);
+    if (!stockToSell) return;
+  
+    const currentHolding = portfolio.stocks[stockToSell.id];
+    if (!currentHolding || currentHolding.quantity < quantity) {
+      alert('Not enough shares to sell');
+      return;
+    }
+  
+    const totalValue = stockToSell.currentPrice * quantity;
+    const newQuantity = currentHolding.quantity - quantity;
+  
+    // Create a new stocks object without modifying the original
+    const updatedStocks = { ...portfolio.stocks };
+    if (newQuantity > 0) {
+      updatedStocks[stockToSell.id] = {
+        quantity: newQuantity,
+        averagePurchasePrice: currentHolding.averagePurchasePrice
+      };
+    } else {
+      delete updatedStocks[stockToSell.id];
+    }
+  
+    setPortfolio(prev => ({
+      ...prev,
+      cash: prev.cash + totalValue,
+      stocks: updatedStocks
+    }));
+  
+    try {
+      await sellStock(name, quantity);
+    } catch (error: unknown) {
+      // Revert on error
+      setPortfolio(prev => ({
+        ...prev,
+        cash: prev.cash - totalValue,
+        stocks: {
+          ...prev.stocks,
+          [stockToSell.id]: currentHolding
+        }
+      }));
+      alert(error instanceof Error ? error.message : 'Failed to sell stock');
+    }
   };
-
+  
   const calculatePortfolioStats = () => {
     const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
       .reduce((total, [stockId, holding]) => {
@@ -145,9 +230,10 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
               <CharacterStockCard
                 key={stock.id}
                 stock={stock}
-                onBuy={onBuy}
-                onSell={onSell}
+                onBuy={handleBuy}
+                onSell={handleSell}
                 onVisibilityChange={handleVisibilityChange}
+                ownedQuantity={portfolio.stocks[stock.id]?.quantity || 0}
               />
             ))}
           </div>
