@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from './LoginServices';
 import './Login.css';
@@ -8,52 +8,55 @@ interface LoginPageProps {
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
-  const [activeTab, setActiveTab] = useState<'login' | 'register'>('login');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [validationErrors, setValidationErrors] = useState<{ username?: string; password?: string }>({});
+  const [formState, setFormState] = useState({
+    username: '',
+    password: '',
+    activeTab: 'login' as 'login' | 'register',
+    isLoading: false,
+    error: null as string | null,
+    validationErrors: {} as { username?: string; password?: string }
+  });
+
   const navigate = useNavigate();
 
-  const validateForm = () => {
+  const isValid = useMemo(() => {
     const errors: { username?: string; password?: string } = {};
-    if (username.length < 3) errors.username = 'Username must be at least 3 characters long.';
-    if (password.length < 6) errors.password = 'Password must be at least 6 characters long.';
-    setValidationErrors(errors);
+    if (formState.username.length < 3 && formState.username.length != 0) errors.username = 'Username must be at least 3 characters long.';
+    if (formState.password.length < 6 && formState.password.length != 0) errors.password = 'Password must be at least 6 characters long.';
+    setFormState(prev => ({ ...prev, validationErrors: errors }));
     return Object.keys(errors).length === 0;
-  };
+  }, [formState.username, formState.password]);
 
-  const clearErrors = () => {
-    setError(null);
-    setValidationErrors({});
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
-    clearErrors();
-  
-    if (!validateForm()) return;
-    setIsLoading(true);
-  
+    if (!isValid) return;
+
+    setFormState(prev => ({ ...prev, isLoading: true, error: null }));
+
     try {
-      if (activeTab === 'login') {
-        await loginUser(username, password);
+      const apiCall = formState.activeTab === 'login' ? loginUser : registerUser;
+      await apiCall(formState.username, formState.password);
+
+      if (formState.activeTab === 'login') {
         onLogin();
         navigate('/');
       } else {
-        await registerUser(username, password);
-        console.log('User registered successfully');
-        setActiveTab('login');
-        setUsername('');
-        setPassword('');
+        setFormState(prev => ({
+          ...prev,
+          activeTab: 'login',
+          username: '',
+          password: '',
+          isLoading: false
+        }));
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
-    } finally {
-      setIsLoading(false);
+      setFormState(prev => ({
+        ...prev,
+        error: err instanceof Error ? err.message : 'An unexpected error occurred',
+        isLoading: false
+      }));
     }
-  };
+  }, [formState.activeTab, formState.username, formState.password, isValid, navigate, onLogin]);
 
   return (
     <div className="login-container">
@@ -83,62 +86,50 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
         <div className="tabs">
           <button
-            className={`tab ${activeTab === 'login' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('login');
-              clearErrors();
-            }}
+            className={`tab ${formState.activeTab === 'login' ? 'active' : ''}`}
+            onClick={() => setFormState(prev => ({ ...prev, activeTab: 'login', error: null }))}
           >
             Login
           </button>
           <button
-            className={`tab ${activeTab === 'register' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('register');
-              clearErrors();
-            }}
+            className={`tab ${formState.activeTab === 'register' ? 'active' : ''}`}
+            onClick={() => setFormState(prev => ({ ...prev, activeTab: 'register', error: null }))}
           >
             Register
           </button>
         </div>
 
-        {error && <div className="error-message">{error}</div>}
+        {formState.error && <div className="error-message">{formState.error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="input-group pirate-input">
             <input
               type="text"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                clearErrors();
-              }}
+              value={formState.username}
+              onChange={(e) => setFormState(prev => ({ ...prev, username: e.target.value, error: null }))}
               placeholder="Captain's Name"
               required
             />
-            {validationErrors.username && (
-              <div className="tooltip">{validationErrors.username}</div>
+            {formState.validationErrors.username && (
+              <div className="tooltip">{formState.validationErrors.username}</div>
             )}
           </div>
 
           <div className="input-group pirate-input">
             <input
               type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                clearErrors();
-              }}
+              value={formState.password}
+              onChange={(e) => setFormState(prev => ({ ...prev, password: e.target.value, error: null }))}
               placeholder="Password"
               required
             />
-            {validationErrors.password && (
-              <div className="tooltip">{validationErrors.password}</div>
+            {formState.validationErrors.password && (
+              <div className="tooltip">{formState.validationErrors.password}</div>
             )}
           </div>
 
-          <button type="submit" className="login-button pirate-button" disabled={isLoading}>
-            {isLoading ? 'Setting Sail...' : activeTab === 'login' ? 'Hoist the Flag!' : 'Join the Crew!'}
+          <button type="submit" className="login-button pirate-button" disabled={formState.isLoading}>
+            {formState.isLoading ? 'Setting Sail...' : formState.activeTab === 'login' ? 'Hoist the Flag!' : 'Join the Crew!'}
             <div className="button-sheen"></div>
           </button>
         </form>

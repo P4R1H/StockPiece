@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
@@ -82,38 +82,42 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
 
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = async () => {
-    try {
-      await logoutUser();
-      setIsLoggedIn(false);
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+  useEffect(() => {
+    const checkLoginStatus = async () => {
+      try {
+        await refreshUserToken();
+        setIsLoggedIn(true);
+      } catch {
+        setIsLoggedIn(false);
+      }
+    };
+    checkLoginStatus();
+  }, []); // Empty array = run once on mount
 
-  const checkLoginStatus = async () => {
-    try {
-      await refreshUserToken();
-      setIsLoggedIn(true);
-    } catch {
-      setIsLoggedIn(false);
+  const authHandlers = useMemo(() => ({
+    handleLogin: () => setIsLoggedIn(true),
+    handleLogout: async () => {
+      try {
+        await logoutUser();
+        setIsLoggedIn(false);
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
     }
-  };
-  
-  checkLoginStatus();
+  }), []);
 
   return (
     <Router>
       <Routes>
-        <Route
-          path="/login"
-          element={!isLoggedIn ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/*"
-          element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
-        />
+        <Route path="/login" element={
+          isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
+        } />
+        <Route path="/*" element={
+          <OnePieceStockMarket 
+            isLoggedIn={isLoggedIn} 
+            onLogout={authHandlers.handleLogout} 
+          />
+        } />
       </Routes>
     </Router>
   );
