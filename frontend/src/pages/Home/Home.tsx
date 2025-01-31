@@ -27,146 +27,79 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       const portfolioData = await getPortfolioData();
       setPortfolio(portfolioData);
     }
-    if(isLoggedIn) {
+    if (isLoggedIn) {
       fetchPortfolio();
+    } else {
+      setPortfolio(PLACEHOLDER_PORTFOLIO);
     }
-  }, []);
+  }, [isLoggedIn]);
 
   const handleVisibilityChange = (characterId: string, newVisibility: 'show' | 'hide' | 'only') => {
-    setStocks(prevStocks => {
-      return prevStocks.map(stock => {
-        if (stock.id === characterId) {
-          return { ...stock, visibility: newVisibility };
-        }
-
-        if (newVisibility === 'only') {
-          return { ...stock, visibility: 'hide' };
-        }
-        return stock;
-      });
-    });
+    setStocks(prevStocks => prevStocks.map(stock => {
+      if (stock.id === characterId) return { ...stock, visibility: newVisibility };
+      if (newVisibility === 'only') return { ...stock, visibility: 'hide' };
+      return stock;
+    }));
   };
 
   const handleBuy = async (name: string) => {
     const quantity = 1;
     const stockToBuy = stocks.find(s => s.name === name);
-    if (!stockToBuy) return;
-  
-    const totalCost = stockToBuy.currentPrice * quantity;
-    
-    if (portfolio.cash < totalCost) {
-      alert('Insufficient funds');
+    if (!stockToBuy || portfolio.cash < stockToBuy.currentPrice * quantity) {
+      alert(stockToBuy ? 'Insufficient funds' : 'Stock not found');
       return;
     }
-  
+
+    const totalCost = stockToBuy.currentPrice * quantity;
     const existingHolding = portfolio.stocks[stockToBuy.id];
     const newQuantity = (existingHolding?.quantity || 0) + quantity;
-    const newAverage = existingHolding
-      ? ((existingHolding.averagePurchasePrice * existingHolding.quantity) + totalCost) / newQuantity
-      : stockToBuy.currentPrice;
-  
-    // Create a new stocks object without modifying the original
-    const updatedStocks = { ...portfolio.stocks };
-    updatedStocks[stockToBuy.id] = {
-      quantity: newQuantity,
-      averagePurchasePrice: newAverage
-    };
-  
-    setPortfolio(prev => ({
-      ...prev,
-      cash: prev.cash - totalCost,
-      stocks: updatedStocks
-    }));
-  
+    const newAverage = existingHolding ? ((existingHolding.averagePurchasePrice * existingHolding.quantity) + totalCost) / newQuantity : stockToBuy.currentPrice;
+    const updatedStocks = { ...portfolio.stocks, [stockToBuy.id]: { quantity: newQuantity, averagePurchasePrice: newAverage } };
+
+    setPortfolio(prev => ({ ...prev, cash: prev.cash - totalCost, stocks: updatedStocks }));
     try {
       await buyStock(name, quantity);
-    } catch (error: unknown) {
-      // Revert on error
-      setPortfolio(prev => ({
-        ...prev,
-        cash: prev.cash + totalCost,
-        stocks: existingHolding
-          ? { ...prev.stocks, [stockToBuy.id]: existingHolding }
-          : prev.stocks
-      }));
+    } catch (error) {
+      setPortfolio(prev => ({ ...prev, cash: prev.cash + totalCost, stocks: existingHolding ? { ...prev.stocks, [stockToBuy.id]: existingHolding } : prev.stocks }));
       alert(error instanceof Error ? error.message : 'Failed to buy stock');
     }
   };
-  
+
   const handleSell = async (name: string) => {
     const quantity = 1;
     const stockToSell = stocks.find(s => s.name === name);
     if (!stockToSell) return;
-  
+
     const currentHolding = portfolio.stocks[stockToSell.id];
     if (!currentHolding || currentHolding.quantity < quantity) {
       alert('Not enough shares to sell');
       return;
     }
-  
+
     const totalValue = stockToSell.currentPrice * quantity;
     const newQuantity = currentHolding.quantity - quantity;
-  
-    // Create a new stocks object without modifying the original
     const updatedStocks = { ...portfolio.stocks };
-    if (newQuantity > 0) {
-      updatedStocks[stockToSell.id] = {
-        quantity: newQuantity,
-        averagePurchasePrice: currentHolding.averagePurchasePrice
-      };
-    } else {
-      delete updatedStocks[stockToSell.id];
-    }
-  
-    setPortfolio(prev => ({
-      ...prev,
-      cash: prev.cash + totalValue,
-      stocks: updatedStocks
-    }));
-  
+    if (newQuantity > 0) updatedStocks[stockToSell.id] = { quantity: newQuantity, averagePurchasePrice: currentHolding.averagePurchasePrice };
+    else delete updatedStocks[stockToSell.id];
+
+    setPortfolio(prev => ({ ...prev, cash: prev.cash + totalValue, stocks: updatedStocks }));
     try {
       await sellStock(name, quantity);
-    } catch (error: unknown) {
-      // Revert on error
-      setPortfolio(prev => ({
-        ...prev,
-        cash: prev.cash - totalValue,
-        stocks: {
-          ...prev.stocks,
-          [stockToSell.id]: currentHolding
-        }
-      }));
+    } catch (error) {
+      setPortfolio(prev => ({ ...prev, cash: prev.cash - totalValue, stocks: { ...prev.stocks, [stockToSell.id]: currentHolding } }));
       alert(error instanceof Error ? error.message : 'Failed to sell stock');
     }
   };
-  
-  const calculatePortfolioStats = () => {
-    const netWorth = portfolio.cash + Object.entries(portfolio.stocks)
-      .reduce((total, [stockId, holding]) => {
-        const stock = stocks.find(s => s.id === stockId);
-        return total + (stock?.currentPrice || 0) * holding.quantity;
-      }, 0);
-    
-    return {
-      netWorth: `${netWorth.toLocaleString()}`,
-      profitLossOverall: "+15%",
-      profitLossLastChapter: "+5%"
-    };
-  };
+
+  const calculatePortfolioStats = () => ({
+    netWorth: (portfolio.cash + Object.entries(portfolio.stocks).reduce((total, [stockId, holding]) => total + (stocks.find(s => s.id === stockId)?.currentPrice || 0) * holding.quantity, 0)).toLocaleString(),
+    profitLossOverall: "+15%",
+    profitLossLastChapter: "+5%"
+  });
 
   const portfolioStats = calculatePortfolioStats();
-
-  const filteredStocks = stocks.filter((stock) => {
-    if (filter === 'Owned') return stock.id in portfolio.stocks;
-    if (filter === 'Popular') return stock.popularity > 7;
-    return true;
-  });
-  
-  const sortedStocks = filteredStocks
-    .filter((stock) => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    .sort((a, b) => sortOrder === 'Ascending' 
-      ? a.name.localeCompare(b.name)
-      : b.name.localeCompare(a.name));
+  const filteredStocks = stocks.filter(stock => filter === 'Owned' ? stock.id in portfolio.stocks : filter === 'Popular' ? stock.popularity > 7 : true);
+  const sortedStocks = filteredStocks.filter(stock => stock.name.toLowerCase().includes(searchQuery.toLowerCase())).sort((a, b) => sortOrder === 'Ascending' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
 
   return (
     <div className="dashboard-container">
@@ -182,9 +115,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         <PriceHistoryGraph 
           stocks={stocks} 
           ownedStocks={Object.keys(portfolio.stocks)}
-          onVisibilityChange={(id, visibility) => {
-            handleVisibilityChange(id, visibility);
-          }}
+          onVisibilityChange={handleVisibilityChange}
           currentFilter={filter}
         />
       </div>
@@ -199,20 +130,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <select
-                className="stock-filter-btn"
-                value={filter}
-                onChange={(e) => setFilter(e.target.value as any)}
-              >
+              <select className="stock-filter-btn" value={filter} onChange={(e) => setFilter(e.target.value as any)}>
                 <option value="All">All</option>
                 <option value="Owned">Owned</option>
                 <option value="Popular">Popular</option>
               </select>
-              <select
-                className="stock-sort-btn"
-                value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value as any)}
-              >
+              <select className="stock-sort-btn" value={sortOrder} onChange={(e) => setSortOrder(e.target.value as any)}>
                 <option value="Ascending">Ascending</option>
                 <option value="Descending">Descending</option>
               </select>
