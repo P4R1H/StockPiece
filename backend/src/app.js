@@ -33,8 +33,8 @@ import marketRoute from "./routes/market.routes.js";
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/stock",stockRoute)
-app.use("/api/v1/market",marketRoute)
+app.use("/api/v1/stock", stockRoute);
+app.use("/api/v1/market", marketRoute);
 
 app.use(errorHandler);
 

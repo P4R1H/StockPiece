@@ -1,32 +1,32 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const purchasedStockSchema = new mongoose.Schema({
   purchasedBy: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+    ref: "User",
+    required: true,
   },
   stockID: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'CharacterStock',
-    required: true
+    ref: "CharacterStock",
+    required: true,
   },
   quantity: {
     type: Number,
-    default: 1
+    default: 1,
   },
   purchaseValue: {
     type: Number,
-    default: 1
+    default: 1,
   },
   chapterPurchasedAt: {
     type: Number,
-    required: true
-  }
-})
+    required: true,
+  },
+});
 
 // purchasedStockSchema.plugin()
 
-const PurchasedStock = mongoose.model('PurchasedStock',purchasedStockSchema);
+const PurchasedStock = mongoose.model("PurchasedStock", purchasedStockSchema);
 
 export default PurchasedStock;

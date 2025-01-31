@@ -1,10 +1,8 @@
-import express from 'express'
-import { getLatestChapter } from '../controllers/market.controllers.js';
+import express from "express";
+import { getLatestChapter } from "../controllers/market.controllers.js";
 
 const marketRoute = express.Router();
 
-marketRoute
-  .route('/latest-chapter')
-  .get(getLatestChapter)
+marketRoute.route("/latest-chapter").get(getLatestChapter);
 
-export default marketRoute
+export default marketRoute;

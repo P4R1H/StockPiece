@@ -3,7 +3,10 @@ import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
 
 const generateAccessRefreshToken = async (user) => {
@@ -91,13 +94,11 @@ const loginUser = asyncHandler(async (req, res, _) => {
     user._id,
     {
       $inc: {
-        tokenVersion: 1
-      }
+        tokenVersion: 1,
+      },
     },
-    {new: true}
-  ).select(
-    "-password -refreshToken"
-  );
+    { new: true }
+  ).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -136,8 +137,8 @@ const logoutUser = asyncHandler(async (req, res, _) => {
     },
     {
       $inc: {
-        tokenVersion: 1
-      }
+        tokenVersion: 1,
+      },
     }
   );
 
@@ -177,13 +178,11 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     user._id,
     {
       $inc: {
-        tokenVersion: 1
-      }
+        tokenVersion: 1,
+      },
     },
-    {new: true}
-  ).select(
-    "-password -refreshToken"
-  );
+    { new: true }
+  ).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -206,7 +205,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     );
 });
 
-const updateAvatar = asyncHandler(async (req, res, next) => {
+const updateAvatar = asyncHandler(async (req, res, _) => {
   const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) {
@@ -248,4 +247,20 @@ const updateAvatar = asyncHandler(async (req, res, next) => {
   );
 });
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, updateAvatar };
+const getCurrentUser = asyncHandler(async (req, res, _) => {
+  if (!req.user) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+  res
+    .status(200)
+    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
+});
+
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  refreshAccessToken,
+  updateAvatar,
+  getCurrentUser,
+};

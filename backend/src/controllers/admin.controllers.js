@@ -135,10 +135,10 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "enter a valid initial value");
   }
 
-  const existingCharacterStock = await CharacterStock.findOne({name});
+  const existingCharacterStock = await CharacterStock.findOne({ name });
 
   if (existingCharacterStock) {
-    throw new ApiError(400,'character already created');
+    throw new ApiError(400, "character already created");
   }
 
   const imageLocalFilePath = req.file?.path;
@@ -154,7 +154,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
     name: name.trim(),
     initialValue: parseInt(initialValue),
     currentValue: initialValue,
-    imageURL: imageUrl
+    imageURL: imageUrl,
   });
 
   if (!characterStock) {

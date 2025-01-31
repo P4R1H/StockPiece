@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  getCurrentUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -12,7 +13,6 @@ import { verifyJWT } from "../middlewares/auth.middlewares.js";
 const userRouter = Router();
 
 userRouter.route("/register").post(upload.single("avatar"), registerUser);
-
 userRouter.route("/login").post(loginUser);
 
 //secure routes
@@ -20,7 +20,8 @@ userRouter.route("/refresh-token").post(refreshAccessToken);
 
 userRouter.use(verifyJWT);
 
-userRouter.route('/update-avatar').post(upload.single("avatar"),updateAvatar)
+userRouter.route("/update-avatar").post(upload.single("avatar"), updateAvatar);
 userRouter.route("/logout").post(logoutUser);
+userRouter.route("/current-user").get(getCurrentUser);
 
 export default userRouter;
