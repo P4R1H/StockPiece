@@ -56,8 +56,9 @@ const deleteFromCloudinary = async (url) => {
   try {
     if (!url) return null;
     const publicId = extractPublicId(url);
-    const _destroyResult = cloudinary.uploader.destroy(publicId);
+    const destroyResult = cloudinary.uploader.destroy(publicId);
     console.log("file deleted successfully from cloudinary");
+    return destroyResult;
   } catch (error) {
     throw new ApiError(
       500,
