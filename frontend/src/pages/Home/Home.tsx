@@ -172,14 +172,18 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           <div className="stock-grid">
             {sortedStocks.map((stock) => (
               <CharacterStockCard
-                key={stock.id}
-                stock={stock}
-                onBuy={() => handleStockTransaction('buy', stock.name)}
-                onSell={() => handleStockTransaction('sell', stock.name)}
-                onVisibilityChange={(id, visibility) => {
-                  setStocks(prev => prev.map(s => s.id === id ? { ...s, visibility } : s));
-                }}
-                ownedQuantity={portfolio.stocks[stock.id]?.quantity || 0}
+              key={stock.id}
+              stock={stock}
+              onBuy={() => handleStockTransaction('buy', stock.name)}
+              onSell={() => handleStockTransaction('sell', stock.name)}
+              onVisibilityChange={(id, visibility) => {
+                setStocks(prev => prev.map(s => {
+                if (s.id === id) return { ...s, visibility };
+                if (visibility === 'only') return { ...s, visibility: 'hide' };
+                return s;
+                }));
+              }}
+              ownedQuantity={portfolio.stocks[stock.id]?.quantity || 0}
               />
             ))}
           </div>

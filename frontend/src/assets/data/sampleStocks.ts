@@ -1,6 +1,7 @@
 import { CharacterStock, UserPortfolio } from '../../types/Stocks'
 
 export const PLACEHOLDER_PORTFOLIO: UserPortfolio = {
+  username: "Guest Pirate",
   cash: 10000,
   initialCash: 1000,
   lastChapCash: 950,
