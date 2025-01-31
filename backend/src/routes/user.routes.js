@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   getCurrentUser,
+  getCurrentUserPortfolio,
   loginUser,
   logoutUser,
   refreshAccessToken,
@@ -23,5 +24,6 @@ userRouter.use(verifyJWT);
 userRouter.route("/update-avatar").post(upload.single("avatar"), updateAvatar);
 userRouter.route("/logout").post(logoutUser);
 userRouter.route("/current-user").get(getCurrentUser);
+userRouter.route("/portfolio").get(getCurrentUserPortfolio)
 
 export default userRouter;
