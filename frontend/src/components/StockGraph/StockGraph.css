@@ -4,19 +4,15 @@
   max-width: calc(1400px - 400px - 1rem - 3rem);
   min-height: 550px;
   flex: 1;
-  flex-grow: 1;
   margin-left: 0;
   padding: 15px;
   position: relative;
   overflow: hidden;
-  
-  /* Visual Styles */
   background: #fff5e6 url('/assets/parchment.jpg');
   border: 5px solid #3e2f28;
   border-radius: 15px;
   box-shadow: 8px 8px 0 rgba(62, 47, 40, 0.2);
   animation: floatIn 0.8s ease-out;
-
 }
 
 .chart-wrapper {
@@ -85,28 +81,40 @@
 }
 
 /* Select Dropdown Styling */
-.pirate-select {
+.pirate-select,
+.search-bar {
   padding: 8px 12px;
-  min-width: 180px;
-  width: auto;
   font-family: 'Pirata One', cursive;
   font-size: 1.1rem;
   color: #3e2f28;
   background: #ffcc00;
   border: 2px solid #3e2f28;
-  border-radius: 5px 0 0 5px;
+  border-radius: 5px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pirate-select {
+  min-width: 180px;
+  width: auto;
+  border-radius: 5px 0 0 5px;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233e2f28'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px;
-  transition: all 0.3s ease;
 }
 
-.pirate-select:hover {
+.pirate-select:hover,
+.search-bar:hover {
   transform: translateY(-1px);
   box-shadow: 2px 2px 0 #3e2f28;
+}
+
+.search-bar:focus {
+  outline: none;
+  box-shadow: 3px 3px 0 #3e2f28;
+  transform: translateY(-1px);
 }
 
 /* Side Panel Styles */
@@ -144,7 +152,7 @@
   margin-top: 5px;
   display: flex;
   flex-direction: column;
-  gap: 4px;  /* Reduced from 8px to 4px to tighten spacing */
+  gap: 4px;
 }
 
 .sidebar-select {
@@ -167,26 +175,6 @@
 
 .close-button:hover {
   transform: scale(1.2);
-}
-
-/* Search Components */
-.search-bar {
-  padding: 8px 12px;
-  width: 100%;
-  font-family: 'Pirata One', cursive;
-  font-size: 1.1rem;
-  color: #3e2f28;
-  background: #ffcc00;
-  border: 2px solid #3e2f28;
-  border-radius: 5px;
-  box-shadow: 2px 2px 0 #3e2f28;
-  transition: all 0.3s ease;
-}
-
-.search-bar:focus {
-  outline: none;
-  box-shadow: 3px 3px 0 #3e2f28;
-  transform: translateY(-1px);
 }
 
 /* Character List Styles */
@@ -294,14 +282,12 @@
     flex-direction: column;
     gap: 15px;
   }
-  
+
   .slider-container {
     width: 100%;
   }
-  
+
   .chart-wrapper {
     height: 350px;
   }
 }
-
-

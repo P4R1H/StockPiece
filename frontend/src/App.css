@@ -1,6 +1,8 @@
+/* Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
+/* Root Variables */
 :root {
   --dark-blue: #081B33;
   --gold: #FFD700;
@@ -11,6 +13,7 @@
   --emerald: #008000;
 }
 
+/* Global Styles */
 body {
   margin: 0;
   font-family: 'Treasure Map', cursive;
@@ -19,6 +22,7 @@ body {
   overflow-x: hidden;
 }
 
+/* One Piece Stock Market Container */
 .one-piece-stock-market {
   background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
   background-size: cover;
@@ -29,7 +33,7 @@ body {
   position: relative;
 }
 
-/* Enhanced Navbar with Gradient */
+/* Market Header */
 .market-header {
   background: linear-gradient(145deg, var(--ocean-blue) 30%, #0e4a7a 100%);
   padding: 10px 20px;
@@ -42,6 +46,7 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
+/* Pirate Banner */
 .pirate-banner {
   display: flex;
   align-items: center;
@@ -76,7 +81,7 @@ body {
   position: relative;
 }
 
-/* Compact Icon Navigation */
+/* Navigation Buttons */
 .nav-group {
   align-items: center;
   background: rgba(0, 0, 0, 0.15);
@@ -133,6 +138,7 @@ body {
   opacity: 0;
 }
 
+/* Special Buttons */
 .logout-btn {
   color: var(--crimson);
 }
@@ -151,7 +157,6 @@ body {
   background: var(--emerald);
 }
 
-
 /* Footer Styling */
 .market-footer {
   background: linear-gradient(145deg, var(--deep-ocean) 30%, black 100%);
@@ -161,6 +166,8 @@ body {
   border-top: 3px solid #ffcc00;
   margin-top: auto;
 }
+
+/* Media Queries */
 @media (max-width: 768px) {
   .market-header {
     flex-wrap: wrap;

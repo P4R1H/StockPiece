@@ -1,9 +1,11 @@
+/* Global Reset */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* Dashboard Layout */
 .dashboard-container {
   width: 100%;
   min-height: 100vh;
@@ -14,43 +16,27 @@
   gap: 1.5rem;
 }
 
+.dashboard,
+.stock-market-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 .dashboard {
   display: flex;
   gap: 1rem;
-  max-width: 1400px;
-  margin: 0 auto;
-  width: 100%;
 }
 
-.stock-market-main {
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
+/* Stock Card Container */
 .stock-card-container {
   animation: floatIn 0.8s ease-out;
-  border: 3px solid #2d4b6e; /* Deep sea blue border */
+  border: 3px solid #2d4b6e;
   border-radius: 15px;
   background-image: 
-    linear-gradient(
-      160deg,
-      #0a1a2a 20%,    /* Midnight ocean depth */
-      #12355b 50%,    /* Mid-water blue */
-      #1a4a7c 80%     /* Surface water */
-    ),
-    repeating-linear-gradient(
-      -45deg,
-      transparent,
-      transparent 2px,
-      rgba(173, 216, 230, 0.1) 3px,  /* Foam lines */
-      rgba(173, 216, 230, 0.1) 5px
-    ),
-    radial-gradient(
-      circle at 80% 10%,
-      rgba(211, 167, 40, 0.15) 0%,   /* Sunlight glint */
-      transparent 30%
-    );
+    linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%),
+    repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(173, 216, 230, 0.1) 3px, rgba(173, 216, 230, 0.1) 5px),
+    radial-gradient(circle at 80% 10%, rgba(211, 167, 40, 0.15) 0%, transparent 30%);
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
@@ -68,12 +54,7 @@
   right: -3px;
   bottom: -3px;
   border-radius: 18px;
-  background: linear-gradient(
-    45deg,
-    transparent 40%,
-    #3a5a7a 50%,      /* Wave crest color */
-    transparent 60%
-  );
+  background: linear-gradient(45deg, transparent 40%, #3a5a7a 50%, transparent 60%);
   animation: waveGlow 6s infinite linear;
   z-index: 1;
   pointer-events: none;
@@ -88,29 +69,12 @@
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(circle at 50% 0%, 
-      rgba(255, 255, 255, 0.1) 10%,
-      transparent 20%),
-    linear-gradient(
-      to bottom,
-      transparent 95%,
-      rgba(255, 255, 255, 0.2) 100%
-    );
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.1) 10%, transparent 20%),
+    linear-gradient(to bottom, transparent 95%, rgba(255, 255, 255, 0.2) 100%);
   pointer-events: none;
 }
 
-@keyframes floatIn {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-
+/* Market Controls */
 .market-controls-wrapper {
   display: flex;
   width: 100%;
@@ -163,6 +127,7 @@
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
+/* News Ticker */
 .news-ticker {
   flex-grow: 1;
   background: #1a0808;
@@ -180,19 +145,9 @@
   right: 0;
   bottom: 0;
   background-image: 
-    radial-gradient(
-      circle at 5px 5px,
-      rgba(255, 0, 0, 0.1) 1px,
-      transparent 2px
-    );
+    radial-gradient(circle at 5px 5px, rgba(255, 0, 0, 0.1) 1px, transparent 2px);
   background-size: 8px 8px;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    rgba(0,0,0,0.7) 10%,
-    rgba(0,0,0,0.7) 90%,
-    transparent 100%
-  );
+  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0.7) 90%, transparent 100%);
 }
 
 .news-ticker::after {
@@ -209,7 +164,7 @@
   display: flex;
   width: 900%;
   height: 100%;
-  transform: translateX(100%); /* Start from right edge */
+  transform: translateX(100%);
   animation: ticker 400s linear infinite;
 }
 
@@ -233,6 +188,7 @@
   margin-left: 20px;
 }
 
+/* Stock Grid */
 .stock-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -241,11 +197,7 @@
   padding: 1.5rem;
 }
 
-@keyframes ticker {
-  0% { transform: translateX(10%); }
-  100% { transform: translateX(-800%); }
-}
-
+/* Animations */
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -257,6 +209,12 @@
   }
 }
 
+@keyframes ticker {
+  0% { transform: translateX(10%); }
+  100% { transform: translateX(-800%); }
+}
+
+/* Media Queries */
 @media (max-width: 1400px) {
   .dashboard {
     flex-wrap: wrap;

@@ -1,3 +1,4 @@
+/* Card Base */
 .op-stock-card {
   width: 160px;
   background: #0a1a2a;
@@ -5,7 +6,7 @@
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
-  border: 1px solid #2d4b6e;
+  border: 1px solid #d3a728;
   position: relative;
   background-image: linear-gradient(
       to bottom right,
@@ -13,19 +14,18 @@
       rgba(16, 42, 67, 0.8)
     ),
     url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="50%" y="50%" font-family="Arial" font-size="14" fill="%232d4b6e30" text-anchor="middle">₿</text></svg>');
-
-  
 }
 
 .op-stock-card:hover {
   transform: translateY(-3px);
 }
 
+/* Image Section */
 .op-image-container {
   position: relative;
   height: 120px;
-  background: #020c16;
-  border-bottom: 2px solid #3a5a7a;
+  background: #020e1b;
+  border-bottom: 2px solid #d3a728;
 }
 
 .op-character-image {
@@ -36,12 +36,13 @@
   border-radius: 8px 8px 0 0;
 }
 
+/* Visibility Toggle */
 .op-visibility-toggle {
   position: absolute;
   top: 6px;
   right: 6px;
-  background: rgba(189, 148, 62, 0.9);
-  border: 1px solid #d4af37;
+  background: rgba(211, 167, 40, 0.9);
+  border: 1px solid #ffd700;
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -55,7 +56,7 @@
 }
 
 .op-visibility-toggle[data-visibility="only"] {
-  background: #d4af37;
+  background: #ffd700;
 }
 
 .op-visibility-toggle:hover {
@@ -63,14 +64,15 @@
   transform: scale(1.1);
 }
 
+/* Card Content */
 .op-divider {
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
     transparent,
     transparent 3px,
-    #3a5a7a 3px,
-    #3a5a7a 6px
+    #d3a728 3px,
+    #d3a728 6px
   );
   margin: 4px 0;
 }
@@ -79,6 +81,7 @@
   padding: 8px;
 }
 
+/* Header Section */
 .op-header {
   display: flex;
   justify-content: space-between;
@@ -89,7 +92,7 @@
 .op-character-name {
   margin: 0;
   font-size: 0.85rem;
-  color: #d4af37;
+  color: #ffd700;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -106,6 +109,7 @@
   font-family: monospace;
 }
 
+/* Meta Information */
 .op-meta {
   display: flex;
   flex-direction: column;
@@ -114,10 +118,11 @@
 
 .op-owned {
   font-size: 0.75rem;
-  color: #8b9eb0;
+  color: #add8e6;
   font-weight: 500;
 }
 
+/* Action Buttons */
 .op-actions {
   display: flex;
   gap: 6px;
@@ -143,7 +148,7 @@
 }
 
 .op-buy-button:hover {
-  background: linear-gradient(to bottom, #3a5a7a, #2d4b6e);
+  background: linear-gradient(to bottom, #3a7a6a, #2d6e5b);
 }
 
 .op-sell-button {
@@ -153,64 +158,5 @@
 }
 
 .op-sell-button:hover {
-  background: linear-gradient(to bottom, #7a3a3a, #6e2d2d);
+  background: linear-gradient(to bottom, #a00000, #8b0000);
 }
-
-.op-stock-card {
-  width: 160px;
-  background: #0c1a2f; /* Darker oceanic blue */
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease;
-  border: 1px solid #d3a728; /* Gold border like the Straw Hat's edge */
-  position: relative;
-}
-
-.op-image-container {
-  background: #020e1b; /* Darker background for contrast */
-  border-bottom: 2px solid #d3a728; /* Gold accent */
-}
-
-.op-character-name {
-  color: #ffd700; /* Brighter gold like Luffy's straw hat */
-}
-
-
-
-.op-visibility-toggle {
-  background: rgba(211, 167, 40, 0.9); /* Straw Hat gold */
-  border: 1px solid #ffd700; /* Brighter gold border */
-  color: #2d1900;
-}
-
-.op-visibility-toggle[data-visibility="only"] {
-  background: #ffd700; /* Bright gold */
-}
-
-.op-divider {
-  background: repeating-linear-gradient(
-    90deg,
-    transparent,
-    transparent 3px,
-    #d3a728 3px,  /* Gold stripes */
-    #d3a728 6px
-  );
-}
-
-/* Updated button colors */
-
-/* Hover effects */
-.op-buy-button:hover {
-  background: linear-gradient(to bottom, #3a7a6a, #2d6e5b); /* Deeper green */
-}
-
-.op-sell-button:hover {
-  background: linear-gradient(to bottom, #a00000, #8b0000); /* Brighter red */
-}
-
-.op-owned {
-  color: #add8e6; /* Light sky blue for secondary text */
-}
-
-
