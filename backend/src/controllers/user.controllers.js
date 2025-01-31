@@ -256,6 +256,18 @@ const getCurrentUser = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, req.user, "current user fetched successfully"));
 });
 
+const getCurrentUserPortfolio = asyncHandler( async (req, res, _) => {
+  if (!req.user) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+  const user = await User.findById(req.user._id).populate('ownedStocks');
+  res
+  .status(200)
+  .json(
+    new ApiError(200,user,"user portfolio fetched successfully")
+  )
+})
+
 export {
   registerUser,
   loginUser,
@@ -263,4 +275,5 @@ export {
   refreshAccessToken,
   updateAvatar,
   getCurrentUser,
+  getCurrentUserPortfolio
 };
