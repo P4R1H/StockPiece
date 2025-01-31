@@ -133,3 +133,9 @@
     height: 45vw;
   }
 }
+
+.bounty-cash {
+  font-size: clamp(12px, 3vw, 18px);
+  margin: 5px 0;
+  color: #3e2f28;
+}

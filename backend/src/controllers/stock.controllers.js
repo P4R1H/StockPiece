@@ -41,7 +41,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
 
   const totalPrice = characterStock.currentValue * parseInt(quantity);
 
-  if (user.acountValue < totalPrice) {
+  if (user.accountValue < totalPrice) {
     throw new ApiError(400, "insufficient funds");
   }
 

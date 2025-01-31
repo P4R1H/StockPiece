@@ -92,7 +92,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   };
 
   const calculatePortfolioStats = () => ({
-    netWorth: (portfolio.cash + Object.entries(portfolio.stocks).reduce((total, [stockId, holding]) => total + (stocks.find(s => s.id === stockId)?.currentPrice || 0) * holding.quantity, 0)).toLocaleString(),
+    netWorth: portfolio.cash + Object.entries(portfolio.stocks).reduce((total, [stockId, holding]) => total + (stocks.find(s => s.id === stockId)?.currentPrice || 0) * holding.quantity, 0),
     profitLossOverall: "+15%",
     profitLossLastChapter: "+5%"
   });
@@ -105,14 +105,14 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     <div className="dashboard-container">
       <div className="dashboard">
         <PortfolioOverview 
-          userName="Pirate Trader"
-          netWorth={portfolioStats.netWorth}
-          profitLossOverall={portfolioStats.profitLossOverall}
-          profitLossLastChapter={portfolioStats.profitLossLastChapter}
-          profileImage={portfolio.profilePicture}
-          isLoggedIn={isLoggedIn}
-        />
-        <PriceHistoryGraph 
+    userName={isLoggedIn ? (portfolio.username || "Anonymous Pirate") : "Guest Pirate"}
+    netWorth={new Intl.NumberFormat().format(portfolioStats.netWorth || 0)}
+    cash={new Intl.NumberFormat().format(portfolio.cash || 0)}
+    profitLossOverall={portfolioStats.profitLossOverall}
+    profitLossLastChapter={portfolioStats.profitLossLastChapter}
+    profileImage={portfolio.profilePicture}
+    isLoggedIn={isLoggedIn}
+/>        <PriceHistoryGraph 
           stocks={stocks} 
           ownedStocks={Object.keys(portfolio.stocks)}
           onVisibilityChange={handleVisibilityChange}

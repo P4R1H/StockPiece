@@ -27,6 +27,7 @@ export const getPortfolioData = async (): Promise<UserPortfolio> => {
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch portfolio data');
   const portfolio: UserPortfolio = {
+    username: data.data.username,
     cash: data.data.accountValue,
     stocks: {},
     initialCash: 1000,

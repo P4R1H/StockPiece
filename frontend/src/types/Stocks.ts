@@ -18,6 +18,7 @@ export interface CharacterCardProps {
 }
 
 export interface UserPortfolio {
+  username: string;
   cash: number;
   stocks: {
     [characterId: string]: {

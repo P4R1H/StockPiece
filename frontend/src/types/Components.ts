@@ -40,6 +40,7 @@ export interface ChartPlugin {
 export interface BountyProfileCardProps {
   userName: string;
   netWorth: string;
+  cash: string;
   profitLossOverall: string;
   profitLossLastChapter: string;
   profileImage?: string;

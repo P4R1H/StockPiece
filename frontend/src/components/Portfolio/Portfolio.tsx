@@ -5,6 +5,7 @@ import { BountyProfileCardProps } from '../../types/Components'
 const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   userName,
   netWorth,
+  cash,
   profitLossOverall,
   profitLossLastChapter,
   profileImage,
@@ -76,19 +77,18 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     disabled={!isLoggedIn}
   />
 </div>
-      <div className="bounty-details">
-        <p className="bounty-name">{userName}</p>
-        <p className="bounty-net-worth">
-          Net Worth: <span className="highlight">{netWorth} Bellies</span>
-        </p>
-        <p className="bounty-profit-loss">
-          Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>{' '}
-          <span className="profit-loss-last-chapter">
-            (Last Chapter: <span className="highlight">{profitLossLastChapter}</span>)
-          </span>
-        </p>
-      </div>
-    </div>
+<div className="bounty-details">
+  <p className="bounty-name">{userName}</p>
+  <p className="bounty-net-worth">
+    Net Worth: <span className="highlight">{netWorth} Bellies</span> Cash:  <span className="highlight">{cash} Bellies</span>
+  </p>
+  <p className="bounty-profit-loss">
+    Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>{' '}
+    <span className="profit-loss-last-chapter">
+      (Last Chapter: <span className="highlight">{profitLossLastChapter}</span>)
+    </span>
+  </p>
+</div>    </div>
   );
 };
 

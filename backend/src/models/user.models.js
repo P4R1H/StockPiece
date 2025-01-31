@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String, //cloudinary
       default: defaultAvatarUrl,
     },
-    acountValue: {
+    accountValue: {
       type: Number,
       default: 1000,
     },
