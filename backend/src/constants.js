@@ -15,5 +15,4 @@ cloudinary.config({
 const defaultAvatarpublidId = "defaultAvatar_hbexz5";
 const defaultAvatarUrl = cloudinary.url(defaultAvatarpublidId);
 
-
 export { DB_NAME, __dirname, defaultAvatarUrl };

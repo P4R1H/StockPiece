@@ -6,7 +6,7 @@ import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sam
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
-import { getStockMarketData, getPortfolioData } from './HomeServices';
+import { getStockMarketData, getPortfolioData, buyStock, sellStock } from './HomeServices';
 import './Home.css';
 
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
@@ -18,8 +18,8 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const fetchStocks = async () => {
-      // const stockData = getStockMarketData()
-      const stockData = PLACEHOLDER_STOCKS;
+      const stockData = await getStockMarketData()
+      //const stockData = PLACEHOLDER_STOCKS;
       setStocks(stockData);
     };
     fetchStocks();
@@ -48,8 +48,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     });
   };
 
-  const onBuy = () => {};
-  const onSell = () => {};
+  const onBuy = ( name : string ) => {
+    buyStock( name );
+  };
+  const onSell =( name : string ) => {
+    sellStock( name );
+  };
 
   const calculatePortfolioStats = () => {
     const netWorth = portfolio.cash + Object.entries(portfolio.stocks)

@@ -9,7 +9,7 @@ const valueHistorySchema = new mongoose.Schema({
   },
   chapter: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ReleaseChapter'
+    ref: "ReleaseChapter",
   },
   value: {
     type: Number,

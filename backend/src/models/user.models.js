@@ -26,26 +26,26 @@ const userSchema = new mongoose.Schema(
     },
     acountValue: {
       type: Number,
-      default: 1000
+      default: 1000,
     },
     ownedStocks: {
       type: [
         {
           stock: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: 'CharacterStock'
+            ref: "CharacterStock",
           },
           quantity: {
             type: Number,
-            required: true
-          }
-        }
+            required: true,
+          },
+        },
       ],
-      default: []
+      default: [],
     },
     tokenVersion: {
       type: Number,
-      default: 0
+      default: 0,
     },
     refreshToken: {
       type: String,
@@ -88,7 +88,7 @@ userSchema.methods.generateAccessToken = function () {
       _id: this._id,
       username: this.username,
       avatar: this.avatar,
-      tokenVersion: this.tokenVersion
+      tokenVersion: this.tokenVersion,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

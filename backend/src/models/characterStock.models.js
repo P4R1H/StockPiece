@@ -17,7 +17,7 @@ const characterStockSchema = new mongoose.Schema(
     },
     imageURL: {
       type: String, //cloudinary url
-      default: defaultAvatarUrl
+      default: defaultAvatarUrl,
     },
     currentValue: {
       type: Number,

@@ -4,7 +4,7 @@ import { CharacterCardProps } from '../../types/Stocks';
 import './CharacterCard.css';
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ 
-  stock,  // Now includes visibility
+  stock, 
   onBuy, 
   onSell,
   onVisibilityChange
@@ -23,6 +23,15 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
     const nextState = visibility === 'show' ? 'hide' : visibility === 'hide' ? 'only' : 'show';
     onVisibilityChange(id, nextState);
   };
+
+  const stockBought = async ( name : string ) => {
+   
+    
+  }
+
+  const stockSold = ( name : string) => {
+    
+  }
 
   return (
     <div className="op-stock-card">
@@ -50,13 +59,14 @@ const CharacterCard: React.FC<CharacterCardProps> = ({
           <div className="op-actions">
             <button 
               className="op-buy-button"
-              onClick={() => onBuy(id)}
+              onClick={() => stockBought(name)}
             >
               Buy
             </button>
             <button 
               className="op-sell-button"
-              onClick={() => onSell(id)}
+              onClick={() => stockSold(name)}
+              
             >
               Sell
             </button>
