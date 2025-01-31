@@ -86,7 +86,6 @@
   width: 100%;
   height: 100%;
   border: 2px dashed #ccc;
-  border-radius: 2%;
   text-align: center;
   padding: 1rem;
   transition: all 0.3s ease;
@@ -138,4 +137,92 @@
   font-size: clamp(12px, 3vw, 18px);
   margin: 5px 0;
   color: #3e2f28;
+}
+
+/* Add these styles to your existing CSS */
+
+/* Overlay for changing profile picture */
+.bounty-image-container .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent black */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none; /* Disable pointer events by default */
+}
+
+.bounty-image-container .overlay.overlay-visible {
+  opacity: 1;
+  pointer-events: auto; /* Enable pointer events when visible */
+  cursor: pointer;
+}
+
+.bounty-image-container .overlay:hover {
+  background: rgba(0, 0, 0, 0.7); /* Slightly darker on hover */
+}
+
+/* Ensure the image container maintains its dimensions and position */
+.bounty-image-container {
+  position: absolute;
+  top: 22%;  /* Adjusted to align with transparent area */
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(85%, 330px);
+  height: min(50vw, 235px);
+  background-color: #f9f0e0;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 3px solid #3e2f28;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Maintain the image styling */
+.bounty-image {
+  width: 100%;
+  height: 100%;
+  filter: sepia(0.3) contrast(1.1);
+  object-fit: cover; /* Ensure the image covers the container */
+}
+
+/* Upload area styles (unchanged) */
+.bounty-image-container .upload-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed #ccc;
+  border-radius: 2%;
+  text-align: center;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.bounty-image-container .upload-area.clickable {
+  cursor: pointer;
+}
+
+.bounty-image-container .upload-area.clickable:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.bounty-image-container .upload-area.disabled {
+  cursor: not-allowed;
+}
+
+.bounty-image-container .upload-area span {
+  color: #666;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
 }
