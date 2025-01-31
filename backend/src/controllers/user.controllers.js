@@ -213,13 +213,13 @@ const updateAvatar = asyncHandler(async (req, res, next) => {
     throw new ApiError(400, "no file uploaded");
   }
 
-  // const oldAvatarUrl = req.user.avatar;
-  // if (oldAvatarUrl != defaultAvatarUrl) {
-  //   const result = await deleteFromCloudinary(oldAvatarUrl);
-  //   if (!result || result === "error") {
-  //     throw new ApiError(500, "error in deleting the avatar file", result);
-  //   }
-  // }
+  const oldAvatarUrl = req.user.avatar;
+  if (oldAvatarUrl != defaultAvatarUrl) {
+    const result = await deleteFromCloudinary(oldAvatarUrl);
+    if (!result || result === "error") {
+      throw new ApiError(500, "error in deleting the avatar file", result);
+    }
+  }
 
   const newAvatar = await uploadOnCloudinary(avatarLocalPath);
   if (!newAvatar) {
