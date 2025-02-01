@@ -15,6 +15,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   }
 
   const admin = await Admin.findOne({ username });
+
   if (!admin) {
     throw new ApiError(404, "invalid admin username");
   }
@@ -24,6 +25,10 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   }
 
   const accessToken = await admin.generateAccessToken();
+
+  const loggedInAdmin = await Admin.findById(admin._id).select(
+    "-password"
+  )
 
   const options = {
     httpOnly: true,
@@ -36,7 +41,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     .json(
       new ApiResponse(
         200,
-        admin,
+        loggedInAdmin,
         { accessToken },
         "admin logged in successfully"
       )
@@ -130,7 +135,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
   if (!name?.trim()) {
     throw new ApiError(400,"name required");
   }
-
+  let characterStock;
   //check if the stock already exists and is removed
   const existingCharacterStock = await CharacterStock.findOne({ name });
 
@@ -140,6 +145,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
     existingCharacterStock.isRemoved = false;
     existingCharacterStock.save({ validateModifiedOnly: true });
+    characterStock = existingCharacterStock;
     
   } else {
 
@@ -160,7 +166,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
       throw new ApiError(500, "not able to upload image");
     }
   
-    const characterStock = await CharacterStock.create({
+    characterStock = await CharacterStock.create({
       name: name.trim(),
       initialValue: parseInt(initialValue),
       currentValue: initialValue,

@@ -170,6 +170,11 @@ const sellStock = asyncHandler(async (req, res, _) => {
 const getAllStocks = asyncHandler(async (req, res, _) => {
   const allStocks = await CharacterStock.aggregate([
     {
+      $match: {
+        isRemoved: false
+      }
+    },
+    {
       $lookup: {
         from: "chapterreleases",
         pipeline: [
