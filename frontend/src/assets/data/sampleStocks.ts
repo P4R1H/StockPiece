@@ -28,7 +28,6 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 9,
-
   },
   {
     id: 'nami',
@@ -38,7 +37,6 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 5,
-
   },
   {
     id: 'sanji',
@@ -48,7 +46,6 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 4,
-
   },
   {
     id: 'chopper',
@@ -58,5 +55,50 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 11,
+  },
+  {
+    id: 'usopp',
+    name: 'Usopp',
+    currentPrice: 2700,
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738398433/vtljxx2zufjon6rqu7js.jpg',
+    ownedCount: 0,
+    visibility: 'show',
+    popularity: 6,
+  },
+  {
+    id: 'franky',
+    name: 'Franky',
+    currentPrice: 3200,
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738398228/yuykwuikmjmf7vwwdyub.jpg',
+    ownedCount: 0,
+    visibility: 'show',
+    popularity: 7,
+  },
+  {
+    id: 'brook',
+    name: 'Brook',
+    currentPrice: 2800,
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738398477/lmspfq6gdhqoiizcudin.jpg',
+    ownedCount: 0,
+    visibility: 'show',
+    popularity: 8,
+  },
+  {
+    id: 'jinbe',
+    name: 'Jinbe',
+    currentPrice: 3100,
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738397949/nnbcb0gr2fghgmxz96cb.jpg',
+    ownedCount: 0,
+    visibility: 'show',
+    popularity: 6,
+  },
+  {
+    id: 'robin',
+    name: 'Nico Robin',
+    currentPrice: 3300,
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738398372/qrcatm0nomdc2795w2c1.jpg',
+    ownedCount: 0,
+    visibility: 'show',
+    popularity: 9,
   }
 ];

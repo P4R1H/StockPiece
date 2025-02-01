@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import PortfolioOverview from '../../components/Portfolio/Portfolio';
 import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
-import { PLACEHOLDER_PORTFOLIO } from '../../assets/data/sampleStocks';
+import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sampleStocks';
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
@@ -23,7 +23,11 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         getStockMarketData(),
         isLoggedIn ? getPortfolioData() : PLACEHOLDER_PORTFOLIO
       ]);
-      setStocks(stockData);
+      if (stockData.length === 0) {
+        setStocks(PLACEHOLDER_STOCKS);
+      } else {
+        setStocks(stockData);
+      }
       setPortfolio(portfolioData);
     } catch (error) {
       console.error('Failed to fetch data:', error);
