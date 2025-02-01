@@ -141,7 +141,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
   if (existingCharacterStock && !existingCharacterStock.isRemoved) {
     throw new ApiError(400, "character stock already added");
-  } else if (existingCharacterStock.isRemoved) {
+  } else if (existingCharacterStock?.isRemoved) {
 
     existingCharacterStock.isRemoved = false;
     existingCharacterStock.save({ validateModifiedOnly: true });
