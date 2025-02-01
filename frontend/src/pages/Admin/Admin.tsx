@@ -49,10 +49,13 @@ const AdminPanel: React.FC = () => {
     };
 
     return (
-        <div className="AdminContainer">
-            <div className="AdminLogin">
+        <div className="admin-container">
+            <div className="admin-login-form">
                 {isLoggedIn ? (
-                    <button className="adminLogout" onClick={handleLogout}>Logout</button>
+                    <>
+                        Welcome {username},
+                        <button className="admin-logout-btn" onClick={handleLogout}>Logout</button>
+                    </>
                 ) : (
                     <form onSubmit={(e) => { e.preventDefault(); handleLogin(); }}>
                         <label>
@@ -81,30 +84,35 @@ const AdminPanel: React.FC = () => {
 
             {isLoggedIn && (
                 <>
-                <div className="AdminControls">
+                <form className="admin-controls-form" onSubmit={(e) => { e.preventDefault(); handleAddStock(); }}>
+                    Add new stocks:
                     <input 
                         className="stockName"
                         placeholder="Stock Name"
                         value={stockName}
                         onChange={(e) => setStockName(e.target.value)}
+                        required
                     />
                     <input 
                         className="stockValue"
+                        type="number"
                         placeholder="Initial Value"
                         value={initialValue}
                         onChange={(e) => setInitialValue(Number(e.target.value))}
+                        required
                     />
                     <input 
                         type="file"
                         className="stockImage"
                         onChange={(e) => setImageURL(e.target.files ? e.target.files[0] : null)}
+                        required
                     />
-                    <button onClick={handleAddStock}>Add Stock</button>
-                </div>
+                    <button type="submit">Add Stock</button>
+                </form>
 
-                <div className="StockList">
+                <div className="stock-list">
                 {currentStocks.map((stock) => (
-                    <div key={stock.name} className="StockItem">
+                    <div key={stock.name} className="stock-item">
                         <span>{stock.name}</span>
                         <img src={stock.image} alt={stock.name} style={{ width: '50px', height: '50px' }} />
                         <span>Price: ${stock.currentPrice}</span>
