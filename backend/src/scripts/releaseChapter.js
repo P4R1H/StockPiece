@@ -27,6 +27,8 @@ const releaseChapter = async () => {
       throw new Error("problem releasing chapter");
     }
 
+    //after releasing the chapter we also need to update users account
+
     console.log(`new chapter ${newChapterNumber} released`);
   } catch (error) {
     console.log(

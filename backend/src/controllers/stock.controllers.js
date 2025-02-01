@@ -168,7 +168,8 @@ const sellStock = asyncHandler(async (req, res, _) => {
 //transaction made per chapter for that i need to attach the aggregation plugin maybe
 
 const getAllStocks = asyncHandler(async (req, res, _) => {
-  const allStocks = await CharacterStock.aggregate([
+
+  const allStocks = req.admin ? await CharacterStock.find() : await CharacterStock.aggregate([
     {
       $match: {
         isRemoved: false
