@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
+import AdminPanel from './pages/Admin/Admin';
 import './App.css';
 import { refreshUserToken, logoutUser } from './pages/Login/LoginServices';
 
@@ -111,6 +112,9 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/login" element={
           isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
+        } />
+        <Route path="/Admin" element = {
+          <AdminPanel />
         } />
         <Route path="/*" element={
           <OnePieceStockMarket 
