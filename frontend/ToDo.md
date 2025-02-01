@@ -1,5 +1,5 @@
 ## Overall Improvements
-- [ ] Admin Panel Implementation
+- [/] Admin Panel Implementation
 - [ ] Responsive Design Enhancement
 
 ## Page-Specific Tasks
@@ -7,6 +7,7 @@
 ### Home Page
 - [ ] Add site explanation for new users
 - [ ] Implement bulk buy feature
+- [ ] Make any purchases made with mock stocks not go to backend (confirm)
 
 ### Leaderboard
 - [ ] Complete UI overhaul
@@ -21,5 +22,5 @@
 - [ ] Add logout confirmation dialog
 
 ## Technical Issues
-- [ ] Fix MongoDB rate limiting
+- [?] Fix MongoDB rate limiting
     - Implement request queue for buy operations
