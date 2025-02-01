@@ -35,7 +35,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
 
   const characterStock = await CharacterStock.findOne({ name });
 
-  if (!characterStock) {
+  if (!characterStock || characterStock.isRemoved) {
     throw new ApiError(400, `${name} stock not available`);
   }
 
@@ -112,7 +112,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
 
   const characterStock = await CharacterStock.findOne({ name });
 
-  if (!characterStock) {
+  if (!characterStock || characterStock.isRemoved) {
     throw new ApiError(400, `${name} stock not available`);
   }
 

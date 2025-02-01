@@ -207,7 +207,7 @@ const removeCharacterStock = asyncHandler(async (req, res, _) => {
 
   const characterStock = await CharacterStock.findOne({ name });
 
-  if (!characterStock) {
+  if (!characterStock || characterStock.isRemoved) {
     throw new ApiError(404, "character stock not found");
   }
 
