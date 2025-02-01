@@ -13,7 +13,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
-  const [stocks, setStocks] = useState<CharacterStock[]>([]);
+  const [stocks, setStocks] = useState<CharacterStock[]>([...PLACEHOLDER_STOCKS]);
   const [portfolio, setPortfolio] = useState<UserPortfolio>(PLACEHOLDER_PORTFOLIO);
 
   // Fetch data on mount and when login status changes
@@ -23,11 +23,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         getStockMarketData(),
         isLoggedIn ? getPortfolioData() : PLACEHOLDER_PORTFOLIO
       ]);
-      if (stockData.length === 0) {
-        setStocks(PLACEHOLDER_STOCKS);
-      } else {
-        setStocks(stockData);
-      }
+      setStocks(stockData);
       setPortfolio(portfolioData);
     } catch (error) {
       console.error('Failed to fetch data:', error);

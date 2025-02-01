@@ -15,7 +15,7 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     id: 'luffy',
     name: 'Monkey D. Luffy',
     currentPrice: 5000,
-    image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVyLPSYjKL6hkVNgX7vnAJ513gRg0-JpmGHw&s',
+    image: 'https://res.cloudinary.com/cloudkaami/image/upload/v1738315479/r97iczttf3dtpxdn21nt.jpg',
     ownedCount: 0,
     visibility: 'show',
     popularity: 10,
