@@ -10,14 +10,12 @@ import { verifyJWT } from "../middlewares/auth.middlewares.js";
 const stockRoute = express.Router();
 
 stockRoute.route("/check-open-market").get(checkOpenMarket);
-
-stockRoute.route("/all-stocks").get(getAllStocks);
+stockRoute.route("/stocks").get(getAllStocks);
 
 //safe routes
 stockRoute.use(verifyJWT);
 
 stockRoute.route("/buy").post(buyStock);
-
 stockRoute.route("/sell").post(sellStock);
 
 export default stockRoute;

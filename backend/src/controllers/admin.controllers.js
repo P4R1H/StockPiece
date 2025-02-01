@@ -15,6 +15,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   }
 
   const admin = await Admin.findOne({ username });
+
   if (!admin) {
     throw new ApiError(404, "invalid admin username");
   }
@@ -24,6 +25,10 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   }
 
   const accessToken = await admin.generateAccessToken();
+
+  const loggedInAdmin = await Admin.findById(admin._id).select(
+    "-password"
+  )
 
   const options = {
     httpOnly: true,
@@ -36,7 +41,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     .json(
       new ApiResponse(
         200,
-        admin,
+        loggedInAdmin,
         { accessToken },
         "admin logged in successfully"
       )
@@ -127,41 +132,53 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
   const { name, initialValue } = req.body;
 
-  if (!name?.trim() || !initialValue?.trim()) {
-    throw new ApiError(400, "name and initial value required");
+  if (!name?.trim()) {
+    throw new ApiError(400,"name required");
   }
-
-  if (!parseInt(initialValue)) {
-    throw new ApiError(400, "enter a valid initial value");
-  }
-
+  let characterStock;
+  //check if the stock already exists and is removed
   const existingCharacterStock = await CharacterStock.findOne({ name });
 
-  if (existingCharacterStock) {
-    throw new ApiError(400, "character already created");
-  }
+  if (existingCharacterStock && !existingCharacterStock.isRemoved) {
+    throw new ApiError(400, "character stock already added");
+  } else if (existingCharacterStock?.isRemoved) {
 
-  const imageLocalFilePath = req.file?.path;
-  const imageUrl = imageLocalFilePath
-    ? await uploadOnCloudinary(imageLocalFilePath)
-    : defaultAvatarUrl;
+    existingCharacterStock.isRemoved = false;
+    existingCharacterStock.save({ validateModifiedOnly: true });
+    characterStock = existingCharacterStock;
+    
+  } else {
 
-  if (!imageUrl) {
-    throw new ApiError(500, "not able to upload image");
-  }
-
-  const characterStock = await CharacterStock.create({
-    name: name.trim(),
-    initialValue: parseInt(initialValue),
-    currentValue: initialValue,
-    imageURL: imageUrl,
-  });
-
-  if (!characterStock) {
-    throw new ApiError(
-      500,
-      "there was some error while creating character Stock"
-    );
+    if (!initialValue?.trim()) {
+      throw new ApiError(400, "initial value required");
+    }
+  
+    if (!parseInt(initialValue)) {
+      throw new ApiError(400, "enter a valid initial value");
+    }
+  
+    const imageLocalFilePath = req.file?.path;
+    const imageUrl = imageLocalFilePath
+      ? await uploadOnCloudinary(imageLocalFilePath)
+      : defaultAvatarUrl;
+  
+    if (!imageUrl) {
+      throw new ApiError(500, "not able to upload image");
+    }
+  
+    characterStock = await CharacterStock.create({
+      name: name.trim(),
+      initialValue: parseInt(initialValue),
+      currentValue: initialValue,
+      imageURL: imageUrl,
+    });
+  
+    if (!characterStock) {
+      throw new ApiError(
+        500,
+        "there was some error while creating character Stock"
+      );
+    }
   }
 
   res
@@ -170,7 +187,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
       new ApiResponse(
         200,
         characterStock,
-        "character stock created successfully"
+        "character stock added successfully"
       )
     );
 });
@@ -190,7 +207,7 @@ const removeCharacterStock = asyncHandler(async (req, res, _) => {
 
   const characterStock = await CharacterStock.findOne({ name });
 
-  if (!characterStock) {
+  if (!characterStock || characterStock.isRemoved) {
     throw new ApiError(404, "character stock not found");
   }
 
