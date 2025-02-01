@@ -18,8 +18,8 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   if (!admin) {
     throw new ApiError(404, "invalid admin username");
   }
-
-  if (!admin.validatePassword(password)) {
+  
+  if (!await admin.validatePassword(password)) {
     throw new ApiError(401, "invalid password");
   }
 
@@ -36,7 +36,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     .json(
       new ApiResponse(
         200,
-        null,
+        admin,
         { accessToken },
         "admin logged in successfully"
       )
