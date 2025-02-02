@@ -76,6 +76,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
   }
 
   await user.save({ session, validateModifiedOnly: true });
+
   await session.commitTransaction();
   session.endSession();
 
@@ -133,34 +134,44 @@ const sellStock = asyncHandler(async (req, res, _) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  const transaction = await Transaction.create(
-    [
-      {
-        purchasedBy: user._id,
-        stockID: characterStock._id,
-        quantity: parseInt(quantity),
-        value: totalPrice,
-        type: "sell",
-        chapterPurchasedAt: latestChapter.chapter,
-      },
-    ],
-    { session }
-  );
+  try {
+    const transaction = await Transaction.create(
+      [
+        {
+          purchasedBy: user._id,
+          stockID: characterStock._id,
+          quantity: parseInt(quantity),
+          value: totalPrice,
+          type: "sell",
+          chapterPurchasedAt: latestChapter.chapter,
+        },
+      ],
+      { session }
+    );
 
-  user.accountValue += totalPrice;
-  user.ownedStocks[stockIndex].quantity -= parseInt(quantity);
-  //if user does not own any quantity then remove from the owned stock
-  if (user.ownedStocks[stockIndex].quantity === 0) {
-    user.ownedStocks.splice(stockIndex, 1);
+    user.accountValue += totalPrice;
+    user.ownedStocks[stockIndex].quantity -= parseInt(quantity);
+    //if user does not own any quantity then remove from the owned stock
+    if (user.ownedStocks[stockIndex].quantity === 0) {
+      user.ownedStocks.splice(stockIndex, 1);
+    }
+
+    await user.save({ session, validateModifiedOnly: true });
+    await session.commitTransaction();
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, transaction, "stock purchased successfully"));
+  } catch (error) {
+    session.abortTransaction();
+    throw new ApiError(
+      500,
+      "some error occurred while making transaction",
+      error
+    );
+  } finally {
+    session.endSession();
   }
-
-  await user.save({ session, validateModifiedOnly: true });
-  await session.commitTransaction();
-  session.endSession();
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, transaction, "stock purchased successfully"));
 });
 
 //so i have to update this based on the popularity
@@ -168,64 +179,64 @@ const sellStock = asyncHandler(async (req, res, _) => {
 //transaction made per chapter for that i need to attach the aggregation plugin maybe
 
 const getAllStocks = asyncHandler(async (req, res, _) => {
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+  const latestChapter = latestChapterDoc?.chapter;
+  if (!latestChapter) {
+    throw new ApiError(500, "not able to fetch latest chapter");
+  }
 
-  const allStocks = req.admin ? await CharacterStock.find() : await CharacterStock.aggregate([
-    {
-      $match: {
-        isRemoved: false
-      }
-    },
-    {
-      $lookup: {
-        from: "chapterreleases",
-        pipeline: [
-          {
-            $sort: {
-              releaseDate: -1,
-            },
-          },
-          {
-            $limit: 1,
-          },
-        ],
-        as: "latestChapter",
-      },
-    },
-    {
-      $lookup: {
-        from: "transactions",
-        let: {
-          stockID: "$_id",
-          latestChapter: {
-            $arrayElemAt: ["$latestChapter.chapter", 0],
+  const allStocks = req.admin
+    ? await CharacterStock.find()
+    : await CharacterStock.aggregate([
+        {
+          $match: {
+            isRemoved: false,
           },
         },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$chapterPurchasedAt", "$$latestChapter"] },
-                  { $eq: ["$stockID", "$$stockID"] },
-                ],
+        {
+          $lookup: {
+            from: "transactions",
+            let: {
+              stockID: "$_id",
+            },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      {
+                        $eq: [
+                          { $toString: "$chapterPurchasedAt" }, // Ensure string comparison
+                          { $toString: latestChapter }, // Ensure consistency
+                        ],
+                      },
+                      {
+                        $eq: [
+                          "$stockID",
+                          { $toObjectId: "$$stockID" }, // Convert for ObjectId match
+                        ],
+                      },
+                    ],
+                  },
+                },
               },
+            ],
+            as: "popularity",
+          },
+        },
+        {
+          $set: {
+            popularityCount: {
+              $size: "$popularity",
             },
           },
-        ],
-        as: "popularity",
-      },
-    },
-    {
-      $set: {
-        popularityCount: {
-          $size: "$popularity",
         },
-      },
-    },
-    {
-      $unset: ["popularity", "latestChapter"],
-    },
-  ]);
+        {
+          $unset: ["popularity", "latestChapter"],
+        },
+      ]);
 
   res
     .status(200)

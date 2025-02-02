@@ -17,12 +17,20 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
     <div className="one-piece-stock-market">
       <header className="market-header">
         <div className="pirate-banner">
+          {/*
           <img 
             src="/assets/skull-flag.png" 
             alt="Pirate Flag" 
             className="pirate-flag" 
           />
-          <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
+          */}
+            <img 
+            src="/assets/stockpiecelogo.png" 
+            alt="StockPiece Logo" 
+            className="market-logo" 
+            />
+            <h1 className="market-title"> Grand Line Exchange</h1>
+
         </div>
         
         <div className="nav-group">

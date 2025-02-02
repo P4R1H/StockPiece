@@ -30,11 +30,13 @@ import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import stockRoute from "./routes/stock.routes.js";
 import marketRoute from "./routes/market.routes.js";
+import serviceRouter from "./routes/service.routes.js";
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/stock", stockRoute);
 app.use("/api/v1/market", marketRoute);
+app.use("/api/v1/service", serviceRouter);
 
 app.use(errorHandler);
 

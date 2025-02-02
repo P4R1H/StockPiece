@@ -23,6 +23,25 @@ const characterStockSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    baseQuantity: {
+      type: Number,
+      default: 50,
+    },
+    valueHistory: {
+      type: [
+        {
+          chapter: {
+            type: Number,
+            required: true,
+          },
+          value: {
+            type: Number,
+            required: true,
+          },
+        },
+      ],
+      default: [],
+    },
     isRemoved: {
       type: Boolean,
       default: false,

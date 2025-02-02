@@ -1,15 +1,16 @@
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
+import ApiResponse from "../utils/ApiResponse.utils.js";
 
-const releaseChapter = async () => {
+const releaseChapter = async (req,res, _) => {
   try {
     console.log("running weekly crone job...");
     const latestChapter = await ChapterRelease.findOne().sort({
       releaseDate: -1,
     });
-    if (!latestChapter) {
-      throw new ApiError(400, "problem in getting latest chapter");
-    }
+    // if (!latestChapter) {
+    //   throw new ApiError(400, "problem in getting latest chapter");
+    // }
     const newChapterNumber = latestChapter ? latestChapter.chapter + 1 : 1;
     //set the release to now
     const releaseDate = new Date();
@@ -27,7 +28,13 @@ const releaseChapter = async () => {
       throw new Error("problem releasing chapter");
     }
 
-    //after releasing the chapter we also need to update users account
+    if (req?.admin) {
+      res
+      .status(200)
+      .json(
+        new ApiResponse(200,newChapter,'new chapter released')
+      )
+    }
 
     console.log(`new chapter ${newChapterNumber} released`);
   } catch (error) {

@@ -256,20 +256,37 @@ const getCurrentUser = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, req.user, "current user fetched successfully"));
 });
 
-const getCurrentUserPortfolio = asyncHandler( async (req, res, _) => {
+const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
   if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
-  const user = await User.findById(req.user._id).populate('ownedStocks').select(
-    "-password -refreshToken"
-  );
-  
+  const user = await User.findById(req.user._id)
+    .populate("ownedStocks.stock")
+    .select("-password -refreshToken")
+    .lean();
+
+  if (!user) {
+    throw new ApiError(400, "no user found");
+  }
+
+  let totalInitialValue = 0;
+  let totalCurrentValue = 0;
+
+  user.ownedStocks.forEach((stock) => {
+    totalInitialValue += stock.stock.initialValue;
+    totalCurrentValue += stock.stock.currentValue;
+  });
+
+  const profitPercentage =
+    ((totalCurrentValue - totalInitialValue) / totalInitialValue) * 100;
+
+  user.profit = profitPercentage;
+  user.stockValue = totalCurrentValue;
+
   res
-  .status(200)
-  .json(
-    new ApiResponse(200,user,"user portfolio fetched successfully")
-  )
-})
+    .status(200)
+    .json(new ApiResponse(200, user, "user portfolio fetched successfully"));
+});
 
 export {
   registerUser,
@@ -278,5 +295,5 @@ export {
   refreshAccessToken,
   updateAvatar,
   getCurrentUser,
-  getCurrentUserPortfolio
+  getCurrentUserPortfolio,
 };

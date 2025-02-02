@@ -22,6 +22,19 @@ body {
   overflow-x: hidden;
 }
 
+.market-logo {
+  width: 200px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+
+}
+.market-logo:hover {
+  animation: flagShake 0.5s ease-in-out infinite;
+}
+
+
 /* One Piece Stock Market Container */
 .one-piece-stock-market {
   background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
