@@ -24,3 +24,4 @@
 ## Technical Issues
 - [?] Fix MongoDB rate limiting
     - Implement request queue for buy operations
+

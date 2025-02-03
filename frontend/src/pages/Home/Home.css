@@ -197,6 +197,16 @@
   padding: 1.5rem;
 }
 
+/*
+.stock-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
+  width: 100%;
+  gap: 1rem; 
+  padding: 1rem;
+}
+Option 2 */
+
 /* Animations */
 @keyframes floatIn {
   from {
@@ -233,11 +243,84 @@
     flex-wrap: wrap;
   }
   
+    
+  .stock-grid {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .stock-grid {
+    grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .op-stock-card {
+    border-width: 1px;
+    border-radius: 8px;
+  }
+
   .stock-search {
     width: 100%;
   }
   
   .news-ticker {
     height: 40px;
+  }
+
+  .op-image-container {
+    height: 100px;
+  }
+
+  .op-character-name {
+    font-size: 0.75rem;
+  }
+
+  .op-character-price {
+    font-size: 0.7rem;
+  }
+
+  .op-actions {
+    flex-direction: column;
+  }
+
+  .op-buy-button, .op-sell-button {
+    padding: 3px 6px;
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .graph-container {
+    /* Previous styles... */
+    flex: 1 1 100%; /* Add this to ensure full width growth */
+  }
+  
+  /* Ensure the parent container allows full width */
+  .dashboard {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Add this */
+  }
+}
+
+@media (max-width: 768px) {
+  .graph-container {
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+    margin: 0; /* Add this */
+    padding: 10px; /* Reduce padding */
+  }
+
+  /* Target the parent container */
+  .dashboard {
+    padding: 0; /* Add this */
+    width: 100%; /* Add this */
   }
 }

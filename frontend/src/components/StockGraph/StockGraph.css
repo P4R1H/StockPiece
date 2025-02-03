@@ -15,11 +15,21 @@
   animation: floatIn 0.8s ease-out;
 }
 
+@media (max-width: 768px) {
+  .graph-container {
+    min-width: 100%;
+    width: 100%; /* Add this line */
+
+    max-width: 100%;
+  }
+}
+
 .chart-wrapper {
   height: 480px;
   position: relative;
 }
 
+/* Controls and Navigation */
 /* Controls and Navigation */
 .graph-controls {
   display: flex;
@@ -291,3 +301,5 @@
     height: 350px;
   }
 }
+
+

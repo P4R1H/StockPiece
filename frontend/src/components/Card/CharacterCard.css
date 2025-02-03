@@ -1,6 +1,6 @@
 /* Card Base */
 .op-stock-card {
-  width: 160px;
+  width: 100%;
   background: #0a1a2a;
   border-radius: 10px;
   overflow: hidden;
