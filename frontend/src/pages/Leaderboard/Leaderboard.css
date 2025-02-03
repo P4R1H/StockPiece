@@ -1,57 +1,187 @@
+/* Define a CSS variable for the gradient */
+:root {
+  --primary-gradient: linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%);
+}
+
+/* Page and Container Styles */
 .page-container {
-  padding: 2rem;
+  padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  background: url('/assets/grand-line-background.jpg') no-repeat center center fixed;
   background-size: cover;
-  min-height: 100vh;
+  min-height: 30vh;
   font-family: 'Pirata One', cursive;
 }
 
+/* Leaderboard Container with positioned title */
 .leaderboard-container {
-  background: url('/assets/parchment.jpg') no-repeat center center;
+  position: relative;
+  background: url('/assets/gold-texture.jpg') no-repeat center center;
   background-size: cover;
-  border: 5px solid #3e2f28;
-  border-radius: 15px;
-  padding: 25px;
+  padding: 40px 25px 25px 25px; /* extra top padding to accommodate the title on the border */
   margin: 20px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+  border: 5px solid transparent;
+  border-image: var(--primary-gradient) 1;
+  border-radius: 2%;
 }
 
-.leaderboard-title {
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
+/* Title on the border of the container */
+.container-title {
+  position: absolute;
+  top: -20px; /* positions the title overlapping the top border */
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 0 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   text-align: center;
-  font-size: 2.5rem;
-  margin-bottom: 25px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.container-title .main-title {
+  font-size: 2.2rem;
+  line-height: 1;
+  margin: 0;
+  display: block;
+}
+.container-title .subtitle {
+  font-size: 0.9rem;
+  line-height: 1;
+  margin: 0;
+  opacity: 0.6;
+  display: block;
+  margin-top: 2px;
+}
+
+
+/* Combined Container for Top3, Table, and Current Rank */
+.combined-leaderboard {
+  border: 1px solid gold;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* Top Three Section */
+.top-three-container {
+  margin: 0;
+}
+
+.luffy-background {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: url('https://cdn.oneesports.gg/cdn-data/2024/04/Anime_MonkeyDLuffy_Crown_King_Wallpaper.jpg')
+    no-repeat center center;
+  background-size: cover;
+  padding: 10px;
+}
+
+.top-three-card {
+  position: relative;
+  background: rgba(62, 47, 40, 0.8);
+  border-radius: 10px;
+  padding: 8px;
+  color: #ffcc00;
+  transition: transform 0.3s ease;
+}
+
+.top-three-card:hover {
+  transform: scale(1.05);
+}
+
+.rank-badge {
+  position: absolute;
+  top: -8px;
+  left: 10px;
+  background: var(--primary-gradient);
+  color: #ffcc00;
+  padding: 4px 8px;
+  border-radius: 15px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.username {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.user-stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  color: rgba(255, 204, 0, 0.7);
+  font-size: 0.7rem;
+}
+
+.stat-value {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.portfolio-hover {
+  text-align: center;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: rgba(255, 204, 0, 0.7);
+}
+
+/* Leaderboard Table Styles */
+.leaderboard-table-container {
+  margin: 0;
+}
+
+/* Scrollbar Styling for Webkit (Chrome, Safari) */
+.scrollable-list::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollable-list::-webkit-scrollbar-track {
+  background: #1a4a7c;
+}
+.scrollable-list::-webkit-scrollbar-thumb {
+  background: gold;
+  border-radius: 4px;
+}
+
+/* Leaderboard Table */
 .leaderboard-table {
+  
   width: 100%;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.9);
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+.leaderboard-table thead {
+  background: var(--primary-gradient); /* single continuous gradient */
+}
 .leaderboard-table th,
 .leaderboard-table td {
-  padding: 15px;
+  padding: 10px;
   text-align: left;
-  border-bottom: 2px solid #3e2f28;
+  border-bottom: 2px solid var(--primary-gradient);
 }
-
 .leaderboard-table th {
-  background: #3e2f28;
   color: #ffcc00;
   font-family: 'Pirata One', cursive;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
+  background: transparent; /* let the thead’s gradient show through */
 }
 
 .leaderboard-table tr:hover {
@@ -72,65 +202,205 @@
   color: #3498db;
 }
 
-@media (max-width: 768px) {
-  .leaderboard-table {
+/* Scrollable List Style */
+.scrollable-list {
+  max-height: 300px; /* reduced height helps on mobile */
+  overflow-y: auto;
+}
+
+/* Current User Rank Styles */
+.current-user-rank {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--primary-gradient);
+  color: #ffcc00;
+  padding: 10px 15px;
+  font-size: 0.9rem;
+}
+
+.user-rank-details h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.user-rank-stats {
+  display: flex;
+  gap: 20px;
+}
+
+.user-rank-stats .stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 0.9rem;
+}
+
+.user-rank-stats .stat span:first-child {
+  color: rgba(255, 204, 0, 0.7);
+  font-size: 0.8rem;
+}
+
+.user-rank-stats .stat span:last-child {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  /* Page Container Adjustment */
+  .page-container {
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  /* Center the leaderboard container */
+  .leaderboard-container {
+    width: 95%; /* Ensure it doesn't stretch too wide */
+    max-width: 600px; /* Optional: set a max-width if desired */
+    margin: 10px auto; /* Center horizontally and add some vertical margin */
+  }
+
+  /* Leaderboard Container Responsiveness */
+  .leaderboard-container {
+    margin: 10px;
+    padding: 30px 15px 15px 15px;
+  }
+
+  /* Container Title Responsiveness */
+  .container-title {
+    top: -15px;
+  }
+  .container-title .main-title {
+    font-size: 1.6rem;
+  }
+  .container-title .subtitle {
+    font-size: 0.7rem;
+  }
+
+  /* Top Three Container Adjustment */
+  .luffy-background {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    background-size: cover;
+    padding: 5px;
+  }
+
+  .top-three-card {
+    padding: 5px;
+  }
+
+  .rank-badge {
+    top: -5px;
+    left: 5px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+
+  .username {
     font-size: 0.9rem;
+  }
+
+  .user-stats {
+    font-size: 0.7rem;
+  }
+
+  .stat-label {
+    font-size: 0.6rem;
+  }
+
+  .stat-value {
+    font-size: 0.8rem;
+  }
+
+  .portfolio-hover {
+    font-size: 0.7rem;
+  }
+
+  /* Leaderboard Table Responsiveness */
+  .leaderboard-table {
+    font-size: 0.8rem;
   }
 
   .leaderboard-table th,
   .leaderboard-table td {
-    padding: 10px;
+    padding: 6px;
   }
 
-  .leaderboard-title {
-    font-size: 2rem;
+  .leaderboard-table th {
+    font-size: 0.8rem;
+  }
+
+  /* Scrollable List */
+  .scrollable-list {
+    max-height: 250px;
+  }
+
+  /* Current User Rank */
+  .current-user-rank {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .user-rank-details h3 {
+    font-size: 1.2rem;
+  }
+
+  .user-rank-stats {
+    gap: 10px;
+  }
+
+  .user-rank-stats .stat span:first-child {
+    font-size: 0.7rem;
+  }
+
+  .user-rank-stats .stat span:last-child {
+    font-size: 0.9rem;
   }
 }
 
-.leaderboard-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 1000;
-  width: 80%;
-  max-width: 900px;
-  max-height: 80vh;
-  overflow-y: auto;
-  background: url('/assets/parchment.jpg') no-repeat center center;
-  background-size: cover;
-  border: 5px solid #3e2f28;
-  border-radius: 15px;
-  padding: 25px;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
-}
+/* Additional Mobile Optimization for Very Small Screens */
+@media screen and (max-width: 480px) {
+  .leaderboard-container {
+    margin: 5px;
+    padding: 25px 10px 10px 10px;
+  }
 
-.modal-backdrop {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 999;
-}
+  .container-title .main-title {
+    font-size: 1.4rem;
+  }
 
-.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #c41e3a;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  font-size: 18px;
-  transition: all 0.3s ease;
-}
+  .luffy-background {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
 
-.close-btn:hover {
-  background: #9c1a2f;
-  transform: scale(1.1);
+  .top-three-card {
+    padding: 3px;
+  }
+
+  .username {
+    font-size: 0.8rem;
+  }
+
+  .leaderboard-table {
+    font-size: 0.7rem;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 4px;
+  }
+
+  .current-user-rank {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+
+  .user-rank-details h3 {
+    font-size: 1rem;
+  }
 }
