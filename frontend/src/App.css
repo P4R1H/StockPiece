@@ -202,7 +202,7 @@ body {
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    background: linear-gradient(145deg, rgba(18, 93, 152, 0.9) 30%, rgba(14, 74, 122, 0.9) 100%);
+    background: linear-gradient(145deg, rgba(18, 93, 152, 0.95) 30%, rgba(14, 74, 122, 0.95) 100%);
     border: 2px solid var(--gold);
     border-radius: 8px;
     display: flex;
@@ -228,7 +228,7 @@ body {
     position: fixed;
     bottom: 10px;
     right: 10px;
-    background: linear-gradient(145deg, var(--ocean-blue) 30%, #0e4a7a 100%);
+    background: linear-gradient(145deg, rgba(18, 93, 152, 0.95) 30%, rgba(14, 74, 122, 0.95) 100%);
     border: 2px solid var(--gold);
     border-radius: 50%;
     width: 50px;
