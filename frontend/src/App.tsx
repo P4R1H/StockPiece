@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-ro
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
+import SettingsPage from './pages/Settings/Settings';
 import AdminPanel from './pages/Admin/Admin';
 import './App.css';
 import { refreshUserToken, logoutUser } from './pages/Login/LoginServices';
@@ -66,9 +67,10 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           <Link to="/leaderboard" className="nav-btn" data-tooltip="Leaderboard">
             <i className="fas fa-trophy"></i>
           </Link>
-          <button className="nav-btn" data-tooltip="Settings">
+            <Link to="/settings" className="nav-btn" data-tooltip="Settings">
             <i className="fas fa-cog"></i>
-          </button>
+            </Link>
+
           {isLoggedIn ? (
             <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
               <i className="fas fa-door-open"></i>
@@ -96,9 +98,9 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
         <Link to="/leaderboard" className="nav-btn" data-tooltip="Leaderboard">
           <i className="fas fa-trophy"></i>
         </Link>
-        <button className="nav-btn" data-tooltip="Settings">
+        <Link to="/settings" className="nav-btn" data-tooltip="Settings">
           <i className="fas fa-cog"></i>
-        </button>
+        </Link>
         {isLoggedIn ? (
           <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
             <i className="fas fa-door-open"></i>
@@ -155,6 +157,7 @@ const App: React.FC = () => {
           isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
         } />
         <Route path="/Admin" element={<AdminPanel />} />
+        <Route path="/settings" element={<SettingsPage/>}/>
         <Route path="/*" element={
           <OnePieceStockMarket 
             isLoggedIn={isLoggedIn} 

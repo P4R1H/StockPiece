@@ -11,6 +11,7 @@
   background-size: cover;
   min-height: 30vh;
   font-family: 'Pirata One', cursive;
+  animation: floatIn 0.8s ease-out;
 }
 
 /* Leaderboard Container with positioned title */
@@ -57,7 +58,7 @@
 
 /* Combined Container for Top3, Table, and Current Rank */
 .combined-leaderboard {
-  border: 1px solid gold;
+  border: 1px solid rgb(204, 175, 32);
   border-radius: 10px;
   overflow: hidden;
 }
@@ -148,10 +149,10 @@
 
 /* Scrollbar Styling for Webkit (Chrome, Safari) */
 .scrollable-list::-webkit-scrollbar {
-  width: 8px;
+  width: 4px;
 }
 .scrollable-list::-webkit-scrollbar-track {
-  background: #1a4a7c;
+  background: rgb(193, 173, 60);
 }
 .scrollable-list::-webkit-scrollbar-thumb {
   background: gold;
@@ -331,7 +332,7 @@
   }
 
   .leaderboard-table th {
-    font-size: 0.8rem;
+    font-size: 0.6rem;
   }
 
   /* Scrollable List */
@@ -402,5 +403,16 @@
 
   .user-rank-details h3 {
     font-size: 1rem;
+  }
+}
+
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

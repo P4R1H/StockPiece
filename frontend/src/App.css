@@ -107,7 +107,6 @@ body {
   border-radius: 8px;
   border: 2px solid var(--gold);
 }
-
 .nav-btn {
   color: var(--gold);
   border: none;
@@ -119,6 +118,16 @@ body {
   position: relative;
   margin: 0 -2px;
   border-radius: 0;
+  
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 57px;
+  width: 60px;
+  -webkit-appearance: none;
+  appearance: none;
+
 }
 
 .nav-btn:first-child {
