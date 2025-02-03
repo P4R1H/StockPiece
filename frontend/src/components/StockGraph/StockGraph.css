@@ -15,21 +15,12 @@
   animation: floatIn 0.8s ease-out;
 }
 
-@media (max-width: 768px) {
-  .graph-container {
-    min-width: 100%;
-    width: 100%; /* Add this line */
-
-    max-width: 100%;
-  }
-}
-
+/* Chart Wrapper */
 .chart-wrapper {
   height: 480px;
   position: relative;
 }
 
-/* Controls and Navigation */
 /* Controls and Navigation */
 .graph-controls {
   display: flex;
@@ -62,7 +53,6 @@
   color: #3e2f28;
 }
 
-/* Range Input Styling */
 .chapter-slider input[type="range"],
 .scale-slider input[type="range"] {
   -webkit-appearance: none;
@@ -90,7 +80,7 @@
   transform: scale(1.1);
 }
 
-/* Select Dropdown Styling */
+/* Select Dropdown & Search Bar */
 .pirate-select,
 .search-bar {
   padding: 8px 12px;
@@ -107,6 +97,7 @@
 .pirate-select {
   min-width: 180px;
   width: auto;
+  /* Rounded only on the left */
   border-radius: 5px 0 0 5px;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233e2f28'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
@@ -286,20 +277,76 @@
   }
 }
 
-/* Media Queries */
 @media (max-width: 768px) {
-  .graph-controls {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .slider-container {
+  .graph-container {
+    min-width: 100%;
     width: 100%;
+    max-width: 100%;
+    min-height: 100%;  /* Adjusted for mobile */
+    padding: 0px;       /* Reduced padding for more width */
   }
 
   .chart-wrapper {
-    height: 350px;
+    height: 300px;
+    padding: 0px;
+  }
+
+  .graph-controls {
+    /* Remove extra padding and adjust gap/margins */
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding: 0;
+    margin-top: 0;
+  }
+
+  .advanced-options-button {
+    margin-right: 0;
+    flex: none;
+    min-width: auto;
+  }
+
+  .pirate-select {
+    min-width: 100px;  /* Reduced dropdown width */
+    font-size: 0.9rem;
+    padding: 6px 8px;
+  }
+
+  .slider-container {
+    /* Stack sliders vertically on mobile */
+    flex-direction: column;
+    gap: 0px;
+    width: auto;
+    align-items: flex-start;
+  }
+
+  .chapter-slider,
+  .scale-slider {
+    gap: 6px;
+    font-size: 0.8rem;
+  }
+
+  .chapter-slider input[type="range"],
+  .scale-slider input[type="range"] {
+    width: 60px;
+  }
+
+  .settings-tooltip-container {
+    border-left: none;
+    padding: 0 6px;
+  }
+
+  .pirate-wheel {
+    width: 20px;
+    height: 20px;
+  }
+
+  .side-panel {
+    width: 280px;
+    left: -280px;
+  }
+
+  .side-panel.open {
+    left: 0;
   }
 }
-
-

@@ -327,12 +327,68 @@ Option 2 */
 
 /* Mobile Optimization Updates */
 @media (max-width: 768px) {
+  /* 1. Updated grid and card sizing for 3 cards per row */
+  .stock-grid {
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 0.5rem;    /* Horizontal gap between cards */
+    row-gap: 0.25rem;      /* Reduced vertical gap between rows */
+    padding: 0.5rem;
+  }
+
+  .op-stock-card {
+    /* Reduce overall card size */
+    transform: scale(0.95);
+  }
+
+  .op-image-container {
+    height: 80px;  /* Reduced from 100px */
+  }
+
+  .op-card-body {
+    padding: 4px;  /* Reduced from 8px */
+  }
+
+  /* Reduce vertical gaps */
+  .op-meta {
+    gap: 2px;  /* Reduced from 6px */
+  }
+
+  .op-header {
+    margin-bottom: 2px;  /* Reduced from 6px */
+  }
+
+  .op-divider {
+    margin: 2px 0;  /* Reduced from 4px */
+  }
+
+  .op-actions {
+    gap: 2px;  /* Reduced from 6px */
+  }
+
+  .op-character-name {
+    font-size: 0.7rem;  /* Reduced from 0.75rem */
+    max-width: 70px;    /* Reduced from 90px */
+  }
+
+  .op-character-price {
+    font-size: 0.65rem;  /* Reduced from 0.7rem */
+  }
+
+  .op-owned {
+    font-size: 0.65rem;  /* Reduced from 0.75rem */
+  }
+
+  .op-buy-button, .op-sell-button {
+    padding: 2px 4px;
+    font-size: 0.65rem;
+  }
+
   /* 2. Updated search controls layout */
   .search-controls {
     display: flex;
     flex-direction: row;
     border-bottom: 3px solid #3e2f28;
-    height: 40px;
+    height: 35px;
   }
 
   .stock-search {
