@@ -279,6 +279,7 @@
 
 @media (max-width: 768px) {
   .graph-container {
+    border: 3px solid #3e2f28;
     min-width: 100%;
     width: 100%;
     max-width: 100%;

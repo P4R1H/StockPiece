@@ -217,12 +217,13 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
       },
       y: {
         title: {
-          display: !isMobile, // hide y-axis title on mobile
+          display: !isMobile,
           text: isMobile ? '' : 'Belly (百万)',
           font: { family: 'Pirata One', size: 14 },
           color: '#3e2f28'
         },
         ticks: {
+          // display: !isMobile,
           color: '#3e2f28',
           font: { family: 'Pirata One', size: 12 },
           callback: function (tickValue: number | string): string {
