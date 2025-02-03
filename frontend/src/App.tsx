@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
@@ -12,78 +12,111 @@ interface OnePieceStockMarketProps {
   onLogout: () => void;
 }
 
-const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {  
+const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {
+  const [navCollapsed, setNavCollapsed] = useState(false);
+  const [showCollapseBtn, setShowCollapseBtn] = useState(false);
+  const [shine, setShine] = useState(false);
+  let scrollTimeout: any = null;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.innerWidth <= 768) {
+        // If navbar isn't collapsed yet, collapse it on scroll
+        if (!navCollapsed) setNavCollapsed(true);
+        // Show the collapse button (without shine)
+        setShowCollapseBtn(true);
+        setShine(false);
+        // Clear any existing timer and set one to add shine when scrolling stops
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          setShine(true);
+        }, 500);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+    };
+  }, [navCollapsed]);
+
+  const handleCollapseBtnClick = () => {
+    setNavCollapsed(false);
+    setShowCollapseBtn(false);
+    setShine(false);
+  };
+
   return (
     <div className="one-piece-stock-market">
       <header className="market-header">
         <div className="pirate-banner">
-          {/*
           <img 
-            src="/assets/skull-flag.png" 
-            alt="Pirate Flag" 
-            className="pirate-flag" 
-          />
-          */}
-            <img 
             src="/assets/stockpiecelogo.png" 
             alt="StockPiece Logo" 
             className="market-logo" 
-            />
-            <h1 className="market-title"> Grand Line Exchange</h1>
-
+          />
+          <h1 className="market-title"> Grand Line Exchange</h1>
         </div>
-        
-        <div className="nav-group">
-          <Link 
-            to="/" 
-            className="nav-btn" 
-            data-tooltip="Home"
-          >
+        {/* Desktop Navbar */}
+        <div className="nav-group desktop-nav">
+          <Link to="/" className="nav-btn" data-tooltip="Home">
             <i className="fas fa-home"></i>
           </Link>
-          <Link 
-            to="/leaderboard" 
-            className="nav-btn" 
-            data-tooltip="Leaderboard"
-          >
+          <Link to="/leaderboard" className="nav-btn" data-tooltip="Leaderboard">
             <i className="fas fa-trophy"></i>
           </Link>
-          <button 
-            className="nav-btn" 
-            data-tooltip="Settings"
-          >
-          <i className="fas fa-cog"></i>
+          <button className="nav-btn" data-tooltip="Settings">
+            <i className="fas fa-cog"></i>
           </button>
           {isLoggedIn ? (
-            <button 
-              className="nav-btn logout-btn" 
-              data-tooltip="Logout"
-              onClick={onLogout}
-            >
-            <i className="fas fa-door-open"></i>
+            <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
+              <i className="fas fa-door-open"></i>
             </button>
           ) : (
-            <Link 
-              to="/login" 
-              className="nav-btn login-btn" 
-              data-tooltip="Login"
-            >
+            <Link to="/login" className="nav-btn login-btn" data-tooltip="Login">
               <i className="fas fa-sign-in-alt"></i>
             </Link>
           )}
         </div>
       </header>
       <Routes>
-        <Route path="/" element={
-          <HomePage
-            isLoggedIn={isLoggedIn}
-          />
-        } />
+        <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
       <footer className="market-footer">
         <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
       </footer>
+
+      {/* Mobile Navbar (same styling as desktop) */}
+      <div className={`nav-group mobile-nav ${navCollapsed ? 'hidden' : 'visible'}`}>
+        <Link to="/" className="nav-btn" data-tooltip="Home">
+          <i className="fas fa-home"></i>
+        </Link>
+        <Link to="/leaderboard" className="nav-btn" data-tooltip="Leaderboard">
+          <i className="fas fa-trophy"></i>
+        </Link>
+        <button className="nav-btn" data-tooltip="Settings">
+          <i className="fas fa-cog"></i>
+        </button>
+        {isLoggedIn ? (
+          <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
+            <i className="fas fa-door-open"></i>
+          </button>
+        ) : (
+          <Link to="/login" className="nav-btn login-btn" data-tooltip="Login">
+            <i className="fas fa-sign-in-alt"></i>
+          </Link>
+        )}
+      </div>
+
+      {/* Collapse Button for Mobile */}
+      <button 
+        className={`collapse-btn ${showCollapseBtn ? 'visible' : ''} ${shine ? 'shine' : ''}`}
+        onClick={handleCollapseBtnClick}
+      >
+        <i className="fas fa-bars"></i>
+      </button>
     </div>
   );
 };
@@ -101,9 +134,9 @@ const App: React.FC = () => {
       }
     };
     checkLoginStatus();
-  }, []); // Empty array = run once on mount
+  }, []);
 
-  const authHandlers = useMemo(() => ({
+  const authHandlers = {
     handleLogin: () => setIsLoggedIn(true),
     handleLogout: async () => {
       try {
@@ -113,7 +146,7 @@ const App: React.FC = () => {
         console.error('Logout failed:', error);
       }
     }
-  }), []);
+  };
 
   return (
     <Router>
@@ -121,9 +154,7 @@ const App: React.FC = () => {
         <Route path="/login" element={
           isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
         } />
-        <Route path="/Admin" element = {
-          <AdminPanel />
-        } />
+        <Route path="/Admin" element={<AdminPanel />} />
         <Route path="/*" element={
           <OnePieceStockMarket 
             isLoggedIn={isLoggedIn} 

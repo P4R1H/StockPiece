@@ -1,7 +1,13 @@
+
 /* Import Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
 
+button, img {
+  -webkit-tap-highlight-color: transparent;  /* for iOS Safari */
+  user-select: none;  /* prevents text selection */
+  -webkit-touch-callout: none;  /* prevents callout on long-press */
+}
 /* Root Variables */
 :root {
   --dark-blue: #081B33;
@@ -180,20 +186,77 @@ body {
   margin-top: auto;
 }
 
-/* Media Queries */
+
+/* Mobile styles */
 @media (max-width: 768px) {
-  .market-header {
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 15px;
-  }
-  
-  .nav-btn {
-    padding: 10px 14px;
-    font-size: 1.2rem;
+  .market-header .desktop-nav {
+    display: none;
   }
   
   .market-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+  }
+  
+  .nav-group.mobile-nav {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(145deg, rgba(18, 93, 152, 0.9) 30%, rgba(14, 74, 122, 0.9) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    display: flex;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1001;
+  }
+  
+  .nav-group.mobile-nav.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .nav-btn {
+    padding: 12px 18px;
+    font-size: 1.4rem;
+    margin: 0 -2px;
+  }
+  
+  .collapse-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(145deg, var(--ocean-blue) 30%, #0e4a7a 100%);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .collapse-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .collapse-btn.shine {
+    box-shadow: 0 0 15px var(--gold);
+  }
+}
+
+@media (min-width: 769px) {
+  .nav-group.mobile-nav,
+  .collapse-btn {
+    display: none;
   }
 }
