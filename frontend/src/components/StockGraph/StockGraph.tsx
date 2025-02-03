@@ -23,6 +23,22 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
   const [chapterScale, setChapterScale] = useState<number>(1);
   const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [historicalData, setHistoricalData] = useState<Record<string, number[]>>({});
+
+  // Generate stable mock data when stocks change
+  useEffect(() => {
+    const newData: Record<string, number[]> = {};
+    stocks.forEach(stock => {
+      if (!historicalData[stock.id]) {
+        newData[stock.id] = Array.from(
+          { length: 100 }, // Generate enough data for max possible chapters
+          () => Math.floor(Math.random() * 5000000) + 1000000
+        );
+      }
+    });
+    // Only update with new stocks' data, preserve existing data
+    setHistoricalData(prev => ({...prev, ...newData}));
+  }, [stocks]);
 
   useEffect(() => {
     const newFilter = mapFilter(currentFilter);
@@ -55,9 +71,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
   useEffect(() => {
     checkCustomState();
   }, [stocks]);
-
-  const generateHistory = (length: number) => 
-    Array.from({ length }, () => Math.floor(Math.random() * 5000000) + 1000000);
 
   const handleFilterChange = (newFilter: 'all' | 'owned' | 'popular' | 'unowned' | 'custom', updateVisibilities = true) => {
     setFilter(newFilter);
@@ -92,7 +105,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
   const datasets = stocks
     .filter(stock => stock.visibility !== 'hide')
     .map(stock => {
-      const history = generateHistory(visibleChapters);
+      const history = historicalData[stock.id] || [];
       const data = labels.map(chapter => history[chapter - 1]);
       return {
         label: stock.name,

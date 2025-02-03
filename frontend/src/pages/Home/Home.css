@@ -324,3 +324,43 @@ Option 2 */
     width: 100%; /* Add this */
   }
 }
+
+/* Mobile Optimization Updates */
+@media (max-width: 768px) {
+  /* 2. Updated search controls layout */
+  .search-controls {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 3px solid #3e2f28;
+    height: 40px;
+  }
+
+  .stock-search {
+    flex: 3;  /* Takes up majority of space */
+    min-width: 0;  /* Allows flex-grow to work properly */
+  }
+
+  .stock-filter-btn,
+  .stock-sort-btn {
+    flex: 1;
+    padding: 0 0.4rem;
+    white-space: nowrap;
+  }
+
+  /* 3. Thinner news ticker with more content */
+  .news-ticker {
+    height: 30px;  /* Reduced from 40px */
+  }
+
+  .ticker-content {
+    width: 1200%;  /* Increased from 900% to show more content */
+  }
+
+  .ticker-item {
+    flex: 0 0 8.33%;  /* Adjusted for increased width */
+    font-size: 0.9rem;  /* Slightly smaller text */
+    padding: 0 15px;
+  }
+}
+
+
