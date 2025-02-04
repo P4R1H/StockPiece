@@ -1,8 +1,7 @@
 import ChapterRelease from "../models/chapterRelease.models.js";
-import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 
-const releaseChapter = async (req,res, _) => {
+const releaseChapter = async (req, res, _) => {
   try {
     console.log("running weekly crone job...");
     const latestChapter = await ChapterRelease.findOne().sort({
@@ -30,10 +29,8 @@ const releaseChapter = async (req,res, _) => {
 
     if (req?.admin) {
       res
-      .status(200)
-      .json(
-        new ApiResponse(200,newChapter,'new chapter released')
-      )
+        .status(200)
+        .json(new ApiResponse(200, newChapter, "new chapter released"));
     }
 
     console.log(`new chapter ${newChapterNumber} released`);

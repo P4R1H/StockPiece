@@ -88,7 +88,7 @@ userSchema.methods.generateAccessToken = function () {
       username: this.username,
       avatar: this.avatar,
       lastLogin: this.lastLogin,
-      accountValue: this.accountValue
+      accountValue: this.accountValue,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
