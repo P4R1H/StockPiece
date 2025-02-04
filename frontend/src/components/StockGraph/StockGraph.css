@@ -283,8 +283,8 @@
     min-width: 100%;
     width: 100%;
     max-width: 100%;
-    min-height: 100%;  /* Adjusted for mobile */
-    padding: 0px;       /* Reduced padding for more width */
+    min-height: 100%;
+    padding: 0px;
   }
 
   .chart-wrapper {
@@ -293,7 +293,6 @@
   }
 
   .graph-controls {
-    /* Remove extra padding and adjust gap/margins */
     flex-wrap: nowrap;
     gap: 8px;
     margin-bottom: 12px;
@@ -308,13 +307,12 @@
   }
 
   .pirate-select {
-    min-width: 100px;  /* Reduced dropdown width */
+    min-width: 100px;
     font-size: 0.9rem;
     padding: 6px 8px;
   }
 
   .slider-container {
-    /* Stack sliders vertically on mobile */
     flex-direction: column;
     gap: 0px;
     width: auto;

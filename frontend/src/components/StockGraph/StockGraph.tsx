@@ -7,13 +7,20 @@ import {
   CategoryScale,
   Tooltip,
   Legend,
-  Plugin
+  Plugin,
+  ChartDataset,
+  Point
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import { PriceHistoryGraphProps } from '../../types/Components';
 import './StockGraph.css';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
+
+// Extend the default dataset type to include the custom "image" property
+interface CustomDataset extends ChartDataset<"line", (number | Point | null)[]> {
+  image?: HTMLImageElement;
+}
 
 const getColorForCharacter = (name: string) => {
   const colors = ['#3e2f28', '#b22222', '#1e90ff', '#228b22', '#8b4513', '#ffd700'];
@@ -35,6 +42,22 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
   const [historicalData, setHistoricalData] = useState<Record<string, number[]>>({});
   const [isMobile, setIsMobile] = useState<boolean>(false);
 
+  // NEW: State to hold preloaded images for each stock
+  const [images, setImages] = useState<Record<string, HTMLImageElement>>({});
+
+  // Preload images from stocks
+  useEffect(() => {
+    const imageMap: Record<string, HTMLImageElement> = {};
+    stocks.forEach(stock => {
+      if (stock.image) { // Assumes each stock has an `image` property (a URL)
+        const img = new Image();
+        img.src = stock.image;
+        imageMap[stock.id] = img;
+      }
+    });
+    setImages(imageMap);
+  }, [stocks]);
+
   // Check for mobile viewport
   useEffect(() => {
     const handleResize = () => {
@@ -51,12 +74,11 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
     stocks.forEach(stock => {
       if (!historicalData[stock.id]) {
         newData[stock.id] = Array.from(
-          { length: 100 }, // Generate enough data for max possible chapters
+          { length: 100 },
           () => Math.floor(Math.random() * 5000000) + 1000000
         );
       }
     });
-    // Only update with new stocks' data, preserve existing data
     setHistoricalData(prev => ({ ...prev, ...newData }));
   }, [stocks]);
 
@@ -132,7 +154,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
     (_, index) => index * chapterScale + 1
   );
 
-  const datasets = stocks
+  const datasets: CustomDataset[] = stocks
     .filter(stock => stock.visibility !== 'hide')
     .map(stock => {
       const history = historicalData[stock.id] || [];
@@ -143,10 +165,13 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
         borderColor: getColorForCharacter(stock.name),
         borderWidth: 2,
         pointRadius: 0,
-        tension: 0.4
+        tension: 0.4,
+        // Attach the preloaded image if available
+        image: images[stock.id]
       };
     });
 
+  // Plugin to draw the image (inside a circle with a border) at the end of the line
   const plugins: Plugin<'line'>[] = [
     {
       id: 'endPointMarker',
@@ -154,23 +179,56 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
         const ctx = chart.ctx;
         ctx.save();
         chart.data.datasets.forEach((dataset, i) => {
+          // Cast dataset to CustomDataset to access the "image" property
+          const ds = dataset as CustomDataset;
           const meta = chart.getDatasetMeta(i);
           if (meta.hidden) return;
 
+          // Get the last point of the line
           const lastPoint = meta.data[meta.data.length - 1];
           const x = lastPoint.x;
           const y = lastPoint.y;
+          // Use a radius of 15 for the circular image
+          const radius = 15;
+          // To have the bottom of the circle exactly at the endpoint,
+          // the center's y coordinate is the endpoint minus the radius.
+          const centerX = x;
+          const centerY = y - radius;
 
-          ctx.beginPath();
-          ctx.arc(x, y - 10, 15, 0, Math.PI * 2);
-          ctx.fillStyle = dataset.borderColor as string;
-          ctx.fill();
+          if (ds.image && ds.image.complete) {
+            // Draw the image clipped in a circle
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.drawImage(
+              ds.image,
+              centerX - radius,
+              centerY - radius,
+              2 * radius,
+              2 * radius
+            );
+            ctx.restore();
 
-          ctx.fillStyle = '#ffffff';
-          ctx.font = 'bold 14px "Pirata One"';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(dataset.label?.[0] || '', x, y - 10);
+            // Draw the circular border with the same color as the dataset's line
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = ds.borderColor as string;
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          } else {
+            // Fallback: Draw a circle with the first initial of the stock name
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+            ctx.fillStyle = ds.borderColor as string;
+            ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px "Pirata One"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(ds.label?.[0] || '', centerX, centerY);
+          }
         });
         ctx.restore();
       }
@@ -181,6 +239,12 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
     responsive: true,
     maintainAspectRatio: false,
     interaction: { mode: 'nearest' as const, intersect: false },
+    layout: {
+      padding: {
+        right: 20,
+        top : 10
+      }
+    },
     plugins: {
       tooltip: {
         callbacks: {
@@ -223,7 +287,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
           color: '#3e2f28'
         },
         ticks: {
-          // display: !isMobile,
           color: '#3e2f28',
           font: { family: 'Pirata One', size: 12 },
           callback: function (tickValue: number | string): string {
