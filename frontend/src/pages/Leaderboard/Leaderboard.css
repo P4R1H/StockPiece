@@ -72,7 +72,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  background: url('https://cdn.oneesports.gg/cdn-data/2024/04/Anime_MonkeyDLuffy_Crown_King_Wallpaper.jpg')
+  background: url('/assets/luffyKing.jpg')
     no-repeat center center;
   background-size: cover;
   padding: 10px;
@@ -80,7 +80,7 @@
 
 .top-three-card {
   position: relative;
-  background: rgba(62, 47, 40, 0.8);
+  background: #3e2f28cc;
   border-radius: 10px;
   padding: 8px;
   color: #ffcc00;
