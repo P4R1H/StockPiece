@@ -26,7 +26,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
     "-password -refreshToken"
   );
   //only allow single logged in user to try
-  if (req.user.tokenVersion != user.tokenVersion) {
+  if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
     throw new ApiError(409, "user logged in another session");
   }
 
@@ -104,7 +104,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
     "-password -refreshToken"
   );
   //only allow single logged in user to try
-  if (req.user.tokenVersion != user.tokenVersion) {
+  if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
     throw new ApiError(409, "user logged in another session");
   }
 
