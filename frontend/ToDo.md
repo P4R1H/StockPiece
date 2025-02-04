@@ -1,6 +1,7 @@
 ## Overall Improvements
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
+- [ ] codesense review
 
 ## Page-Specific Tasks
 
