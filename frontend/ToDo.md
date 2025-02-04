@@ -6,6 +6,7 @@
 ## Page-Specific Tasks
 
 ### Home Page
+- [ ] autologout fix
 - [ ] Add site explanation for new users
 - [ ] Implement bulk buy feature
 - [ ] Make any purchases made with mock stocks not go to backend (confirm)
@@ -13,7 +14,7 @@
 ### Leaderboard
 - [/] Complete UI overhaul
 - [ ] Touchups
-- [ ] Implement backend data fetching
+- [/] Implement backend data fetching
 
 ### Settings
 - [ ] Add delete account functionality

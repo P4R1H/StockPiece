@@ -27,6 +27,7 @@
   border-radius: 2%;
 }
 
+
 /* Title on the border of the container */
 .container-title {
   color: rgb(212, 169, 59);
@@ -67,6 +68,7 @@
 
 /* Top Three Section */
 .top-three-container {
+  z-index: 0;
   margin: 0;
 }
 
@@ -195,7 +197,7 @@
 }
 
 .top-rank {
-  background: rgba(255, 215, 0, 0.2);
+  background: rgba(219, 187, 8, 0.2);
   font-weight: bold;
 }
 
@@ -212,6 +214,8 @@
 .scrollable-list {
   max-height: 300px; /* reduced height helps on mobile */
   overflow-y: auto;
+  overflow-x: hidden; 
+
 }
 
 /* Current User Rank Styles */
@@ -251,6 +255,38 @@
   font-size: 1rem;
   font-weight: bold;
 }
+
+/* First Place - Centered and Raised */
+.top-three-card.rank-1 {
+  position: relative; /* or absolt depending on your needs */
+  grid-row: 1;
+  grid-column: 2;
+  transform: translateY(-1px);
+  z-index: 2; /* Add this to make it appear above other elements */
+}
+
+/* Second Place - Left */
+.top-three-card.rank-2 {
+  grid-column: 1;
+  z-index: 1;
+  transform: translateY(6px);
+}
+
+/* Third Place - Right */
+.top-three-card.rank-3 {
+  grid-column: 3;
+  z-index: 1;
+  transform: translateY(6px);
+
+}
+.rank-badge {
+  top: -10px;
+  left: -5px;
+  padding: 2px 6px;
+}
+
+
+
 
 /* Mobile Responsive Adjustments */
 @media screen and (max-width: 768px) {
@@ -299,9 +335,34 @@
     padding: 5px;
   }
 
+  /* First Place - Centered and Raised */
+.top-three-card.rank-1 {
+  position: relative; /* or absolt depending on your needs */
+  grid-row: 1;
+  grid-column: 2;
+  transform: translateY(-1px);
+  z-index: 2; /* Add this to make it appear above other elements */
+}
+
+/* Second Place - Left */
+.top-three-card.rank-2 {
+  grid-column: 1;
+  z-index: 1;
+  transform: translateY(3px);
+}
+
+/* Third Place - Right */
+.top-three-card.rank-3 {
+  grid-column: 3;
+  z-index: 1;
+  transform: translateY(3px);
+
+}
+
+
   .rank-badge {
-    top: -5px;
-    left: 5px;
+    top: -10px;
+    left: -5px;
     padding: 2px 6px;
     font-size: 0.7rem;
   }
@@ -370,6 +431,7 @@
 
 /* Additional Mobile Optimization for Very Small Screens */
 @media screen and (max-width: 480px) {
+
   .leaderboard-container {
     margin: 5px;
     padding: 25px 10px 10px 10px;
@@ -392,18 +454,18 @@
     font-size: 0.8rem;
   }
 
-  .leaderboard-table {
-    font-size: 0.7rem;
-  }
 
-  .leaderboard-table th,
-  .leaderboard-table td {
-    padding: 4px;
+  .leaderboard-table th {
+    white-space: nowrap;
   }
-
+  
   .current-user-rank {
     padding: 6px 10px;
     font-size: 0.7rem;
+  }
+  .leaderboard-table th.right-col,
+  .leaderboard-table td.right-col {
+    transform: translateX(-10px);
   }
 
   .user-rank-details h3 {
@@ -427,3 +489,4 @@
 .leaderboard-table td:nth-child(3) {
   min-width: 120px; /* Adjust this value as needed */
 }
+
