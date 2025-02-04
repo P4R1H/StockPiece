@@ -53,22 +53,23 @@ const LeaderboardPage: React.FC = () => {
             <table className="leaderboard-table">
               <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Pirate Name</th>
-                  <th>Total Treasure</th>
-                  <th>Favorite Stock</th>
-                  <th>Profit %</th>
+                <th className="left-col">Rank</th>
+                <th className="left-col">Pirate Name</th>
+                <th className="right-col">Total Treasure</th>
                 </tr>
               </thead>
               <tbody>
                 {mockLeaderboardData.slice(3).map((entry) => (
                   <tr key={entry.rank} className={entry.rank <= 10 ? 'top-rank' : ''}>
-                    <td>#{entry.rank}</td>
-                    <td>{entry.username}</td>
-                    <td>{entry.totalValue.toLocaleString()} ₿</td>
-                    <td>{entry.topStock}</td>
-                    <td className={entry.profitPercentage >= 100 ? 'profit-high' : 'profit-normal'}>
-                      {entry.profitPercentage}%
+                    <td className="left-col">
+                      <span className="entry-rank">#{entry.rank}</span> 
+                    </td>
+                    <td className='left-col'>
+                      <span className="entry-rank">{entry.username}</span>
+
+                    </td>
+                    <td className="right-col">
+                      {entry.totalValue.toLocaleString()} ₿
                     </td>
                   </tr>
                 ))}
@@ -87,12 +88,7 @@ const LeaderboardPage: React.FC = () => {
                 <span>Total Treasure</span>
                 <span>{currentUser.totalValue.toLocaleString()} ₿</span>
               </div>
-              <div className="stat">
-                <span>Profit</span>
-                <span className={currentUser.profitPercentage >= 100 ? 'profit-high' : 'profit-normal'}>
-                  {currentUser.profitPercentage}%
-                </span>
-              </div>
+              {/* Profit field removed per new requirements */}
             </div>
           </div>
         </div>
