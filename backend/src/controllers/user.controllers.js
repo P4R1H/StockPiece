@@ -60,6 +60,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
     username: username?.trim().toLowerCase(),
     password,
     avatar: avatarUrl,
+    accountValue: 10000
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -90,15 +91,31 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  const loggedInUser = await User.findByIdAndUpdate(
-    user._id,
-    {
-      $inc: {
-        tokenVersion: 1,
+  //check if the user needs to get extra 100 dollars for daily login
+  const midNightTime = () => new Date(new Date.setHours(0,0,0,0));
+
+  const loggedInUser = !user.lastLogin || user.lastLogin < midNightTime ? 
+    await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          lastLogin: Date.now()
+        },
+        $inc: {
+          accountValue: 100
+        }
       },
-    },
-    { new: true }
-  ).select("-password -refreshToken");
+      { new: true }
+    ).select("-password -refreshToken")
+    : await User.findByIdAndUpdate(
+      user._id,
+      {
+        $set: {
+          lastLogin: Date.now()
+        },
+      },
+      { new: true }
+    ).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -133,11 +150,6 @@ const logoutUser = asyncHandler(async (req, res, _) => {
     {
       $unset: {
         refreshToken: "",
-      },
-    },
-    {
-      $inc: {
-        tokenVersion: 1,
       },
     }
   );
@@ -177,9 +189,9 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
   const loggedInUser = await User.findByIdAndUpdate(
     user._id,
     {
-      $inc: {
-        tokenVersion: 1,
-      },
+      $set: {
+        lastLogin: Date.now()
+      }
     },
     { new: true }
   ).select("-password -refreshToken");

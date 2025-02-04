@@ -43,9 +43,8 @@ const userSchema = new mongoose.Schema(
       ],
       default: [],
     },
-    tokenVersion: {
-      type: Number,
-      default: 0,
+    lastLogin: {
+      type: Date,
     },
     refreshToken: {
       type: String,
@@ -88,7 +87,8 @@ userSchema.methods.generateAccessToken = function () {
       _id: this._id,
       username: this.username,
       avatar: this.avatar,
-      tokenVersion: this.tokenVersion,
+      lastLogin: this.lastLogin,
+      accountValue: this.accountValue
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
