@@ -170,6 +170,9 @@
 }
 
 .leaderboard-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
   background: var(--primary-gradient); /* single continuous gradient */
 }
 .leaderboard-table th,
@@ -417,4 +420,10 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Force the third (empty) column to have a minimum width */
+.leaderboard-table th:nth-child(3),
+.leaderboard-table td:nth-child(3) {
+  min-width: 120px; /* Adjust this value as needed */
 }

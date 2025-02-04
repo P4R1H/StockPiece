@@ -55,25 +55,27 @@ const LeaderboardPage: React.FC = () => {
                 <tr>
                 <th className="left-col">Rank</th>
                 <th className="left-col">Pirate Name</th>
+                <th className="left-col"></th>
                 <th className="right-col">Total Treasure</th>
                 </tr>
               </thead>
               <tbody>
-                {mockLeaderboardData.slice(3).map((entry) => (
-                  <tr key={entry.rank} className={entry.rank <= 10 ? 'top-rank' : ''}>
-                    <td className="left-col">
-                      <span className="entry-rank">#{entry.rank}</span> 
-                    </td>
-                    <td className='left-col'>
-                      <span className="entry-rank">{entry.username}</span>
-
-                    </td>
-                    <td className="right-col">
-                      {entry.totalValue.toLocaleString()} ₿
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
+              {mockLeaderboardData.slice(3).map((entry) => (
+                <tr key={entry.rank} className={entry.rank <= 10 ? 'top-rank' : ''}>
+                  <td className="left-col">
+                    <span className="entry-rank">#{entry.rank}</span> 
+                  </td>
+                  <td className="left-col">
+                    <span className="entry-rank">{entry.username}</span>
+                  </td>
+                  {/* Empty cell with forced width DO NOT REMOVE */}
+                  <td className="left-col"></td>
+                  <td className="right-col">
+                    {entry.totalValue.toLocaleString()} ₿
+                  </td>
+                </tr>
+              ))}
+            </tbody>
             </table>
           </div>
 
