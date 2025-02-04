@@ -27,7 +27,8 @@ body {
 /* Settings Container */
 .settings-container {
   position: relative;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/settings.jpg') no-repeat center center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/assets/settings.jpg') no-repeat center center;
   background-size: cover;
   padding: 20px;
   margin: 10px;
@@ -39,8 +40,9 @@ body {
 }
 
 .settings-section {
-  margin-top: 15px;;
+  margin-top: 15px;
 }
+
 /* Section Title */
 .settings-section h2 {
   font-size: 1.4rem;
@@ -126,11 +128,12 @@ body {
   width: 20px;
   height: 20px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .crew-links img:hover {
   transform: scale(1.1);
+  filter: invert(85%) sepia(15%) saturate(694%) hue-rotate(202deg) brightness(100%) contrast(96%);
 }
 
 /* Supplies Icons Section */
@@ -145,6 +148,11 @@ body {
 .supply-icon {
   width: 35px;
   height: 35px;
+  transition: transform 0.2s ease;
+}
+
+.supply-icon:hover {
+  transform: scale(1.2);
 }
 
 /* Manifesto Text */
@@ -154,6 +162,26 @@ body {
   color: #fff;
   opacity: 0.9;
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Footer Links */
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-top: 1rem;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.2s ease;
+}
+
+.footer-links a:hover {
+  border-bottom: 1px solid #fff;
 }
 
 /* Animation */
@@ -210,4 +238,3 @@ body {
     font-size: 0.8rem;
   }
 }
-

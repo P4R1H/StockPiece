@@ -16,11 +16,11 @@
 
 ### Settings
 - [ ] Add delete account functionality
-- [ ] Implement feedback system
+- [/] Implement feedback system : No need due to subreddit now
 - [/] Create about page
 
 ### Navbar
-- [ ] Add logout confirmation dialog
+- [/] Add logout confirmation dialog : Scrapped
 - [ ] Make it easier to spot login button on mobile
 
 ## Technical Issues

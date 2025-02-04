@@ -39,7 +39,7 @@ const SettingsPage: React.FC = () => {
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/github-white-icon.png"
                       alt="GitHub"
                     />
                   </a>
@@ -49,7 +49,7 @@ const SettingsPage: React.FC = () => {
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://img.icons8.com/ios11/512/linkedin.png"
+                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png"
                       alt="LinkedIn"
                     />
                   </a>
@@ -69,7 +69,7 @@ const SettingsPage: React.FC = () => {
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://cdn-icons-png.flaticon.com/512/25/25231.png"
+                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/github-white-icon.png"
                       alt="GitHub"
                     />
                   </a>
@@ -79,7 +79,7 @@ const SettingsPage: React.FC = () => {
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://img.icons8.com/ios11/512/linkedin.png"
+                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png"
                       alt="LinkedIn"
                     />
                   </a>
@@ -98,49 +98,58 @@ const SettingsPage: React.FC = () => {
                 <img
                   src="https://cdn4.iconfinder.com/data/icons/logos-3/600/React.js_logo-512.png"
                   alt="React"
+                  title="React"
                   className="supply-icon"
                 />
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/2048px-Typescript_logo_2020.svg.png"
                   alt="TypeScript"
+                  title="TypeScript"
                   className="supply-icon"
                 />
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
                   alt="JavaScript"
+                  title="JavaScript"
                   className="supply-icon"
                 />
                 <img
                   src="https://www.w3.org/html/logo/downloads/HTML5_Badge_512.png"
                   alt="HTML"
+                  title="HTML"
                   className="supply-icon"
                 />
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/CSS3_logo.svg/2048px-CSS3_logo.svg.png"
                   alt="CSS"
+                  title="CSS"
                   className="supply-icon"
                 />
                 <img
                   src="https://img.icons8.com/?size=512&id=74402&format=png"
                   alt="MongoDB"
+                  title="MongoDB"
                   className="supply-icon"
                 />
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/Vitejs-logo.svg/2078px-Vitejs-logo.svg.png"
                   alt="Vite"
+                  title="Vite"
                   className="supply-icon"
                 />
                 <img
                   src="https://static-00.iconduck.com/assets.00/node-js-icon-1817x2048-g8tzf91e.png"
                   alt="Node.js"
+                  title="Node.js"
                   className="supply-icon"
                 />
                 <img
                   src="https://img.icons8.com/color/512/express-js.png"
                   alt="Express"
+                  title="Express"
                   className="supply-icon"
                 />
-                              </div>
+              </div>
             </div>
           </section>
 
@@ -151,13 +160,31 @@ const SettingsPage: React.FC = () => {
             <h2>Manifesto</h2>
             <div className="section-box">
               <p className="manifesto-text">
-                This website is a labor of love, built to provide a seamless and
-                enjoyable experience for all users. We strive to create a platform
-                that is both functional and beautiful, with a focus on user privacy
-                and data security. Thank you for being part of our journey!
+                This website is a labor of love, built to provide a fun way for
+                everyone to participate in predictions from an interface that is
+                both functional and beautiful. We can't wait to see the 
+                trends. Thank you for being part of our journey!
               </p>
             </div>
           </section>
+
+          {/* Footer Links */}
+          <div className="footer-links">
+            <a
+              href="https://reddit.com/r/stockpiece"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Feedback?
+            </a>
+            <a
+              href="https://github.com/p4r1h/stockpiece"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Contribute?
+            </a>
+          </div>
         </div>
       </div>
     </div>

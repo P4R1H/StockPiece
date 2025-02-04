@@ -29,11 +29,13 @@
 
 /* Title on the border of the container */
 .container-title {
+  color: rgb(212, 169, 59);
   position: absolute;
   top: -20px; /* positions the title overlapping the top border */
   left: 50%;
   transform: translateX(-50%);
-  background: #fff;
+  border: 1px black solid;
+  background: url("/assets/wood.webp");
   padding: 0 15px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
