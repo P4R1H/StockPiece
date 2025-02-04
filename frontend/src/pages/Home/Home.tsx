@@ -21,7 +21,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     try {
       const [stockData, portfolioData] = await Promise.all([
         getStockMarketData(),
-        isLoggedIn ? getPortfolioData() : PLACEHOLDER_PORTFOLIO
+        isLoggedIn ? getPortfolioData() : Promise.resolve(PLACEHOLDER_PORTFOLIO)
       ]);
       setStocks(stockData);
       setPortfolio(portfolioData);
@@ -34,17 +34,23 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     fetchData();
   }, [fetchData]);
 
-  // Memoized portfolio stats
-  const portfolioStats = useMemo(() => ({
-    netWorth: portfolio.cash + Object.entries(portfolio.stocks).reduce((total, [stockId, holding]) => {
-      const stock = stocks.find(s => s.id === stockId);
-      return total + (stock?.currentPrice || 0) * holding.quantity;
-    }, 0),
-    profitLossOverall: "+15%",
-    profitLossLastChapter: "+5%"
-  }), [portfolio, stocks]);
+  // Memoized portfolio stats calculation
+  const portfolioStats = useMemo(() => {
+    const ownedStocks = portfolio.stocks;
+    const netWorth =
+      portfolio.cash +
+      Object.entries(ownedStocks).reduce((total, [stockId, holding]) => {
+        const stock = stocks.find(s => s.id === stockId);
+        return total + (stock?.currentPrice || 0) * holding.quantity;
+      }, 0);
+    return {
+      netWorth,
+      profitLossOverall: "+15%",
+      profitLossLastChapter: "+5%"
+    };
+  }, [portfolio, stocks]);
 
-  // Memoized filtered and sorted stocks
+  // Memoized filtered stocks
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned') return stock.id in portfolio.stocks;
@@ -53,75 +59,100 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     });
   }, [stocks, filter, portfolio.stocks]);
 
+  // Memoized sorted stocks based on searchQuery and sortOrder
   const sortedStocks = useMemo(() => {
     return filteredStocks
-      .filter(stock => stock.name.toLowerCase().includes(searchQuery.toLowerCase()))
-      .sort((a, b) => sortOrder === 'Ascending' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+      .filter(stock =>
+        stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) =>
+        sortOrder === 'Ascending'
+          ? a.name.localeCompare(b.name)
+          : b.name.localeCompare(a.name)
+      );
   }, [filteredStocks, searchQuery, sortOrder]);
 
-  // Optimized buy/sell handlers
-  const handleStockTransaction = useCallback(async (type: 'buy' | 'sell', name: string) => {
-    const stock = stocks.find(s => s.name === name);
-    if (!stock) return;
+  const updateStockVisibility = useCallback((id: string, visibility: 'show' | 'hide' | 'only') => {
+    setStocks(prevStocks =>
+      prevStocks.map(stock => {
+        if (stock.id === id) return { ...stock, visibility };
+        if (visibility === 'only') return { ...stock, visibility: 'hide' };
+        return stock;
+      })
+    );
+  }, []);
 
-    const quantity = 1;
-    const totalCost = stock.currentPrice * quantity;
-    const existingHolding = portfolio.stocks[stock.id];
+  // Optimized buy/sell transaction handler
+  const handleStockTransaction = useCallback(
+    async (type: 'buy' | 'sell', name: string) => {
+      const stock = stocks.find(s => s.name === name);
+      if (!stock) return;
 
-    // Optimistic update
-    const newPortfolio = { ...portfolio };
-    if (type === 'buy') {
-      if (!existingHolding || portfolio.cash >= totalCost) {
-        newPortfolio.cash -= totalCost;
-        newPortfolio.stocks = {
-          ...portfolio.stocks,
-          [stock.id]: {
-            quantity: (existingHolding?.quantity || 0) + quantity,
-            averagePurchasePrice: existingHolding
-              ? ((existingHolding.averagePurchasePrice * existingHolding.quantity) + totalCost) / (existingHolding.quantity + quantity)
-              : stock.currentPrice
-          }
-        };
-      } else {
-        alert('Insufficient funds');
-        return;
-      }
-    } else {
-      if (existingHolding && existingHolding.quantity >= quantity) {
-        newPortfolio.cash += totalCost;
-        const newQuantity = existingHolding.quantity - quantity;
-        if (newQuantity > 0) {
+      const quantity = 1;
+      const totalCost = stock.currentPrice * quantity;
+      const existingHolding = portfolio.stocks[stock.id];
+
+      // Save the previous state for potential rollback
+      const previousPortfolio = { ...portfolio };
+
+      // Optimistically update the portfolio
+      const newPortfolio = { ...portfolio };
+      if (type === 'buy') {
+        if (!existingHolding || portfolio.cash >= totalCost) {
+          newPortfolio.cash -= totalCost;
           newPortfolio.stocks = {
             ...portfolio.stocks,
-            [stock.id]: { ...existingHolding, quantity: newQuantity }
+            [stock.id]: {
+              quantity: (existingHolding?.quantity || 0) + quantity,
+              averagePurchasePrice: existingHolding
+                ? ((existingHolding.averagePurchasePrice * existingHolding.quantity) + totalCost) /
+                  (existingHolding.quantity + quantity)
+                : stock.currentPrice
+            }
           };
         } else {
-          const { [stock.id]: _, ...rest } = portfolio.stocks;
-          newPortfolio.stocks = rest;
+          alert('Insufficient funds');
+          return;
         }
       } else {
-        alert('Not enough shares to sell');
-        return;
+        if (existingHolding && existingHolding.quantity >= quantity) {
+          newPortfolio.cash += totalCost;
+          const newQuantity = existingHolding.quantity - quantity;
+          if (newQuantity > 0) {
+            newPortfolio.stocks = {
+              ...portfolio.stocks,
+              [stock.id]: { ...existingHolding, quantity: newQuantity }
+            };
+          } else {
+            const { [stock.id]: _, ...rest } = portfolio.stocks;
+            newPortfolio.stocks = rest;
+          }
+        } else {
+          alert('Not enough shares to sell');
+          return;
+        }
       }
-    }
 
-    setPortfolio(newPortfolio);
+      setPortfolio(newPortfolio);
 
-    try {
-      await (type === 'buy' ? buyStock : sellStock)(name, quantity);
-    } catch (error) {
-      setPortfolio(portfolio); // Revert on error
-      alert(error instanceof Error ? error.message : 'Transaction failed');
-    }
-  }, [portfolio, stocks]);
+      try {
+        await (type === 'buy' ? buyStock : sellStock)(name, quantity);
+      } catch (error) {
+        // Revert back if the transaction fails
+        setPortfolio(previousPortfolio);
+        alert(error instanceof Error ? error.message : 'Transaction failed');
+      }
+    },
+    [portfolio, stocks]
+  );
 
   return (
     <div className="dashboard-container">
       <div className="dashboard">
         <PortfolioOverview
           userName={isLoggedIn ? (portfolio.username || "Anonymous Pirate") : "Guest Pirate"}
-          netWorth={new Intl.NumberFormat().format(portfolioStats.netWorth || 0)}
-          cash={new Intl.NumberFormat().format(portfolio.cash || 0)}
+          netWorth={new Intl.NumberFormat().format(portfolioStats.netWorth)}
+          cash={new Intl.NumberFormat().format(portfolio.cash)}
           profitLossOverall={portfolioStats.profitLossOverall}
           profitLossLastChapter={portfolioStats.profitLossLastChapter}
           profileImage={portfolio.profilePicture}
@@ -130,13 +161,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         <PriceHistoryGraph
           stocks={stocks}
           ownedStocks={Object.keys(portfolio.stocks)}
-          onVisibilityChange={(id, visibility) => {
-            setStocks(prev => prev.map(stock => {
-              if (stock.id === id) return { ...stock, visibility };
-              if (visibility === 'only') return { ...stock, visibility: 'hide' };
-              return stock;
-            }));
-          }}
+          onVisibilityChange={updateStockVisibility}
           currentFilter={filter}
         />
       </div>
@@ -149,14 +174,22 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 placeholder="Search characters..."
                 className="stock-search"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={e => setSearchQuery(e.target.value)}
               />
-              <select className="stock-filter-btn" value={filter} onChange={(e) => setFilter(e.target.value as any)}>
+              <select
+                className="stock-filter-btn"
+                value={filter}
+                onChange={e => setFilter(e.target.value as 'All' | 'Owned' | 'Popular')}
+              >
                 <option value="All">All</option>
                 <option value="Owned">Owned</option>
                 <option value="Popular">Popular</option>
               </select>
-              <select className="stock-sort-btn" value={sortOrder} onChange={(e) => setSortOrder(e.target.value as any)}>
+              <select
+                className="stock-sort-btn"
+                value={sortOrder}
+                onChange={e => setSortOrder(e.target.value as 'Ascending' | 'Descending')}
+              >
                 <option value="Ascending">Ascending</option>
                 <option value="Descending">Descending</option>
               </select>
@@ -164,26 +197,22 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
             <div className="news-ticker">
               <div className="ticker-content">
                 {(isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS).map((item, index) => (
-                  <span key={index} className="ticker-item">{item}</span>
+                  <span key={index} className="ticker-item">
+                    {item}
+                  </span>
                 ))}
               </div>
             </div>
           </div>
           <div className="stock-grid">
-            {sortedStocks.map((stock) => (
+            {sortedStocks.map(stock => (
               <CharacterStockCard
-              key={stock.id}
-              stock={stock}
-              onBuy={() => handleStockTransaction('buy', stock.name)}
-              onSell={() => handleStockTransaction('sell', stock.name)}
-              onVisibilityChange={(id, visibility) => {
-                setStocks(prev => prev.map(s => {
-                if (s.id === id) return { ...s, visibility };
-                if (visibility === 'only') return { ...s, visibility: 'hide' };
-                return s;
-                }));
-              }}
-              ownedQuantity={portfolio.stocks[stock.id]?.quantity || 0}
+                key={stock.id}
+                stock={stock}
+                onBuy={() => handleStockTransaction('buy', stock.name)}
+                onSell={() => handleStockTransaction('sell', stock.name)}
+                onVisibilityChange={updateStockVisibility}
+                ownedQuantity={portfolio.stocks[stock.id]?.quantity || 0}
               />
             ))}
           </div>

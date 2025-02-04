@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import './Portfolio.css';
-import { BountyProfileCardProps } from '../../types/Components'
+import { BountyProfileCardProps } from '../../types/Components';
 
 const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   userName,
@@ -9,47 +9,46 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   profitLossOverall,
   profitLossLastChapter,
   profileImage,
-  isLoggedIn
+  isLoggedIn,
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isHovering, setIsHovering] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUploadClick = () => {
+  // Trigger file input click
+  const handleUploadClick = useCallback(() => {
     fileInputRef.current?.click();
-  };
+  }, []);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file selection and upload
+  const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
 
-      const formData = new FormData();
-      formData.append('avatar', file);
+    // Preview the selected image
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result as string);
+    reader.readAsDataURL(file);
 
-      try {
-        const response = await fetch('/api/v1/user/update-avatar', {
-          method: 'POST',
-          body: formData,
-          credentials: 'include'
-        });
-
-        if (!response.ok) throw new Error('Upload failed');
-        
-        console.log('Profile image uploaded successfully');
-      } catch (error) {
-        console.error('Upload error:', error);
-      }
+    // Prepare form data and upload
+    const formData = new FormData();
+    formData.append('avatar', file);
+    try {
+      const response = await fetch('/api/v1/user/update-avatar', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+      });
+      if (!response.ok) throw new Error('Upload failed');
+      console.log('Profile image uploaded successfully');
+    } catch (error) {
+      console.error('Upload error:', error);
     }
-  };
+  }, []);
 
   return (
     <div className="bounty-card">
-      <div 
+      <div
         className="bounty-image-container"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
@@ -57,12 +56,12 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
         {profileImage || preview ? (
           <>
             <img
-              src={preview || profileImage}
+              src={preview || profileImage!}
               alt="User"
               className="bounty-image"
             />
             {isLoggedIn && (
-              <div 
+              <div
                 className={`overlay ${isHovering ? 'overlay-visible' : ''}`}
                 onClick={handleUploadClick}
               >
@@ -77,8 +76,8 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
           >
             <span>
               {isLoggedIn
-                ? "Click to upload profile picture"
-                : "Login / Register to set a profile picture"}
+                ? 'Click to upload profile picture'
+                : 'Login / Register to set a profile picture'}
             </span>
           </div>
         )}
@@ -94,11 +93,13 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
       <div className="bounty-details">
         <p className="bounty-name">{userName}</p>
         <p className="bounty-net-worth">
-          Net Worth: <span className="highlight">{netWorth} Bellies</span> Cash:  <span className="highlight">{cash} Bellies</span>
+          Net Worth: <span className="highlight">{netWorth} Bellies</span> &nbsp;
+          Cash: <span className="highlight">{cash} Bellies</span>
         </p>
         <p className="bounty-profit-loss">
-          Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>{' '}
+          Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>
           <span className="profit-loss-last-chapter">
+            {' '}
             (Last Chapter: <span className="highlight">{profitLossLastChapter}</span>)
           </span>
         </p>

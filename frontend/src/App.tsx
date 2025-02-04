@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
@@ -17,19 +17,20 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
   const [navCollapsed, setNavCollapsed] = useState(false);
   const [showCollapseBtn, setShowCollapseBtn] = useState(false);
   const [shine, setShine] = useState(false);
-  let scrollTimeout: any = null;
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerWidth <= 768) {
-        // If navbar isn't collapsed yet, collapse it on scroll
-        if (!navCollapsed) setNavCollapsed(true);
-        // Show the collapse button (without shine)
+        if (!navCollapsed) {
+          setNavCollapsed(true);
+        }
         setShowCollapseBtn(true);
         setShine(false);
-        // Clear any existing timer and set one to add shine when scrolling stops
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+        }
+        scrollTimeoutRef.current = setTimeout(() => {
           setShine(true);
         }, 500);
       }
@@ -38,7 +39,9 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
-      if (scrollTimeout) clearTimeout(scrollTimeout);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
     };
   }, [navCollapsed]);
 
@@ -57,7 +60,7 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
             alt="StockPiece Logo" 
             className="market-logo" 
           />
-          <h1 className="market-title"> Grand Line Exchange</h1>
+          <h1 className="market-title">Grand Line Exchange</h1>
         </div>
         {/* Desktop Navbar */}
         <div className="nav-group desktop-nav">
@@ -70,7 +73,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           <Link to="/settings" className="nav-btn" data-tooltip="Settings">
             <i className="fas fa-cog"></i>
           </Link>
-
           {isLoggedIn ? (
             <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
               <i className="fas fa-door-open"></i>
@@ -82,16 +84,18 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           )}
         </div>
       </header>
+
       <Routes>
         <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
-        <Route path="/settings" element={<SettingsPage />} />        
+        <Route path="/settings" element={<SettingsPage />} />
       </Routes>
+
       <footer className="market-footer">
         <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
       </footer>
 
-      {/* Mobile Navbar (same styling as desktop) */}
+      {/* Mobile Navbar */}
       <div className={`nav-group mobile-nav ${navCollapsed ? 'hidden' : 'visible'}`}>
         <Link to="/" className="nav-btn" data-tooltip="Home">
           <i className="fas fa-home"></i>
@@ -125,7 +129,7 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
 };
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -139,15 +143,13 @@ const App: React.FC = () => {
     checkLoginStatus();
   }, []);
 
-  const authHandlers = {
-    handleLogin: () => setIsLoggedIn(true),
-    handleLogout: async () => {
-      try {
-        await logoutUser();
-        setIsLoggedIn(false);
-      } catch (error) {
-        console.error('Logout failed:', error);
-      }
+  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
     }
   };
 
@@ -155,13 +157,13 @@ const App: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/login" element={
-          isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
+          isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={handleLogin} />
         } />
         <Route path="/Admin" element={<AdminPanel />} />
         <Route path="/*" element={
           <OnePieceStockMarket 
             isLoggedIn={isLoggedIn} 
-            onLogout={authHandlers.handleLogout} 
+            onLogout={handleLogout} 
           />
         } />
       </Routes>

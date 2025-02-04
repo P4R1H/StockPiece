@@ -1,13 +1,32 @@
-/* Card Base */
+:root {
+  --primary-bg: #0a1a2a;
+  --secondary-bg: #020e1b;
+  --accent: #d3a728;
+  --accent-light: #ffd700;
+  --accent-dark: #e5c56e;
+  --gold: rgba(255, 215, 0, 0.7);
+  --buy-bg-start: #2d4b6e;
+  --buy-bg-end: #1a2e40;
+  --buy-hover-start: #3a7a6a;
+  --buy-hover-end: #2d6e5b;
+  --sell-bg-start: #6e2d2d;
+  --sell-bg-end: #401a1a;
+  --sell-hover-start: #a00000;
+  --sell-hover-end: #8b0000;
+  --text-primary: #ffd700;
+  --text-secondary: #4CAF50;
+  --text-tertiary: #add8e6;
+}
+
 .op-stock-card {
   width: 100%;
-  background: #0a1a2a;
+  background: var(--primary-bg);
   border-radius: 10px;
   overflow: hidden;
+  position: relative;
+  border: 1px solid var(--accent);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: transform 0.2s ease;
-  border: 1px solid #d3a728;
-  position: relative;
   background-image: linear-gradient(
       to bottom right,
       rgba(10, 26, 42, 0.8),
@@ -16,13 +35,16 @@
     url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="50%" y="50%" font-family="Arial" font-size="14" fill="%232d4b6e30" text-anchor="middle">₿</text></svg>');
 }
 
+.op-stock-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 0 10px var(--gold);
+}
 
-/* Image Section */
 .op-image-container {
   position: relative;
   height: 120px;
-  background: #020e1b;
-  border-bottom: 2px solid #d3a728;
+  background: var(--secondary-bg);
+  border-bottom: 2px solid var(--accent);
 }
 
 .op-character-image {
@@ -33,13 +55,12 @@
   border-radius: 8px 8px 0 0;
 }
 
-/* Visibility Toggle */
 .op-visibility-toggle {
   position: absolute;
   top: 6px;
   right: 6px;
   background: rgba(211, 167, 40, 0.9);
-  border: 1px solid #ffd700;
+  border: 1px solid var(--accent-light);
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -48,28 +69,27 @@
   justify-content: center;
   cursor: pointer;
   color: #2d1900;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
   padding: 0;
 }
 
 .op-visibility-toggle[data-visibility="only"] {
-  background: #ffd700;
+  background: var(--accent-light);
 }
 
 .op-visibility-toggle:hover {
-  background: #e5c56e;
+  background: var(--accent-dark);
   transform: scale(1.1);
 }
 
-/* Card Content */
 .op-divider {
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
     transparent,
     transparent 3px,
-    #d3a728 3px,
-    #d3a728 6px
+    var(--accent) 3px,
+    var(--accent) 6px
   );
   margin: 4px 0;
 }
@@ -78,7 +98,6 @@
   padding: 8px;
 }
 
-/* Header Section */
 .op-header {
   display: flex;
   justify-content: space-between;
@@ -89,7 +108,7 @@
 .op-character-name {
   margin: 0;
   font-size: 0.85rem;
-  color: #ffd700;
+  color: var(--text-primary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -101,12 +120,11 @@
 
 .op-character-price {
   font-size: 0.8rem;
-  color: #4CAF50;
+  color: var(--text-secondary);
   font-weight: bold;
   font-family: monospace;
 }
 
-/* Meta Information */
 .op-meta {
   display: flex;
   flex-direction: column;
@@ -115,17 +133,17 @@
 
 .op-owned {
   font-size: 0.75rem;
-  color: #add8e6;
+  color: var(--text-tertiary);
   font-weight: 500;
 }
 
-/* Action Buttons */
 .op-actions {
   display: flex;
   gap: 6px;
 }
 
-.op-buy-button, .op-sell-button {
+.op-buy-button, 
+.op-sell-button {
   flex: 1;
   padding: 4px 8px;
   border: none;
@@ -133,35 +151,27 @@
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
 .op-buy-button {
-  background: linear-gradient(to bottom, #2d4b6e, #1a2e40);
-  color: #d4af37;
+  background: linear-gradient(to bottom, var(--buy-bg-start), var(--buy-bg-end));
+  color: var(--text-primary);
   border: 1px solid #3a5a7a;
 }
 
 .op-buy-button:hover {
-  background: linear-gradient(to bottom, #3a7a6a, #2d6e5b);
+  background: linear-gradient(to bottom, var(--buy-hover-start), var(--buy-hover-end));
 }
 
 .op-sell-button {
-  background: linear-gradient(to bottom, #6e2d2d, #401a1a);
+  background: linear-gradient(to bottom, var(--sell-bg-start), var(--sell-bg-end));
   color: #ff8080;
   border: 1px solid #7a3a3a;
 }
 
 .op-sell-button:hover {
-  background: linear-gradient(to bottom, #a00000, #8b0000);
-}
-
-@media (hover: hover) {
-  .op-stock-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.7); /* Gold highlight */
-  }
-  
+  background: linear-gradient(to bottom, var(--sell-hover-start), var(--sell-hover-end));
 }

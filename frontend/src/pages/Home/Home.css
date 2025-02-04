@@ -102,7 +102,6 @@
   font-family: 'Pirata One', cursive;
   color: #3e2f28;
   height: 100%;
-  border-radius: 0;
 }
 
 .stock-filter-btn,
@@ -178,7 +177,6 @@
   text-shadow: 0 0 8px rgba(255, 68, 68, 0.8);
   letter-spacing: 1px;
   padding: 0 20px;
-  position: relative;
   white-space: nowrap;
 }
 
@@ -192,20 +190,9 @@
 .stock-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  width: 100%;
   gap: 1.5rem;
   padding: 1.5rem;
 }
-
-/*
-.stock-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); 
-  width: 100%;
-  gap: 1rem; 
-  padding: 1rem;
-}
-Option 2 */
 
 /* Animations */
 @keyframes floatIn {
@@ -243,157 +230,96 @@ Option 2 */
     flex-wrap: wrap;
   }
   
-    
   .stock-grid {
     padding: 1rem;
     gap: 1rem;
   }
-
 }
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
-  .stock-grid {
-    grid-template-columns: repeat(2, 1fr); /* Force 2 columns */
-    gap: 0.75rem;
-    padding: 0.75rem;
-  }
-
-  .op-stock-card {
-    border-width: 1px;
-    border-radius: 8px;
-  }
-
-  .stock-search {
-    width: 100%;
-  }
-  
-  .news-ticker {
-    height: 40px;
-  }
-
-  .op-image-container {
-    height: 100px;
-  }
-
-  .op-character-name {
-    font-size: 0.75rem;
-  }
-
-  .op-character-price {
-    font-size: 0.7rem;
-  }
-
-  .op-actions {
-    flex-direction: column;
-  }
-
-  .op-buy-button, .op-sell-button {
-    padding: 3px 6px;
-    font-size: 0.7rem;
-  }
-}
-
-@media (max-width: 768px) {
+  .dashboard,
   .graph-container {
-    /* Previous styles... */
-    flex: 1 1 100%; /* Add this to ensure full width growth */
+    width: 100%;
+    padding: 0;
   }
-  
-  /* Ensure the parent container allows full width */
+
   .dashboard {
-    width: 100%;
-    display: flex;
     flex-direction: column;
-    align-items: stretch; /* Add this */
+    align-items: stretch;
   }
-}
-
-@media (max-width: 768px) {
+  
   .graph-container {
+    flex: 1 1 100%;
     min-width: 100%;
-    width: 100%;
     max-width: 100%;
-    margin: 0; /* Add this */
-    padding: 10px; /* Reduce padding */
+    margin: 0;
+    padding: 10px;
   }
 
-  /* Target the parent container */
-  .dashboard {
-    padding: 0; /* Add this */
-    width: 100%; /* Add this */
-  }
-}
-
-/* Mobile Optimization Updates */
-@media (max-width: 768px) {
-  /* 1. Updated grid and card sizing for 3 cards per row */
   .stock-grid {
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 0.5rem;    /* Horizontal gap between cards */
-    row-gap: 0.25rem;      /* Reduced vertical gap between rows */
+    column-gap: 0.5rem;
+    row-gap: 0.25rem;
     padding: 0.5rem;
   }
 
   .op-stock-card {
-    /* Reduce overall card size */
     transform: scale(0.95);
+    border-width: 1px;
+    border-radius: 8px;
   }
 
   .op-image-container {
-    height: 80px;  /* Reduced from 100px */
+    height: 80px;
   }
 
   .op-card-body {
-    padding: 4px;  /* Reduced from 8px */
+    padding: 4px;
   }
 
-  /* Reduce vertical gaps */
   .op-meta {
-    gap: 2px;  /* Reduced from 6px */
+    gap: 2px;
   }
 
   .op-header {
-    margin-bottom: 2px;  /* Reduced from 6px */
+    margin-bottom: 2px;
   }
 
   .op-divider {
-    margin: 2px 0;  /* Reduced from 4px */
+    margin: 2px 0;
   }
 
   .op-actions {
-    gap: 2px;  /* Reduced from 6px */
+    gap: 2px;
+    flex-direction: column;
   }
 
   .op-character-name {
-    font-size: 0.7rem;  /* Reduced from 0.75rem */
-    max-width: 70px;    /* Reduced from 90px */
+    font-size: 0.7rem;
+    max-width: 70px;
   }
 
-  .op-character-price {
-    font-size: 0.65rem;  /* Reduced from 0.7rem */
-  }
-
+  .op-character-price,
   .op-owned {
-    font-size: 0.65rem;  /* Reduced from 0.75rem */
+    font-size: 0.65rem;
   }
 
-  .op-buy-button, .op-sell-button {
+  .op-buy-button,
+  .op-sell-button {
     padding: 2px 4px;
     font-size: 0.65rem;
   }
 
-  /* 2. Updated search controls layout */
   .search-controls {
-    display: flex;
     flex-direction: row;
     border-bottom: 3px solid #3e2f28;
     height: 35px;
   }
 
   .stock-search {
-    flex: 3;  /* Takes up majority of space */
-    min-width: 0;  /* Allows flex-grow to work properly */
+    flex: 3;
+    min-width: 0;
   }
 
   .stock-filter-btn,
@@ -403,20 +329,17 @@ Option 2 */
     white-space: nowrap;
   }
 
-  /* 3. Thinner news ticker with more content */
   .news-ticker {
-    height: 30px;  /* Reduced from 40px */
+    height: 30px;
   }
 
   .ticker-content {
-    width: 1200%;  /* Increased from 900% to show more content */
+    width: 1200%;
   }
 
   .ticker-item {
-    flex: 0 0 8.33%;  /* Adjusted for increased width */
-    font-size: 0.9rem;  /* Slightly smaller text */
+    flex: 0 0 8.33%;
+    font-size: 0.9rem;
     padding: 0 15px;
   }
 }
-
-

@@ -1,194 +1,213 @@
-.settings-page {
-    min-height: 100vh;
-    width: 100%;
-    background: linear-gradient(to bottom, #015871, #048b9a, #04b2a9);
-    overflow: hidden;
-    position: relative;
+/* Define CSS Variables */
+:root {
+  --max-container-width: 500px; /* Adjusted for reduced horizontal space */
+}
+
+/* General Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--primary-gradient);
+  background-size: 200% 200%;
+  color: #fff;
+  font-family: 'Pirata One', cursive;
+}
+
+/* Page Container */
+.main-page-container {
+  padding: 0.5rem;
+  max-width: var(--max-container-width);
+  margin: 1rem auto;
+  animation: floatIn 0.8s ease-out;
+  background: url('/assets/waves-animation.gif') no-repeat center center;
+  background-size: cover;
+  overflow-y: auto;
+}
+
+/* Settings Container */
+.settings-container {
+  position: relative;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/assets/settings.jpg') no-repeat center center;
+  background-size: cover;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+  border: 5px solid transparent;
+  border-image: var(--primary-gradient) 1;
+  border-radius: 2%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.settings-section {
+  margin-top: 15px;;
+}
+/* Section Title */
+.settings-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Semi-transparent Box for Section Content */
+.section-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+}
+
+/* Specific adjustment for supplies box to reduce horizontal space */
+.supplies-box {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Section Divider */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 1rem 0;
+}
+
+/* Controls Section */
+.controls-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.danger-button {
+  background: #ff4d4d;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  font-family: 'Pirata One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.danger-button:hover {
+  background: #cc0000;
+}
+
+/* Crew Section */
+.crew-members {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.crew-member {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.crew-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid gold;
+}
+
+/* Crew Links */
+.crew-links {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.crew-links img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.crew-links img:hover {
+  transform: scale(1.1);
+}
+
+/* Supplies Icons Section */
+.supplies-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.supply-icon {
+  width: 35px;
+  height: 35px;
+}
+
+/* Manifesto Text */
+.manifesto-text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #fff;
+  opacity: 0.9;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Animation */
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
-  
-  /* Ocean Animation */
-  .ocean-container {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
-  .wave {
-    position: absolute;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, #015871, #048b9a);
-    animation: wave 8s linear infinite;
+}
+
+/* Responsive Adjustments for Mobile */
+@media (max-width: 600px) {
+  .main-page-container {
+    padding: 0.25rem;
+    max-width: 90%;
   }
-  
-  .wave-1 {
-    opacity: 0.5;
-    bottom: 0;
-    animation-duration: 8s;
+  .settings-container {
+    padding: 15px;
+    margin: 5px;
   }
-  
-  .wave-2 {
-    opacity: 0.4;
-    bottom: 10%;
-    animation-duration: 10s;
+  .settings-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.4rem;
   }
-  
-  .wave-3 {
-    opacity: 0.3;
-    bottom: 20%;
-    animation-duration: 12s;
+  .section-box {
+    padding: 0.4rem;
+    margin-bottom: 0.8rem;
   }
-  
-  .wave-4 {
-    opacity: 0.2;
-    bottom: 30%;
-    animation-duration: 14s;
-  }
-  
-  @keyframes wave {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-  
-  /* Main Content */
-  .main-content {
-    position: relative;
-    z-index: 10;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-  }
-  
-  /* Ship Container */
-  .ship-container {
-    position: relative;
-    width: 800px;
-    height: 600px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .ship-section {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: all 0.5s ease-in-out;
-  }
-  
-  .ship-section.active {
-    z-index: 50;
-    transform: scale(1.05);
-  }
-  
-  .ship-section:not(.active) {
-    z-index: 10;
-    transform: scale(0.95);
-  }
-  
-  .ship-image {
-    width: 100%;
-    height: 100%;
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-    transform: rotate(-90deg);
-  }
-  
-  /* Info Panel */
-  
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Navigation */
-  .nav-buttons {
-    position: absolute;
-    right: -8rem;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
+  .controls-buttons {
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.4rem;
   }
-  
-  .nav-button {
-    width: 7rem;
-    padding: 0.75rem 1rem;
-    text-align: left;
-    font-size: 0.875rem;
-    font-weight: 500;
-    border: none;
-    border-radius: 0 0.5rem 0.5rem 0;
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(8px);
-    transition: all 0.3s ease;
-    cursor: pointer;
+  .danger-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
-  
-  .nav-button:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(0.25rem);
+  .crew-avatar {
+    width: 60px;
+    height: 60px;
   }
-  
-  .nav-button.active {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border-left: 2px solid white;
-    transform: translateX(0);
+  .crew-links img {
+    width: 18px;
+    height: 18px;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 1024px) {
-    .ship-container {
-      width: 90%;
-      max-width: 600px;
-      height: 500px;
-    }
-  
-    .nav-buttons {
-      right: -6rem;
-    }
-  
-    .nav-button {
-      width: 6rem;
-      font-size: 0.8rem;
-    }
+  .supply-icon {
+    width: 30px;
+    height: 30px;
   }
-  
-  @media (max-width: 768px) {
-    .main-content {
-      padding: 1rem;
-    }
-  
-    .ship-container {
-      height: 400px;
-    }
-  
-    .nav-buttons {
-      right: 0;
-      bottom: -4rem;
-      top: auto;
-      transform: none;
-      flex-direction: row;
-      justify-content: center;
-      width: 100%;
-    }
-  
-    .nav-button {
-      width: auto;
-      border-radius: 0.5rem;
-    }
+  .manifesto-text {
+    font-size: 0.8rem;
   }
+}
+

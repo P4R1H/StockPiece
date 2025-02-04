@@ -1,6 +1,6 @@
 ## Overall Improvements
 - [/] Admin Panel Implementation
-- [ ] Responsive Design Enhancement
+- [/] Responsive Design Enhancement
 
 ## Page-Specific Tasks
 
@@ -10,16 +10,18 @@
 - [ ] Make any purchases made with mock stocks not go to backend (confirm)
 
 ### Leaderboard
-- [ ] Complete UI overhaul
+- [/] Complete UI overhaul
+- [ ] Touchups
 - [ ] Implement backend data fetching
 
 ### Settings
 - [ ] Add delete account functionality
 - [ ] Implement feedback system
-- [ ] Create about page
+- [/] Create about page
 
 ### Navbar
 - [ ] Add logout confirmation dialog
+- [ ] Make it easier to spot login button on mobile
 
 ## Technical Issues
 - [?] Fix MongoDB rate limiting
