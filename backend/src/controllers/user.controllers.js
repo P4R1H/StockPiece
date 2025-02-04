@@ -60,7 +60,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
     username: username?.trim().toLowerCase(),
     password,
     avatar: avatarUrl,
-    accountValue: 10000
+    accountValue: 10000,
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -92,30 +92,31 @@ const loginUser = asyncHandler(async (req, res, _) => {
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
   //check if the user needs to get extra 100 dollars for daily login
-  const midNightTime = () => new Date(new Date.setHours(0,0,0,0));
+  const midNightTime = () => new Date(new Date.setHours(0, 0, 0, 0));
 
-  const loggedInUser = !user.lastLogin || user.lastLogin < midNightTime ? 
-    await User.findByIdAndUpdate(
-      user._id,
-      {
-        $set: {
-          lastLogin: Date.now()
-        },
-        $inc: {
-          accountValue: 100
-        }
-      },
-      { new: true }
-    ).select("-password -refreshToken")
-    : await User.findByIdAndUpdate(
-      user._id,
-      {
-        $set: {
-          lastLogin: Date.now()
-        },
-      },
-      { new: true }
-    ).select("-password -refreshToken");
+  const loggedInUser =
+    !user.lastLogin || user.lastLogin < midNightTime
+      ? await User.findByIdAndUpdate(
+          user._id,
+          {
+            $set: {
+              lastLogin: Date.now(),
+            },
+            $inc: {
+              accountValue: 100,
+            },
+          },
+          { new: true }
+        ).select("-password -refreshToken")
+      : await User.findByIdAndUpdate(
+          user._id,
+          {
+            $set: {
+              lastLogin: Date.now(),
+            },
+          },
+          { new: true }
+        ).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -145,14 +146,11 @@ const logoutUser = asyncHandler(async (req, res, _) => {
   if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
-  const _user = await User.findByIdAndUpdate(
-    req.user?._id,
-    {
-      $unset: {
-        refreshToken: "",
-      },
-    }
-  );
+  const _user = await User.findByIdAndUpdate(req.user?._id, {
+    $unset: {
+      refreshToken: "",
+    },
+  });
 
   const options = {
     httpOnly: true,
@@ -190,8 +188,8 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     user._id,
     {
       $set: {
-        lastLogin: Date.now()
-      }
+        lastLogin: Date.now(),
+      },
     },
     { new: true }
   ).select("-password -refreshToken");
@@ -273,8 +271,11 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "unauthenticated request");
   }
   const user = await User.findById(req.user._id)
-    .populate("ownedStocks.stock")
-    .select("-password -refreshToken")
+    .populate({
+      path: "ownedStocks.stock",
+      select: "name initialValue currentValue",
+    })
+    .select("-password -refreshToken -createdAt -updatedAt")
     .lean();
 
   if (!user) {
@@ -285,8 +286,8 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
   let totalCurrentValue = 0;
 
   user.ownedStocks.forEach((stock) => {
-    totalInitialValue += stock.stock.initialValue;
-    totalCurrentValue += stock.stock.currentValue;
+    totalInitialValue += stock.stock.initialValue * stock.quantity;
+    totalCurrentValue += stock.stock.currentValue * stock.quantity;
   });
 
   const profitPercentage =
@@ -300,6 +301,80 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, user, "user portfolio fetched successfully"));
 });
 
+// const getLeaderBoard = asyncHandler( async (req, res, next) => {
+//   const userRanking = await User.aggregate([
+//     {
+//       $lookup: {
+//         from:
+//       }
+//     }
+//   ])
+// })
+
+const getTopUsersByStockValue = asyncHandler(async (req, res) => {
+  const currentUserId = req.user?._id;
+  if (!currentUserId) {
+    throw new ApiError(401, "Unauthenticated request");
+  }
+
+  // Get all users with populated stock data
+  const allUsers = await User.find({})
+    .populate({
+      path: "ownedStocks.stock",
+      select: "currentValue",
+    })
+    .select("username ownedStocks")
+    .lean();
+
+  // Calculate stock values for all users
+  const usersWithStockValue = allUsers.map((user) => ({
+    _id: user._id.toString(),
+    name: user.username,
+    stockValue: user.ownedStocks.reduce((total, ownedStock) => {
+      const currentValue = ownedStock.stock?.currentValue || 0;
+      const quantity = ownedStock.quantity || 0;
+      return total + currentValue * quantity;
+    }, 0),
+  }));
+
+  // Sort all users by stock value
+  const sortedUsers = usersWithStockValue.sort(
+    (a, b) => b.stockValue - a.stockValue
+  );
+
+  //get the top hundred users and only the relevent data
+  const topUsers = sortedUsers.slice(0, 100).map((user) => ({
+    name: user.name,
+    stockValue: user.stockValue,
+  }));
+
+  // Find current user's position
+  const currentUserIndex = sortedUsers.findIndex(
+    (user) => user._id === currentUserId.toString()
+  );
+
+  // Prepare current user data
+  let currentUserData = null;
+  if (currentUserIndex !== -1) {
+    currentUserData = {
+      name: sortedUsers[currentUserIndex].name,
+      stockValue: sortedUsers[currentUserIndex].stockValue,
+      rank: currentUserIndex + 1,
+    };
+  }
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        topUsers,
+        currentUser: currentUserData,
+      },
+      "Leaderboard data fetched successfully"
+    )
+  );
+});
+
 export {
   registerUser,
   loginUser,
@@ -308,4 +383,5 @@ export {
   updateAvatar,
   getCurrentUser,
   getCurrentUserPortfolio,
+  getTopUsersByStockValue,
 };

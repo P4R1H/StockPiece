@@ -1,12 +1,14 @@
 import User from "../models/user.models.js";
 import CharacterStock from "../models/characterStock.models.js";
-import { k, epsilon, decayFactor} from "../constants.js";
+import { k, epsilon, decayFactor } from "../constants.js";
 import mongoose from "mongoose";
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 
 const closeMarket = async (req, res, _) => {
-  const latestChapterDoc = await ChapterRelease.findOne().sort({ releaseDate: -1 });
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
   const latestChapter = latestChapterDoc?.chapter;
 
   const usersStocks = await User.aggregate([
@@ -25,7 +27,7 @@ const closeMarket = async (req, res, _) => {
     stockMap.set(stock._id.toString(), stock.totalQuantity);
   });
 
-  const allStocks = await CharacterStock.find(); 
+  const allStocks = await CharacterStock.find();
 
   const bulkOps = allStocks.map((stock) => {
     //default to 0 if there are no holdings.
@@ -36,7 +38,7 @@ const closeMarket = async (req, res, _) => {
     if (totalQuantity === 0) {
       // If no one holds the stock, apply a gentle decay instead of a sudden drop.
       newValue = stock.currentValue * decayFactor;
-      newBaseQuantity = stock.baseQuantity; 
+      newBaseQuantity = stock.baseQuantity;
     } else if (totalQuantity === stock.baseQuantity) {
       newValue = stock.currentValue;
       newBaseQuantity = stock.baseQuantity;
@@ -45,7 +47,8 @@ const closeMarket = async (req, res, _) => {
 
       // const Heff = Math.max((stock.baseQuantity + totalQuantity) / 2, epsilon);
 
-      const changeFactor = k * Math.log(Math.abs(deltaH) + 1) * Math.sign(deltaH);
+      const changeFactor =
+        k * Math.log(Math.abs(deltaH) + 1) * Math.sign(deltaH);
       newValue = stock.currentValue * changeFactor;
       //prevent from sudden crash
       const minPrice = decayFactor * stock.currentValue;
@@ -89,7 +92,7 @@ const closeMarket = async (req, res, _) => {
   }
 
   if (req?.admin) {
-    res.status(200).json(new ApiResponse(200, null, 'Market closed'));
+    res.status(200).json(new ApiResponse(200, null, "Market closed"));
   }
 };
 
