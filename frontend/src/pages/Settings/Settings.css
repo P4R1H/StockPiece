@@ -1,3 +1,194 @@
-.settings-root {
-    font-family: pirata one;
-}
+.settings-page {
+    min-height: 100vh;
+    width: 100%;
+    background: linear-gradient(to bottom, #015871, #048b9a, #04b2a9);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Ocean Animation */
+  .ocean-container {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+  }
+  
+  .wave {
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, #015871, #048b9a);
+    animation: wave 8s linear infinite;
+  }
+  
+  .wave-1 {
+    opacity: 0.5;
+    bottom: 0;
+    animation-duration: 8s;
+  }
+  
+  .wave-2 {
+    opacity: 0.4;
+    bottom: 10%;
+    animation-duration: 10s;
+  }
+  
+  .wave-3 {
+    opacity: 0.3;
+    bottom: 20%;
+    animation-duration: 12s;
+  }
+  
+  .wave-4 {
+    opacity: 0.2;
+    bottom: 30%;
+    animation-duration: 14s;
+  }
+  
+  @keyframes wave {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  /* Main Content */
+  .main-content {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  /* Ship Container */
+  .ship-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .ship-section {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .ship-section.active {
+    z-index: 50;
+    transform: scale(1.05);
+  }
+  
+  .ship-section:not(.active) {
+    z-index: 10;
+    transform: scale(0.95);
+  }
+  
+  .ship-image {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    transform: rotate(-90deg);
+  }
+  
+  /* Info Panel */
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* Navigation */
+  .nav-buttons {
+    position: absolute;
+    right: -8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .nav-button {
+    width: 7rem;
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 0 0.5rem 0.5rem 0;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .nav-button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateX(0.25rem);
+  }
+  
+  .nav-button.active {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-left: 2px solid white;
+    transform: translateX(0);
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .ship-container {
+      width: 90%;
+      max-width: 600px;
+      height: 500px;
+    }
+  
+    .nav-buttons {
+      right: -6rem;
+    }
+  
+    .nav-button {
+      width: 6rem;
+      font-size: 0.8rem;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .main-content {
+      padding: 1rem;
+    }
+  
+    .ship-container {
+      height: 400px;
+    }
+  
+    .nav-buttons {
+      right: 0;
+      bottom: -4rem;
+      top: auto;
+      transform: none;
+      flex-direction: row;
+      justify-content: center;
+      width: 100%;
+    }
+  
+    .nav-button {
+      width: auto;
+      border-radius: 0.5rem;
+    }
+  }

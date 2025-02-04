@@ -1,55 +1,109 @@
 import React, { useState } from 'react';
-import './Settings.css'
-import { } from './SettingsServices'
+import './Settings.css';
+
+interface Section {
+  name: string;
+  info: string;
+  image: string;
+}
+
+const sections: Section[] = [
+  {
+    name: 'Crew',
+    info: 'Crew:\nThe creators who made it.',
+    image: '/assets/crew.png',
+  },
+  {
+    name: 'Storage',
+    info: 'Tools & Libraries:\nInformation about the tools and libraries used in the project.',
+    image: '/assets/storage.png',
+  },
+  {
+    name: 'Top Deck',
+    info: '',
+    image: '/assets/deck.png',
+  },
+  {
+    name: 'Crows Nest',
+    info: 'Settings:\nDelete Account\nDelete All Data',
+    image: '/assets/crows_next.png',
+  },
+  {
+    name: 'Ship Sails',
+    info: '',
+    image: '/assets/sails.png',
+  },
+
+
+];
 
 const SettingsPage: React.FC = () => {
-  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [activeSection, setActiveSection] = useState<number | null>(null);
 
-  const handleDeleteAccount = () => {
-    setShowConfirmDelete(true);
-    // Implement delete account logic
-  };
-
-  const handleClearData = () => {
-    // Implement clear data logic
+  const handleSectionClick = (index: number) => {
+    setActiveSection(activeSection === index ? null : index);
   };
 
   return (
-    <div className="settings-root">
-      <div className="settings-container">
-        <h1 className="settings-title">Settings</h1>
-        
-        <section className="settings-section">
-          <h2>Account Settings</h2>
-          <div className="settings-item" onClick={handleDeleteAccount}>
-            <span>Delete account</span>
-            <span className="settings-item-arrow">›</span>
-          </div>
-          <div className="settings-item" onClick={handleClearData}>
-            <span>Clear data</span>
-            <span className="settings-item-arrow">›</span>
-          </div>
-        </section>
-
-        <section className="settings-section">
-        </section>
+    <div className="settings-page">
+      {/* Animated Ocean Waves */}
+      <div className="ocean-container">
+        {[1, 2, 3, 4].map((i) => (
+          <div
+            key={i}
+            className={`wave wave-${i}`}
+            style={{
+              animationDelay: `${-2*(i-1)}s`
+            }}
+          />
+        ))}
       </div>
 
-      <div className="about-container">
-        <h2 className="about-title">About</h2>
-        <div className="about-content">
-          <p>Version 1.0.0</p>
-          <p>© 2023 StockPiece</p>
+      {/* Main Content */}
+      <div className="main-content">
+        {/* Ship Container */}
+        <div className="ship-container">
+          {sections.map((section, index) => (
+            <div
+              key={index}
+              className={`ship-section ${activeSection === index ? 'active' : ''}`}
+            >
+              {/* Ship Image */}
+              <div
+                className="ship-image"
+                style={{ backgroundImage: `url(${section.image})` }}
+              />
+              
+              {/* Info Panel */}
+              {activeSection === index && section.info && (
+                <div className="info-overlay">
+                  <h2>{section.name}</h2>
+                  <div className="info-panel">
+                    {section.info.split('\n').map((line, i) => (
+                      <p key={i}>{line}</p>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+
+          {/* Navigation Buttons */}
+          <div className="nav-buttons">
+            {sections.map((section, index) => (
+              <button
+                key={index}
+                onClick={() => handleSectionClick(index)}
+                className={`nav-button ${activeSection === index ? 'active' : ''}`}
+              >
+                {section.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-
-      {showConfirmDelete && (
-        <div className="modal">
-          {/* Add delete confirmation modal content */}
-        </div>
-      )}
     </div>
   );
-}
+};
 
 export default SettingsPage;

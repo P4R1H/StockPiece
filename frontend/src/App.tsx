@@ -67,9 +67,9 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           <Link to="/leaderboard" className="nav-btn" data-tooltip="Leaderboard">
             <i className="fas fa-trophy"></i>
           </Link>
-            <Link to="/settings" className="nav-btn" data-tooltip="Settings">
+          <Link to="/settings" className="nav-btn" data-tooltip="Settings">
             <i className="fas fa-cog"></i>
-            </Link>
+          </Link>
 
           {isLoggedIn ? (
             <button className="nav-btn logout-btn" data-tooltip="Logout" onClick={onLogout}>
@@ -85,6 +85,7 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       <Routes>
         <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/settings" element={<SettingsPage />} />        
       </Routes>
       <footer className="market-footer">
         <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
@@ -157,7 +158,6 @@ const App: React.FC = () => {
           isLoggedIn ? <Navigate to="/" /> : <LoginPage onLogin={authHandlers.handleLogin} />
         } />
         <Route path="/Admin" element={<AdminPanel />} />
-        <Route path="/settings" element={<SettingsPage/>}/>
         <Route path="/*" element={
           <OnePieceStockMarket 
             isLoggedIn={isLoggedIn} 
