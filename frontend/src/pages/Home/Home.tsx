@@ -13,6 +13,7 @@ import './Home.css';
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
+  const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
   const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
   const [portfolio, setPortfolio] = useState<UserPortfolio>({
@@ -97,7 +98,7 @@ const handleStockTransaction = useCallback(
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
 
-    const quantity = 1;
+    const quantity = Number(buyAmt);
     const totalCost = stock.currentPrice * quantity;
 
     // Save the previous state for potential rollback
@@ -201,6 +202,17 @@ const handleStockTransaction = useCallback(
               >
                 <option value="Ascending">Ascending</option>
                 <option value="Descending">Descending</option>
+              </select>
+              <select className="stock-amt-btn"
+              value={buyAmt}
+              onChange={e => setBuyAmt(e.target.value as "1" | "5" | "10" | "25" | "50" | "100")}
+              >
+                <option value="1">Qty: 1</option>
+                <option value="5">Qty: 5</option>
+                <option value="10">Qty: 10</option>
+                <option value="25">Qty: 25</option>
+                <option value="50">Qty: 50</option>
+                <option value="100">Qty: 100</option>
               </select>
             </div>
             <div className="news-ticker">

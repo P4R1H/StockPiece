@@ -7,7 +7,7 @@
 
 ### Home Page
 - [ ] Show loading while file is uploading
-- [ ] Buying window is closed, stil can't see stocks
+- [/] Buying window is closed, stil can't see stocks
 - [ ] Auto logout fix
 - [ ] Add site explanation for new users
 - [ ] Implement bulk buy feature
