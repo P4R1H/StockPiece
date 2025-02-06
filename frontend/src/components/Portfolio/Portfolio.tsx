@@ -1,3 +1,4 @@
+// Portfolio.tsx (BountyProfileCard.tsx)
 import React, { useState, useRef, useCallback } from 'react';
 import './Portfolio.css';
 import { BountyProfileCardProps } from '../../types/Components';
@@ -30,17 +31,20 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     reader.onloadend = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
 
-    // Prepare form data and upload
+    // Prepare form data and upload - Placeholder URL, replace with your actual API endpoint
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-      const response = await fetch('/api/v1/user/update-avatar', {
+      const response = await fetch('/api/v1/user/update-avatar', { // Ensure this path is correct
         method: 'POST',
         body: formData,
         credentials: 'include',
       });
       if (!response.ok) throw new Error('Upload failed');
       console.log('Profile image uploaded successfully');
+      // After successful upload, you might want to refetch portfolio data to update profile image immediately
+      // fetchData(); // Uncomment and pass fetchData if you want to refresh data here.
+      window.location.reload(); // Or simpler approach: reload the page to show updated avatar.
     } catch (error) {
       console.error('Upload error:', error);
     }

@@ -26,20 +26,34 @@ export const getPortfolioData = async (): Promise<UserPortfolio> => {
   });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch portfolio data');
+
   const portfolio: UserPortfolio = {
     username: data.data.username,
     cash: data.data.accountValue,
-    stocks: {},
-    initialCash: 1000,
-    lastChapCash: data.data.accountValue,
+    stocks: data.data.ownedStocks.map((item: any) => ({
+      stock: {
+        id: item.stock._id,
+        name: item.stock.name,
+        currentValue: item.stock.currentValue,
+        initialValue: item.stock.initialValue,
+        image: '', // Placeholder, as image is not in the provided response
+        currentPrice: item.stock.currentValue, // Setting currentPrice for component compatibility, even though API returns currentValue
+        popularity: 0, // Placeholder
+        ownedCount: 0, // Placeholder
+        visibility: 'show', // Default visibility
+      },
+      quantity: item.quantity,
+      holdingId: item._id,
+    })),
     profilePicture: data.data.avatar,
-    isLoggedIn: true
+    isLoggedIn: true,
+    profit: data.data.profit,
+    stockValue: data.data.stockValue,
   };
-  data.data.ownedStocks.forEach((item: { stock: string, quantity: number }) => {
-    portfolio.stocks[item.stock] = { quantity: item.quantity, averagePurchasePrice: 0 };
-  });
+
   return portfolio;
 };
+
 
 export const buyStock = async (name: string, quantity: number) => {
   const response = await fetch('/api/v1/stock/buy', {
