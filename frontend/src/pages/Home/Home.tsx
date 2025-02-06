@@ -14,8 +14,8 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
-  const [stocks, setStocks] = useState<CharacterStock[]>([...PLACEHOLDER_STOCKS]); // Ensure PLACEHOLDER_STOCKS matches new CharacterStock interface, or fetch real data
-  const [portfolio, setPortfolio] = useState<UserPortfolio>({ // Initialize with a default UserPortfolio structure
+  const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
+  const [portfolio, setPortfolio] = useState<UserPortfolio>({
     username: 'Guest Pirate',
     cash: 0,
     stocks: [],
@@ -24,14 +24,14 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     stockValue: 0
   });
 
-  const initialInvestment = 10000; // Initial investment amount
+  const initialInvestment = 10000; 
 
   // Fetch data on mount and when login status changes
   const fetchData = useCallback(async () => {
     try {
       const [stockData, portfolioData] = await Promise.all([
-        getStockMarketData(), // You might need to update getStockMarketData to match new API if stock market data is also fetched
-        isLoggedIn ? getPortfolioData() : Promise.resolve({ // Default portfolio for logged out users
+        getStockMarketData(),
+        isLoggedIn ? getPortfolioData() : Promise.resolve({
           username: 'Guest Pirate',
           cash: 0,
           stocks: [],
@@ -51,19 +51,17 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     fetchData();
   }, [fetchData]);
 
-  // Memoized portfolio stats calculation
   const portfolioStats = useMemo(() => {
     const netWorthValue = portfolio.stockValue + portfolio.cash;
     return {
       netWorth: netWorthValue.toLocaleString(), // Net worth is stockValue + cash
-      cash: portfolio.cash.toLocaleString(), // Cash is directly from portfolio.cash (accountValue from API)
+      cash: portfolio.cash.toLocaleString(), // portfolio.accountValue
       profitLossOverall: (((netWorthValue) - initialInvestment) / initialInvestment * 100).toFixed(2) + "%",
       profitLossLastChapter: portfolio.profit.toFixed(2) + "%", // profitLossLastChapter is portfolio.profit
     };
-  }, [portfolio, initialInvestment]);
+  }, [portfolio]);
 
 
-  // Memoized filtered stocks
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned') return portfolio.stocks.some(ownedStock => ownedStock.stock.id === stock.id);
@@ -72,7 +70,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     });
   }, [stocks, filter, portfolio.stocks]);
 
-  // Memoized sorted stocks based on searchQuery and sortOrder
   const sortedStocks = useMemo(() => {
     return filteredStocks
       .filter(stock =>
@@ -95,9 +92,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     );
   }, []);
 
-
-  // Optimized buy/sell transaction handler
-// Optimized buy/sell transaction handler
 const handleStockTransaction = useCallback(
   async (type: 'buy' | 'sell', name: string) => {
     const stock = stocks.find(s => s.name === name);
@@ -116,7 +110,7 @@ const handleStockTransaction = useCallback(
     if (type === 'buy') {
       if (portfolio.cash >= totalCost) {
         newPortfolio.cash -= totalCost;
-        newPortfolio.stockValue += totalCost; // Add the purchased stock value to keep net worth unchanged
+        newPortfolio.stockValue += totalCost;
         if (existingHoldingIndex !== -1) {
           newPortfolio.stocks[existingHoldingIndex].quantity += quantity;
         } else {
@@ -164,10 +158,10 @@ const handleStockTransaction = useCallback(
   return (
     <div className="dashboard-container">
       <div className="dashboard">
-        <BountyProfileCard // Renamed component
+        <BountyProfileCard
           userName={isLoggedIn ? (portfolio.username || "Anonymous Pirate") : "Guest Pirate"}
           netWorth={portfolioStats.netWorth}
-          cash={portfolioStats.cash} // Use cash from portfolioStats here
+          cash={portfolioStats.cash} 
           profitLossOverall={portfolioStats.profitLossOverall}
           profitLossLastChapter={portfolioStats.profitLossLastChapter}
           profileImage={portfolio.profilePicture}
@@ -175,7 +169,7 @@ const handleStockTransaction = useCallback(
         />
         <PriceHistoryGraph
           stocks={stocks}
-          ownedStocks={portfolio.stocks.map(holding => holding.stock.id)} // Use stock IDs from portfolio.stocks
+          ownedStocks={portfolio.stocks.map(holding => holding.stock.id)} 
           onVisibilityChange={updateStockVisibility}
           currentFilter={filter}
         />
