@@ -17,7 +17,16 @@
 /* Leaderboard Container with positioned title */
 .leaderboard-container {
   position: relative;
-  background: url('/assets/gold-texture.jpg') no-repeat center center;
+  background: linear-gradient(
+    45deg,
+    #b8860b 0%,
+    #daa520 20%,
+    #ffd700 40%,
+    #ffd700 60%,
+    #daa520 80%,
+    #b8860b 100%
+);
+
   background-size: cover;
   padding: 40px 25px 25px 25px; /* extra top padding to accommodate the title on the border */
   margin: 20px;
@@ -76,7 +85,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  background: url('/assets/luffyKing.jpg')
+  background: url('/assets/luffyKing.webp')
     no-repeat center center;
   background-size: cover;
   padding: 10px;

@@ -72,7 +72,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       <div className="login-box">
         <div className="jolly-roger-container">
           <img
-            src="/assets/skull-flag.png"
+            src="/assets/skull-flag.webp"
             alt="Jolly Roger"
             className="jolly-roger"
           />

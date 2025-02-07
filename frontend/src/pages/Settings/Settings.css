@@ -28,7 +28,7 @@ body {
 .settings-container {
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/assets/settings.jpg') no-repeat center center;
+    url('/assets/settings.webp') no-repeat center center;
   background-size: cover;
   padding: 20px;
   margin: 10px;

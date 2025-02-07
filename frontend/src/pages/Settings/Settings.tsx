@@ -2,6 +2,16 @@ import React from 'react';
 import './Settings.css';
 
 const SettingsPage: React.FC = () => {
+  const [deleteText, setDeleteText] = React.useState("Delete Account");
+  
+  const deleteAccount = () => {
+    if (!deleteText.includes("really")) {
+      setDeleteText("Do you really want to delete account");
+    } else {
+      setDeleteText(`Do you ${"really ".repeat(deleteText.split("really").length)} want to delete account`);
+    }
+  }
+
   return (
     <div className="page">
       <div className="main-page-container">
@@ -15,13 +25,14 @@ const SettingsPage: React.FC = () => {
           <section className="settings-section">
             <h2>Controls</h2>
             <div className="controls-buttons">
-              <button className="danger-button">Delete Account</button>
+              <button className="danger-button" onClick={deleteAccount}>{deleteText}</button>
               <button className="danger-button">Clear Data</button>
             </div>
           </section>
 
           <hr className="section-divider" />
 
+          {/* Rest of the code remains the same */}
           {/* Crew Section */}
           <section className="settings-section">
             <h2>Crew</h2>

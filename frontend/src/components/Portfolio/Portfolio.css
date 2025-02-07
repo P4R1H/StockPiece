@@ -14,7 +14,7 @@
 }
 
 .bounty-card {
-  background: url('/assets/bounty-template.jpg') no-repeat center center, var(--bg-light);
+  background: url('/assets/bounty-template.webp') no-repeat center center, var(--bg-light);
   background-size: contain;
   width: min(90vw, 400px);
   min-height: min(132vw, 585px);

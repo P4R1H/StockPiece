@@ -243,7 +243,7 @@
   bottom: -35px;
   width: 1000px;
   height: 500px;
-  background: url('/assets/shipSunny.png') no-repeat center/contain;
+  background: url('/assets/shipSunny.webp') no-repeat center/contain;
   opacity: 0.5;
   right: -100%;
   animation: 
