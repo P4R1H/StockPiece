@@ -2,7 +2,7 @@
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
 - [ ] codesense review
-- [ ] useQuery caching
+- [/] useQuery caching
 
 ## Page-Specific Tasks
 
@@ -10,7 +10,7 @@
 - [ ] Error message better UI
 - [ ] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
-- [ ] Auto logout fix ? Might be backend
+- [/] Auto logout fix ? was backend issue
 - [ ] Add site explanation for new users
 - [/] Implement bulk buy feature
 
