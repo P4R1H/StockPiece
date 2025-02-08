@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import HomePage from './pages/Home/Home';
 import LeaderboardPage from './pages/Leaderboard/Leaderboard';
 import LoginPage from './pages/Login/Login';
@@ -18,7 +19,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
   const [showCollapseBtn, setShowCollapseBtn] = useState(false);
   const [shine, setShine] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerWidth <= 768) {
@@ -35,7 +35,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
         }, 500);
       }
     };
-
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -44,13 +43,11 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       }
     };
   }, [navCollapsed]);
-
   const handleCollapseBtnClick = () => {
     setNavCollapsed(false);
     setShowCollapseBtn(false);
     setShine(false);
   };
-
   return (
     <div className="one-piece-stock-market">
       <header className="market-header">
@@ -62,7 +59,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           />
           <h1 className="market-title">Grand Line Exchange</h1>
         </div>
-        {/* Desktop Navbar */}
         <div className="nav-group desktop-nav">
           <Link to="/" className="nav-btn" data-tooltip="Home">
             <i className="fas fa-home"></i>
@@ -84,18 +80,14 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           )}
         </div>
       </header>
-
       <Routes>
         <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} />
-        <Route path="/leaderboard" element={<LeaderboardPage />} />
+        <Route path="/leaderboard" element={<LeaderboardPage/>} />
         <Route path="/settings" element={<SettingsPage />} />
       </Routes>
-
       <footer className="market-footer">
         <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
       </footer>
-
-      {/* Mobile Navbar */}
       <div className={`nav-group mobile-nav ${navCollapsed ? 'hidden' : 'visible'}`}>
         <Link to="/" className="nav-btn" data-tooltip="Home">
           <i className="fas fa-home"></i>
@@ -116,8 +108,6 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
           </Link>
         )}
       </div>
-
-      {/* Collapse Button for Mobile */}
       <button 
         className={`collapse-btn ${showCollapseBtn ? 'visible' : ''} ${shine ? 'shine' : ''}`}
         onClick={handleCollapseBtnClick}
@@ -129,8 +119,8 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
 };
 
 const App: React.FC = () => {
+  const queryClient = useQueryClient();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
@@ -143,16 +133,22 @@ const App: React.FC = () => {
     checkLoginStatus();
   }, []);
 
-  const handleLogin = () => setIsLoggedIn(true);
+  const handleLogin = () => {
+    queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+    queryClient.invalidateQueries({ queryKey: ['leaderboardData']})
+    setIsLoggedIn(true);
+  };
+
   const handleLogout = async () => {
     try {
       await logoutUser();
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboardData']})  
       setIsLoggedIn(false);
     } catch (error) {
       console.error('Logout failed:', error);
     }
   };
-
   return (
     <Router>
       <Routes>

@@ -2,6 +2,7 @@
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
 - [ ] codesense review
+- [ ] useQuery caching
 
 ## Page-Specific Tasks
 
@@ -9,10 +10,9 @@
 - [ ] Error message better UI
 - [ ] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
-- [ ] Auto logout fix
+- [ ] Auto logout fix ? Might be backend
 - [ ] Add site explanation for new users
 - [/] Implement bulk buy feature
-- [ ] Make any purchases made with mock stocks not go to backend (confirm)
 
 ### Leaderboard
 - [/] Complete UI overhaul

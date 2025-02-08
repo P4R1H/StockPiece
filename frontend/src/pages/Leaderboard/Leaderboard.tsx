@@ -1,35 +1,48 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { fetchLeaderboard } from './LeaderboardServices';
-import { LeaderboardEntry } from '../../types/Pages';
+import { LeaderboardResponse, LeaderboardEntry } from '../../types/Pages';
 import './Leaderboard.css';
 
-const LeaderboardPage: React.FC = () => {
-  const [leaderboardData, setLeaderboardData] = useState<LeaderboardEntry[]>([]);
-  const [currentUser, setCurrentUser] = useState<LeaderboardEntry>({ 
-    rank: 0, 
-    username: '', 
-    totalValue: 0 
-  });
+interface LeaderboardAPIResponse {
+  leaderboardData: LeaderboardEntry[];
+  currentUser: LeaderboardEntry;
+}
 
-  useEffect(() => {
-    const loadData = async () => {
-      const response = await fetchLeaderboard();
-      const transformed = response.data.topUsers.map((user, index) => ({
-        rank: index + 1,
-        username: user.name,
-        totalValue: user.stockValue,
-      }));
-      
-      setLeaderboardData(transformed);
-      setCurrentUser({
+const LeaderboardPage: React.FC = () => {
+  
+  const { data, isLoading, isError } = useQuery<
+    LeaderboardResponse, 
+    Error,
+    LeaderboardAPIResponse
+  >({
+    queryKey: ['leaderboardData'],
+    queryFn: fetchLeaderboard,
+    staleTime: 1000 * 60 * 30,
+    gcTime: 1000 * 60 * 15,
+    select: (response: LeaderboardResponse) => {
+      const leaderboardData: LeaderboardEntry[] = response.data.topUsers.map(
+        (user, index) => ({
+          rank: index + 1,
+          username: user.name,
+          totalValue: user.stockValue,
+        })
+      );
+
+      const currentUser: LeaderboardEntry = {
         rank: response.data.currentUser.rank,
         username: response.data.currentUser.name,
         totalValue: response.data.currentUser.stockValue,
-      });
-    };
-    loadData();
-  }, []);
+      };
 
+      return { leaderboardData, currentUser };
+    },
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (isError || !data) return <div>Error loading leaderboard.</div>;
+
+  const { leaderboardData, currentUser } = data;
   const topUsers = leaderboardData.slice(0, 3);
 
   return (
@@ -78,7 +91,7 @@ const LeaderboardPage: React.FC = () => {
                 {leaderboardData.slice(3).map((entry) => (
                   <tr key={entry.rank} className={entry.rank <= 10 ? 'top-rank' : 'rest'}>
                     <td className="left-col">
-                      <span className="entry-rank">#{entry.rank}</span> 
+                      <span className="entry-rank">#{entry.rank}</span>
                     </td>
                     <td className="left-col">
                       <span className="entry-rank">{entry.username}</span>

@@ -5,6 +5,10 @@ export interface HomePageProps {
 
 /* Leaderboard */
 
+export interface LeaderboardPageProps {
+  isLoggedIn: boolean;
+}
+
 export interface LeaderboardEntry {
   rank: number;
   username: string;

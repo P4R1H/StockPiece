@@ -1,13 +1,12 @@
 import { CharacterStock, UserPortfolio } from '../../types/Stocks'
 
 export const PLACEHOLDER_PORTFOLIO: UserPortfolio = {
-  username: "Guest Pirate",
-  cash: 10000,
+  username: 'Guest Pirate',
+  cash: 0,
   stocks: [],
-  profilePicture: undefined,
   isLoggedIn: false,
   profit: 0,
-  stockValue: 0,
+  stockValue: 0
 }
 
 export const PLACEHOLDER_STOCKS: CharacterStock[] = [
