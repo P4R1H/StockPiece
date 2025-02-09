@@ -10,7 +10,7 @@ import Transaction from "../models/transaction.models.js";
 const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
 
@@ -88,7 +88,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
 const sellStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
 
