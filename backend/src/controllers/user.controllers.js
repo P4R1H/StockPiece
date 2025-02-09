@@ -143,7 +143,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
 const logoutUser = asyncHandler(async (req, res, _) => {
   //i just need to delete token in cookies
   //also delete the refreshToken
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
   const _user = await User.findByIdAndUpdate(req.user?._id, {
@@ -216,7 +216,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res, _) => {
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
   const avatarLocalPath = req.file?.path;
@@ -261,7 +261,7 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res, _) => {
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
   res
@@ -270,7 +270,7 @@ const getCurrentUser = asyncHandler(async (req, res, _) => {
 });
 
 const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
-  if (!req.user?.trim()) {
+  if (!req.user) {
     throw new ApiError(401, "unauthenticated request");
   }
   const user = await User.findById(req.user._id)

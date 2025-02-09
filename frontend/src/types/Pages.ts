@@ -10,7 +10,7 @@ export interface LeaderboardPageProps {
 }
 
 export interface LeaderboardEntry {
-  rank: number;
+  rank: number | string;
   username: string;
   totalValue: number;
 }

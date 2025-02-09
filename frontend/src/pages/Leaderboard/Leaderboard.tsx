@@ -20,7 +20,7 @@ const LeaderboardPage: React.FC = () => {
     queryFn: fetchLeaderboard,
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 15,
-    select: (response: LeaderboardResponse) => {
+    select: (response: LeaderboardResponse): LeaderboardAPIResponse => {
       const leaderboardData: LeaderboardEntry[] = response.data.topUsers.map(
         (user, index) => ({
           rank: index + 1,
@@ -29,11 +29,20 @@ const LeaderboardPage: React.FC = () => {
         })
       );
 
-      const currentUser: LeaderboardEntry = {
-        rank: response.data.currentUser.rank,
-        username: response.data.currentUser.name,
-        totalValue: response.data.currentUser.stockValue,
-      };
+      let currentUser: LeaderboardEntry;
+      if(response.data.currentUser!=null) {
+        currentUser = {
+          rank: response.data.currentUser.rank,
+          username: response.data.currentUser.name,
+          totalValue: response.data.currentUser.stockValue,
+        };
+      } else {
+        currentUser = {
+          rank: "🐀",
+          username: "Could be you if you logged in",
+          totalValue: 0,
+        };
+      }
 
       return { leaderboardData, currentUser };
     },
@@ -89,7 +98,7 @@ const LeaderboardPage: React.FC = () => {
               </thead>
               <tbody>
                 {leaderboardData.slice(3).map((entry) => (
-                  <tr key={entry.rank} className={entry.rank <= 10 ? 'top-rank' : 'rest'}>
+                  <tr key={entry.rank ?? 0} className={(Number(entry.rank) || Infinity) <= 10 ? 'top-rank' : 'rest'}>
                     <td className="left-col">
                       <span className="entry-rank">#{entry.rank}</span>
                     </td>
