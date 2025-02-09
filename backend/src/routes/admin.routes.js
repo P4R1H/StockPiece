@@ -25,6 +25,5 @@ adminRouter
   .route("/add-character-stock")
   .post(upload.single("imageURL"), addCharacterStock);
 adminRouter.route("/remove-character-stock").post(removeCharacterStock);
-adminRouter.route("/all-stocks").get(getAllStocks);
 
 export default adminRouter;

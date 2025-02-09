@@ -5,12 +5,12 @@ import {
   getAllStocks,
   sellStock,
 } from "../controllers/stock.controllers.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { verifyAdminJWT, verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const stockRoute = express.Router();
 
 stockRoute.route("/check-open-market").get(checkOpenMarket);
-stockRoute.route("/all-stocks").get(getAllStocks);
+stockRoute.route("/all-stocks").get(verifyAdminJWT,getAllStocks);
 
 //safe routes
 stockRoute.use(verifyJWT);

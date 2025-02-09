@@ -11,7 +11,7 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     req.headers.authorization?.replace("Bearer ", "");
 
   if (!accessToken) {
-    throw new ApiError(401, "Unauthorized request");
+    return next();
   }
 
   const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -35,7 +35,7 @@ const verifyAdminJWT = asyncHandler(async (req, _, next) => {
     req.headers.authorization?.replace("Bearer ", "");
 
   if (!accessToken) {
-    throw new ApiError(401, "Unauthorized request");
+    return next();
   }
 
   const decodedToken = jwt.verify(

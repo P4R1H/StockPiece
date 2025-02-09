@@ -6,6 +6,9 @@ import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 
 const closeMarket = async (req, res, _) => {
+  if (req && !req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
