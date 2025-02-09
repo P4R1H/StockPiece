@@ -143,7 +143,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
 const logoutUser = asyncHandler(async (req, res, _) => {
   //i just need to delete token in cookies
   //also delete the refreshToken
-  if (!req.user) {
+  if (!req.user?.trim()) {
     throw new ApiError(401, "unauthenticated request");
   }
   const _user = await User.findByIdAndUpdate(req.user?._id, {
@@ -216,6 +216,9 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 });
 
 const updateAvatar = asyncHandler(async (req, res, _) => {
+  if (!req.user?.trim()) {
+    throw new ApiError(401, "unauthenticated request");
+  }
   const avatarLocalPath = req.file?.path;
 
   if (!avatarLocalPath) {
@@ -258,7 +261,7 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res, _) => {
-  if (!req.user) {
+  if (!req.user?.trim()) {
     throw new ApiError(401, "unauthenticated request");
   }
   res
@@ -267,7 +270,7 @@ const getCurrentUser = asyncHandler(async (req, res, _) => {
 });
 
 const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
-  if (!req.user) {
+  if (!req.user?.trim()) {
     throw new ApiError(401, "unauthenticated request");
   }
   const user = await User.findById(req.user._id)
@@ -313,9 +316,10 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
-  if (!currentUserId) {
-    throw new ApiError(401, "Unauthenticated request");
-  }
+  //since we want guests to also have a look at the leader board
+  // if (!currentUserId) {
+  //   throw new ApiError(401, "Unauthenticated request");
+  // }
 
   // Get all users with populated stock data
   const allUsers = await User.find({})
@@ -349,9 +353,9 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   }));
 
   // Find current user's position
-  const currentUserIndex = sortedUsers.findIndex(
-    (user) => user._id === currentUserId.toString()
-  );
+  const currentUserIndex = currentUserId
+    ? sortedUsers.findIndex((user) => user._id === currentUserId.toString())
+    : -1;
 
   // Prepare current user data
   let currentUserData = null;

@@ -65,7 +65,7 @@ const adminLogout = asyncHandler(async (req, res, _) => {
 
 const addAdmin = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
-    throw new ApiError(401, "unauthorized access");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   //we also need to check if it is an super admin
@@ -97,7 +97,7 @@ const addAdmin = asyncHandler(async (req, res, _) => {
 
 const removeAdmin = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
-    throw new ApiError(401, "unauthorized access");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   if (!req.admin.isSuperAdmin) {
@@ -125,7 +125,7 @@ const removeAdmin = asyncHandler(async (req, res, _) => {
 
 const addCharacterStock = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
-    throw new ApiError(401, "unauthorized access");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   const { name, initialValue } = req.body;
@@ -187,7 +187,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 //we can handle deleting referencings later
 const removeCharacterStock = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
-    throw new ApiError(401, "unauthorized access");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   const { name } = req.body;

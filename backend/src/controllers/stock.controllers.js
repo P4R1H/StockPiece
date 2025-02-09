@@ -11,7 +11,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
   if (!req.user) {
-    throw new ApiError(400, "unauthorized request");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -89,7 +89,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
   if (!req.user) {
-    throw new ApiError(400, "unauthorized request");
+    throw new ApiError(401, "unauthenticated request");
   }
 
   const latestChapter = await ChapterRelease.findOne().sort({

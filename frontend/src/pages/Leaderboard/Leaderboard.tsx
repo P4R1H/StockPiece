@@ -11,7 +11,7 @@ interface LeaderboardAPIResponse {
 
 const LeaderboardPage: React.FC = () => {
   
-  const { data, isLoading, isError } = useQuery<
+  const { data } = useQuery<
     LeaderboardResponse, 
     Error,
     LeaderboardAPIResponse
@@ -39,9 +39,9 @@ const LeaderboardPage: React.FC = () => {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (isError || !data) return <div>Error loading leaderboard.</div>;
 
+  if (!data) return null;
+  
   const { leaderboardData, currentUser } = data;
   const topUsers = leaderboardData.slice(0, 3);
 
