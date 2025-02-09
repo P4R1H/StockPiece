@@ -5,7 +5,7 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 const releaseChapter = async (req, res, _) => {
   try {
     if (req && !req.admin) {
-      throw new ApiError(401,'unauthorized request');
+      throw new ApiError(401, "unauthorized request");
     }
     console.log("running weekly crone job...");
     const latestChapter = await ChapterRelease.findOne().sort({
