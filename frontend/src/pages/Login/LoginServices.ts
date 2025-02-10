@@ -70,9 +70,9 @@ export const registerUser = async (username: string, password: string): Promise<
     return data;
 };
 
-export const refreshUserToken = async(): Promise<LoginResponse> => {
-  const response = await fetch('/api/v1/user/refresh-token', {
-    method: 'POST',
+export const loginExists = async(): Promise<LoginResponse> => {
+  const response = await fetch('/api/v1/user/current-user', {
+    method: 'GET',
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',

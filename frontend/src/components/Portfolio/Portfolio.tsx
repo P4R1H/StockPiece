@@ -1,4 +1,4 @@
-// Portfolio.tsx (BountyProfileCard.tsx)
+// Portfolio.tsx (or BountyProfileCard.tsx)
 import React, { useState, useRef, useCallback } from 'react';
 import './Portfolio.css';
 import { BountyProfileCardProps } from '../../types/Components';
@@ -14,6 +14,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
 }) => {
   const [preview, setPreview] = useState<string | null>(null);
   const [isHovering, setIsHovering] = useState(false);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Trigger file input click
@@ -26,28 +27,31 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Preview the selected image
+    setLoading(true);
+
+    // Create a preview immediately
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
 
-    // Prepare form data and upload - Placeholder URL, replace with your actual API endpoint
+    // Prepare form data and upload
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-      const response = await fetch('/api/v1/user/update-avatar', { // Ensure this path is correct
+      const response = await fetch('/api/v1/user/update-avatar', {
         method: 'POST',
         body: formData,
         credentials: 'include',
       });
       if (!response.ok) throw new Error('Upload failed');
       console.log('Profile image uploaded successfully');
-      // After successful upload, you might want to refetch portfolio data to update profile image immediately
-      // fetchData(); // Uncomment and pass fetchData if you want to refresh data here.
-      window.location.reload(); // Or simpler approach: reload the page to show updated avatar.
+      
     } catch (error) {
       console.error('Upload error:', error);
+      // Remove the preview if upload fails
+      setPreview(null);
     }
+    setLoading(false);
   }, []);
 
   return (
@@ -64,7 +68,16 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
               alt="User"
               className="bounty-image"
             />
-            {isLoggedIn && (
+
+            {/* Show spinner overlay while loading */}
+            {loading && (
+              <div className="spinner-overlay">
+                <div className="spinner"></div>
+              </div>
+            )}
+
+            {/* Only show the "Change Profile Picture" overlay if not loading */}
+            {isLoggedIn && !loading && (
               <div
                 className={`overlay ${isHovering ? 'overlay-visible' : ''}`}
                 onClick={handleUploadClick}
@@ -91,7 +104,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
           ref={fileInputRef}
           style={{ display: 'none' }}
           onChange={handleFileChange}
-          disabled={!isLoggedIn}
+          disabled={!isLoggedIn || loading}  // disable input during upload
         />
       </div>
       <div className="bounty-details">

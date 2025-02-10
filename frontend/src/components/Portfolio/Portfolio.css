@@ -183,3 +183,38 @@
     height: 45vw;
   }
 }
+
+
+/* Spinner overlay covers the entire container */
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* A darker, dramatic overlay reminiscent of a night at sea */
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* The spinner styled as a rotating gold coin */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* Using a dual–tone border to evoke a coin with a rich, golden center and a darker rim */
+  border: 6px solid #8B4513;      /* SaddleBrown: a nod to aged wood or the coin’s edge */
+  border-top-color: #FFD700;       /* Gold */
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Keyframes for spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

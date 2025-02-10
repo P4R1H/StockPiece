@@ -3,12 +3,13 @@
 - [/] Responsive Design Enhancement
 - [ ] codesense review
 - [/] useQuery caching
+- [ ] Lazy loading images
 
 ## Page-Specific Tasks
 
 ### Home Page
 - [ ] Error message better UI
-- [ ] Show loading while file is uploading
+- [/] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
 - [/] Auto logout fix ? was backend issue
 - [ ] Add site explanation for new users

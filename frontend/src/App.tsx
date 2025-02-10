@@ -7,7 +7,7 @@ import LoginPage from './pages/Login/Login';
 import SettingsPage from './pages/Settings/Settings';
 import AdminPanel from './pages/Admin/Admin';
 import './App.css';
-import { refreshUserToken, logoutUser } from './pages/Login/LoginServices';
+import { loginExists, logoutUser } from './pages/Login/LoginServices';
 
 interface OnePieceStockMarketProps {
   isLoggedIn: boolean;
@@ -124,7 +124,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        await refreshUserToken();
+        await loginExists();
         setIsLoggedIn(true);
       } catch {
         setIsLoggedIn(false);
