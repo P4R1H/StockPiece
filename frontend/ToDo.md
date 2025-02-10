@@ -4,6 +4,7 @@
 - [ ] codesense review
 - [/] useQuery caching
 - [ ] Lazy loading images
+- [ ] Reduce useEffect 
 
 ## Page-Specific Tasks
 
