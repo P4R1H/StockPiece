@@ -238,10 +238,6 @@
   }
 }
 
-.fullscreen-graph {
-  transform: rotate(90deg);
-}
-
 /* Mobile Optimization */
 @media (max-width: 768px) {
   .dashboard,
