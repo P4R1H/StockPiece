@@ -19,6 +19,7 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
   const [showCollapseBtn, setShowCollapseBtn] = useState(false);
   const [shine, setShine] = useState(false);
   const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerWidth <= 768) {
@@ -43,11 +44,13 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       }
     };
   }, [navCollapsed]);
+
   const handleCollapseBtnClick = () => {
     setNavCollapsed(false);
     setShowCollapseBtn(false);
     setShine(false);
   };
+
   return (
     <div className="one-piece-stock-market">
       <header className="market-header">
@@ -149,6 +152,7 @@ const App: React.FC = () => {
       console.error('Logout failed:', error);
     }
   };
+  
   return (
     <Router>
       <Routes>

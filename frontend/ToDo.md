@@ -1,9 +1,9 @@
 ## Overall Improvements
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
-- [ ] codesense review
+- [ ] codescene review
 - [/] useQuery caching
-- [ ] Lazy loading images
+- [/] Lazy loading images (dont need it much)
 - [ ] Reduce useEffect 
 
 ## Page-Specific Tasks
@@ -16,7 +16,7 @@
 - [ ] Add site explanation for new users
 - [/] Implement bulk buy feature
 
-### Leaderboard
+### Leaderboard 
 - [/] Complete UI overhaul
 - [ ] Touchups
 - [/] Implement backend data fetching

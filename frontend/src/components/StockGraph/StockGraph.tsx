@@ -80,7 +80,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
       }
     });
     setHistoricalData(prev => ({ ...prev, ...newData }));
-  }, []);
+  }, [stocks]);
 
   useEffect(() => {
     const newFilter = mapFilter(currentFilter);
