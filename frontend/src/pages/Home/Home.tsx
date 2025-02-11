@@ -15,6 +15,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [isFullScreen, setFullscreen] = useState<Boolean>(false);
   const queryClient = useQueryClient();
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
@@ -142,6 +143,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     },
     [stocks, buyAmt, queryClient]
   );
+
   return (
     <div className="dashboard-container">
       <div className="dashboard">
@@ -154,13 +156,26 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           profileImage={portfolio.profilePicture}
           isLoggedIn={isLoggedIn}
         />
-        <PriceHistoryGraph
-          stocks={stocks}
-          ownedStocks={portfolio.stocks.map(holding => holding.stock.id)}
-          onVisibilityChange={updateStockVisibility}
-          currentFilter={filter}
-        />
+
+        {isFullScreen ? (
+          <div className="fullscreen-graph">
+            <PriceHistoryGraph 
+              stocks={stocks}
+              ownedStocks={portfolio.stocks.map(holding => holding.stock.id)}
+              onVisibilityChange={updateStockVisibility}
+              currentFilter={filter}
+            />
+          </div>
+        ) : (
+          <PriceHistoryGraph 
+            stocks={stocks}
+            ownedStocks={portfolio.stocks.map(holding => holding.stock.id)}
+            onVisibilityChange={updateStockVisibility}
+            currentFilter={filter}
+          />
+        )}
       </div>
+
       <main className="stock-market-main">
         <div className="stock-card-container">
           <div className="market-controls-wrapper">

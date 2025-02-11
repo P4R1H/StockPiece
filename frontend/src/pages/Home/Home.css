@@ -219,10 +219,6 @@
     padding: 0 1.5rem;
   }
   
-  .market-controls-wrapper {
-    flex-direction: column;
-    min-height: auto;
-  }
   
   .search-controls {
     border-right: none;
@@ -230,11 +226,20 @@
     height: auto;
     flex-wrap: wrap;
   }
+
+  .stock-filter-btn, .stock-amt-btn, .stock-sort-btn {
+    height: auto;
+  }
+
   
   .stock-grid {
     padding: 1rem;
     gap: 1rem;
   }
+}
+
+.fullscreen-graph {
+  transform: rotate(90deg);
 }
 
 /* Mobile Optimization */

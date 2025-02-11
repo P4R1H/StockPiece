@@ -71,7 +71,7 @@ export const registerUser = async (username: string, password: string): Promise<
 };
 
 export const loginExists = async(): Promise<LoginResponse> => {
-  const response = await fetch('/api/v1/user/current-user', {
+  const response = await fetch('/api/v1/user/check-login', {
     method: 'GET',
     credentials: 'include',
     headers: {

@@ -56,7 +56,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
       }
     });
     setImages(imageMap);
-  }, []);
+  }, [stocks]);
 
   // Check for mobile viewport
   useEffect(() => {
