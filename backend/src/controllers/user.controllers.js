@@ -260,13 +260,15 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
   );
 });
 
-const getCurrentUser = asyncHandler(async (req, res, _) => {
+//this is just to check whether a user is there or not
+//as requested by the frontend
+const checkLogin = asyncHandler(async (req, res, _) => {
   if (!req.user) {
-    throw new ApiError(401, "unauthenticated request");
+    throw new ApiError(401, "no logged in user");
   }
   res
     .status(200)
-    .json(new ApiResponse(200, req.user, "current user fetched successfully"));
+    .json(new ApiResponse(200,null, "user is logged in"));
 });
 
 const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
@@ -315,6 +317,7 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 // })
 
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
+
   const currentUserId = req.user?._id;
   //since we want guests to also have a look at the leader board
   // if (!currentUserId) {
@@ -353,9 +356,10 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   }));
 
   // Find current user's position
-  const currentUserIndex = currentUserId
-    ? sortedUsers.findIndex((user) => user._id === currentUserId.toString())
-    : -1;
+  const currentUserIndex = currentUserId ? 
+  sortedUsers.findIndex(
+    (user) => user._id === currentUserId.toString()
+  ) : -1
 
   // Prepare current user data
   let currentUserData = null;
@@ -385,7 +389,7 @@ export {
   logoutUser,
   refreshAccessToken,
   updateAvatar,
-  getCurrentUser,
+  checkLogin,
   getCurrentUserPortfolio,
   getTopUsersByStockValue,
 };
