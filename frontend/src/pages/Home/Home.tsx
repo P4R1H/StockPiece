@@ -142,7 +142,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     },
     [stocks, buyAmt, queryClient]
   );
-
   return (
     <div className="dashboard-container">
       <div className="dashboard">
@@ -155,15 +154,13 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           profileImage={portfolio.profilePicture}
           isLoggedIn={isLoggedIn}
         />
-
-        <PriceHistoryGraph 
+        <PriceHistoryGraph
           stocks={stocks}
           ownedStocks={portfolio.stocks.map(holding => holding.stock.id)}
           onVisibilityChange={updateStockVisibility}
           currentFilter={filter}
         />
       </div>
-
       <main className="stock-market-main">
         <div className="stock-card-container">
           <div className="market-controls-wrapper">
