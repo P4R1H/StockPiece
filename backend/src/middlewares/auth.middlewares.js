@@ -30,16 +30,16 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
 
 const verifyAdminJWT = asyncHandler(async (req, _, next) => {
   //we need to get the accessToken from cookies
-  const accessToken =
-    req.cookies?.accessToken ||
+  const adminToken =
+    req.cookies?.adminToken ||
     req.headers.authorization?.replace("Bearer ", "");
 
-  if (!accessToken) {
+  if (!adminToken) {
     return next();
   }
 
   const decodedToken = jwt.verify(
-    accessToken,
+    adminToken,
     process.env.ADMIN_ACCESS_TOKEN_SECRET
   );
 
