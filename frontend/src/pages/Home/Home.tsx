@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
@@ -15,7 +15,10 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
+
   const queryClient = useQueryClient();
+  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
@@ -74,6 +77,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           : b.name.localeCompare(a.name)
       );
   }, [filteredStocks, searchQuery, sortOrder]);
+
   const updateStockVisibility = useCallback(
     (id: string, visibility: 'show' | 'hide' | 'only') => {
       queryClient.setQueryData<CharacterStock[]>(['stocks'], oldStocks => {
@@ -87,61 +91,88 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     },
     [queryClient]
   );
-  const handleStockTransaction = useCallback(
-    async (type: 'buy' | 'sell', name: string) => {
-      const stock = stocks.find(s => s.name === name);
-      if (!stock) return;
-      const quantity = Number(buyAmt);
+  
+  const handleStockTransaction = (type: 'buy' | 'sell', name: string) => {
+    const stock = stocks.find(s => s.name === name);
+    if (!stock) return;
+    const quantity = Number(buyAmt);
+  
+    const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio']);
+    if (!previousPortfolio) return;
+    const newPortfolio = { ...previousPortfolio };
+  
+    const holdingIndex = newPortfolio.stocks.findIndex(
+      holding => holding.stock.id === stock.id
+    );
+  
+    if (type === 'buy') {
       const totalCost = stock.currentPrice * quantity;
-      const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio']);
-      if (!previousPortfolio) return;
-      const newPortfolio = { ...previousPortfolio };
-      const existingHoldingIndex = newPortfolio.stocks.findIndex(
-        holding => holding.stock.id === stock.id
-      );
-      if (type === 'buy') {
-        if (newPortfolio.cash >= totalCost) {
-          newPortfolio.cash -= totalCost;
-          newPortfolio.stockValue += totalCost;
-          if (existingHoldingIndex !== -1) {
-            newPortfolio.stocks[existingHoldingIndex].quantity += quantity;
-          } else {
-            newPortfolio.stocks.push({
-              stock: stock,
-              quantity: quantity,
-              holdingId: Math.random().toString(36).substring(7)
-            });
-          }
+      if (newPortfolio.cash >= totalCost) {
+        newPortfolio.cash -= totalCost;
+        newPortfolio.stockValue += totalCost;
+        if (holdingIndex !== -1) {
+          newPortfolio.stocks[holdingIndex].quantity += quantity;
         } else {
-          alert('Insufficient funds');
-          return;
+          newPortfolio.stocks.push({
+            stock: stock,
+            quantity: quantity,
+            holdingId: Math.random().toString(36).substring(7)
+          });
         }
       } else {
-        if (
-          existingHoldingIndex !== -1 &&
-          newPortfolio.stocks[existingHoldingIndex].quantity >= quantity
-        ) {
-          newPortfolio.cash += totalCost;
-          newPortfolio.stockValue -= totalCost;
-          newPortfolio.stocks[existingHoldingIndex].quantity -= quantity;
-          if (newPortfolio.stocks[existingHoldingIndex].quantity === 0) {
-            newPortfolio.stocks.splice(existingHoldingIndex, 1);
-          }
-        } else {
-          alert('Not enough shares to sell');
-          return;
+        alert('Insufficient funds');
+        return;
+      }
+    } else { // 'sell'
+      if (holdingIndex !== -1 && newPortfolio.stocks[holdingIndex].quantity >= quantity) {
+        const totalCost = stock.currentPrice * quantity;
+        newPortfolio.cash += totalCost;
+        newPortfolio.stockValue -= totalCost;
+        newPortfolio.stocks[holdingIndex].quantity -= quantity;
+        if (newPortfolio.stocks[holdingIndex].quantity === 0) {
+          newPortfolio.stocks.splice(holdingIndex, 1);
+        }
+      } else {
+        alert('Not enough shares to sell');
+        return;
+      }
+    }
+    queryClient.setQueryData(['portfolio'], newPortfolio);
+  
+    if (!pendingTransactions.current[stock.id]) {
+      pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
+    }
+    pendingTransactions.current[stock.id][type] += quantity;
+  
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+  
+    debounceTimer.current = setTimeout(async () => {
+      const { buy, sell } = pendingTransactions.current[stock.id];
+  
+      if (buy > 0) {
+        try {
+          await buyStock(name, buy);
+        } catch (error) {
+          queryClient.setQueryData(['portfolio'], previousPortfolio);
+          alert(error instanceof Error ? error.message : 'Buy transaction failed');
         }
       }
-      queryClient.setQueryData(['portfolio'], newPortfolio);
-      try {
-        await (type === 'buy' ? buyStock : sellStock)(name, quantity);
-      } catch (error) {
-        queryClient.setQueryData(['portfolio'], previousPortfolio);
-        alert(error instanceof Error ? error.message : 'Transaction failed');
+  
+      if (sell > 0) {
+        try {
+          await sellStock(name, sell);
+        } catch (error) {
+          queryClient.setQueryData(['portfolio'], previousPortfolio);
+          alert(error instanceof Error ? error.message : 'Sell transaction failed');
+        }
       }
-    },
-    [stocks, buyAmt, queryClient]
-  );
+  
+      pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
+    }, 500);
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard">
