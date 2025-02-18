@@ -31,7 +31,7 @@ const uploadOnCloudinary = async (localFilePath,stock=false) => {
             width: 330,
             height: 235,
             crop: "scale",
-            quality: "auto",    // Adjusts quality to balance file size and quality
+            quality: "auto:best",    // Adjusts quality to balance file size and quality
             fetch_format: "webp"  // Converts the image to WebP format if supported
         }
         if (stock) {
