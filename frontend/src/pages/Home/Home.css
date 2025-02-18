@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'VT323';
+  src: local('VT323'),
+       url('/fonts/VT323-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
 /* Global Reset */
 * {
   box-sizing: border-box;
@@ -169,6 +176,7 @@
 }
 
 .ticker-item {
+  font-family: 'VT323', monospace; /* Add monospace fallback */
   flex: 0 0 11.11%;
   display: flex;
   align-items: center;

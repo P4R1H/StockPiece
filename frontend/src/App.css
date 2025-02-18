@@ -1,13 +1,15 @@
+@font-face {
+  font-family: 'Pirata One';
+  src: url('/fonts/PirataOne-Regular.ttf') format('truetype');
+}
 
-/* Import Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
+/* Disable tap highlights and text selection on buttons and images */
 button, img {
   -webkit-tap-highlight-color: transparent;  /* for iOS Safari */
-  user-select: none;  /* prevents text selection */
-  -webkit-touch-callout: none;  /* prevents callout on long-press */
+  user-select: none;                         /* prevents text selection */
+  -webkit-touch-callout: none;                /* prevents callout on long-press */
 }
+
 /* Root Variables */
 :root {
   --dark-blue: #081B33;
@@ -34,12 +36,11 @@ body {
   cursor: pointer;
   transition: transform 0.3s ease;
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
-
 }
+
 .market-logo:hover {
   animation: flagShake 0.5s ease-in-out infinite;
 }
-
 
 /* One Piece Stock Market Container */
 .one-piece-stock-market {
@@ -107,6 +108,7 @@ body {
   border-radius: 8px;
   border: 2px solid var(--gold);
 }
+
 .nav-btn {
   color: var(--gold);
   border: none;
@@ -127,7 +129,12 @@ body {
   width: 60px;
   -webkit-appearance: none;
   appearance: none;
+}
 
+.nav-icon {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
 }
 
 .nav-btn:first-child {
@@ -195,7 +202,6 @@ body {
   margin-top: auto;
 }
 
-
 /* Mobile styles */
 @media (max-width: 768px) {
   .market-header .desktop-nav {
@@ -251,8 +257,14 @@ body {
     transition: box-shadow 0.3s ease, opacity 0.3s ease;
     opacity: 0;
     pointer-events: none;
+    
   }
   
+  .collapse-btn .nav-icon {
+    min-width: 14px;  
+    min-height: 14px; 
+    }
+
   .collapse-btn.visible {
     opacity: 1;
     pointer-events: auto;
@@ -263,6 +275,7 @@ body {
   }
 }
 
+/* Desktop-specific styles */
 @media (min-width: 769px) {
   .nav-group.mobile-nav,
   .collapse-btn {
