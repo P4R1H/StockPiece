@@ -91,7 +91,7 @@ if __name__ == "__main__":
     # Display percentage changes
     display_percentage_changes(initial_prices, updated_stocks)
 
-    mongod --replSet rs0 --dbpath ~/data/db --port 27017
+    # mongod --replSet rs0 --dbpath ~/data/db --port 27017
 
-    mongosh --port 27017
+    # mongosh --port 27017
 
