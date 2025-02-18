@@ -1,8 +1,12 @@
 {
-    "rewrites": [
-      {
-        "source": "/api/:path*",
-        "destination": "https://stockpiece.onrender.com/api/:path*"
-      }
-    ]
-  }
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://stockpiece.onrender.com/api/:path*"
+    },
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ]
+}
