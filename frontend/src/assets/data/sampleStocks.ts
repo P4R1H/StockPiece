@@ -19,6 +19,7 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 10,
+    tickerSymbol: 'LFY',
   },
   {
     id: 'zoro',
@@ -29,6 +30,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 9,
+    tickerSymbol: 'ZRO',
+
   },
   {
     id: 'nami',
@@ -39,6 +42,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 5,
+    tickerSymbol: 'NMI',
+
   },
   {
     id: 'sanji',
@@ -49,6 +54,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 4,
+    tickerSymbol: 'VSJ',
+
   },
   {
     id: 'chopper',
@@ -59,6 +66,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     popularity: 11,
+    tickerSymbol: 'CPR',
+
   },
   {
     id: 'usopp',
@@ -69,6 +78,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     visibility: 'show',
     initialValue: 100,
     popularity: 6,
+    tickerSymbol: 'USP',
+
   },
   {
     id: 'franky',
@@ -79,6 +90,7 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     visibility: 'show',
     initialValue: 100,
     popularity: 7,
+    tickerSymbol: 'FRY',
   },
   {
     id: 'brook',
@@ -89,6 +101,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     visibility: 'show',
     initialValue: 100,
     popularity: 8,
+    tickerSymbol: 'BRK',
+
   },
   {
     id: 'jinbe',
@@ -98,6 +112,7 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     ownedCount: 0,
     visibility: 'show',
     initialValue: 100,
+    tickerSymbol: 'JNB',
 
     popularity: 6,
   },
@@ -110,6 +125,8 @@ export const PLACEHOLDER_STOCKS: CharacterStock[] = [
     visibility: 'show',
     popularity: 9,
     initialValue: 100,
+    tickerSymbol: 'RBN',
+
 
   }
 ];
