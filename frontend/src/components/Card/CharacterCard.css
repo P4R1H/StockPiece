@@ -195,7 +195,18 @@
   top: -1px;
 }
 
+
 .op-character-name:hover .op-ticker-symbol {
   background: rgba(211, 167, 40, 0.15);
 }
 
+
+@media (max-width: 480px) {
+  .op-ticker-symbol {
+    font-size: 0.45rem;
+    padding: 0px 2px;
+    margin-left: 1px;
+    letter-spacing: 0;
+    border: 0.2px solid var(--accent);
+  }
+}

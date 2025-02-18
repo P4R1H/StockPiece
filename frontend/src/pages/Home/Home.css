@@ -353,4 +353,48 @@
     font-size: 0.9rem;
     padding: 0 15px;
   }
+
+  
+  .market-controls-wrapper {
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .search-controls {
+    width: 100%;
+    flex-wrap: nowrap;
+    border-right: none;
+    border-bottom: 3px solid #3e2f28;
+  }
+
+  .news-ticker {
+    width: 100%;
+    height: 30px;
+    border-left: none;
+  }
+
+  .ticker-content {
+    width: 1200%;
+  }
+
+  .ticker-item {
+    flex: 0 0 8.33%;
+    font-size: 0.9rem;
+    padding: 0 15px;
+  }
+
+  /* Ensure search controls stay in one line */
+  .stock-search {
+    width: 40%;
+    min-width: 100px;
+  }
+
+  .stock-filter-btn,
+  .stock-sort-btn,
+  .stock-amt-btn {
+    width: 20%;
+    min-width: fit-content;
+    font-size: 0.75rem;
+    padding: 0 0.3rem;
+  }
 }
