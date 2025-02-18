@@ -124,6 +124,7 @@ const AdminPanel: React.FC = () => {
                         <span>{stock.name}</span>
                         <img src={stock.image} alt={stock.name} style={{ width: '50px', height: '50px' }} />
                         <span>Price: ${stock.currentPrice}</span>
+                        <span>Ticker: ${stock.tickerSymbol}</span>
                         <span>Popularity: {stock.popularity}</span>
                         <button onClick={() => handleRemoveStock(stock.name)}>Remove</button>
                     </div>
