@@ -5,6 +5,7 @@
 - [/] useQuery caching
 - [/] Lazy loading images (dont need it much)
 - [ ] Reduce useEffect 
+- [ ] LFY, ZRO, NMI
 
 ## Page-Specific Tasks
 
@@ -22,7 +23,8 @@
 - [/] Implement backend data fetching
 
 ### Settings
-- [ ] Add delete account functionality
+- [/] Add delete account functionality
+- [ ] Add clear account data
 - [/] Implement feedback system : No need due to subreddit now
 - [/] Create about page
 

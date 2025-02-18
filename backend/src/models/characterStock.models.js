@@ -27,6 +27,12 @@ const characterStockSchema = new mongoose.Schema(
       type: Number,
       default: 50,
     },
+    tickerSymbol: {
+      type: String,
+      required: true,
+      unique: true,
+      uppercase: true
+    },
     valueHistory: {
       type: [
         {

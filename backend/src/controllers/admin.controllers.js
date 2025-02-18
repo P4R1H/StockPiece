@@ -128,7 +128,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { name, initialValue } = req.body;
+  const { name, initialValue, tickerSymbol } = req.body;
 
   if (!name?.trim()) {
     throw new ApiError(400, "name required");
@@ -152,6 +152,10 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
       throw new ApiError(400, "enter a valid initial value");
     }
 
+    if (!tickerSymbol?.trim()) {
+      throw new ApiError(400, "ticker symbol required");
+    }
+
     const imageLocalFilePath = req.file?.path;
     const imageUrl = imageLocalFilePath
       ? await uploadOnCloudinary(imageLocalFilePath)
@@ -166,6 +170,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
       initialValue: parseInt(initialValue),
       currentValue: initialValue,
       imageURL: imageUrl,
+      tickerSymbol
     });
 
     if (!characterStock) {

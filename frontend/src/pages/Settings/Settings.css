@@ -196,31 +196,41 @@ body {
   }
 }
 
-/* Responsive Adjustments for Mobile */
 @media (max-width: 600px) {
+  /* Main Page Container: keep top margin intact */
   .main-page-container {
     padding: 0.25rem;
     max-width: 90%;
+    margin: 1rem auto; /* Top spacing remains unchanged */
   }
+  /* Settings Container: keep component size, just ensure tighter spacing between elements */
   .settings-container {
     padding: 15px;
-    margin: 5px;
+    margin: -2px;
+    margin-top: 7px;
   }
+  /* Section Titles: reduce the gap below the title */
   .settings-section h2 {
     font-size: 1.2rem;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0rem; /* Slightly reduced gap */
   }
+  /* Content Boxes: reduce bottom margin only */
   .section-box {
     padding: 0.4rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem; /* Reduced vertical gap between boxes */
   }
+  /* Controls Section: tighten spacing between buttons */
   .controls-buttons {
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.3rem; /* Reduced gap */
   }
   .danger-button {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+  }
+  /* Crew Section: reduce gaps between crew members without resizing them too much */
+  .crew-members {
+    gap: 0.7rem; /* Reduced gap between crew items */
   }
   .crew-avatar {
     width: 60px;
@@ -230,11 +240,33 @@ body {
     width: 18px;
     height: 18px;
   }
-  .supply-icon {
-    width: 30px;
-    height: 30px;
+  /* Supplies Icons Section: reduce gap between icons */
+  .supplies-icons {
+    gap: 0.3rem;
   }
+  .supply-icon {
+    width: 23px;
+    height: 23px;
+  }
+  /* Manifesto Text: maintain readability while tightening spacing */
   .manifesto-text {
-    font-size: 0.8rem;
+    font-size: 0.5rem;
+  }
+  /* Footer: reduce space before footer links */
+  .footer-links {
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Ensure buttons stay in a row */
+  .controls-buttons {
+    flex-direction: row; /* Changed from column to row */
+    gap: 0.3rem; /* You can adjust the gap as needed */
+    flex-wrap: nowrap; /* Prevent wrapping */
+  }
+  .danger-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
   }
 }
