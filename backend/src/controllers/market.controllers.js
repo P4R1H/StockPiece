@@ -8,7 +8,7 @@ const getLatestChapter = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
   if (!latestChapter) {
-    throw new ApiError(400,"latest chapter not released");
+    throw new ApiError(400, "latest chapter not released");
   }
   res
     .status(200)
@@ -17,19 +17,17 @@ const getLatestChapter = asyncHandler(async (req, res, _) => {
     );
 });
 
-const isWindowOpen = asyncHandler( async (req, res, _) => {
+const isWindowOpen = asyncHandler(async (req, res, _) => {
   const latestChapter = await ChapterRelease.findOne().sort({
-    releaseDate: -1
+    releaseDate: -1,
   });
   if (!latestChapter) {
-    throw new ApiError(400,"latest chapter not released");
+    throw new ApiError(400, "latest chapter not released");
   }
-  let flag = Date.now()>latestChapter.windowEndDate.getTime() ? false : true;
+  let flag = Date.now() > latestChapter.windowEndDate.getTime() ? false : true;
   res
     .status(200)
-    .json(
-      new ApiResponse(200,flag,"window status fetched successfully")
-    )
-})
+    .json(new ApiResponse(200, flag, "window status fetched successfully"));
+});
 
 export { getLatestChapter, isWindowOpen };

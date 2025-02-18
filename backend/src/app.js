@@ -3,6 +3,7 @@ import errorHandler from "./middlewares/errorHandler.middlewares.js";
 import cookieParser from "cookie-parser";
 import path from "node:path";
 import { __dirname } from "./constants.js";
+import cors from 'cors';
 
 const app = express();
 
@@ -19,6 +20,12 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    // credentials: true
+  })
+);
 
 app.get("/", (_req, res, _next) => {
   res.status(200).json({

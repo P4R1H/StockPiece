@@ -9,7 +9,6 @@ import {
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middlewares.js";
-import { getAllStocks } from "../controllers/stock.controllers.js";
 
 const adminRouter = express.Router();
 

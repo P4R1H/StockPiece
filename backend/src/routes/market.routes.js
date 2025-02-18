@@ -1,5 +1,8 @@
 import express from "express";
-import { getLatestChapter, isWindowOpen } from "../controllers/market.controllers.js";
+import {
+  getLatestChapter,
+  isWindowOpen,
+} from "../controllers/market.controllers.js";
 
 const marketRoute = express.Router();
 

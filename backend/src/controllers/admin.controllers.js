@@ -170,7 +170,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
       initialValue: parseInt(initialValue),
       currentValue: initialValue,
       imageURL: imageUrl,
-      tickerSymbol
+      tickerSymbol,
     });
 
     if (!characterStock) {
