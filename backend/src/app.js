@@ -27,12 +27,6 @@ app.use(
   })
 );
 
-app.get("/", (_req, res, _next) => {
-  res.status(200).json({
-    message: "hello",
-  });
-});
-
 import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import stockRoute from "./routes/stock.routes.js";
@@ -44,6 +38,10 @@ app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/stock", stockRoute);
 app.use("/api/v1/market", marketRoute);
 app.use("/api/v1/service", serviceRouter);
+
+// app.get("*",(_req, res, _next) => {
+//   res.redirect('/')
+// })
 
 app.use(errorHandler);
 

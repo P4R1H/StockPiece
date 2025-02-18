@@ -44,7 +44,6 @@ body {
 
 /* One Piece Stock Market Container */
 .one-piece-stock-market {
-  background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   display: flex;
@@ -99,97 +98,6 @@ body {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   letter-spacing: 1.5px;
   position: relative;
-}
-
-/* Navigation Buttons */
-.nav-group {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  border: 2px solid var(--gold);
-}
-
-.nav-btn {
-  color: var(--gold);
-  border: none;
-  padding: 12px 18px;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  background: transparent;
-  position: relative;
-  margin: 0 -2px;
-  border-radius: 0;
-  
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 57px;
-  width: 60px;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.nav-icon {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
-}
-
-.nav-btn:first-child {
-  border-radius: 6px 0 0 6px;
-}
-
-.nav-btn:last-child {
-  border-radius: 0 6px 6px 0;
-}
-
-.nav-btn:hover {
-  background: var(--gold);
-  color: var(--ocean-blue);
-  transform: scale(1.1);
-  z-index: 2;
-  box-shadow: 0 0 15px rgba(255,215,0,0.4);
-}
-
-.nav-btn::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 60%;
-  width: 2px;
-  background: var(--gold);
-  opacity: 0.3;
-}
-
-.nav-btn:last-child::after {
-  display: none;
-}
-
-.nav-btn:hover::after {
-  opacity: 0;
-}
-
-/* Special Buttons */
-.logout-btn {
-  color: var(--crimson);
-}
-
-.logout-btn:hover {
-  color: var(--gold);
-  background: var(--crimson);
-}
-
-.login-btn {
-  color: var(--emerald);
-}
-
-.login-btn:hover {
-  color: var(--gold);
-  background: var(--emerald);
 }
 
 /* Footer Styling */

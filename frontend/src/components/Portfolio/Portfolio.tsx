@@ -54,6 +54,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     setLoading(false);
   }, []);
 
+  
   return (
     <div className="bounty-card">
       <div

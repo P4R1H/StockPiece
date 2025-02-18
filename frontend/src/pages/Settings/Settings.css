@@ -19,7 +19,6 @@ body {
   max-width: var(--max-container-width);
   margin: 1rem auto;
   animation: floatIn 0.8s ease-out;
-  background: url('/assets/waves-animation.gif') no-repeat center center;
   background-size: cover;
   overflow-y: auto;
 }

@@ -22,18 +22,29 @@ const deleteTempFile = async (localFilePath) => {
   }
 };
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath,stock=false) => {
   try {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         if (!localFilePath) return null;
-
+        const transformation = {
+            width: 330,
+            height: 235,
+            crop: "scale",
+            quality: "auto",    // Adjusts quality to balance file size and quality
+            fetch_format: "webp"  // Converts the image to WebP format if supported
+        }
+        if (stock) {
+          transformation.width = 120,
+          transformation.height = 100
+        }
         const uploadResult = await cloudinary.uploader.upload(localFilePath, {
           resource_type: "auto",
+          transformation
         });
 
         console.log("File has been uploaded on cloudinary");
-        return uploadResult.url;
+        return uploadResult.secure_url  ;
       } catch (uploadError) {
         if (attempt == maxAttempts) {
           throw uploadError;

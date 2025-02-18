@@ -158,7 +158,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
     const imageLocalFilePath = req.file?.path;
     const imageUrl = imageLocalFilePath
-      ? await uploadOnCloudinary(imageLocalFilePath)
+      ? await uploadOnCloudinary(imageLocalFilePath,true)
       : defaultAvatarUrl;
 
     if (!imageUrl) {
