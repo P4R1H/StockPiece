@@ -1,13 +1,13 @@
-// types/Stocks.ts
 export interface CharacterStock {
   id: string;
   name: string;
-  image: string; // Kept for potential future use or existing components
-  currentPrice: number; // Renamed to currentValue to match API, but keeping for compatibility in components and renaming it in getStockMarketData if needed.
+  image: string;
+  currentPrice: number;
   initialValue: number;
-  popularity: number; // Kept for potential future use
-  ownedCount: number; // Kept for potential future use
+  popularity: number;
+  ownedCount: number;
   visibility: 'show' | 'hide' | 'only';
+  tickerSymbol: string;
 }
 
 export interface CharacterCardProps {

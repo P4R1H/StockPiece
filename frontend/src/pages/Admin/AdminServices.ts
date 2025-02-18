@@ -39,12 +39,13 @@ export const admin_logout = async () => {
     }
 }
 
-export const add_character_stock = async (name: string, initialValue: number, imageURL: File) => {
+export const add_character_stock = async (name: string, initialValue: number, imageURL: File, tickerSymbol : string) => {
     try {
         const formData = new FormData();
         formData.append('name', name);
         formData.append('initialValue', initialValue.toString());
         formData.append('imageURL', imageURL);
+        formData.append('tickerSymbol', tickerSymbol);
 
         const response = await fetch('/api/v1/admin/add-character-stock', {
             method: 'POST',

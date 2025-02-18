@@ -112,12 +112,14 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  max-width: 90px;
+  max-width: calc(100% - 8px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
 }
-
 .op-character-price {
   font-size: 0.8rem;
   color: var(--text-secondary);
@@ -175,3 +177,25 @@
 .op-sell-button:hover {
   background: linear-gradient(to bottom, var(--sell-hover-start), var(--sell-hover-end));
 }
+
+.op-ticker-symbol {
+  color: var(--text-tertiary);
+  font-size: 0.65rem;
+  font-weight: 500;
+  margin-left: 4px;
+  padding: 1px 4px;
+  background: rgba(20, 40, 60, 0.5);
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  vertical-align: middle;
+  font-family: 'Courier New', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  position: relative;
+  top: -1px;
+}
+
+.op-character-name:hover .op-ticker-symbol {
+  background: rgba(211, 167, 40, 0.15);
+}
+

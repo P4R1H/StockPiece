@@ -36,13 +36,14 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
         <div className="op-divider" />
 
         <div className="op-card-body">
-          <div className="op-header">
-            <h3 className="op-character-name">{name}</h3>
-            <span className="op-character-price">
-              {currentPrice.toLocaleString()}฿
-            </span>
-          </div>
-
+        <div className="op-header">
+          <h3 className="op-character-name">
+            {name} <span className="op-ticker-symbol">{stock.tickerSymbol}</span>
+          </h3>
+          <span className="op-character-price">
+            {currentPrice.toLocaleString()}฿
+          </span>
+        </div>
           <div className="op-meta">
             <span className="op-owned">Owned: {ownedQuantity}</span>
             <div className="op-actions">

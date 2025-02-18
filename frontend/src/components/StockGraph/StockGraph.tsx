@@ -17,7 +17,6 @@ import './StockGraph.css';
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
 
-// Extend the default dataset type to include the custom "image" property
 interface CustomDataset extends ChartDataset<"line", (number | Point | null)[]> {
   image?: HTMLImageElement;
 }

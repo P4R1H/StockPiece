@@ -16,6 +16,7 @@ const AdminPanel: React.FC = () => {
     const [password, setPassword] = useState('');
     const [stockName, setStockName] = useState('');
     const [initialValue, setInitialValue] = useState(0);
+    const [tickerSymbol, setTickerSymbol] = useState('');
     const [imageURL, setImageURL] = useState<File | null>(null);
 
     useEffect(() => {
@@ -39,7 +40,7 @@ const AdminPanel: React.FC = () => {
 
     const handleAddStock = async () => {
         if (!imageURL) return;
-        await add_character_stock(stockName, initialValue, imageURL);
+        await add_character_stock(stockName, initialValue, imageURL, tickerSymbol);
         fetchData();
     };
 
@@ -93,6 +94,13 @@ const AdminPanel: React.FC = () => {
                         onChange={(e) => setStockName(e.target.value)}
                         required
                     />
+                    <input 
+                        className="stockTicker"
+                        placeholder="Stock ticker"
+                        value={tickerSymbol}
+                        onChange={(e) => setTickerSymbol(e.target.value)}
+                        required
+                    />                    
                     <input 
                         className="stockValue"
                         type="number"

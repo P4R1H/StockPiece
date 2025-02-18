@@ -4,8 +4,8 @@
 - [ ] codescene review
 - [/] useQuery caching
 - [/] Lazy loading images (dont need it much)
-- [ ] Reduce useEffect 
-- [ ] LFY, ZRO, NMI
+- [/] Reduce useEffect 
+- [/] LFY, ZRO, NMI
 
 ## Page-Specific Tasks
 
@@ -16,6 +16,7 @@
 - [/] Auto logout fix ? was backend issue
 - [ ] Add site explanation for new users
 - [/] Implement bulk buy feature
+- [/] Belly symbol svg
 
 ### Leaderboard 
 - [/] Complete UI overhaul
