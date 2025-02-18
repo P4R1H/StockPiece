@@ -9,7 +9,9 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "dev": "nodemon NODE_ENV=development ./src/index.js"
+    "dev": "nodemon NODE_ENV=development ./src/index.js",
+    "start": "node ./src/index.js",
+    "build": "npm install"
   },
   "repository": {
     "type": "git",
