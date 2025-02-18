@@ -19,7 +19,6 @@ interface OnePieceStockMarketProps {
 const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {
   return (
     <div className="one-piece-stock-market">
-      {/* Entire Navbar is now a separate component */}
       <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} />
 
       <Routes>
