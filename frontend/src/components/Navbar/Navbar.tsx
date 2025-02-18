@@ -73,7 +73,6 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   }, []);
 
   const handleCollapseClick = () => {
-    // Show the mobile nav again and hide the collapse button
     mobileNavRef.current?.classList.remove('hidden');
     collapseBtnRef.current?.classList.remove('visible', 'shine');
   };
@@ -82,11 +81,13 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
     <>
       <header className="market-header">
         <div className="pirate-banner">
-          <img
-            src="/assets/stockpiecelogo.png"
-            alt="StockPiece Logo"
-            className="market-logo"
-          />
+          <Link to="/">
+            <img
+              src="/assets/stockpiecelogo.png"
+              alt="StockPiece Logo"
+              className="market-logo"
+            />
+          </Link>
           <h1 className="market-title">Grand Line Exchange</h1>
         </div>
         <div className="nav-group desktop-nav">
