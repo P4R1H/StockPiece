@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
@@ -15,11 +15,20 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
 
   const queryClient = useQueryClient();
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      const windowStatus = await checkWindowStatus()
+      setWindowOpen(windowStatus);
+    }
+    checkStatus();
+  }, []);
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
@@ -101,10 +110,9 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   };
 
   const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
-    const windowStatus = await checkWindowStatus();
-    if (!windowStatus) {
-      showError("To prevent insider trading the buying/selling window is closed. It will open on official chapter release");
-      return;
+    if(!windowOpen) {
+      showError("To prevent insider trading the buying/selling window is closed. It will open on official chapter release.");
+      return; 
     }
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
