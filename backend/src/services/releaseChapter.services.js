@@ -2,15 +2,20 @@ import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 
-const releaseChapter = async (req, res, _) => {
+const releaseChapterService = async (manual) => {
   try {
-    if (req && !req.admin) {
-      throw new ApiError(401, "unauthorized request");
+    if (!manual) {
+      console.log("running weekly crone job...");
     }
-    console.log("running weekly crone job...");
     const latestChapter = await ChapterRelease.findOne().sort({
       releaseDate: -1,
     });
+    if (latestChapter) {
+      //it might be a manual request then check if the window is closed
+      if (!latestChapter.isWindowClosed) {
+        throw new ApiError(400,"window is still open");
+      }
+    }
     // if (!latestChapter) {
     //   throw new ApiError(400, "problem in getting latest chapter");
     // }
@@ -31,18 +36,19 @@ const releaseChapter = async (req, res, _) => {
       throw new Error("problem releasing chapter");
     }
 
-    if (req?.admin) {
-      res
-        .status(200)
-        .json(new ApiResponse(200, newChapter, "new chapter released"));
+    if (manual) {
+      return new ApiResponse(200, newChapter, "new chapter released");
     }
 
     console.log(`new chapter ${newChapterNumber} released`);
   } catch (error) {
+    if (manual) {
+      throw error;
+    }
     console.log(
       `there was some error while releasing chapter ${error.message}`
     );
   }
 };
 
-export default releaseChapter;
+export default releaseChapterService;
