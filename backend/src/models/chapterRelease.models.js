@@ -14,6 +14,10 @@ const chapterReleaseSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  isWindowClosed: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const ChapterRelease = mongoose.model("ChapterRelease", chapterReleaseSchema);

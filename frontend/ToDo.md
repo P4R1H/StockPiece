@@ -10,7 +10,7 @@
 ## Page-Specific Tasks
 
 ### Home Page
-- [ ] Error message better UI
+- [/] Error message better UI
 - [/] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
 - [/] Auto logout fix ? was backend issue

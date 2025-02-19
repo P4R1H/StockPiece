@@ -2,11 +2,19 @@ import express from "express";
 import {
   getLatestChapter,
   isWindowOpen,
+  manualCloseMarket,
+  manualReleaseChapter,
 } from "../controllers/market.controllers.js";
+import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
-const marketRoute = express.Router();
+const marketRouter = express.Router();
 
-marketRoute.route("/latest-chapter").get(getLatestChapter);
-marketRoute.route("/window-status").get(isWindowOpen);
+marketRouter.route("/latest-chapter").get(getLatestChapter);
+marketRouter.route("/window-status").get(isWindowOpen);
 
-export default marketRoute;
+//protected routes
+marketRouter.use(verifyAdminJWT);
+marketRouter.route("/release-chapter").post(manualReleaseChapter);
+marketRouter.route("/close-market").post(manualCloseMarket);
+
+export default marketRouter;
