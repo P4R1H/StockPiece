@@ -10,7 +10,7 @@ const visibilityIcons = {
 };
 
 const CharacterCard: React.FC<CharacterCardProps> = React.memo(
-  ({ stock, onBuy, onSell, onVisibilityChange, ownedQuantity }) => {
+  ({ stock, qty, onBuy, onSell, onVisibilityChange, ownedQuantity }) => {
     const { id, name, image, currentPrice, visibility } = stock;
     const IconComponent = visibilityIcons[visibility] || Eye;
 
@@ -47,17 +47,17 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
           <div className="op-meta">
             <span className="op-owned">Owned: {ownedQuantity}</span>
             <div className="op-actions">
-              <button
+                <button
                 className="op-buy-button"
                 onClick={() => onBuy(name)}
-              >
-                Buy
-              </button>
-              <button
+                >
+                Buy{qty !== "1" ? ` ${qty}` : ''}
+                </button>
+                <button
                 className="op-sell-button"
                 onClick={() => onSell(name)}
-              >
-                Sell
+                >
+                Sell{qty !== "1" ? ` ${qty}` : ''}
               </button>
             </div>
           </div>

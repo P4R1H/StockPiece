@@ -1,4 +1,3 @@
-/* Define a CSS variable for the gradient */
 :root {
   --primary-gradient: linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%);
 }
@@ -14,21 +13,11 @@
   animation: floatIn 0.8s ease-out;
 }
 
-/* Leaderboard Container with positioned title */
 .leaderboard-container {
   position: relative;
-  background: linear-gradient(
-    45deg,
-    #b8860b 0%,
-    #daa520 20%,
-    #ffd700 40%,
-    #ffd700 60%,
-    #daa520 80%,
-    #b8860b 100%
-);
-
+  background: linear-gradient(45deg, #b8860b 0%, #daa520 20%, #ffd700 40%, #ffd700 60%, #daa520 80%, #b8860b 100%);
   background-size: cover;
-  padding: 40px 25px 25px 25px; /* extra top padding to accommodate the title on the border */
+  padding: 40px 25px 25px 25px; /* extra top padding to accommodate the title */
   margin: 20px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
   border: 5px solid transparent;
@@ -36,22 +25,20 @@
   border-radius: 2%;
 }
 
-
 /* Title on the border of the container */
 .container-title {
   color: rgb(212, 169, 59);
   position: absolute;
-  top: -20px; /* positions the title overlapping the top border */
+  top: -20px;
   left: 50%;
   transform: translateX(-50%);
-  border: 1px black solid;
+  border: 1px solid black;
   background: url("/assets/wood.webp");
   padding: 0 15px;
   border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
-
 .container-title .main-title {
   font-size: 2.2rem;
   line-height: 1;
@@ -66,7 +53,6 @@
   display: block;
   margin-top: 2px;
 }
-
 
 /* Combined Container for Top3, Table, and Current Rank */
 .combined-leaderboard {
@@ -85,8 +71,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
-  background: url('/assets/luffyKing.webp')
-    no-repeat center center;
+  background: url('/assets/luffyKing.webp') no-repeat center center;
   background-size: cover;
   padding: 10px;
 }
@@ -99,55 +84,68 @@
   color: #ffcc00;
   transition: transform 0.3s ease;
 }
-
 .top-three-card:hover {
   transform: scale(1.05);
 }
 
+/* Top Three Card Ranks */
+.top-three-card.rank-1 {
+  grid-row: 1;
+  grid-column: 2;
+  transform: translateY(-1px);
+  z-index: 2;
+}
+.top-three-card.rank-2 {
+  grid-column: 1;
+  z-index: 1;
+  transform: translateY(6px);
+}
+.top-three-card.rank-3 {
+  grid-column: 3;
+  z-index: 1;
+  transform: translateY(6px);
+}
+
+/* Rank Badge (combined properties from duplicate selectors) */
 .rank-badge {
   position: absolute;
-  top: -8px;
-  left: 10px;
   background: var(--primary-gradient);
   color: #ffcc00;
-  padding: 4px 8px;
   border-radius: 15px;
   font-weight: bold;
   font-size: 0.9rem;
+  top: -10px;
+  left: -5px;
+  padding: 2px 6px;
 }
 
+/* User Details */
 .user-details {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .username {
   font-size: 1.1rem;
   margin: 0;
 }
-
 .user-stats {
   display: flex;
   justify-content: space-between;
   font-size: 0.9rem;
 }
-
 .stat-item {
   display: flex;
   flex-direction: column;
 }
-
 .stat-label {
   color: rgba(255, 204, 0, 0.7);
   font-size: 0.7rem;
 }
-
 .stat-value {
   font-size: 0.9rem;
   font-weight: bold;
 }
-
 .portfolio-hover {
   text-align: center;
   margin-top: 4px;
@@ -174,17 +172,15 @@
 
 /* Leaderboard Table */
 .leaderboard-table {
-  
   width: 100%;
   border-collapse: collapse;
   background: rgba(255, 255, 255, 0.9);
 }
-
 .leaderboard-table thead {
   position: sticky;
   top: 0;
   z-index: 1;
-  background: var(--primary-gradient); /* single continuous gradient */
+  background: var(--primary-gradient);
 }
 .leaderboard-table th,
 .leaderboard-table td {
@@ -198,36 +194,33 @@
   font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 1px;
-  background: transparent; /* let the thead’s gradient show through */
+  background: transparent;
 }
-
 .leaderboard-table tr:hover {
   background: rgba(255, 215, 0, 0.1);
 }
 
+/* Highlight and Profit Classes */
 .top-rank {
   background: rgba(219, 187, 8, 0.2);
   font-weight: bold;
 }
-
 .profit-high {
   color: #2ecc71;
   font-weight: bold;
 }
-
 .profit-normal {
   color: #3498db;
 }
 
-/* Scrollable List Style */
+/* Scrollable List */
 .scrollable-list {
-  max-height: 300px; /* reduced height helps on mobile */
+  max-height: 300px;
   overflow-y: auto;
-  overflow-x: hidden; 
-
+  overflow-x: hidden;
 }
 
-/* Current User Rank Styles */
+/* Current User Rank */
 .current-user-rank {
   display: flex;
   justify-content: space-between;
@@ -237,251 +230,30 @@
   padding: 10px 15px;
   font-size: 0.9rem;
 }
-
 .user-rank-details h3 {
   margin: 0;
   font-size: 1.5rem;
 }
-
 .user-rank-stats {
   display: flex;
   gap: 20px;
 }
-
 .user-rank-stats .stat {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   font-size: 0.9rem;
 }
-
 .user-rank-stats .stat span:first-child {
   color: rgba(255, 204, 0, 0.7);
   font-size: 0.8rem;
 }
-
 .user-rank-stats .stat span:last-child {
   font-size: 1rem;
   font-weight: bold;
 }
 
-/* First Place - Centered and Raised */
-.top-three-card.rank-1 {
-  position: relative; /* or absolt depending on your needs */
-  grid-row: 1;
-  grid-column: 2;
-  transform: translateY(-1px);
-  z-index: 2; /* Add this to make it appear above other elements */
-}
-
-/* Second Place - Left */
-.top-three-card.rank-2 {
-  grid-column: 1;
-  z-index: 1;
-  transform: translateY(6px);
-}
-
-/* Third Place - Right */
-.top-three-card.rank-3 {
-  grid-column: 3;
-  z-index: 1;
-  transform: translateY(6px);
-
-}
-.rank-badge {
-  top: -10px;
-  left: -5px;
-  padding: 2px 6px;
-}
-
-
-
-
-/* Mobile Responsive Adjustments */
-@media screen and (max-width: 768px) {
-  /* Page Container Adjustment */
-  .page-container {
-    padding: 0.5rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 10px;
-  }
-
-  /* Center the leaderboard container */
-  .leaderboard-container {
-    width: 95%; /* Ensure it doesn't stretch too wide */
-    max-width: 600px; /* Optional: set a max-width if desired */
-    margin: 10px auto; /* Center horizontally and add some vertical margin */
-  }
-
-  /* Leaderboard Container Responsiveness */
-  .leaderboard-container {
-    margin: 10px;
-    padding: 30px 15px 15px 15px;
-  }
-
-  /* Container Title Responsiveness */
-  .container-title {
-    top: -15px;
-  }
-  .container-title .main-title {
-    font-size: 1.6rem;
-  }
-  .container-title .subtitle {
-    font-size: 0.7rem;
-  }
-
-  /* Top Three Container Adjustment */
-  .luffy-background {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    background-size: cover;
-    padding: 5px;
-  }
-
-  .top-three-card {
-    padding: 5px;
-  }
-
-  /* First Place - Centered and Raised */
-.top-three-card.rank-1 {
-  position: relative; /* or absolt depending on your needs */
-  grid-row: 1;
-  grid-column: 2;
-  transform: translateY(-1px);
-  z-index: 2; /* Add this to make it appear above other elements */
-}
-
-/* Second Place - Left */
-.top-three-card.rank-2 {
-  grid-column: 1;
-  z-index: 1;
-  transform: translateY(3px);
-}
-
-/* Third Place - Right */
-.top-three-card.rank-3 {
-  grid-column: 3;
-  z-index: 1;
-  transform: translateY(3px);
-
-}
-
-
-  .rank-badge {
-    top: -10px;
-    left: -5px;
-    padding: 2px 6px;
-    font-size: 0.7rem;
-  }
-
-  .username {
-    font-size: 0.9rem;
-  }
-
-  .user-stats {
-    font-size: 0.7rem;
-  }
-
-  .stat-label {
-    font-size: 0.6rem;
-  }
-
-  .stat-value {
-    font-size: 0.8rem;
-  }
-
-  .portfolio-hover {
-    font-size: 0.7rem;
-  }
-
-  /* Leaderboard Table Responsiveness */
-  .leaderboard-table {
-    font-size: 0.8rem;
-  }
-
-  .leaderboard-table th,
-  .leaderboard-table td {
-    padding: 6px;
-  }
-
-  .leaderboard-table th {
-    font-size: 0.6rem;
-  }
-
-  /* Scrollable List */
-  .scrollable-list {
-    max-height: 250px;
-  }
-
-  /* Current User Rank */
-  .current-user-rank {
-    padding: 8px 12px;
-    font-size: 0.8rem;
-  }
-
-  .user-rank-details h3 {
-    font-size: 1.2rem;
-  }
-
-  .user-rank-stats {
-    gap: 10px;
-  }
-
-  .user-rank-stats .stat span:first-child {
-    font-size: 0.7rem;
-  }
-
-  .user-rank-stats .stat span:last-child {
-    font-size: 0.9rem;
-  }
-}
-
-/* Additional Mobile Optimization for Very Small Screens */
-@media screen and (max-width: 480px) {
-
-  .leaderboard-container {
-    margin: 5px;
-    padding: 25px 10px 10px 10px;
-  }
-
-  .container-title .main-title {
-    font-size: 1.4rem;
-  }
-
-  .luffy-background {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 3px;
-  }
-
-  .top-three-card {
-    padding: 3px;
-  }
-
-  .username {
-    font-size: 0.8rem;
-  }
-
-
-  .leaderboard-table th {
-    white-space: nowrap;
-  }
-  
-  .current-user-rank {
-    padding: 6px 10px;
-    font-size: 0.7rem;
-  }
-  .leaderboard-table th.right-col,
-  .leaderboard-table td.right-col {
-    transform: translateX(-10px);
-  }
-
-  .user-rank-details h3 {
-    font-size: 1rem;
-  }
-}
-
+/* Animation */
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -496,6 +268,182 @@
 /* Force the third (empty) column to have a minimum width */
 .leaderboard-table th:nth-child(3),
 .leaderboard-table td:nth-child(3) {
-  min-width: 120px; /* Adjust this value as needed */
+  min-width: 120px;
 }
 
+.center-spinner-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+  width: 100%;
+}
+
+.spinner {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 6px solid #8B4513;      
+  border-top-color: #FFD700;      
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 15px #FFD700;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Mobile Responsive Adjustments */
+@media screen and (max-width: 768px) {
+  .page-container {
+    padding: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+  }
+  
+  .leaderboard-container {
+    width: 95%;
+    max-width: 600px;
+    margin: 10px auto;
+    padding: 30px 15px 15px 15px;
+  }
+  
+  .container-title {
+    top: -15px;
+  }
+  .container-title .main-title {
+    font-size: 1.6rem;
+  }
+  .container-title .subtitle {
+    font-size: 0.7rem;
+  }
+  
+  .luffy-background {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    background-size: cover;
+    padding: 5px;
+  }
+  
+  .top-three-card {
+    padding: 5px;
+  }
+
+  .top-three-card.rank-2 {
+    grid-column: 1;
+    z-index: 1;
+    transform: translateY(3px);
+  }
+  .top-three-card.rank-3 {
+    grid-column: 3;
+    z-index: 1;
+    transform: translateY(3px);
+  }
+  
+  .rank-badge {
+    top: -10px;
+    left: -5px;
+    padding: 2px 6px;
+    font-size: 0.7rem;
+  }
+  
+  .username {
+    font-size: 0.9rem;
+  }
+  .user-stats {
+    font-size: 0.7rem;
+  }
+  .stat-label {
+    font-size: 0.6rem;
+  }
+  .stat-value {
+    font-size: 0.8rem;
+  }
+  .portfolio-hover {
+    font-size: 0.7rem;
+  }
+  
+  .leaderboard-table {
+    font-size: 0.8rem;
+  }
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 6px;
+  }
+  .leaderboard-table th {
+    font-size: 0.6rem;
+  }
+  
+  .scrollable-list {
+    max-height: 250px;
+  }
+  
+  .current-user-rank {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+  .user-rank-details h3 {
+    font-size: 1.2rem;
+  }
+  .user-rank-stats {
+    gap: 10px;
+  }
+  .user-rank-stats .stat span:first-child {
+    font-size: 0.7rem;
+  }
+  .user-rank-stats .stat span:last-child {
+    font-size: 0.9rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .leaderboard-container {
+    margin: 5px;
+    padding: 25px 10px 10px 10px;
+  }
+  
+  .container-title .main-title {
+    font-size: 1.4rem;
+  }
+  
+  .luffy-background {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+  
+  .top-three-card {
+    padding: 3px;
+  }
+  
+  .username {
+    font-size: 0.8rem;
+  }
+  
+  .leaderboard-table th {
+    white-space: nowrap;
+  }
+  
+  .current-user-rank {
+    padding: 6px 10px;
+    font-size: 0.7rem;
+  }
+  
+  .leaderboard-table th.right-col,
+  .leaderboard-table td.right-col {
+    transform: translateX(-10px);
+  }
+  
+  .user-rank-details h3 {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .spinner {
+    width: 60px;
+    height: 60px;
+  }
+}

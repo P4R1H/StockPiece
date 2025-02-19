@@ -128,7 +128,8 @@
 }
 
 .stock-filter-btn:hover,
-.stock-sort-btn:hover,  .stock-amt-btn:hover {
+.stock-sort-btn:hover,
+.stock-amt-btn:hover {
   background: rgba(139, 69, 19, 0.8);
   color: #fff;
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
@@ -176,12 +177,11 @@
 }
 
 .ticker-item {
-  font-family: 'VT323', monospace; /* Add monospace fallback */
+  font-family: 'VT323', monospace;
   flex: 0 0 11.11%;
   display: flex;
   align-items: center;
   color: #ff4444;
-  font-family: 'VT323', monospace;
   font-size: 1.1rem;
   text-shadow: 0 0 8px rgba(255, 68, 68, 0.8);
   letter-spacing: 1px;
@@ -220,13 +220,43 @@
   100% { transform: translateX(-800%); }
 }
 
+.window-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 26, 42, 0.9);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 1s ease-out; 
+  z-index: 3;
+}
+
+.window-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+  transition: opacity 0.3s ease-in; 
+}
+
+.window-overlay span {
+  font-size: 1.5rem;
+  text-align: center;
+  color: #f4f1ea;
+  padding: 10px;
+  font-family: 'VT323', monospace; 
+}
+
 /* Media Queries */
 @media (max-width: 1400px) {
   .dashboard {
     flex-wrap: wrap;
     padding: 0 1.5rem;
   }
-  
   
   .search-controls {
     border-right: none;
@@ -235,10 +265,11 @@
     flex-wrap: wrap;
   }
 
-  .stock-filter-btn, .stock-amt-btn, .stock-sort-btn {
+  .stock-filter-btn,
+  .stock-amt-btn,
+  .stock-sort-btn {
     height: auto;
   }
-
   
   .stock-grid {
     padding: 1rem;
@@ -354,7 +385,6 @@
     padding: 0 15px;
   }
 
-  
   .market-controls-wrapper {
     flex-direction: column;
     min-height: auto;
@@ -383,7 +413,6 @@
     padding: 0 15px;
   }
 
-  /* Ensure search controls stay in one line */
   .stock-search {
     width: 40%;
     min-width: 100px;
@@ -397,4 +426,13 @@
     font-size: 0.75rem;
     padding: 0 0.3rem;
   }
+
+  .window-overlay span {
+    font-size: 1rem;
+    text-align: center;
+    color: #f4f1ea;
+    padding: 10px;
+    font-family: 'VT323', monospace; /* Consistent with ticker font */
+  }
+  
 }

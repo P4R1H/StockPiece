@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
@@ -7,7 +7,7 @@ import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sam
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
-import { getStockMarketData, getPortfolioData, buyStock, sellStock } from './HomeServices';
+import { getStockMarketData, getPortfolioData, checkWindowStatus, buyStock, sellStock } from './HomeServices';
 import './Home.css';
 
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
@@ -15,6 +15,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
   const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [errorMessage, setErrorMessage] = useState<string>("");
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
 
   const queryClient = useQueryClient();
@@ -58,6 +59,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       profitLossLastChapter: ((portfolio.profit ?? 0).toFixed(2)) + '%'
     };
   }, [portfolio]);
+
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned')
@@ -66,6 +68,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       return true;
     });
   }, [stocks, filter, portfolio.stocks]);
+
   const sortedStocks = useMemo(() => {
     return filteredStocks
       .filter(stock =>
@@ -92,7 +95,17 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     [queryClient]
   );
   
-  const handleStockTransaction = (type: 'buy' | 'sell', name: string) => {
+  const showError = (message: string) => {
+    setErrorMessage(message);
+    setTimeout(() => setErrorMessage(""), 2000);
+  };
+
+  const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
+    const windowStatus = await checkWindowStatus();
+    if (!windowStatus) {
+      showError("To prevent insider trading the buying/selling window is closed. It will open on official chapter release");
+      return;
+    }
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
     const quantity = Number(buyAmt);
@@ -120,7 +133,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           });
         }
       } else {
-        alert('Insufficient funds');
+        showError("Insufficient funds");
         return;
       }
     } else { // 'sell'
@@ -133,7 +146,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           newPortfolio.stocks.splice(holdingIndex, 1);
         }
       } else {
-        alert('Not enough shares to sell');
+        showError("Not enough shares to sell");
         return;
       }
     }
@@ -250,6 +263,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
               <CharacterStockCard
                 key={stock.id}
                 stock={stock}
+                qty={buyAmt}
                 onBuy={() => handleStockTransaction('buy', stock.name)}
                 onSell={() => handleStockTransaction('sell', stock.name)}
                 onVisibilityChange={updateStockVisibility}
@@ -258,6 +272,9 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 }
               />
             ))}
+          </div>
+          <div className={`window-overlay ${errorMessage ? 'active' : ''}`}>
+            <span>{errorMessage}</span>
           </div>
         </div>
       </main>

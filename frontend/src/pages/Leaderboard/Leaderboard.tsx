@@ -11,7 +11,7 @@ interface LeaderboardAPIResponse {
 
 const LeaderboardPage: React.FC = () => {
   
-  const { data } = useQuery<
+  const { data, isLoading } = useQuery<
     LeaderboardResponse, 
     Error,
     LeaderboardAPIResponse
@@ -48,6 +48,13 @@ const LeaderboardPage: React.FC = () => {
     },
   });
 
+  if (isLoading) {
+    return (
+      <div className="center-spinner-container">
+        <div className="spinner"></div>
+      </div>
+    );
+  }
 
   if (!data) return null;
   
