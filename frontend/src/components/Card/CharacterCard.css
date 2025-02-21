@@ -209,4 +209,19 @@
     letter-spacing: 0;
     border: 0.2px solid var(--accent);
   }
+
+  
+}
+
+@media (max-width: 480px) {
+  .op-actions {
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+  
+  .op-buy-button, 
+  .op-sell-button {
+    /* Increase padding for a thicker, more touch-friendly button */
+    padding: 8px 12px;
+  }
 }
