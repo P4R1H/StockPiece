@@ -106,7 +106,7 @@
   transform: translateY(6px);
 }
 
-/* Rank Badge (combined properties from duplicate selectors) */
+/* Rank Badge */
 .rank-badge {
   position: absolute;
   background: var(--primary-gradient);
@@ -331,7 +331,6 @@
   .top-three-card {
     padding: 5px;
   }
-
   .top-three-card.rank-2 {
     grid-column: 1;
     z-index: 1;
@@ -375,6 +374,7 @@
   }
   .leaderboard-table th {
     font-size: 0.6rem;
+    white-space: normal;
   }
   
   .scrollable-list {
@@ -397,11 +397,15 @@
   .user-rank-stats .stat span:last-child {
     font-size: 0.9rem;
   }
+  
+  .leaderboard-table th.right-col,
+  .leaderboard-table td.right-col {
+    transform: translateX(-10px); 
+  }
 }
 
 @media screen and (max-width: 480px) {
   .leaderboard-container {
-    margin: 5px;
     padding: 25px 10px 10px 10px;
   }
   
@@ -423,7 +427,7 @@
   }
   
   .leaderboard-table th {
-    white-space: nowrap;
+    white-space: normal;
   }
   
   .current-user-rank {
@@ -433,11 +437,7 @@
   
   .leaderboard-table th.right-col,
   .leaderboard-table td.right-col {
-    transform: translateX(-10px);
-  }
-  
-  .user-rank-details h3 {
-    font-size: 1rem;
+    transform: translateX(-10px); 
   }
 }
 

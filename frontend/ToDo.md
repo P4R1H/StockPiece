@@ -1,7 +1,7 @@
 ## Overall Improvements
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
-- [ ] codescene review
+- [/] codescene review
 - [/] useQuery caching
 - [/] Lazy loading images (dont need it much)
 - [/] Reduce useEffect 

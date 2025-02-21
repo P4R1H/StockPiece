@@ -45,25 +45,18 @@ const SettingsPage: React.FC = () => {
                 />
                 <div className="crew-links">
                   <a
-                    href="https://github.com/dev1"
+                    href="https://github.com/vc252"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/github-white-icon.png"
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
                       alt="GitHub"
                     />
                   </a>
-                  <a
-                    href="https://linkedin.com/in/dev1"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png"
-                      alt="LinkedIn"
-                    />
-                  </a>
+                   
+                  {/* Linkedin removed */}
+
                 </div>
               </div>
 
@@ -75,26 +68,19 @@ const SettingsPage: React.FC = () => {
                 />
                 <div className="crew-links">
                   <a
-                    href="https://github.com/dev2"
+                    href="https://github.com/P4R1H"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     <img
-                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/github-white-icon.png"
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
                       alt="GitHub"
                     />
                   </a>
-                  <a
-                    href="https://linkedin.com/in/dev2"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src="https://uxwing.com/wp-content/themes/uxwing/download/brands-and-social-media/linkedin-app-white-icon.png"
-                      alt="LinkedIn"
-                    />
-                  </a>
-                </div>
+
+                  {/* Linkedin removed */}
+
+                  </div>
               </div>
             </div>
           </section>
