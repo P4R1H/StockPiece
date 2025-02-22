@@ -127,6 +127,12 @@
   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2);
 }
 
+/* Adjust base sorting button width */
+.stock-sort-btn {
+  min-width: 120px; /* Reduced from 140px */
+  font-size: 0.9rem;
+}
+
 .stock-filter-btn:hover,
 .stock-sort-btn:hover,
 .stock-amt-btn:hover {
@@ -443,9 +449,15 @@
   .stock-filter-btn,
   .stock-sort-btn,
   .stock-amt-btn {
-    width: 20%;
+    width: auto; /* Changed from 20% */
     min-width: fit-content;
     font-size: 0.75rem;
+    padding: 0 0.3rem;
+  }
+
+  .stock-sort-btn {
+    min-width: 100px; /* Reduced from 120px */
+    font-size: 0.8rem;
     padding: 0 0.3rem;
   }
 

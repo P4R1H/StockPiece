@@ -14,7 +14,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
-  const [sortOrder, setSortOrder] = useState<'Ascending' | 'Descending'>('Ascending');
+  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('alpha-asc');
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
@@ -83,11 +83,20 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       .filter(stock =>
         stock.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      .sort((a, b) =>
-        sortOrder === 'Ascending'
-          ? a.name.localeCompare(b.name)
-          : b.name.localeCompare(a.name)
-      );
+      .sort((a, b) => {
+        switch (sortOrder) {
+          case 'alpha-asc':
+            return a.name.localeCompare(b.name);
+          case 'alpha-desc':
+            return b.name.localeCompare(a.name);
+          case 'price-asc':
+            return a.currentPrice - b.currentPrice;
+          case 'price-desc':
+            return b.currentPrice - a.currentPrice;
+          default:
+            return 0;
+        }
+      });
   }, [filteredStocks, searchQuery, sortOrder]);
 
   const updateStockVisibility = useCallback(
@@ -236,10 +245,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
               <select
                 className="stock-sort-btn"
                 value={sortOrder}
-                onChange={e => setSortOrder(e.target.value as 'Ascending' | 'Descending')}
+                onChange={e => setSortOrder(e.target.value as 'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc')}
               >
-                <option value="Ascending">Ascending</option>
-                <option value="Descending">Descending</option>
+                <option value="alpha-asc">Name A-Z</option>
+                <option value="alpha-desc">Name Z-A</option>
+                <option value="price-asc">Price Low-High</option>
+                <option value="price-desc">Price High-Low</option>
               </select>
               <select
                 className="stock-amt-btn"
