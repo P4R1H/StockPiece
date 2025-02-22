@@ -36,6 +36,9 @@ body {
   cursor: pointer;
   transition: transform 0.3s ease;
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+  display: flex;
+  align-self: center; /* Centers vertically within flex container */
+  margin: auto 0; /* Additional vertical centering */
 }
 
 .market-logo:hover {
@@ -58,11 +61,12 @@ body {
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Ensures vertical centering of all items */
   border-bottom: 3px solid var(--gold);
   position: relative;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  min-height: 80px; /* Ensure consistent height */
 }
 
 /* Pirate Banner */
@@ -98,7 +102,7 @@ body {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   letter-spacing: 1.5px;
   position: relative;
-  margin-top: -5px;
+  margin-top: -2px;
 }
 
 /* Footer Styling */
@@ -119,7 +123,7 @@ body {
   
   .market-title {
     font-size: 1.5rem;
-    margin-top: -8px;
+    margin-top: 0px;
   }
   
   .nav-group.mobile-nav {

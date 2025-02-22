@@ -135,6 +135,20 @@
   text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
 }
 
+/* Add this to fix font consistency across browsers */
+.stock-sort-btn option {
+  font-family: 'Pirata One', cursive;
+  background: rgba(244, 241, 234, 0.9);
+  color: #3e2f28;
+}
+
+/* Ensure Firefox specific styling */
+@-moz-document url-prefix() {
+  .stock-sort-btn option {
+    font-family: 'Pirata One', cursive !important;
+  }
+}
+
 /* News Ticker */
 .news-ticker {
   flex-grow: 1;
