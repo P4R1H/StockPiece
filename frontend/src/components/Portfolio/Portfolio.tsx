@@ -124,10 +124,16 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
           Cash: <span className="highlight">{cash} Bellies</span>
         </p>
         <p className="bounty-profit-loss">
-          Profit/Loss Overall: <span className="highlight">{profitLossOverall}</span>
+          Profit/Loss Overall: 
+          <span className={`highlight ${parseFloat(profitLossOverall) >= 0 ? 'profit' : 'loss'}`}>
+            {profitLossOverall}
+          </span>
           <span className="profit-loss-last-chapter">
             {' '}
-            (Last Chapter: <span className="highlight">{profitLossLastChapter}</span>)
+            (Last Chapter: 
+            <span className={`highlight ${parseFloat(profitLossLastChapter) >= 0 ? 'profit' : 'loss'}`}>
+              {profitLossLastChapter}
+            </span>)
           </span>
         </p>
       </div>
