@@ -160,6 +160,7 @@
   opacity: 0.8;
   margin-top: -4px;
   margin-left: -4px;
+  margin-bottom: 0;
   font-family: 'Courier New', monospace;
 }
 
@@ -169,7 +170,7 @@
   font-weight: 600;
   letter-spacing: 0.05rem;
   text-align: left;
-  padding-top: 0px;
+  margin-top: 0px;
   padding-bottom: 4px;
   text-shadow: 0 0 6px rgba(173, 216, 230, 0.5);
   transition: all 0.2s ease;
