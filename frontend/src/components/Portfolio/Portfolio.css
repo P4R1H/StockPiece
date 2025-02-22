@@ -16,7 +16,7 @@
 }
 
 .bounty-card {
-  background: url('/assets/bounty-template.webp') no-repeat center center, #d4ccbc;
+  background: url('/assets/bounty-template.webp') no-repeat center center, #d9ccbc;
   background-size: contain;
   width: min(90vw, 400px);
   min-height: min(132vw, 585px);
@@ -100,7 +100,7 @@
   transform: scale(1.2);
 }
 
-/* Ensure smooth transition */
+/* En sure smooth transition */
 .upload-area.login-prompt span {
   transition: all 0.3s ease;
   color: #666;
