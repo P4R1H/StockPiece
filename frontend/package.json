@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "VITE_API_BASE_URL=https://stockpiece.onrender.com tsc -b && vite build",
+    "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -21,6 +21,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@fullhuman/postcss-purgecss": "^7.0.2",
+    "@tailwindcss/postcss": "^4.0.8",
     "@types/node": "^22.13.1",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
