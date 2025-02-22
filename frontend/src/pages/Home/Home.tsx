@@ -30,7 +30,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       }
     }
     checkStatus();
-  }, []);
+  }, [isLoggedIn]);
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
@@ -47,7 +47,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   });
   
   const { data: portfolio = PLACEHOLDER_PORTFOLIO } = useQuery<UserPortfolio>({
-    queryKey: ['portfolio'],
+    queryKey: ['portfolio', isLoggedIn],
     queryFn: async () => {
       if(isLoggedIn) {
         try {
@@ -126,7 +126,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
     if(!windowOpen) {
-      showError("To prevent insider trading the buying/selling window is closed. It will open on official chapter release.");
+      showError("To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.");
       return; 
     }
     const stock = stocks.find(s => s.name === name);
