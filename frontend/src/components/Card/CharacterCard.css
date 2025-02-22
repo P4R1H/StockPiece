@@ -168,21 +168,25 @@
 /* Actions section */
 .op-actions {
   display: flex;
-  gap: 8px; /* Match other gaps */
+  gap: 4px; /* Reduced from 8px */
 }
 
 .op-buy-button, 
 .op-sell-button {
   flex: 1;
-  padding: 4px 12px;
+  padding: 4px 6px; /* Reduced horizontal padding from 12px to 6px */
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1rem; /* Slightly smaller font */
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em; /* Reduced letter spacing */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Show ellipsis if text overflows */
+  min-width: 0; /* Allow flex shrinking */
 }
 
 .op-buy-button {
@@ -261,5 +265,15 @@
   .character-grid {
     gap: 8px; /* Even smaller gap on mobile */
     padding: 8px;
+  }
+
+  .op-buy-button,
+  .op-sell-button {
+    padding: 2px 4px;
+    font-size: 0.7rem; /* Even smaller on mobile */
+  }
+
+  .op-actions {
+    gap: 2px; /* Smaller gap on mobile */
   }
 }
