@@ -1,4 +1,4 @@
-# StockPiece – Agenda Piece if it was a website
+# StockPiece – Powerscale like a true capitalist
 
 ![Market Banner](https://i.imgur.com/ZoupF36.png)
 
