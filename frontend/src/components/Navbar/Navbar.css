@@ -1,4 +1,14 @@
 /* Navigation Buttons */
+:root {
+  --dark-blue: #081B33;
+  --gold: #FFD700;
+  --parchment: #FAF3E0;
+  --crimson: #A30000;
+  --ocean-blue: #125D98;
+  --deep-ocean: #0A1526;
+  --emerald: #008000;
+}
+
 .nav-group {
     align-items: center;
     background: rgba(0, 0, 0, 0.15);
@@ -72,20 +82,20 @@
   
   /* Special Buttons */
   .logout-btn {
-    color: rgb(255, 0, 0);
+    color: var(--crimson);
   }
   
   .logout-btn:hover {
     color: var(--gold);
-    background: rgb(255, 0, 0);
+    background: var(--crimson);
   }
   
   .login-btn {
-    color: rgb(17, 195, 17)
+    color: var(--emerald)
   }
   
   .login-btn:hover {
     color: var(--gold);
-    background: rgb(17, 195, 17);
+    background: var(--emerald);
   }
   

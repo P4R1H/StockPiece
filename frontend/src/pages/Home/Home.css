@@ -94,7 +94,6 @@
   display: flex;
   min-width: fit-content;
   background: linear-gradient(145deg, #c49247, #e4b267);
-  border-right: 3px solid #3e2f28;
   height: 40px;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
@@ -193,7 +192,7 @@
   width: 300%;
   height: 100%;
   transform: translateX(100%);
-  animation: ticker 25s linear infinite;
+  animation: ticker 30s linear infinite;
 }
 
 .ticker-item {
@@ -207,7 +206,7 @@
   letter-spacing: 1px;
   padding: 0 10px;
   white-space: nowrap;
-  margin-right: 100px; /* Reduced from 200px since we now have separators on both sides */
+  margin-right: 300px; /* Reduced from 200px since we now have separators on both sides */
 }
 
 .ticker-item::before {
@@ -481,16 +480,14 @@
     height: 35px;
   }
 
-  /* Give the search bar more room */
   .stock-search {
     flex: 2;
     font-size: 0.9rem;
   }
 
-  /* Allow the buttons to shrink less */
   .stock-filter-btn,
   .stock-amt-btn {
-    flex: 1;
+    flex: 1.5;
     min-width: 40px;
     font-size: 0.75rem;
     padding: 0 0.3rem;
