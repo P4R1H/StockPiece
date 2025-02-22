@@ -8,7 +8,7 @@
   padding: 15px;
   position: relative;
   overflow: hidden;
-  background: #fff5e6 url('/assets/parchment.jpg');
+  background: #fff5e6 url('/assets/parchment.webp');
   border: 5px solid #3e2f28;
   border-radius: 15px;
   animation: floatIn 0.8s ease-out;
