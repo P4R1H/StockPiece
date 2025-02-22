@@ -201,7 +201,7 @@
   letter-spacing: 1px;
   padding: 0 10px;
   white-space: nowrap;
-  margin-right: 100px; /* Reduced from 200px since we now have separators on both sides */
+  margin-right: 450px;
 }
 
 .ticker-item::before {
