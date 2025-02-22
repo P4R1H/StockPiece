@@ -228,7 +228,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
             <div className="search-controls">
               <input
                 type="text"
-                placeholder="Search characters.."
+                placeholder="Search.."
                 className="stock-search"
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}

@@ -483,7 +483,7 @@
 
   /* Give the search bar more room */
   .stock-search {
-    flex: 3;
+    flex: 2;
     font-size: 0.9rem;
   }
 
@@ -497,7 +497,7 @@
   }
 
   .stock-sort-btn {
-    flex: 2.5;
+    flex: 2;
     min-width: 40px;
     font-size: 0.75rem;
     padding: 0 0.3rem;

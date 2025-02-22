@@ -187,6 +187,11 @@ body {
   .collapse-btn.shine {
     box-shadow: 0 0 15px var(--gold);
   }
+
+  .collapse-btn:focus {
+    outline: none;
+  }
+  
 }
 
 /* Desktop-specific styles */
@@ -196,3 +201,4 @@ body {
     display: none;
   }
 }
+
