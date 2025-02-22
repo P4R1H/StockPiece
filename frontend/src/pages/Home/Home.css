@@ -192,7 +192,7 @@
   width: 300%;
   height: 100%;
   transform: translateX(100%);
-  animation: ticker 30s linear infinite;
+  animation: ticker 25s linear infinite;
 }
 
 .ticker-item {
@@ -404,7 +404,9 @@
 
   .ticker-content {
     width: 1200%;
+    animation: ticker 45s linear infinite;
   }
+  
 
   .ticker-item {
     flex: 0 0 8.33%;

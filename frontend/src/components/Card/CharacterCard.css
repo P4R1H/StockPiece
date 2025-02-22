@@ -187,6 +187,11 @@
   gap: 4px; /* Reduced from 8px */
 }
 
+.op-buy-button:focus,
+.op-sell-button:focus {
+  outline: none;
+}
+
 .op-buy-button, 
 .op-sell-button {
   flex: 1;
@@ -252,42 +257,46 @@
 
 
 @media (max-width: 480px) {
+
+  
+  .op-card-body {
+    gap: 4px;
+  }
+
   .op-ticker-symbol {
-    font-size: 0.5rem !important;
-    padding: 2px 4px !important;
-    margin-left: auto !important; 
-    display: inline-block !important;
+    font-size: 0.5rem;
   }
 
   .op-character-name {
-    font-size: 0.9rem !important;
-    margin-bottom: 2px !important; 
+    font-size: 0.8rem  !important;
+    margin-bottom: -2px;
   }
 
   .op-character-price {
-    font-size: 0.9rem !important;
+    font-size: 1rem !important;
   }
 
-  .op-meta,
-  .op-header,
-  .op-stats,
-  .op-card-body {
-    gap: 1px !important; 
+  .op-owned {
+    font-size: 0.8rem !important;
+  }
+
+  .op-actions {
+    flex-direction: row !important;
   }
 
   .op-buy-button,
   .op-sell-button {
-    padding: 2px 4px;
-    font-size: 0.7rem; /* Even smaller on mobile */
-  }
-
-  .op-actions {
-    gap: 2px; /* Smaller gap on mobile */
+    padding: 6px 8px;
+    font-size: 0.9rem;
+    min-height: 32px;
+    outline: none;
   }
 
   .op-base-price {
     font-size: 0.7rem;
-    margin-top: -6px;
   }
 
+  .op-image-container {
+    height: 100px;
+  }
 }
