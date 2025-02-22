@@ -23,11 +23,19 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const checkStatus = async () => {
-      const windowStatus = await checkWindowStatus()
-      setWindowOpen(windowStatus);
+    if (window.requestIdleCallback) {
+      const idleCallbackId = window.requestIdleCallback(async () => {
+        const windowStatus = await checkWindowStatus();
+        setWindowOpen(windowStatus);
+      });
+      return () => window.cancelIdleCallback(idleCallbackId);
+    } else {
+      const timer = setTimeout(async () => {
+        const windowStatus = await checkWindowStatus();
+        setWindowOpen(windowStatus);
+      }, 100);
+      return () => clearTimeout(timer);
     }
-    checkStatus();
   }, []);
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({

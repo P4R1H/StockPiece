@@ -304,7 +304,7 @@
 }
 
 /* Mobile Optimization */
-@media (max-width: 768px) {
+@media (max-width: 500px) {
   .dashboard,
   .graph-container {
     width: 100%;
@@ -324,7 +324,6 @@
     padding: 10px;
   }
 
-  
   .stock-grid {
     grid-template-columns: repeat(3, 1fr);
     column-gap: 0.1rem;
