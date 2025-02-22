@@ -102,26 +102,28 @@
 
 /* Card body spacing */
 .op-card-body {
+  padding: 4px 10px 10px 10px;
   padding: 7px;
   padding-top: 4px; /* Reduce top padding */
 
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Consistent gap throughout card */
+  gap: 8px; /* Consistent gap throughout card */
 }
 
 /* Header section */
 .op-header {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Match card body gap */
+  gap: 8px; /* Match card body gap */
+  margin-bottom: 0; /* Remove margin, use gap instead */
 }
 
 /* Meta section */
 .op-meta {
   display: flex;
   flex-direction: column;
-  gap: 4px; /* Match other gaps */
+  gap: 8px; /* Match other gaps */
 }
 
 .op-character-name {
@@ -143,25 +145,36 @@
 
 /* Price styling */
 .op-character-price {
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--text-secondary);
   font-weight: bold;
   font-family: 'Courier New', monospace;
   text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
   text-align: left;
-  padding: -4px 0;
   margin-bottom: -10px;
-  margin-top: -6px;
+  margin-top: -4px;
   letter-spacing: 0.05em;
 }
 
-.op-owned {
+.op-base-price {
   font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-align: left;
+  opacity: 0.8;
+  margin-top: -4px;
+  margin-left: -4px;
+  font-family: 'Courier New', monospace;
+}
+
+.op-owned {
+  font-size: 1rem;
   color: var(--text-tertiary);
   font-weight: 600;
   letter-spacing: 0.05rem;
   text-align: left;
-  padding: 2px 0;
+  padding-top: 0px;
+  padding-bottom: 4px;
   text-shadow: 0 0 6px rgba(173, 216, 230, 0.5);
   transition: all 0.2s ease;
 }
@@ -170,21 +183,25 @@
 /* Actions section */
 .op-actions {
   display: flex;
-  gap: 4px; /* Match other gaps */
+  gap: 4px; /* Reduced from 8px */
 }
 
 .op-buy-button, 
 .op-sell-button {
   flex: 1;
-  padding: 4px 12px;
+  padding: 4px 6px; /* Reduced horizontal padding from 12px to 6px */
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 1rem; /* Slightly smaller font */
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em; /* Reduced letter spacing */
+  white-space: nowrap; /* Prevent text wrapping */
+  overflow: hidden;
+  text-overflow: ellipsis; /* Show ellipsis if text overflows */
+  min-width: 0; /* Allow flex shrinking */
 }
 
 .op-buy-button {
@@ -255,6 +272,21 @@
   .op-stats,
   .op-card-body {
     gap: 1px !important; 
+  }
+
+  .op-buy-button,
+  .op-sell-button {
+    padding: 2px 4px;
+    font-size: 0.7rem; /* Even smaller on mobile */
+  }
+
+  .op-actions {
+    gap: 2px; /* Smaller gap on mobile */
+  }
+
+  .op-base-price {
+    font-size: 0.7rem;
+    margin-top: -6px;
   }
 
 }

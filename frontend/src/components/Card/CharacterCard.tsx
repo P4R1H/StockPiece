@@ -41,8 +41,13 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
               {name} <span className="op-ticker-symbol">{stock.tickerSymbol}</span>
             </h3>
             <span className="op-character-price">
-              {Math.floor(currentPrice).toLocaleString()}฿
+              {(Math.floor(currentPrice) * parseInt(qty)).toLocaleString()}฿
             </span>
+            {qty !== "1" && (
+              <span className="op-base-price">
+                ({Math.floor(currentPrice).toLocaleString()}฿ each)
+              </span>
+            )}
           </div>
           <div className="op-meta">
             <span className="op-owned">Owned: {ownedQuantity}</span>

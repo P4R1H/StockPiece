@@ -8,13 +8,15 @@
   --overlay-bg: rgba(0, 0, 0, 0.6);
   --overlay-hover-bg: rgba(0, 0, 0, 0.7);
   --dashed-border: #ccc;
+  --profit-color: #2e8b32; /* Darker green */
+  --loss-color: #d32f2f; /* Darker red */
 
   /* Fonts */
   --font-family: 'Pirata One', cursive;
 }
 
 .bounty-card {
-  background: url('/assets/bounty-template.webp') no-repeat center center, var(--bg-light);
+  background: url('/assets/bounty-template.webp') no-repeat center center, #d4ccbc;
   background-size: contain;
   width: min(90vw, 400px);
   min-height: min(132vw, 585px);
@@ -142,7 +144,7 @@
 /* Text Content Styles */
 .bounty-details {
   position: absolute;
-  bottom: 10%;
+  bottom: 11%; /* Moved slightly up from 10% */
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -152,7 +154,7 @@
 .bounty-name {
   font-size: clamp(20px, 5vw, 32px);
   text-transform: uppercase;
-  margin: 20px 0 -5px;
+  margin: 15px 0 0; /* Adjusted from 20px 0 -5px */
   color: var(--primary-text);
   letter-spacing: 2px;
 }
@@ -169,18 +171,27 @@
 .bounty-profit-loss,
 .bounty-cash {
   font-size: clamp(12px, 3vw, 18px);
-  margin: 5px 0;
   color: var(--primary-text);
 }
 
 .profit-loss-last-chapter {
   font-size: clamp(10px, 2.5vw, 14px);
-  color: #8b4e4e;
+  color: var(--secondary-text); /* Using variable instead of hard-coded color */
+  font-weight: 500; /* Slightly bolder */
 }
 
 .highlight {
   color: var(--highlight);
   font-weight: bold;
+  padding: 0 4px; /* Add padding around numbers */
+}
+
+.highlight.profit {
+  color: var(--profit-color);
+}
+
+.highlight.loss {
+  color: var(--loss-color);
 }
 
 /* Animation */
