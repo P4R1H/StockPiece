@@ -92,10 +92,6 @@
   transition: all 0.3s ease;
 }
 
-.upload-area.login-prompt:hover {
-  background: rgba(211, 167, 40, 0.2);
-  color: var(--accent-light);
-}
 
 .upload-area.login-prompt:hover span {
   font-weight: bold;
