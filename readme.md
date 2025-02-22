@@ -1,6 +1,6 @@
 # StockPiece – Agenda Piece if it was a website
 
-![Market Banner](frontend/public/assets/stockpiecelogo.png)
+![Market Banner](https://i.imgur.com/ZoupF36.png)
 
 StockPiece is a unique stock market simulation game set in the One Piece universe. In this fan-made project, players trade character stocks, manage their portfolios, and compete on a leaderboard—all within a dynamic market environment influenced by in-universe events.
 
