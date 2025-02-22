@@ -255,7 +255,7 @@
 
 @media (max-width: 500px) {
   .bounty-name {
-    font-size: clamp(22px, 5.5vw, 32px); 
+    font-size: clamp(25px, 5.5vw, 32px); 
   }
 
 }
