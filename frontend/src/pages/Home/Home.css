@@ -308,8 +308,8 @@
   
   .stock-grid {
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 0.2rem;
-    row-gap: 0.25rem;
+    column-gap: 0.1rem;
+    row-gap: 0.2rem;
     padding: 0.5rem;
   }
 
@@ -443,4 +443,30 @@
     font-family: 'VT323', monospace; /* Consistent with ticker font */
   }
   
+}
+
+@media (max-width: 768px) {
+  .search-controls {
+    display: flex;
+    flex-direction: row;
+    align-items: left;
+    width: 100%;
+    border-bottom: 3px solid #3e2f28;
+    height: 35px;
+  }
+
+  /* Give the search bar more room */
+  .stock-search {
+    flex: 4;
+    font-size: 0.9rem;
+  }
+
+  /* Allow the buttons to shrink less */
+  .stock-filter-btn,
+  .stock-amt-btn {
+    flex: 1;
+    min-width: 40px;
+    font-size: 0.75rem;
+    padding: 0 0.3rem;
+  }
 }

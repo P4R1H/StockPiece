@@ -381,7 +381,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
           <input
             type="text"
             className="search-bar"
-            placeholder="Search characters..."
+            placeholder="Search characters.."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

@@ -103,7 +103,7 @@
 /* Card body spacing */
 .op-card-body {
   padding: 7px;
-  padding-top: 2px; /* Reduce top padding */
+  padding-top: 4px; /* Reduce top padding */
 
   display: flex;
   flex-direction: column;
@@ -137,6 +137,7 @@
   letter-spacing: 0.1em;
   text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
   position: relative;
+  margin-bottom: 6px;
 }
 
 
@@ -233,34 +234,27 @@
 
 
 @media (max-width: 480px) {
+  .op-ticker-symbol {
+    font-size: 0.5rem !important;
+    padding: 2px 4px !important;
+    margin-left: auto !important; 
+    display: inline-block !important;
+  }
+
+  .op-character-name {
+    font-size: 0.9rem !important;
+    margin-bottom: 2px !important; 
+  }
+
   .op-character-price {
-    font-size: 1rem;
-    padding: 2px 0;
+    font-size: 0.9rem !important;
   }
 
-  .op-owned {
-    font-size: 1rem;
-    padding: 2px 0;
-  }
-  
-  /* Stats section */
-  .op-meta {
-    gap: 6px;
+  .op-meta,
+  .op-header,
+  .op-stats,
+  .op-card-body {
+    gap: 1px !important; 
   }
 
-  .op-stats {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-
-  .op-stock-card {
-    width: 100%; /* Full width on mobile */
-  }
-
-  .character-grid {
-    gap: 8px; /* Even smaller gap on mobile */
-    padding: 8px;
-  }
 }
