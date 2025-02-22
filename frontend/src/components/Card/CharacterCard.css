@@ -102,25 +102,26 @@
 
 /* Card body spacing */
 .op-card-body {
-  padding: 10px;
+  padding: 7px;
+  padding-top: 2px; /* Reduce top padding */
+
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Consistent gap throughout card */
+  gap: 4px; /* Consistent gap throughout card */
 }
 
 /* Header section */
 .op-header {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Match card body gap */
-  margin-bottom: 0; /* Remove margin, use gap instead */
+  gap: 4px; /* Match card body gap */
 }
 
 /* Meta section */
 .op-meta {
   display: flex;
   flex-direction: column;
-  gap: 8px; /* Match other gaps */
+  gap: 4px; /* Match other gaps */
 }
 
 .op-character-name {
@@ -141,7 +142,7 @@
 
 /* Price styling */
 .op-character-price {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--text-secondary);
   font-weight: bold;
   font-family: 'Courier New', monospace;
@@ -154,7 +155,7 @@
 }
 
 .op-owned {
-  font-size: 1rem;
+  font-size: 0.8rem;
   color: var(--text-tertiary);
   font-weight: 600;
   letter-spacing: 0.05rem;
@@ -168,7 +169,7 @@
 /* Actions section */
 .op-actions {
   display: flex;
-  gap: 8px; /* Match other gaps */
+  gap: 4px; /* Match other gaps */
 }
 
 .op-buy-button, 
