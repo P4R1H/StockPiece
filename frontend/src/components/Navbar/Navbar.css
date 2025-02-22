@@ -22,7 +22,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    height: 57px;
+    height: 50px;
     width: 60px;
     -webkit-appearance: none;
     appearance: none;
@@ -72,21 +72,21 @@
   
   /* Special Buttons */
   .logout-btn {
-    color: var(--crimson);
+    color: rgb(255, 0, 0);
   }
   
   .logout-btn:hover {
     color: var(--gold);
-    background: var(--crimson);
+    background: rgb(255, 0, 0);
   }
   
   .login-btn {
-    color: var(--emerald);
+    color: rgb(17, 195, 17)
   }
   
   .login-btn:hover {
     color: var(--gold);
-    background: var(--emerald);
+    background: rgb(17, 195, 17);
   }
   
   

@@ -255,13 +255,20 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({
         },
         displayColors: false,
         backgroundColor: '#fff5e6',
-        titleFont: { family: 'Pirata One', size: 16 },
-        bodyFont: { family: 'Pirata One', size: 14 },
+        titleFont: { 
+          family: 'Pirata One', 
+          size: 18,
+          weight: 'bold' as const
+        },
+        bodyFont: { 
+          family: 'Pirata One', 
+          size: 16
+        },
+        padding: 12,
         borderColor: '#3e2f28',
         borderWidth: 2,
         bodyColor: '#3e2f28',
         titleColor: '#b22222',
-        padding: 12,
         cornerRadius: 5,
         boxShadow: '3px 3px 0 #3e2f28'
       },

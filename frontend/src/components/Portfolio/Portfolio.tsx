@@ -1,5 +1,5 @@
-// Portfolio.tsx (or BountyProfileCard.tsx)
 import React, { useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Portfolio.css';
 import { BountyProfileCardProps } from '../../types/Components';
 
@@ -12,10 +12,18 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   profileImage,
   isLoggedIn,
 }) => {
+  const navigate = useNavigate();
   const [preview, setPreview] = useState<string | null>(null);
   const [isHovering, setIsHovering] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Handle navigation to login
+  const handleNavigateToLogin = useCallback(() => {
+    if (!isLoggedIn) {
+      navigate('/login');
+    }
+  }, [navigate, isLoggedIn]);
 
   // Trigger file input click
   const handleUploadClick = useCallback(() => {
@@ -89,8 +97,9 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
           </>
         ) : (
           <div
-            className={`upload-area ${isLoggedIn ? 'clickable' : 'disabled'}`}
-            onClick={isLoggedIn ? handleUploadClick : undefined}
+            className={`upload-area ${isLoggedIn ? 'clickable' : 'login-prompt'}`}
+            onClick={isLoggedIn ? handleUploadClick : handleNavigateToLogin}
+            style={{ cursor: isLoggedIn ? 'pointer' : 'pointer' }}
           >
             <span>
               {isLoggedIn

@@ -93,11 +93,12 @@ body {
 
 .market-title {
   color: var(--gold);
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   letter-spacing: 1.5px;
   position: relative;
+  margin-top: -5px;
 }
 
 /* Footer Styling */
@@ -118,6 +119,7 @@ body {
   
   .market-title {
     font-size: 1.5rem;
+    margin-top: -8px;
   }
   
   .nav-group.mobile-nav {

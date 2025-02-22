@@ -11,8 +11,8 @@
   background: #fff5e6 url('/assets/parchment.jpg');
   border: 5px solid #3e2f28;
   border-radius: 15px;
-  box-shadow: 8px 8px 0 rgba(62, 47, 40, 0.2);
   animation: floatIn 0.8s ease-out;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Added matching shadow */
 }
 
 /* Chart Wrapper */
@@ -277,6 +277,27 @@
   }
 }
 
+/* Add custom tooltip styles */
+:root {
+  --tooltip-title-size: 18px;
+  --tooltip-body-size: 16px;
+}
+
+/* Override Chart.js tooltip styles */
+.chartjs-tooltip {
+  transition: all 0.2s ease;
+}
+
+/* Tooltip hover effect */
+.chart-wrapper:hover .chartjs-tooltip {
+  transform: scale(1.1);
+}
+
+/* Add these chart tooltip styles */
+canvas:hover + .chartjs-tooltip {
+  transform: scale(1.1);
+}
+
 @media (max-width: 768px) {
   .graph-container {
     border: 3px solid #3e2f28;
@@ -347,5 +368,10 @@
 
   .side-panel.open {
     left: 0;
+  }
+
+  :root {
+    --tooltip-title-size: 16px;
+    --tooltip-body-size: 14px;
   }
 }

@@ -19,25 +19,31 @@
 }
 
 .op-stock-card {
-  width: 100%;
+  width: 100%; 
+  margin: 0 auto; /* Center the card */
   background: var(--primary-bg);
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  border: 1px solid var(--accent);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.2s ease;
+  border: 1px solid rgba(211, 167, 40, 0.25); /* More translucent border */
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.15),
+    inset 0 0 0 1px rgba(211, 167, 40, 0.1); /* Subtle inner glow */
+  transition: all 0.3s ease;
   background-image: linear-gradient(
-      to bottom right,
-      rgba(10, 26, 42, 0.8),
-      rgba(16, 42, 67, 0.8)
-    ),
-    url('data:image/svg+xml,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><text x="50%" y="50%" font-family="Arial" font-size="14" fill="%232d4b6e30" text-anchor="middle">₿</text></svg>');
+    to bottom right,
+    rgba(10, 26, 42, 0.9),
+    rgba(16, 42, 67, 0.9)
+  );
 }
 
 .op-stock-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 0 10px var(--gold);
+  border-color: rgba(211, 167, 40, 0.6); /* Slightly more visible on hover */
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 15px rgba(255, 215, 0, 0.2),
+    inset 0 0 0 1px rgba(211, 167, 40, 0.2);
 }
 
 .op-image-container {
@@ -94,63 +100,84 @@
   margin: 4px 0;
 }
 
+/* Card body spacing */
 .op-card-body {
-  padding: 8px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Consistent gap throughout card */
 }
 
+/* Header section */
 .op-header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 6px;
+  flex-direction: column;
+  gap: 8px; /* Match card body gap */
+  margin-bottom: 0; /* Remove margin, use gap instead */
 }
 
-.op-character-name {
-  margin: 0;
-  font-size: 0.85rem;
-  color: var(--text-primary);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  max-width: calc(100% - 8px);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: flex;
-  align-items: center;
-  flex-wrap: nowrap;
-}
-.op-character-price {
-  font-size: 0.8rem;
-  color: var(--text-secondary);
-  font-weight: bold;
-  font-family: monospace;
-}
-
+/* Meta section */
 .op-meta {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px; /* Match other gaps */
+}
+
+.op-character-name {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  position: relative;
+}
+
+
+/* Price styling */
+.op-character-price {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+  text-align: left;
+  padding: -4px 0;
+  margin-bottom: -10px;
+  margin-top: -6px;
+  letter-spacing: 0.05em;
 }
 
 .op-owned {
-  font-size: 0.75rem;
+  font-size: 1rem;
   color: var(--text-tertiary);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  text-align: left;
+  padding: 2px 0;
+  text-shadow: 0 0 6px rgba(173, 216, 230, 0.5);
+  transition: all 0.2s ease;
 }
 
+
+/* Actions section */
 .op-actions {
   display: flex;
-  gap: 6px;
+  gap: 8px; /* Match other gaps */
 }
 
 .op-buy-button, 
 .op-sell-button {
   flex: 1;
-  padding: 4px 8px;
+  padding: 4px 12px;
   border: none;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s ease;
@@ -180,48 +207,59 @@
 
 .op-ticker-symbol {
   color: var(--text-tertiary);
-  font-size: 0.65rem;
-  font-weight: 500;
-  margin-left: 4px;
-  padding: 1px 4px;
-  background: rgba(20, 40, 60, 0.5);
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 6px;
+  background: rgba(20, 40, 60, 0.9);
   border: 1px solid var(--accent);
-  border-radius: 3px;
-  vertical-align: middle;
+  border-radius: 4px;
   font-family: 'Courier New', monospace;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  position: relative;
-  top: -1px;
+  letter-spacing: 0.1em;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  text-shadow: 0 0 3px rgba(173, 216, 230, 0.3);
+  margin-left: 8px;
 }
-
 
 .op-character-name:hover .op-ticker-symbol {
-  background: rgba(211, 167, 40, 0.15);
+  background: rgba(211, 167, 40, 0.3);
+  border-color: var(--accent-light);
+  box-shadow: 0 0 8px var(--accent-light);
+  color: var(--accent-light);
 }
 
 
-@media (max-width: 480px) {
-  .op-ticker-symbol {
-    font-size: 0.45rem;
-    padding: 0px 2px;
-    margin-left: 1px;
-    letter-spacing: 0;
-    border: 0.2px solid var(--accent);
-  }
-
-  
-}
 
 @media (max-width: 480px) {
-  .op-actions {
-    flex-direction: row;
-    flex-wrap: nowrap;
+  .op-character-price {
+    font-size: 1rem;
+    padding: 2px 0;
+  }
+
+  .op-owned {
+    font-size: 1rem;
+    padding: 2px 0;
   }
   
-  .op-buy-button, 
-  .op-sell-button {
-    /* Increase padding for a thicker, more touch-friendly button */
-    padding: 8px 12px;
+  /* Stats section */
+  .op-meta {
+    gap: 6px;
+  }
+
+  .op-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .op-stock-card {
+    width: 100%; /* Full width on mobile */
+  }
+
+  .character-grid {
+    gap: 8px; /* Even smaller gap on mobile */
+    padding: 8px;
   }
 }

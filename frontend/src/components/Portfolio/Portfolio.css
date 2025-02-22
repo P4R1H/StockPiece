@@ -23,7 +23,7 @@
   position: relative;
   text-align: center;
   border: 5px solid var(--border-color);
-  border-radius: 12px;
+  border-radius: 15px;
   margin: auto;
   padding: 0;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
@@ -83,6 +83,30 @@
   color: #666;
   font-size: 0.9rem;
   transition: color 0.3s ease;
+}
+
+.upload-area.login-prompt {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.upload-area.login-prompt:hover {
+  background: rgba(211, 167, 40, 0.2);
+  color: var(--accent-light);
+}
+
+.upload-area.login-prompt:hover span {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #000000;
+  transform: scale(1.2);
+}
+
+/* Ensure smooth transition */
+.upload-area.login-prompt span {
+  transition: all 0.3s ease;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 /* Overlay Styles */
