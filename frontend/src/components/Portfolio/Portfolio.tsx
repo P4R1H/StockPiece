@@ -1,7 +1,32 @@
 import React, { useState, useRef, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Portfolio.css';
 import { BountyProfileCardProps } from '../../types/Components';
+import './Portfolio.css'
+
+const formatNumber = (value: string | number): string => {
+  const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value.toString();
+  const num = parseFloat(cleanValue);
+  
+  if (isNaN(num)) return '0';
+
+  if (Math.abs(num) >= 1000000) {
+    return num.toLocaleString(undefined, { 
+      maximumFractionDigits: 0 
+    });
+  }
+  
+  if (Math.abs(num) >= 1000) {
+    return num.toLocaleString(undefined, { 
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 1 
+    });
+  }
+  
+  return num.toLocaleString(undefined, { 
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 3
+  });
+};
 
 const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   userName,
@@ -18,31 +43,26 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Handle navigation to login
   const handleNavigateToLogin = useCallback(() => {
     if (!isLoggedIn) {
       navigate('/login');
     }
   }, [navigate, isLoggedIn]);
 
-  // Trigger file input click
   const handleUploadClick = useCallback(() => {
     fileInputRef.current?.click();
   }, []);
 
-  // Handle file selection and upload
   const handleFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setLoading(true);
 
-    // Create a preview immediately
     const reader = new FileReader();
     reader.onloadend = () => setPreview(reader.result as string);
     reader.readAsDataURL(file);
 
-    // Prepare form data and upload
     const formData = new FormData();
     formData.append('avatar', file);
     try {
@@ -56,13 +76,11 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
       
     } catch (error) {
       console.error('Upload error:', error);
-      // Remove the preview if upload fails
       setPreview(null);
     }
     setLoading(false);
   }, []);
 
-  
   return (
     <div className="bounty-card">
       <div
@@ -77,15 +95,11 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
               alt="User"
               className="bounty-image"
             />
-
-            {/* Show spinner overlay while loading */}
             {loading && (
               <div className="spinner-overlay">
                 <div className="spinner"></div>
               </div>
             )}
-
-            {/* Only show the "Change Profile Picture" overlay if not loading */}
             {isLoggedIn && !loading && (
               <div
                 className={`overlay ${isHovering ? 'overlay-visible' : ''}`}
@@ -114,25 +128,25 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
           ref={fileInputRef}
           style={{ display: 'none' }}
           onChange={handleFileChange}
-          disabled={!isLoggedIn || loading}  // disable input during upload
+          disabled={!isLoggedIn || loading}
         />
       </div>
       <div className="bounty-details">
         <p className="bounty-name">{userName}</p>
         <p className="bounty-net-worth">
-          Net Worth: <span className="highlight">{netWorth} Bellies</span> &nbsp;
-          Cash: <span className="highlight">{cash} Bellies</span>
+          Net Worth: <span className="highlight">{formatNumber(netWorth)} Bellies</span> &nbsp;
+          Cash: <span className="highlight">{formatNumber(cash)} Bellies</span>
         </p>
         <p className="bounty-profit-loss">
           Profit/Loss Overall: 
-          <span className={`highlight ${parseFloat(profitLossOverall) >= 0 ? 'profit' : 'loss'}`}>
-            {profitLossOverall}
+          <span className={`highlight ${parseFloat(String(profitLossOverall)) >= 0 ? 'profit' : 'loss'}`}>
+            {formatNumber(profitLossOverall)}%
           </span>
           <span className="profit-loss-last-chapter">
             {' '}
             (Last Chapter: 
-            <span className={`highlight ${parseFloat(profitLossLastChapter) >= 0 ? 'profit' : 'loss'}`}>
-              {profitLossLastChapter}
+            <span className={`highlight ${parseFloat(String(profitLossLastChapter)) >= 0 ? 'profit' : 'loss'}`}>
+              {formatNumber(profitLossLastChapter)}%
             </span>)
           </span>
         </p>
