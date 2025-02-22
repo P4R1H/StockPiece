@@ -23,19 +23,13 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (window.requestIdleCallback) {
-      const idleCallbackId = window.requestIdleCallback(async () => {
-        const windowStatus = await checkWindowStatus();
-        setWindowOpen(windowStatus);
-      });
-      return () => window.cancelIdleCallback(idleCallbackId);
-    } else {
-      const timer = setTimeout(async () => {
-        const windowStatus = await checkWindowStatus();
-        setWindowOpen(windowStatus);
-      }, 100);
-      return () => clearTimeout(timer);
+    const checkStatus = async () => {
+      if(isLoggedIn) {
+        const windowStatus = await checkWindowStatus()
+        setWindowOpen(windowStatus);        
+      }
     }
+    checkStatus();
   }, []);
 
   const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
@@ -55,10 +49,14 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const { data: portfolio = PLACEHOLDER_PORTFOLIO } = useQuery<UserPortfolio>({
     queryKey: ['portfolio'],
     queryFn: async () => {
-      try {
-        return await getPortfolioData();
-      } catch (error) {
-        console.error('Failed to fetch portfolio:', error);
+      if(isLoggedIn) {
+        try {
+          return await getPortfolioData();
+        } catch (error) {
+          console.error('Failed to fetch portfolio:', error);
+          return PLACEHOLDER_PORTFOLIO;
+        }
+      } else {
         return PLACEHOLDER_PORTFOLIO;
       }
     },
