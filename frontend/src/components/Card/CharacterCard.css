@@ -152,6 +152,17 @@
   letter-spacing: 0.05em;
 }
 
+.op-base-price {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-align: left;
+  opacity: 0.8;
+  margin-top: -4px;
+  margin-left: -4px;
+  font-family: 'Courier New', monospace;
+}
+
 .op-owned {
   font-size: 1rem;
   color: var(--text-tertiary);
@@ -275,5 +286,10 @@
 
   .op-actions {
     gap: 2px; /* Smaller gap on mobile */
+  }
+
+  .op-base-price {
+    font-size: 0.7rem;
+    margin-top: -6px;
   }
 }
