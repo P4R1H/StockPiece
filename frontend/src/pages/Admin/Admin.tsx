@@ -62,6 +62,7 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
   onPriceUpdate 
 }) => {
   const [manualPrice, setManualPrice] = useState<string>('');
+  const newPrice = algorithmUpdates[stock.name]?.newValue;
 
   const handleManualUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +70,12 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
     await onPriceUpdate(stock.name, Number(manualPrice));
     setManualPrice('');
   };
+
+  const nextPriceClass = newPrice !== undefined 
+    ? newPrice > stock.currentPrice ? styles.nextPriceUp 
+      : newPrice < stock.currentPrice ? styles.nextPriceDown 
+      : styles.nextPriceNeutral
+    : styles.nextPriceNeutral;
 
   return (
     <div className={styles.adminStockCard}>
@@ -92,8 +99,8 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
           </div>
           <div className={styles.priceGroup}>
             <span className={styles.priceLabel}>Next Value:</span>
-            <span className={styles.nextPrice}>
-              ${algorithmUpdates[stock.name]?.newValue?.toFixed(2) || 'N/A'}
+            <span className={nextPriceClass}>
+              {newPrice !== undefined ? `$${newPrice.toFixed(2)}` : 'N/A'}
             </span>
           </div>
         </div>
@@ -150,6 +157,7 @@ const Admin: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [customEndpoint, setCustomEndpoint] = useState('');
   const [requestMethod, setRequestMethod] = useState('GET');
+  const [jsonBody, setJsonBody] = useState('');
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -301,7 +309,12 @@ const Admin: React.FC = () => {
         <div className={styles.controlCard}>
           <h3>Market Status</h3>
           <div className={styles.statusInfo}>
-            <p>Status: {marketStatus}</p>
+            <p>
+              Status: {' '}
+              <span className={marketStatus.toLowerCase() === 'open' ? styles.marketStatusOpen : styles.marketStatusClosed}>
+              {marketStatus}
+              </span>
+            </p>
             <p>Current Chapter: {latestChapter?.chapter}</p>
             <p>Released: {latestChapter ? new Date(latestChapter.releaseDate).toLocaleDateString() : 'N/A'}</p>
             <p>Closes: {latestChapter ? new Date(latestChapter.windowEndDate).toLocaleDateString() : 'N/A'}</p>
@@ -328,8 +341,14 @@ const Admin: React.FC = () => {
               placeholder="/api/v1/..."
               className={styles.apiInput}
             />
+            <textarea
+              value={jsonBody}
+              onChange={(e) => setJsonBody(e.target.value)}
+              placeholder="JSON body (optional)"
+              className={styles.apiJsonInput}
+            />
             <button 
-              onClick={() => callCustomEndpoint(customEndpoint, requestMethod)}
+              onClick={() => callCustomEndpoint(customEndpoint, requestMethod, jsonBody)}
               className={styles.apiButton}
             >
               Send
@@ -340,19 +359,22 @@ const Admin: React.FC = () => {
 
       <div className={styles.stocksSection}>
         <div className={styles.stocksHeader}>
-          <input
-            type="text"
-            placeholder="Search stocks..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className={styles.searchInput}
-          />
-          <button 
-            onClick={() => setShowAddModal(true)}
-            className={styles.addButton}
-          >
-            +
-          </button>
+          <h2 className={styles.stocksHeading}>Stock Management</h2>
+          <div className={styles.stocksHeaderRight}>
+            <input
+              type="text"
+              placeholder="Search stocks..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+            <button 
+              onClick={() => setShowAddModal(true)}
+              className={styles.addButton}
+            >
+              Add stock
+            </button>
+          </div>
         </div>
 
         <div className={styles.stocksGrid}>

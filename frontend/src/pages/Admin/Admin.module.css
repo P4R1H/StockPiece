@@ -13,7 +13,6 @@
   min-height: 100vh;
   background: rgba(0, 0, 0, 1);
   font-family: 'Segoe UI', system-ui, sans-serif;
-
 }
 
 .loginCard {
@@ -136,17 +135,28 @@
 }
 
 .statusInfo p {
+  font-size: 1.2rem;
   margin: 0.5rem 0;
   color: #add8e6;
 }
 
+.marketStatusOpen {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.marketStatusClosed {
+  color: #ff0000;
+  font-weight: bold;
+}
+
 .customApiGroup {
   display: flex;
+  flex-direction: column;
   gap: 0.5rem;
 }
 
 .apiInput {
-  flex: 1;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
@@ -163,6 +173,16 @@
   cursor: pointer;
 }
 
+.apiJsonInput {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
 .stocksSection {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 12px;
@@ -172,17 +192,31 @@
 
 .stocksHeader {
   display: flex;
-  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1.5rem;
 }
 
+.stocksHeading {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.stocksHeaderRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .searchInput {
-  flex: 1;
+  font-size: 1.2rem;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: #fff;
   padding: 12px;
   border-radius: 8px;
+  min-width: 400px;
   height: 48px;
 }
 
@@ -190,20 +224,21 @@
   background: rgba(255, 215, 0, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.3);
   color: #ffd700;
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
   cursor: pointer;
   font-size: 1.2rem;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .adminStockCard {
-  background: rgba(16, 16, 16, 0.7);
+  background: rgba(16, 16, 16, 0.5);
   border-radius: 12px;
   padding: 1rem;
   border: 1px solid rgba(255, 215, 0, 0.1);
   position: relative;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(10px);
 }
 
 .cardHeader {
@@ -256,13 +291,25 @@
 }
 
 .currentPrice {
+  color: #b2dfe7;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nextPriceUp {
   color: #4CAF50;
   font-weight: bold;
   font-size: 1.2rem;
 }
 
-.nextPrice {
+.nextPriceDown {
   color: #ff8080;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.nextPriceNeutral {
+  color: #b2dfe7;
   font-weight: bold;
   font-size: 1.2rem;
 }
@@ -339,14 +386,16 @@
 }
 
 .modalContent {
-  background: rgba(16, 16, 16, 0.9);
+  background: rgba(16, 16, 16, 0.7);
   padding: 2rem;
   border-radius: 12px;
   width: 400px;
   border: 1px solid rgba(255, 215, 0, 0.3);
+  backdrop-filter: blur(10px);
 }
 
-.modalContent input {
+.modalContent input,
+.modalContent textarea {
   display: block;
   width: 100%;
   margin: 0.5rem 0;
