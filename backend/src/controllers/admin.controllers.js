@@ -31,6 +31,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   const options = {
     httpOnly: true,
     secure: true,
+    maxAge: 54000,
   };
 
   res
@@ -59,11 +60,11 @@ const adminLogout = asyncHandler(async (req, res, _) => {
 
   res
     .status(200)
-    .cookie("adminToken", "", options)
+    .clearCookie("adminToken", options)
     .json(new ApiResponse(200, null, "Admin logged out successfully"));
 });
 
-const addAdmin = asyncHandler(async (req, res, _) => {
+const createAdmin = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -95,7 +96,7 @@ const addAdmin = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, createdAdmin, "admin added successfully"));
 });
 
-const removeAdmin = asyncHandler(async (req, res, _) => {
+const deleteAdmin = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -123,7 +124,7 @@ const removeAdmin = asyncHandler(async (req, res, _) => {
     .json(new ApiResponse(200, removedAdmin, "admin deleted successfully"));
 });
 
-const addCharacterStock = asyncHandler(async (req, res, _) => {
+const createCharacterStock = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -133,6 +134,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
   if (!name?.trim()) {
     throw new ApiError(400, "name required");
   }
+
   let characterStock;
   //check if the stock already exists and is removed
   const existingCharacterStock = await CharacterStock.findOne({ name });
@@ -158,7 +160,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
     const imageLocalFilePath = req.file?.path;
     const imageUrl = imageLocalFilePath
-      ? await uploadOnCloudinary(imageLocalFilePath,true)
+      ? await uploadOnCloudinary(imageLocalFilePath, true)
       : defaultAvatarUrl;
 
     if (!imageUrl) {
@@ -190,7 +192,7 @@ const addCharacterStock = asyncHandler(async (req, res, _) => {
 
 //need to request the super admin for permanent deletion
 //we can handle deleting referencings later
-const removeCharacterStock = asyncHandler(async (req, res, _) => {
+const deleteCharacterStockTemp = asyncHandler(async (req, res, _) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -222,9 +224,9 @@ const removeCharacterStock = asyncHandler(async (req, res, _) => {
 
 export {
   adminLogin,
-  addAdmin,
-  addCharacterStock,
-  removeCharacterStock,
-  removeAdmin,
+  createAdmin,
+  createCharacterStock,
+  deleteCharacterStockTemp,
+  deleteAdmin,
   adminLogout,
 };

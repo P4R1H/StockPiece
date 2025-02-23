@@ -10,7 +10,7 @@ import Transaction from "../models/transaction.models.js";
 const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
-  if (!req.user) {
+  if (!req?.user) {
     throw new ApiError(401, "unauthenticated request");
   }
 
@@ -18,7 +18,10 @@ const buyStock = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
 
-  if (Date.now() > latestChapter.windowEndDate.getTime()) {
+  if (
+    latestChapter.isWindowClosed ||
+    Date.now() > latestChapter.windowEndDate.getTime()
+  ) {
     throw new ApiError(400, "buying window is closed");
   }
 
@@ -96,7 +99,10 @@ const sellStock = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
 
-  if (Date.now() > latestChapter.windowEndDate.getTime()) {
+  if (
+    latestChapter.isWindowClosed ||
+    Date.now() > latestChapter.windowEndDate.getTime()
+  ) {
     throw new ApiError(400, "selling window is closed");
   }
 
@@ -252,15 +258,68 @@ const getAllStocks = asyncHandler(async (req, res, _) => {
 //   )
 // })
 
-const checkOpenMarket = asyncHandler(async (req, res, _) => {
-  const latestChapter = await ChapterRelease.findOne().sort({
+const changeStockValue = asyncHandler(async (req, res, _next) => {
+  if (!req?.admin) {
+    throw new ApiError(400, "unauthorized request");
+  }
+
+  //I have to change the price and change the valueHistory
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
-  let isOpen = false;
-  if (Date.now() < latestChapter.windowEndDate.getTime()) {
-    isOpen = true;
+
+  const latestChapter = latestChapterDoc.chapter;
+
+  if (
+    !latestChapterDoc.isWindowClosed &&
+    Date.now() < latestChapterDoc.windowEndDate.getTime()
+  ) {
+    throw new ApiError(400, "window is still open");
   }
-  res.status(200).json(new ApiResponse(200, isOpen, "market Status"));
+
+  const { name, value } = req.body;
+
+  const stock = await CharacterStock.findOne({ name });
+
+  if (!stock) {
+    throw new ApiError(400, "stock with this name does not exists");
+  }
+
+  const updatedStock = latestChapter
+    ? await CharacterStock.findOneAndUpdate(
+        {
+          name,
+          "valueHistory.chapter": latestChapter,
+        },
+        {
+          $set: {
+            currentValue: value,
+            "valueHistory.$.value": value,
+          },
+        },
+        { new: true }
+      )
+    : await CharacterStock.findOneAndUpdate(
+        { name },
+        {
+          $set: {
+            currentValue: value,
+          },
+        },
+        { new: true }
+      );
+
+  if (!updatedStock) {
+    throw new ApiError(500, "there was some error updating stock details");
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedStock, "stock value changed successfully")
+    );
+
+  //so basically find this chapter in the array and edit the value
 });
 
-export { checkOpenMarket, buyStock, sellStock, getAllStocks };
+export { buyStock, sellStock, getAllStocks, changeStockValue };

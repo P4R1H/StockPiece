@@ -1,123 +1,101 @@
-import User from "../models/user.models.js";
 import CharacterStock from "../models/characterStock.models.js";
-import { k, epsilon, decayFactor } from "../constants.js";
 import mongoose from "mongoose";
 import ChapterRelease from "../models/chapterRelease.models.js";
-import ApiResponse from "../utils/ApiResponse.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
+import priceChangeByAlgorithm from "../utils/priceChange.utils.js";
 
-const closeMarketService = async (manual) => {
-  try {
-    const latestChapterDoc = await ChapterRelease.findOne().sort({
-      releaseDate: -1,
-    });
-    const latestChapter = latestChapterDoc?.chapter;
+const updatePriceService = async () => {
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
 
-    if (latestChapterDoc.isWindowClosed) {
-      console.log("market is already closed");
-      if (manual) {
-        throw new ApiError(400,'market is already closed');
-      } else {
-        console.log("market already closed");
-        return;
-      }
-    }
-  
-    latestChapterDoc.isWindowClosed = true;
-    latestChapterDoc.save({validateModifiedOnly: true});
-  
-    const usersStocks = await User.aggregate([
-      { $unwind: "$ownedStocks" },
-      {
-        $group: {
-          _id: "$ownedStocks.stock",
-          totalQuantity: { $sum: "$ownedStocks.quantity" },
-        },
-      },
-    ]);
-  
-    // Convert aggregation results into a map for easy lookup.
-    const stockMap = new Map();
-    usersStocks.forEach((stock) => {
-      stockMap.set(stock._id.toString(), stock.totalQuantity);
-    });
-  
-    const allStocks = await CharacterStock.find();
-  
-    const bulkOps = allStocks.map((stock) => {
-      //default to 0 if there are no holdings.
-      const totalQuantity = stockMap.get(stock._id.toString()) || 0;
-      let newValue;
-      let newBaseQuantity;
-  
-      if (totalQuantity === 0) {
-        // If no one holds the stock, apply a gentle decay instead of a sudden drop.
-        newValue = stock.currentValue * decayFactor;
-        newBaseQuantity = stock.baseQuantity;
-      } else if (totalQuantity === stock.baseQuantity) {
-        newValue = stock.currentValue;
-        newBaseQuantity = stock.baseQuantity;
-      } else {
-        const deltaH = totalQuantity - stock.baseQuantity;
-  
-        // const Heff = Math.max((stock.baseQuantity + totalQuantity) / 2, epsilon);
-  
-        const changeFactor =
-          k * Math.log(Math.abs(deltaH) + 1) * Math.sign(deltaH);
-        newValue = stock.currentValue * changeFactor;
-        //prevent from sudden crash
-        const minPrice = decayFactor * stock.currentValue;
-        newValue = Math.max(newValue, minPrice);
-  
-        newBaseQuantity = totalQuantity;
-      }
-  
-      return {
-        updateOne: {
-          filter: { _id: stock._id },
-          update: {
-            $set: {
-              currentValue: newValue,
-              baseQuantity: newBaseQuantity,
-              initialValue: stock.currentValue,
-            },
-            $push: {
-              valueHistory: {
-                chapter: latestChapter,
-                value: newValue,
-              },
+  if (!latestChapterDoc) {
+    throw new ApiError(400, "no chapter has been released");
+  }
+
+  if (
+    !latestChapterDoc.isWindowClosed &&
+    Date.now() < latestChapterDoc.windowEndDate
+  ) {
+    throw new ApiError(400, "window is still open");
+  }
+
+  if (!latestChapterDoc?.isPriceUpdated) {
+    //i was thinking of throwing a error but maybe its not required
+    console.log("price has already been updated for this chapter ");
+    return;
+  }
+
+  const latestChapterNumber = latestChapterDoc.chapter;
+
+  const priceUpdates = await priceChangeByAlgorithm(latestChapterNumber);
+
+  if (!priceUpdates) {
+    throw new ApiError(500, "some error occurred while getting priceUpdates");
+  }
+
+  const allStocks = await CharacterStock.find();
+
+  if (!allStocks) {
+    throw new ApiError(500, "some error occurred while getting all stocks");
+  }
+
+  const bulkOps = allStocks.forEach((stock) => {
+    const { newValue, totalQuantity } = priceUpdates.get(stock.name);
+    return {
+      updateOne: {
+        filter: { _id: stock._id },
+        update: {
+          $set: {
+            currentValue: newValue,
+            initialValue: stock.currentValue,
+            baseQuantity: totalQuantity,
+          },
+          $push: {
+            valueHistory: {
+              chapter: latestChapterNumber,
+              value: newValue,
             },
           },
         },
-      };
-    });
-    // Update all stocks in a transaction.
-    const session = await mongoose.startSession();
-    session.startTransaction();
-    try {
-      await CharacterStock.bulkWrite(bulkOps, { session });
-      await session.commitTransaction();
-      console.log("Stocks updated successfully");
-    } catch (error) {
-      await session.abortTransaction();
-      if (manual) {
-        throw error;
-      }
-      console.error("Rolling back stock update transaction due to error:", error);
-    } finally {
-      session.endSession();
-    }
+      },
+    };
+  });
 
-    if (manual) {
-      return new ApiResponse(200,"market closed successfully");
-    }
+  const response = Object.fromEntries(priceUpdates);
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    await CharacterStock.bulkWrite(bulkOps, { session });
+    await session.commitTransaction();
+
+    console.log("stock updated successfully");
+
+    latestChapterDoc.isPriceUpdated = true;
+    latestChapterDoc.save({ validateModifiedOnly: true });
+
+    return response;
   } catch (error) {
-    if (manual) {
-      throw error;
-    }
-    console.log(`some error occurred: ${error}`);
+    await session.abortTransaction();
+    console.log("there was some error rolling back the transaciton");
+    throw error;
+  } finally {
+    session.endSession();
   }
-
 };
 
-export default closeMarketService;
+const closeMarketService = async () => {
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+  //if the market has already been closed then that's an error
+  if (latestChapterDoc?.isWindowClosed) {
+    throw new ApiError(400, "market is already closed");
+  }
+
+  latestChapterDoc.isWindowClosed = true;
+  latestChapterDoc.save({ validateModifiedOnly: true });
+};
+
+export { updatePriceService, closeMarketService };

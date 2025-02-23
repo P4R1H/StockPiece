@@ -1,10 +1,10 @@
 import express from "express";
 import {
-  addAdmin,
-  addCharacterStock,
+  createAdmin,
+  createCharacterStock,
   adminLogin,
-  removeCharacterStock,
-  removeAdmin,
+  deleteCharacterStockTemp,
+  deleteAdmin,
   adminLogout,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
@@ -12,17 +12,16 @@ import upload from "../middlewares/multer.middlewares.js";
 
 const adminRouter = express.Router();
 
-adminRouter.route("/login").post(adminLogin);
+adminRouter.route("/auth/login").post(adminLogin);
 
 //protected routes
 adminRouter.use(verifyAdminJWT);
 
-adminRouter.route("/logout").post(adminLogout);
-adminRouter.route("/add-admin").post(addAdmin);
-adminRouter.route("/remove-admin").post(removeAdmin);
+adminRouter.route("/auth/logout").post(adminLogout);
+adminRouter.route("/admins").post(createAdmin).delete(deleteAdmin);
 adminRouter
-  .route("/add-character-stock")
-  .post(upload.single("imageURL"), addCharacterStock);
-adminRouter.route("/remove-character-stock").post(removeCharacterStock);
+  .route("/character-stocks")
+  .post(upload.single("imageURL"), createCharacterStock)
+  .delete(deleteCharacterStockTemp);
 
 export default adminRouter;
