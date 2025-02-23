@@ -1,7 +1,7 @@
 import { CharacterStock, UserPortfolio } from "../../types/Stocks";
 
 export const getStockMarketData = async (): Promise<CharacterStock[]> => {
-  const response = await fetch('/api/v1/stock/all-stocks', {
+  const response = await fetch('/api/v1/stock/stocks', {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
