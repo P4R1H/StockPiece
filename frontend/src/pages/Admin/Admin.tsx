@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import styles from './admin.module.css';
-import { 
+import {
   adminLogin,
   adminLogout,
   getMarketStatus,
@@ -16,7 +15,7 @@ import {
   releaseNewChapter,
   callCustomEndpoint
 } from './AdminServices';
-
+import './Admin.css'
 interface Stock {
   id: string;
   name: string;
@@ -54,12 +53,12 @@ interface AdminStockCardProps {
   onPriceUpdate: (name: string, price: number) => void;
 }
 
-const AdminStockCard: React.FC<AdminStockCardProps> = ({ 
-  stock, 
-  stats, 
-  algorithmUpdates, 
-  onRemove, 
-  onPriceUpdate 
+const AdminStockCard: React.FC<AdminStockCardProps> = ({
+  stock,
+  stats,
+  algorithmUpdates,
+  onRemove,
+  onPriceUpdate
 }) => {
   const [manualPrice, setManualPrice] = useState<string>('');
   const newPrice = algorithmUpdates[stock.name]?.newValue;
@@ -71,73 +70,73 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
     setManualPrice('');
   };
 
-  const nextPriceClass = newPrice !== undefined 
-    ? newPrice > stock.currentPrice ? styles.nextPriceUp 
-      : newPrice < stock.currentPrice ? styles.nextPriceDown 
-      : styles.nextPriceNeutral
-    : styles.nextPriceNeutral;
+  const nextPriceClass = newPrice !== undefined
+    ? newPrice > stock.currentPrice ? 'nextPriceUp'
+      : newPrice < stock.currentPrice ? 'nextPriceDown'
+      : 'nextPriceNeutral'
+    : 'nextPriceNeutral';
 
   return (
-    <div className={styles.adminStockCard}>
-      <div className={styles.cardHeader}>
-        <img 
-          src={stock.image} 
-          alt={stock.name} 
-          className={styles.stockImage}
+    <div className="adminStockCard">
+      <div className="cardHeader">
+        <img
+          src={stock.image}
+          alt={stock.name}
+          className="stockImage"
         />
-        <h3 className={styles.stockName}>
+        <h3 className="stockName">
           {stock.name}
-          <span className={styles.tickerSymbol}>{stock.tickerSymbol}</span>
+          <span className="tickerSymbol">{stock.tickerSymbol}</span>
         </h3>
       </div>
       
-      <div className={styles.cardBody}>
-        <div className={styles.priceRow}>
-          <div className={styles.priceGroup}>
-            <span className={styles.priceLabel}>Current Price:</span>
-            <span className={styles.currentPrice}>${stock.currentPrice.toFixed(2)}</span>
+      <div className="cardBody">
+        <div className="priceRow">
+          <div className="priceGroup">
+            <span className="priceLabel">Current Price:</span>
+            <span className="currentPrice">${stock.currentPrice.toFixed(2)}</span>
           </div>
-          <div className={styles.priceGroup}>
-            <span className={styles.priceLabel}>Next Value:</span>
+          <div className="priceGroup">
+            <span className="priceLabel">Next Value:</span>
             <span className={nextPriceClass}>
               {newPrice !== undefined ? `$${newPrice.toFixed(2)}` : 'N/A'}
             </span>
           </div>
         </div>
 
-        <div className={styles.statsRow}>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>Bought</span>
-            <span className={styles.statValue}>{stats[stock.name]?.buys || 0}</span>
+        <div className="statsRow">
+          <div className="statItem">
+            <span className="statLabel">Bought</span>
+            <span className="statValue">{stats[stock.name]?.buys || 0}</span>
           </div>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>Sold</span>
-            <span className={styles.statValue}>{stats[stock.name]?.sells || 0}</span>
+          <div className="statItem">
+            <span className="statLabel">Sold</span>
+            <span className="statValue">{stats[stock.name]?.sells || 0}</span>
           </div>
-          <div className={styles.statItem}>
-            <span className={styles.statLabel}>Total</span>
-            <span className={styles.statValue}>{stats[stock.name]?.totalQuantity || 0}</span>
+          <div className="statItem">
+            <span className="statLabel">Total</span>
+            <span className="statValue">{stats[stock.name]?.totalQuantity || 0}</span>
           </div>
         </div>
 
-        <form onSubmit={handleManualUpdate} className={styles.manualPriceForm}>
+        <form onSubmit={handleManualUpdate} className="manualPriceForm">
           <input
             type="number"
             step="0.01"
             value={manualPrice}
             onChange={(e) => setManualPrice(e.target.value)}
             placeholder="Set price"
-            className={styles.priceInput}
+            className="priceInput"
           />
-          <button type="submit" className={styles.updateButton}>
+          <button type="submit" className="updateButton">
             Update
           </button>
         </form>
       </div>
 
-      <button 
+      <button
         onClick={() => onRemove(stock.name)}
-        className={styles.removeButton}
+        className="removeButton"
       >
         Remove Stock
       </button>
@@ -188,7 +187,7 @@ const Admin: React.FC = () => {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const username = formData.get('username') as string;
     const password = formData.get('password') as string;
-    
+   
     try {
       await adminLogin(username, password);
       setIsLoggedIn(true);
@@ -247,25 +246,25 @@ const Admin: React.FC = () => {
 
   if (!isLoggedIn) {
     return (
-      <div className={styles.loginContainer}>
-        <div className={styles.loginCard}>
-          <img 
-            src="/assets/skull-flag.webp" 
-            alt="Login" 
-            className={styles.loginImage} 
+      <div className="loginContainer">
+        <div className="loginCard">
+          <img
+            src="/assets/skull-flag.webp"
+            alt="Login"
+            className="loginImage"
           />
           <form onSubmit={handleLogin}>
             <input
               name="username"
               type="text"
-              className={styles.loginInput}
+              className="loginInput"
             />
             <input
               name="password"
               type="password"
-              className={styles.loginInput}
+              className="loginInput"
             />
-            <button type="submit" className={styles.loginButton}>
+            <button type="submit" className="loginButton">
               Login
             </button>
           </form>
@@ -275,43 +274,43 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <div className={styles.adminContainer}>
-      <div className={styles.topBar}>
-        <img 
-          src="/assets/stockpiecelogo.png" 
-          alt="Logo" 
-          className={styles.logo} 
+    <div className="adminContainer">
+      <div className="topBar">
+        <img
+          src="/assets/stockpiecelogo.png"
+          alt="Logo"
+          className="logo"
         />
-        <div className={styles.adminInfo}>
+        <div className="adminInfo">
           <span>Welcome {admin}</span>
-          <button onClick={handleLogout} className={styles.logoutButton}>
+          <button onClick={handleLogout} className="logoutButton">
             Logout
           </button>
         </div>
       </div>
 
-      <div className={styles.controlsRow}>
-        <div className={styles.controlCard}>
+      <div className="controlsRow">
+        <div className="controlCard">
           <h3>Market Control</h3>
-          <div className={styles.buttonGroup}>
-            <button onClick={openMarket} className={styles.controlButton}>
+          <div className="buttonGroup">
+            <button onClick={openMarket} className="controlButton">
               Open Market
             </button>
-            <button onClick={closeMarket} className={styles.controlButton}>
+            <button onClick={closeMarket} className="controlButton">
               Close Market
             </button>
-            <button onClick={releaseNewChapter} className={styles.controlButton}>
+            <button onClick={releaseNewChapter} className="controlButton">
               Release Chapter
             </button>
           </div>
         </div>
 
-        <div className={styles.controlCard}>
+        <div className="controlCard">
           <h3>Market Status</h3>
-          <div className={styles.statusInfo}>
+          <div className="statusInfo">
             <p>
               Status: {' '}
-              <span className={marketStatus.toLowerCase() === 'open' ? styles.marketStatusOpen : styles.marketStatusClosed}>
+              <span className={marketStatus.toLowerCase() === 'open' ? 'marketStatusOpen' : 'marketStatusClosed'}>
               {marketStatus}
               </span>
             </p>
@@ -321,13 +320,13 @@ const Admin: React.FC = () => {
           </div>
         </div>
 
-        <div className={styles.controlCard}>
+        <div className="controlCard">
           <h3>Custom API</h3>
-          <div className={styles.customApiGroup}>
-            <select 
+          <div className="customApiGroup">
+            <select
               value={requestMethod}
               onChange={(e) => setRequestMethod(e.target.value)}
-              className={styles.apiInput}
+              className="apiInput"
             >
               <option value="GET">GET</option>
               <option value="POST">POST</option>
@@ -339,17 +338,17 @@ const Admin: React.FC = () => {
               value={customEndpoint}
               onChange={(e) => setCustomEndpoint(e.target.value)}
               placeholder="/api/v1/..."
-              className={styles.apiInput}
+              className="apiInput"
             />
             <textarea
               value={jsonBody}
               onChange={(e) => setJsonBody(e.target.value)}
               placeholder="JSON body (optional)"
-              className={styles.apiJsonInput}
+              className="apiJsonInput"
             />
-            <button 
+            <button
               onClick={() => callCustomEndpoint(customEndpoint, requestMethod, jsonBody)}
-              className={styles.apiButton}
+              className="apiButton"
             >
               Send
             </button>
@@ -357,27 +356,27 @@ const Admin: React.FC = () => {
         </div>
       </div>
 
-      <div className={styles.stocksSection}>
-        <div className={styles.stocksHeader}>
-          <h2 className={styles.stocksHeading}>Stock Management</h2>
-          <div className={styles.stocksHeaderRight}>
+      <div className="stocksSection">
+        <div className="stocksHeader">
+          <h2 className="stocksHeading">Stock Management</h2>
+          <div className="stocksHeaderRight">
             <input
               type="text"
               placeholder="Search stocks..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
+              className="searchInput"
             />
-            <button 
+            <button
               onClick={() => setShowAddModal(true)}
-              className={styles.addButton}
+              className="addButton"
             >
               Add stock
             </button>
           </div>
         </div>
 
-        <div className={styles.stocksGrid}>
+        <div className="stocksGrid">
           {filteredStocks.map(stock => (
             <AdminStockCard
               key={stock.id}
@@ -392,7 +391,7 @@ const Admin: React.FC = () => {
       </div>
 
       {showAddModal && (
-        <AddStockModal 
+        <AddStockModal
           onClose={() => setShowAddModal(false)}
           onSubmit={handleAddStock}
         />
@@ -427,8 +426,8 @@ const AddStockModal: React.FC<AddStockModalProps> = ({ onClose, onSubmit }) => {
   };
 
   return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
+    <div className="modalOverlay">
+      <div className="modalContent">
         <h2>Add New Stock</h2>
         <form onSubmit={handleSubmit}>
           <input
@@ -456,7 +455,7 @@ const AddStockModal: React.FC<AddStockModalProps> = ({ onClose, onSubmit }) => {
             required
             onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] as File })}
           />
-          <div className={styles.modalButtons}>
+          <div className="modalButtons">
             <button type="button" onClick={onClose}>Cancel</button>
             <button type="submit">Add Stock</button>
           </div>
