@@ -20,7 +20,7 @@ export const getStockMarketData = async (): Promise<CharacterStock[]> => {
 };
 
 export const checkWindowStatus = async(): Promise<Boolean> => {
-  const response = await fetch('/api/v1/market/window-status', {
+  const response = await fetch('/api/v1/market/status', {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   })
