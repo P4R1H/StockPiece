@@ -73,19 +73,7 @@ export const adminLogin = async (
       popularity: stock.popularityCount || 0,
     }));
   };
-  
-  export const patchStockValue = async (name: string, value: number): Promise<void> => {
-    const response = await fetch('/api/v1/stock/value', {
-      method: 'PATCH',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, value }),
-    });
-    const data = await response.json();
-    if (!response.ok)
-      throw new Error(data.message || 'Failed to update stock value');
-  };
-  
+    
   export const addCharacterStock = async (
     name: string,
     initialValue: number,

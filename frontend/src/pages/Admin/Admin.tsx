@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import styles from './admin.module.css';
+import styles from './Admin.module.css';
 import { 
   adminLogin,
   adminLogout,
