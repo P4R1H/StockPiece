@@ -10,6 +10,7 @@
 ## Page-Specific Tasks
 
 ### Home Page
+- [ ] Allow buying when logged out (Mock)
 - [/] Error message better UI
 - [/] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
@@ -31,7 +32,7 @@
 
 ### Navbar
 - [/] Add logout confirmation dialog : Scrapped
-- [ ] Make it easier to spot login button on mobile
+- [/] Make it easier to spot login button on mobile
 
 ## Technical Issues
 - [?] Fix MongoDB rate limiting

@@ -1,6 +1,6 @@
 export const admin_login = async (username: string, password: string) => {
     try {
-        const response = await fetch('/api/v1/admin/login', {
+        const response = await fetch('/api/v1/admin/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -22,7 +22,7 @@ export const admin_login = async (username: string, password: string) => {
 
 export const admin_logout = async () => {
     try {
-        const response = await fetch('/api/v1/admin/logout', {
+        const response = await fetch('/api/v1/admin/auth/logout', {
             method: 'POST', 
             credentials: "include", 
             headers: {'Content-Type' : 'application/json'}
@@ -47,7 +47,7 @@ export const add_character_stock = async (name: string, initialValue: number, im
         formData.append('imageURL', imageURL);
         formData.append('tickerSymbol', tickerSymbol);
 
-        const response = await fetch('/api/v1/admin/add-character-stock', {
+        const response = await fetch('/api/v1/admin/character-stocks', {
             method: 'POST',
             credentials: "include",
             body: formData
@@ -66,8 +66,8 @@ export const add_character_stock = async (name: string, initialValue: number, im
 
 export const remove_character_stock = async (id: string) => {
     try {
-        const response = await fetch('/api/v1/admin/remove-character-stock', {
-            method: 'POST',
+        const response = await fetch('/api/v1/admin/character-stocks', {
+            method: 'DELETE',
             credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
@@ -90,7 +90,7 @@ export const remove_character_stock = async (id: string) => {
 
 export const add_admin_user = async (username: string, password: string) => {
     try {
-        const response = await fetch('/api/v1/admin/add-admin', {
+        const response = await fetch('/api/v1/admin/admins', {
             method: 'POST',
             credentials: "include",
             headers: {

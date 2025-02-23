@@ -69,7 +69,7 @@ export const getPortfolioData = async (): Promise<UserPortfolio> => {
 
 
 export const buyStock = async (name: string, quantity: number) => {
-  const response = await fetch('/api/v1/stock/buy', {
+  const response = await fetch('/api/v1/stock/transactions/buy', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -81,7 +81,7 @@ export const buyStock = async (name: string, quantity: number) => {
 };
 
 export const sellStock = async (name: string, quantity: number) => {
-  const response = await fetch('/api/v1/stock/sell', {
+  const response = await fetch('/api/v1/stock/transactions/sell', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

@@ -9,7 +9,7 @@ interface LoginResponse {
 
 export const logoutUser = async (): Promise<void> => {
   try {
-    const response = await fetch('/api/v1/user/logout', {
+    const response = await fetch('/api/v1/user/auth/logout', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -32,7 +32,7 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const loginUser = async (username: string, password: string): Promise<LoginResponse> => {
-    const response = await fetch('/api/v1/user/login', {
+    const response = await fetch('/api/v1/user/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export const registerUser = async (username: string, password: string): Promise<
 };
 
 export const loginExists = async(): Promise<LoginResponse> => {
-  const response = await fetch('/api/v1/user/check-login', {
+  const response = await fetch('/api/v1/user/profile/login-status', {
     method: 'GET',
     credentials: 'include',
     headers: {

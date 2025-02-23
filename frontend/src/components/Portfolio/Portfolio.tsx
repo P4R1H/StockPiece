@@ -66,8 +66,8 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-      const response = await fetch('/api/v1/user/update-avatar', {
-        method: 'POST',
+      const response = await fetch('/api/v1/user/profile/avatar', {
+        method: 'PATCH',
         body: formData,
         credentials: 'include',
       });
