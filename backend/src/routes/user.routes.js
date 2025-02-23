@@ -14,17 +14,19 @@ import { verifyJWT } from "../middlewares/auth.middlewares.js";
 
 const userRouter = Router();
 
-userRouter.route("/register").post(upload.single("avatar"), registerUser);
-userRouter.route("/login").post(loginUser);
+userRouter.route("/auth/register").post(upload.single("avatar"), registerUser);
+userRouter.route("/auth/login").post(loginUser);
 
 //secure routes
-userRouter.route("/refresh-token").post(refreshAccessToken);
+userRouter.route("/auth/refresh").post(refreshAccessToken);
 
 userRouter.use(verifyJWT);
 
-userRouter.route("/update-avatar").post(upload.single("avatar"), updateAvatar);
-userRouter.route("/logout").post(logoutUser);
-userRouter.route("/check-login").get(checkLogin);
+userRouter
+  .route("/profile/avatar")
+  .patch(upload.single("avatar"), updateAvatar);
+userRouter.route("/auth/logout").post(logoutUser);
+userRouter.route("/profile/login-status").get(checkLogin);
 userRouter.route("/portfolio").get(getCurrentUserPortfolio);
 userRouter.route("/leaderboard").get(getTopUsersByStockValue);
 

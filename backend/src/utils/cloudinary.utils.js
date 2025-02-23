@@ -22,7 +22,7 @@ const deleteTempFile = async (localFilePath) => {
   }
 };
 
-const uploadOnCloudinary = async (localFilePath,stock=false) => {
+const uploadOnCloudinary = async (localFilePath, _stock = false) => {
   try {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
@@ -42,7 +42,7 @@ const uploadOnCloudinary = async (localFilePath,stock=false) => {
         });
 
         console.log("File has been uploaded on cloudinary");
-        return uploadResult.secure_url  ;
+        return uploadResult.secure_url;
       } catch (uploadError) {
         if (attempt == maxAttempts) {
           throw uploadError;

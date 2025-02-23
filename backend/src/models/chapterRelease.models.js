@@ -16,8 +16,12 @@ const chapterReleaseSchema = new mongoose.Schema({
   },
   isWindowClosed: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
+  isPriceUpdated: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const ChapterRelease = mongoose.model("ChapterRelease", chapterReleaseSchema);
