@@ -20,10 +20,9 @@ const updatePriceService = async () => {
     throw new ApiError(400, "window is still open");
   }
 
-  if (!latestChapterDoc?.isPriceUpdated) {
+  if (latestChapterDoc?.isPriceUpdated) {
     //i was thinking of throwing a error but maybe its not required
-    console.log("price has already been updated for this chapter ");
-    return;
+    throw new ApiError(400,'price has already been updated');
   }
 
   const latestChapterNumber = latestChapterDoc.chapter;
@@ -40,7 +39,7 @@ const updatePriceService = async () => {
     throw new ApiError(500, "some error occurred while getting all stocks");
   }
 
-  const bulkOps = allStocks.forEach((stock) => {
+  const bulkOps = allStocks.map((stock) => {
     const { newValue, totalQuantity } = priceUpdates.get(stock.name);
     return {
       updateOne: {

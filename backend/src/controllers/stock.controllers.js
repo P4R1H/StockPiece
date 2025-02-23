@@ -18,9 +18,13 @@ const buyStock = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
 
+  if (!latestChapter) {
+    throw new ApiError(400,'no chapter is released yet');
+  }
+
   if (
-    latestChapter.isWindowClosed ||
-    Date.now() > latestChapter.windowEndDate.getTime()
+    latestChapter?.isWindowClosed ||
+    Date.now() > latestChapter?.windowEndDate.getTime()
   ) {
     throw new ApiError(400, "buying window is closed");
   }
@@ -57,7 +61,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
         purchasedBy: user._id,
         stockID: characterStock._id,
         quantity: parseInt(quantity),
-        value: totalPrice,
+        value: characterStock.currentValue,
         type: "buy",
         chapterPurchasedAt: latestChapter.chapter,
       },
@@ -98,6 +102,10 @@ const sellStock = asyncHandler(async (req, res, _) => {
   const latestChapter = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
+
+  if (!latestChapter) {
+    throw new ApiError(400,'no chapter is released yet');
+  }
 
   if (
     latestChapter.isWindowClosed ||
@@ -147,7 +155,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
           purchasedBy: user._id,
           stockID: characterStock._id,
           quantity: parseInt(quantity),
-          value: totalPrice,
+          value: characterStock.currentValue,
           type: "sell",
           chapterPurchasedAt: latestChapter.chapter,
         },

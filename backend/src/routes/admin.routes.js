@@ -18,7 +18,10 @@ adminRouter.route("/auth/login").post(adminLogin);
 adminRouter.use(verifyAdminJWT);
 
 adminRouter.route("/auth/logout").post(adminLogout);
-adminRouter.route("/admins").post(createAdmin).delete(deleteAdmin);
+adminRouter
+  .route("/admins")
+  .post(createAdmin)
+  .delete(deleteAdmin);
 adminRouter
   .route("/character-stocks")
   .post(upload.single("imageURL"), createCharacterStock)
