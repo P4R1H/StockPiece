@@ -17,11 +17,11 @@ const priceChangeByAlgorithm = async (chapter) => {
   allStocks.forEach((stock) => {
     const stockID = stock._id.toString();
     const name = stock.name;
-    const buys = stockMap.get(stockID).totalBuys || 0;
-    const sells = stockMap.get(stockID).totalSells || 0;
+    const buys = stockMap.get(stockID)?.totalBuys || 0;
+    const sells = stockMap.get(stockID)?.totalSells || 0;
     const prev_ciculation = stock.baseQuantity;
     const currentValue = stock.currentValue;
-    const totalQuantity = stockMap.get(stockID).totalQuantity || 0;
+    const totalQuantity = stockMap.get(stockID)?.totalQuantity || 0;
     const newValue = calculatePriceUpdate(
       currentValue,
       prev_ciculation,

@@ -31,7 +31,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
   const options = {
     httpOnly: true,
     secure: true,
-    maxAge: 54000,
+    maxAge: 900000,
   };
 
   res
@@ -80,12 +80,18 @@ const createAdmin = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "username and password is required");
   }
 
-  const admin = await Admin.create({
+  const existingAdmin = await Admin.findOne({
+    username: username.toLowerCase()
+  });
+
+  if (existingAdmin) {
+    throw new ApiError(400,'admin already exists');
+  }
+
+  const createdAdmin = await Admin.create({
     username: username?.trim().toLowerCase(),
     password,
   });
-
-  const createdAdmin = await Admin.findById(admin._id).select("-password");
 
   if (!createdAdmin) {
     throw new ApiError(500, "there was some error while adding admin");
@@ -137,14 +143,21 @@ const createCharacterStock = asyncHandler(async (req, res, _) => {
 
   let characterStock;
   //check if the stock already exists and is removed
-  const existingCharacterStock = await CharacterStock.findOne({ name });
+  const existingCharacterStock = await CharacterStock.findOne({ 
+    $or: [
+      { name },
+      { tickerSymbol }
+    ]
+   });
 
   if (existingCharacterStock && !existingCharacterStock.isRemoved) {
-    throw new ApiError(400, "character stock already added");
+    throw new ApiError(400, "character stock or ticker symbol already added ");
   } else if (existingCharacterStock?.isRemoved) {
+
     existingCharacterStock.isRemoved = false;
     existingCharacterStock.save({ validateModifiedOnly: true });
     characterStock = existingCharacterStock;
+
   } else {
     if (!initialValue?.trim()) {
       throw new ApiError(400, "initial value required");

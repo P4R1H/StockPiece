@@ -19,7 +19,7 @@ marketRouter.route("/status").get(getMarketStatus);
 
 //protected routes
 marketRouter.use(verifyAdminJWT);
-marketRouter.route("chapters/release").post(releaseChapter);
+marketRouter.route("/chapters/release").post(releaseChapter);
 marketRouter.route("/close").patch(closeMarket);
 marketRouter.route("/open").patch(openMarket);
 marketRouter

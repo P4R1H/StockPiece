@@ -5,6 +5,10 @@ import Transaction from "../models/transaction.models.js";
 import ApiError from "./ApiError.utils.js";
 import User from "../models/user.models.js";
 
+//why are we using totalQuanity by fetching user stocks instead of just adding net buys
+//becaue it is possilbe if the baseQuantity was not updated then we may get wrong total Q
+//while calculating it using aggregation gives us the exact value
+
 //return an array of stock and there total quantity
 // _id: "$ownedStocks.stock",
 // totalQuantity: { $sum: "$ownedStocks.quantity" },
@@ -44,12 +48,12 @@ const totalBuySellsForChapter = async (chapter) => {
         _id: "$stockID",
         totalBuys: {
           $sum: {
-            $cond: [{ $eq: { $type: "buys" } }, "$quantity", 0],
+            $cond: [{ $eq: [ "$type", "buy" ] }, "$quantity", 0],
           },
         },
         totalSells: {
           $sum: {
-            $cond: [{ $eq: { $type: "sell" } }, "$quantity", 0],
+            $cond: [{ $eq: [ "$type", "sell" ] }, "$quantity", 0],
           },
         },
       },
@@ -87,7 +91,7 @@ const stockTotalQuantityBuyAndSells = async (chapter) => {
 
   // update the map with total buys and sells from buySellTransactions.
   buySellTransactions.forEach((transaction) => {
-    const stockID = transaction.stockID.toString();
+    const stockID = transaction._id.toString();
 
     if (stockMap.has(stockID)) {
       // If the stockID already exists update its buy/sell values
