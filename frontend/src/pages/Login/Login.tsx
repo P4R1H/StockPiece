@@ -82,7 +82,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         <h1 className="login-title">
           <span>StockPiece</span>
         </h1>
-        <h3 className="login-subtitle">Put your bellies where your agenda is</h3>
+        <h3 className="login-subtitle">Put your berries where your agenda is</h3>
 
         <div className="tabs">
           <button

@@ -134,8 +134,8 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
       <div className="bounty-details">
         <p className="bounty-name">{userName}</p>
         <p className="bounty-net-worth">
-          Net Worth: <span className="highlight">{formatNumber(netWorth)} Bellies</span> &nbsp;
-          Cash: <span className="highlight">{formatNumber(cash)} Bellies</span>
+          Net Worth: <span className="highlight">{formatNumber(netWorth)} Berries</span> &nbsp;
+          Cash: <span className="highlight">{formatNumber(cash)} Berries</span>
         </p>
         <p className="bounty-profit-loss">
           Profit/Loss Overall: 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import {
   Chart as ChartJS,
   LineElement,
@@ -13,6 +13,7 @@ import {
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 import { PriceHistoryGraphProps } from '../../types/Components'
+import { Expand, Shrink } from 'lucide-react'
 import './StockGraph.css'
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend)
@@ -92,6 +93,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const [searchQuery, setSearchQuery] = useState<string>('')
   const [isMobile, setIsMobile] = useState<boolean>(false)
   const [images, setImages] = useState<Record<string, HTMLImageElement>>({})
+  const graphRef = useRef<HTMLDivElement>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
 
   useEffect(() => {
     const imageMap: Record<string, HTMLImageElement> = {}
@@ -180,6 +183,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       setChapterEnd(maxChapter)
     }
   }, [stocks])
+
   const filteredHistory = stocks.length > 0 && stocks[0].valueHistory ? stocks[0].valueHistory.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd) : []
   const labels = filteredHistory.filter((_, i) => i % chapterScale === 0).map(entry => entry.chapter)
   
@@ -237,9 +241,9 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           const centerX = x
           let centerY = y - radius;
           if (centerY - radius < 0) {
-            centerY = radius; // ensure the image doesn't go above the canvas
+            centerY = radius;
           }
-                    if (ds.image && ds.image.complete) {
+          if (ds.image && ds.image.complete) {
             ctx.save()
             ctx.beginPath()
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
@@ -303,7 +307,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         grid: { color: '#3e2f2833' }
       },
       y: {
-        title: { display: !isMobile, text: isMobile ? '' : `Belly (${dynamicScaleUnit})`, font: { family: 'Pirata One', size: 14 }, color: '#3e2f28' },
+        title: { display: !isMobile, text: isMobile ? '' : `Berry (${dynamicScaleUnit})`, font: { family: 'Pirata One', size: 14 }, color: '#3e2f28' },
         ticks: { color: '#3e2f28', font: { family: 'Pirata One', size: 12 }, callback: function (tickValue: number | string): string {
           const value = Number(tickValue)
           return `${(value / dynamicScaleFactor).toFixed(1)}${dynamicScaleUnit}`
@@ -313,8 +317,31 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
   }
 
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(document.fullscreenElement === graphRef.current)
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange)
+  }, [])
+
+  const handleFullscreen = async () => {
+    if (!isFullscreen) {
+      try {
+        await graphRef.current?.requestFullscreen()
+        if ('orientation' in screen && 'lock' in (screen as any).orientation) {
+          await (screen as any).orientation.lock('landscape')
+        }
+      } catch (err) {
+        console.error('Failed to enter fullscreen or lock orientation', err)
+      }
+    } else {
+      document.exitFullscreen()
+    }
+  }
+
   return (
-    <div className="graph-container">
+    <div className={`graph-container ${isFullscreen ? 'fullscreen' : ''}`} ref={graphRef}>
       <div className="graph-controls">
         <div className="advanced-options-button">
           <select value={filter} onChange={(e) => handleFilterChange(e.target.value as any)} className="pirate-select">
@@ -363,16 +390,23 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         </div>
       </div>
       <div className="chart-wrapper">
-      {labels.length > 0 && datasets.length > 0 && (
-  <Line 
-    key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
-    data={{ labels, datasets }} 
-    options={options} 
-    plugins={plugins} 
-  />
-)}</div>
+        {labels.length > 0 && datasets.length > 0 && (
+          <Line 
+            key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
+            data={{ labels, datasets }} 
+            options={options} 
+            plugins={plugins} 
+          />
+        )}
+      </div>
+      <div className="fullscreen-button">
+        <button onClick={handleFullscreen}>
+          {isFullscreen ? <Shrink className="fullscreen-icon" /> : <Expand className="fullscreen-icon" />}
+        </button>
+      </div>
     </div>
   )
 }
 
 export default PriceHistoryGraph
+
