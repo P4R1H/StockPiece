@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, ChangeEvent, FormEvent } from 'react';
 import {
   adminLogin,
   adminLogout,
@@ -8,7 +8,6 @@ import {
   getStocks,
   addCharacterStock,
   removeCharacterStock,
-  getPriceUpdatesAlgorithm,
   manualPriceUpdate,
   getMarketStatistics,
   getLatestChapter,
@@ -16,6 +15,7 @@ import {
   callCustomEndpoint
 } from './AdminServices';
 import './Admin.css'
+
 interface Stock {
   id: string;
   name: string;
@@ -24,16 +24,21 @@ interface Stock {
   image: string;
 }
 
+interface StockStats {
+  name: string;
+  oldValue: number;
+  newValue: number;
+  totalBuys: number;
+  totalSells: number;
+  totalQuantity: number;
+  _id: string;
+}
+
 interface Stats {
   [key: string]: {
     buys?: number;
     sells?: number;
     totalQuantity?: number;
-  };
-}
-
-interface AlgorithmUpdates {
-  [key: string]: {
     newValue?: number;
   };
 }
@@ -48,7 +53,6 @@ interface LatestChapter {
 interface AdminStockCardProps {
   stock: Stock;
   stats: Stats;
-  algorithmUpdates: AlgorithmUpdates;
   onRemove: (name: string) => void;
   onPriceUpdate: (name: string, price: number) => void;
 }
@@ -56,12 +60,11 @@ interface AdminStockCardProps {
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
   stock,
   stats,
-  algorithmUpdates,
   onRemove,
   onPriceUpdate
 }) => {
   const [manualPrice, setManualPrice] = useState<string>('');
-  const newPrice = algorithmUpdates[stock.name]?.newValue;
+  const newPrice = stats[stock.name]?.newValue;
 
   const handleManualUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,7 +152,6 @@ const Admin: React.FC = () => {
   const [admin, setAdmin] = useState('');
   const [stocks, setStocks] = useState<Stock[]>([]);
   const [marketStatus, setMarketStatus] = useState('');
-  const [algorithmUpdates, setAlgorithmUpdates] = useState<AlgorithmUpdates>({});
   const [stats, setStats] = useState<Stats>({});
   const [latestChapter, setLatestChapter] = useState<LatestChapter | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -157,22 +159,37 @@ const Admin: React.FC = () => {
   const [customEndpoint, setCustomEndpoint] = useState('');
   const [requestMethod, setRequestMethod] = useState('GET');
   const [jsonBody, setJsonBody] = useState('');
+  
+  // Using a refreshCounter instead of a string-based triggerRefresh
+  const [refreshCounter, setRefreshCounter] = useState(0);
+  
+  // Function to trigger a refresh by incrementing the counter
+  const refreshData = () => setRefreshCounter(prev => prev + 1);
 
   useEffect(() => {
     if (isLoggedIn) {
       const loadData = async () => {
         try {
-          const [status, stocksData, updates, statistics, chapter] = await Promise.all([
+          const [status, stocksData, statistics, chapter] = await Promise.all([
             getMarketStatus(),
             getStocks(),
-            getPriceUpdatesAlgorithm(),
             getMarketStatistics(),
             getLatestChapter()
           ]);
           setMarketStatus(status);
           setStocks(stocksData);
-          setAlgorithmUpdates(updates);
-          setStats(statistics);
+          
+          // Process statistics data to create combined stats object
+          const processedStats: Stats = {};
+          statistics.forEach((stat: StockStats) => {
+            processedStats[stat.name] = {
+              buys: stat.totalBuys,
+              sells: stat.totalSells,
+              totalQuantity: stat.totalQuantity,
+              newValue: stat.newValue
+            };
+          });
+          setStats(processedStats);
           setLatestChapter(chapter);
         } catch (error) {
           console.error('Failed to load data:', error);
@@ -180,7 +197,7 @@ const Admin: React.FC = () => {
       };
       loadData();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, refreshCounter]); // Using refreshCounter as dependency
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -207,6 +224,28 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleMarketAction = async (action: 'open' | 'close') => {
+    try {
+      if (action === 'open') {
+        await openMarket();
+      } else {
+        await closeMarket();
+      }
+      refreshData(); // Refresh data after action
+    } catch (error) {
+      console.error(`Failed to ${action} market:`, error);
+    }
+  };
+
+  const handleReleaseChapter = async () => {
+    try {
+      await releaseNewChapter();
+      refreshData();
+    } catch (error) {
+      console.error('Failed to release chapter:', error);
+    }
+  };
+
   const handleAddStock = async (formData: FormData) => {
     try {
       await addCharacterStock(
@@ -215,7 +254,7 @@ const Admin: React.FC = () => {
         formData.tickerSymbol,
         formData.imageFile
       );
-      setStocks(await getStocks());
+      refreshData();
       setShowAddModal(false);
     } catch (error) {
       console.error('Failed to add stock:', error);
@@ -225,7 +264,7 @@ const Admin: React.FC = () => {
   const handleRemoveStock = async (name: string) => {
     try {
       await removeCharacterStock(name);
-      setStocks(await getStocks());
+      refreshData();
     } catch (error) {
       console.error('Failed to remove stock:', error);
     }
@@ -233,10 +272,19 @@ const Admin: React.FC = () => {
 
   const handleManualPriceUpdate = async (stockName: string, price: number) => {
     try {
-      await manualPriceUpdate({ [stockName]: price });
-      setStocks(await getStocks());
+      await manualPriceUpdate({ name: stockName, value: price.toString() });
+      refreshData();
     } catch (error) {
       console.error('Price update failed:', error);
+    }
+  };
+
+  const handleCustomRequest = async () => {
+    try {
+      await callCustomEndpoint(customEndpoint, requestMethod, jsonBody);
+      refreshData();
+    } catch (error) {
+      console.error('Custom API request failed:', error);
     }
   };
 
@@ -258,11 +306,13 @@ const Admin: React.FC = () => {
               name="username"
               type="text"
               className="loginInput"
+              placeholder="Username"
             />
             <input
               name="password"
               type="password"
               className="loginInput"
+              placeholder="Password"
             />
             <button type="submit" className="loginButton">
               Login
@@ -293,19 +343,22 @@ const Admin: React.FC = () => {
         <div className="controlCard">
           <h3>Market Control</h3>
           <div className="buttonGroup">
-            <button onClick={async () => {
-              await openMarket();
-              setMarketStatus('open');
-            }} className="controlButton">
+            <button 
+              onClick={() => handleMarketAction('open')} 
+              className="controlButton"
+            >
               Open Market
             </button>
-            <button onClick={async () => {
-              await closeMarket();
-              setMarketStatus("closed");
-            }} className="controlButton">
+            <button 
+              onClick={() => handleMarketAction('close')} 
+              className="controlButton"
+            >
               Close Market
             </button>
-            <button onClick={releaseNewChapter} className="controlButton">
+            <button 
+              onClick={handleReleaseChapter} 
+              className="controlButton"
+            >
               Release Chapter
             </button>
           </div>
@@ -353,7 +406,7 @@ const Admin: React.FC = () => {
               className="apiJsonInput"
             />
             <button
-              onClick={() => callCustomEndpoint(customEndpoint, requestMethod, jsonBody)}
+              onClick={handleCustomRequest}
               className="apiButton"
             >
               Send
@@ -388,7 +441,6 @@ const Admin: React.FC = () => {
               key={stock.id}
               stock={stock}
               stats={stats}
-              algorithmUpdates={algorithmUpdates}
               onRemove={handleRemoveStock}
               onPriceUpdate={handleManualPriceUpdate}
             />
@@ -425,45 +477,296 @@ const AddStockModal: React.FC<AddStockModalProps> = ({ onClose, onSubmit }) => {
     tickerSymbol: '',
     imageFile: null as unknown as File
   });
+  
+  // Image optimization states
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [quality, setQuality] = useState<number>(25);
+  const [optimizedSize, setOptimizedSize] = useState<number | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [optimizedBlob, setOptimizedBlob] = useState<Blob | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{text: string, type: 'success' | 'error' | ''}>(
+    {text: '', type: ''}
+  );
+  
+  // Refs
+  const timeoutRef = useRef<number | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Trigger file input click when preview area is clicked
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+  
+  // Handle file selection
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Reset status message
+      setStatusMessage({text: '', type: ''});
+      
+      // Auto-fill name field based on filename
+      const fileName = file.name.split('.')[0];
+      const formattedName = fileName.charAt(0).toUpperCase() + fileName.slice(1);
+      
+      setFormData({
+        ...formData,
+        name: formattedName || '',
+      });
+      
+      setOriginalImage(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      
+      // Process with current quality
+      processImage(file, quality);
+      
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  };
+  
+  // Process image with WebP conversion and quality adjustment
+  const processImage = async (file: File, qualityValue: number) => {
+    setIsProcessing(true);
+    
+    try {
+      // Create an image element to load the file
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      
+      img.onload = () => {
+        // Calculate dimensions (similar to Python resize logic)
+        const origWidth = img.width;
+        const origHeight = img.height;
+        const newWidth = 300;
+        const newHeight = Math.floor(origHeight * (newWidth / origWidth));
+        
+        // Draw to canvas for processing
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+        
+        // Convert to WebP with quality adjustment
+        canvas.toBlob((blob) => {
+          if (blob) {
+            // Update the optimized blob and size
+            setOptimizedBlob(blob);
+            setOptimizedSize(blob.size);
+            
+            // Update the preview
+            const optimizedUrl = URL.createObjectURL(blob);
+            setPreviewUrl(optimizedUrl);
+            
+            // Update formData with the optimized image
+            const optimizedFile = new File([blob], 'optimized.webp', { 
+              type: 'image/webp' 
+            });
+            setFormData(prev => ({ ...prev, imageFile: optimizedFile }));
+            
+            setIsProcessing(false);
+          }
+        }, 'image/webp', qualityValue / 100);
+        
+        // Cleanup
+        URL.revokeObjectURL(img.src);
+      };
+    } catch (error) {
+      console.error('Error processing image:', error);
+      setIsProcessing(false);
+      setStatusMessage({
+        text: 'Error processing image. Please try again.',
+        type: 'error'
+      });
+    }
+  };
+  
+  // Debounce quality slider changes
+  const handleQualityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newQuality = parseInt(e.target.value);
+    setQuality(newQuality);
+    
+    // Clear previous timeout
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    
+    // Set a new timeout
+    timeoutRef.current = window.setTimeout(() => {
+      if (originalImage) {
+        processImage(originalImage, newQuality);
+      }
+    }, 300) as unknown as number;
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    if (!optimizedBlob) {
+      setStatusMessage({
+        text: 'Please wait for image processing to complete',
+        type: 'error'
+      });
+      return;
+    }
+    
+    try {
+      onSubmit(formData);
+      setStatusMessage({
+        text: 'Stock added successfully!',
+        type: 'success'
+      });
+      
+      setFormData({
+        name: '',
+        initialValue: 0,
+        tickerSymbol: '',
+        imageFile: null as unknown as File
+      });
+      setPreviewUrl('');
+      setOptimizedBlob(null);
+      setOptimizedSize(null);
+      setOriginalImage(null);
+      
+      setTimeout(() => {
+        setStatusMessage({text: '', type: ''});
+      }, 2000);
+    } catch (error) {
+      setStatusMessage({
+        text: 'Failed to add stock. Please try again.',
+        type: 'error'
+      });
+    }
   };
 
   return (
     <div className="modalOverlay">
       <div className="modalContent">
-        <h2>Add New Stock</h2>
-        <form onSubmit={handleSubmit}>
+        <h2 className="modalTitle">Add New Stock</h2>
+        
+        {/* Hidden canvas for image processing */}
+        <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+        
+        {/* Status message */}
+        {statusMessage.text && (
+          <div className={`statusMessage ${statusMessage.type}Message`}>
+            {statusMessage.text}
+          </div>
+        )}
+        
+        {/* Image preview / upload area */}
+        <div 
+          className="imagePreviewContainer" 
+          onClick={triggerFileInput}
+        >
+          {previewUrl ? (
+            <>
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                className="imagePreview" 
+              />
+              <div className="previewOverlay">
+                <span>{isProcessing ? 'Processing...' : 'Click to change'}</span>
+              </div>
+            </>
+          ) : (
+            <div className="emptyPreview">
+              <span>Click to upload image</span>
+            </div>
+          )}
+          
           <input
-            type="text"
-            placeholder="Character Name"
-            required
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-          <input
-            type="number"
-            step="0.01"
-            placeholder="Initial Value"
-            required
-            onChange={(e) => setFormData({ ...formData, initialValue: Number(e.target.value) })}
-          />
-          <input
-            type="text"
-            placeholder="Ticker Symbol"
-            required
-            onChange={(e) => setFormData({ ...formData, tickerSymbol: e.target.value })}
-          />
-          <input
+            ref={fileInputRef}
+            id="imageFile"
             type="file"
             accept="image/*"
             required
-            onChange={(e) => setFormData({ ...formData, imageFile: e.target.files?.[0] as File })}
+            onChange={handleFileChange}
+            className="fileInput"
           />
+        </div>
+        
+        {optimizedSize !== null && (
+          <div className="sizeInfo">
+            Size: {(optimizedSize / 1024).toFixed(2)} KB
+          </div>
+        )}
+        
+        <div className="qualitySliderContainer">
+          <div className="sliderLabel">
+            <span>Quality</span>
+            <span className="qualityValue">{quality}%</span>
+          </div>
+          <input
+            id="qualitySlider"
+            type="range"
+            min="2"
+            max="100"
+            value={quality}
+            onChange={handleQualityChange}
+            className="qualitySlider"
+            disabled={isProcessing || !originalImage}
+          />
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="formFields">
+            <div className="formRow">
+              <input
+                id="name"
+                type="text"
+                placeholder="Character Name"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className="modalInput"
+              />
+            </div>
+            
+            <div className="formRow">
+              <input
+                id="initialValue"
+                type="number"
+                step="0.01"
+                placeholder="Initial Value"
+                required
+                value={formData.initialValue || ''}
+                onChange={(e) => setFormData({ ...formData, initialValue: Number(e.target.value) })}
+                className="modalInput"
+              />
+            </div>
+            
+            <div className="formRow">
+              <input
+                id="tickerSymbol"
+                type="text"
+                placeholder="Ticker Symbol"
+                required
+                value={formData.tickerSymbol}
+                onChange={(e) => setFormData({ ...formData, tickerSymbol: e.target.value })}
+                className="modalInput"
+              />
+            </div>
+          </div>
+          
           <div className="modalButtons">
-            <button type="button" onClick={onClose}>Cancel</button>
-            <button type="submit">Add Stock</button>
+            <button type="button" onClick={onClose} className="cancelButton">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              className="submitButton" 
+              disabled={isProcessing || !optimizedBlob}
+            >
+              {isProcessing ? 'Processing...' : 'Add Stock'}
+            </button>
           </div>
         </form>
       </div>

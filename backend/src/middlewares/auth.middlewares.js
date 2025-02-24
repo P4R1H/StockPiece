@@ -5,7 +5,7 @@ import User from "../models/user.models.js";
 import Admin from "../models/admin.models.js";
 
 const verifyJWT = asyncHandler(async (req, _, next) => {
-  //we need to get the accessToken from cookies
+  // Get the access token from cookies or the authorization header
   const accessToken =
     req.cookies?.accessToken ||
     req.headers.authorization?.replace("Bearer ", "");
@@ -14,11 +14,18 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     return next();
   }
 
-  const decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+  } catch (err) {
+    // If token has expired, simply call next() without attaching anything to req.
+    if (err.name === "TokenExpiredError") {
+      return next();
+    }
+    throw new ApiError(401, "Invalid Access Token");
+  }
 
-  const user = await User.findById(decodedToken?._id).select(
-    "-password -refreshToken"
-  );
+  const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
 
   if (!user) {
     throw new ApiError(401, "Invalid Access Token");
@@ -29,20 +36,25 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
 });
 
 const verifyAdminJWT = asyncHandler(async (req, _, next) => {
-  //we need to get the accessToken from cookies
+  // Get the admin token from cookies or the authorization header
   const adminToken =
     req.cookies?.adminToken ||
     req.headers.authorization?.replace("Bearer ", "");
 
   if (!adminToken) {
-    console.log('jwt');
     return next();
   }
 
-  const decodedToken = jwt.verify(
-    adminToken,
-    process.env.ADMIN_ACCESS_TOKEN_SECRET
-  );
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(adminToken, process.env.ADMIN_ACCESS_TOKEN_SECRET);
+  } catch (err) {
+    // If token has expired, simply call next() without attaching anything to req.
+    if (err.name === "TokenExpiredError") {
+      return next();
+    }
+    throw new ApiError(401, "Invalid Access Token");
+  }
 
   const admin = await Admin.findById(decodedToken?._id).select("-password");
 

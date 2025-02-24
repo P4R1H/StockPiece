@@ -379,56 +379,281 @@
   cursor: pointer;
 }
 
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modalContent {
-  background: rgba(16, 16, 16, 0.7);
-  padding: 2rem;
-  border-radius: 12px;
-  width: 400px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  backdrop-filter: blur(10px);
-}
-
-.modalContent input,
-.modalContent textarea {
-  display: block;
-  width: 100%;
-  margin: 0.5rem 0;
-  padding: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-radius: 6px;
-}
-
-.modalButtons {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.modalButtons button {
-  flex: 1;
-  padding: 8px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
 .stocksGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
 
+.modalContent {
+  background: rgba(0, 0, 0, 0.85); /* Changed from red to black */
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  border: 1px solid rgb(255, 215, 0, 0.5);
+  backdrop-filter: blur(10px);
+  color: #fff;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modalTitle {
+  color: #ffd700;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.imagePreviewContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 15px 0;
+  min-height: 200px;
+  border: 1px dashed rgba(255, 215, 0, 0.3);
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.imagePreviewContainer:hover {
+  border-color: #ffd700;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.imagePreview {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.previewOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.imagePreviewContainer:hover .previewOverlay {
+  opacity: 1;
+}
+
+.previewOverlay span {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.emptyPreview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 150px;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.emptyPreview span {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.fileInput {
+  position: absolute;
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.sizeInfo {
+  margin: 8px 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 215, 0, 0.1);
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.qualitySliderContainer {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sliderLabel {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.qualitySlider {
+  width: 100%;
+  height: 5px;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  outline: none;
+}
+
+.qualitySlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffd700;
+  cursor: pointer;
+}
+
+.qualitySlider::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #ffd700;
+  cursor: pointer;
+  border: none;
+}
+
+.qualityValue {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.formRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.modalInput {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.modalInput:focus {
+  border-color: rgba(255, 215, 0, 0.5);
+  outline: none;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.modalInput::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.modalButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.cancelButton, .submitButton {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+}
+
+.cancelButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.cancelButton:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.submitButton {
+  background: rgba(81, 6, 6, 0.3);
+  border: 1px solid rgba(110, 31, 7, 0.5);
+  color: #b31313;
+}
+
+.submitButton:hover {
+  background: rgba(47, 16, 3, 0.4);
+  border-color: #b31313;
+}
+
+.submitButton:disabled {
+  background: rgba(81, 6, 6, 0.1);
+  border-color: rgba(110, 31, 7, 0.2);
+  color: rgba(179, 19, 19, 0.5);
+  cursor: not-allowed;
+}
+
+/* Status Messages */
+.statusMessage {
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.successMessage {
+  background: rgba(0, 128, 0, 0.2);
+  border: 1px solid rgba(0, 128, 0, 0.3);
+  color: #4CAF50;
+}
+
+.errorMessage {
+  background: rgba(255, 0, 0, 0.1);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  color: #ff6666;
+}
