@@ -22,9 +22,12 @@ interface CustomDataset extends ChartDataset<"line", (number | Point | null)[]> 
 }
 
 const getColorForCharacter = (name: string) => {
-  const colors = ['#3e2f28', '#b22222', '#1e90ff', '#228b22', '#8b4513', '#ffd700']
-  const hash = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  return colors[hash % colors.length]
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const hue = Math.abs(hash) % 360
+  return `hsl(${hue}, 65%, 50%)`
 }
 
 const DualRangeSlider: React.FC<{ min: number; max: number; start: number; end: number; onChange: (start: number, end: number) => void }> = ({ min, max, start, end, onChange }) => {
@@ -232,8 +235,11 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           const y = lastPoint.y
           const radius = 15
           const centerX = x
-          const centerY = y - radius
-          if (ds.image && ds.image.complete) {
+          let centerY = y - radius;
+          if (centerY - radius < 0) {
+            centerY = radius; // ensure the image doesn't go above the canvas
+          }
+                    if (ds.image && ds.image.complete) {
             ctx.save()
             ctx.beginPath()
             ctx.arc(centerX, centerY, radius, 0, Math.PI * 2)
