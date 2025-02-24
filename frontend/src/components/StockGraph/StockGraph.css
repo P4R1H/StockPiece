@@ -1,3 +1,4 @@
+/* Base Styles */
 .graph-container {
   min-width: calc(100% - 400px - 1rem);
   max-width: calc(1400px - 400px - 1rem - 3rem);
@@ -13,10 +14,12 @@
   animation: floatIn 0.8s ease-out;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
+
 .chart-wrapper {
   height: 480px;
   position: relative;
 }
+
 .graph-controls {
   display: flex;
   justify-content: space-between;
@@ -24,25 +27,29 @@
   margin-bottom: 20px;
   padding: 0 10px;
 }
+
 .advanced-options-button {
   display: flex;
   align-items: stretch;
   gap: 0;
   position: relative;
 }
+
 .slider-container {
   display: flex;
   flex-direction: column;
   width: 200px;
 }
+
 .scale-slider {
   display: flex;
   align-items: center;
   gap: 10px;
   font-family: 'Pirata One', cursive;
   color: #3e2f28;
-  margin-top: 45px;
+  margin-top: 0;
 }
+
 .scale-slider input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -51,6 +58,7 @@
   background: #3e2f28;
   border-radius: 5px;
 }
+
 .scale-slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 15px;
@@ -61,9 +69,11 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .scale-slider input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
+
 .pirate-select,
 .search-bar {
   padding: 8px 12px;
@@ -76,6 +86,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
+
 .pirate-select {
   min-width: 180px;
   width: auto;
@@ -86,16 +97,19 @@
   background-position: right 8px center;
   background-size: 16px;
 }
+
 .pirate-select:hover,
 .search-bar:hover {
   transform: translateY(-1px);
   box-shadow: 2px 2px 0 #3e2f28;
 }
+
 .search-bar:focus {
   outline: none;
   box-shadow: 3px 3px 0 #3e2f28;
   transform: translateY(-1px);
 }
+
 .side-panel {
   position: absolute;
   top: 0;
@@ -113,25 +127,30 @@
   flex-direction: column;
   gap: 15px;
 }
+
 .side-panel.open {
   left: 0;
 }
+
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
+
 .panel-controls {
   margin-top: 5px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
+
 .sidebar-select {
   flex-grow: 1;
   max-width: 220px;
 }
+
 .close-button {
   flex-shrink: 0;
   padding: 4px 8px;
@@ -143,19 +162,23 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
+
 .close-button:hover {
   transform: scale(1.2);
 }
+
 .character-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+
 .character-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .character-checkbox label {
   display: flex;
   align-items: center;
@@ -164,16 +187,19 @@
   color: #3e2f28;
   cursor: pointer;
 }
+
 .color-box {
   width: 16px;
   height: 16px;
   border: 2px solid #3e2f28;
   border-radius: 4px;
 }
+
 .character-checkbox input {
   accent-color: #ffcc00;
   cursor: pointer;
 }
+
 .settings-tooltip-container {
   position: relative;
   display: flex;
@@ -185,10 +211,12 @@
   padding: 0 8px;
   transition: all 0.3s ease;
 }
+
 .settings-tooltip-container:hover {
   transform: translateY(-1px);
   box-shadow: 2px 2px 0 #3e2f28;
 }
+
 .settings-tooltip-container:hover::after {
   content: 'Advanced Options';
   position: absolute;
@@ -204,11 +232,13 @@
   font-family: 'Pirata One', cursive;
   z-index: 20;
 }
+
 .wheel-container {
   display: flex;
   align-items: center;
   height: 100%;
 }
+
 .pirate-wheel {
   width: 24px;
   height: 24px;
@@ -216,16 +246,23 @@
   cursor: pointer;
   transition: transform 0.3s ease;
 }
+
 .pirate-wheel:hover {
   transform: rotate(360deg);
 }
 
-
+/* Dual Range Slider */
 .dual-range-slider {
   position: relative;
   width: 100%;
   height: 15px;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
+}
+
+.dual-range-slider .slider-track-container {
+  position: relative;
+  width: 100%;
+  height: 15px;
 }
 
 .dual-range-slider .track {
@@ -271,6 +308,7 @@
   margin-top: -5px;
   position: relative;
   z-index: 5;
+  transition: transform 0.2s ease;
 }
 
 .dual-range-slider .range-slider::-moz-range-thumb {
@@ -283,20 +321,26 @@
   cursor: pointer;
   position: relative;
   z-index: 5;
+  transition: transform 0.2s ease;
 }
 
 .dual-range-slider .range-slider::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
 
-.dual-range-slider .range-values {
+.dual-range-slider .slider-container-with-label {
   display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
+  align-items: center;
 }
 
+.dual-range-slider .range-label {
+  margin-right: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+  white-space: nowrap;
+}
+
+/* Keyframes */
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -307,19 +351,24 @@
     transform: translateY(0);
   }
 }
+
+/* Root Variables */
 :root {
   --tooltip-title-size: 18px;
   --tooltip-body-size: 16px;
 }
+
+/* ChartJS Tooltip */
 .chartjs-tooltip {
   transition: all 0.2s ease;
 }
-.chart-wrapper:hover .chartjs-tooltip {
-  transform: scale(1.1);
-}
+
+.chart-wrapper:hover .chartjs-tooltip,
 canvas:hover + .chartjs-tooltip {
   transform: scale(1.1);
 }
+
+/* Media Queries for Responsiveness */
 @media (max-width: 768px) {
   .graph-container {
     border: 3px solid #3e2f28;
@@ -327,11 +376,11 @@ canvas:hover + .chartjs-tooltip {
     width: 100%;
     max-width: 100%;
     min-height: 100%;
-    padding: 0px;
+    padding: 0;
   }
   .chart-wrapper {
     height: 300px;
-    padding: 0px;
+    padding: 0;
   }
   .graph-controls {
     flex-wrap: nowrap;
@@ -352,7 +401,7 @@ canvas:hover + .chartjs-tooltip {
   }
   .slider-container {
     flex-direction: column;
-    gap: 0px;
+    gap: 0;
     width: auto;
     align-items: flex-start;
   }
@@ -384,95 +433,12 @@ canvas:hover + .chartjs-tooltip {
   }
 }
 
-.dual-range-slider .slider-container-with-label {
-  display: flex;
-  align-items: center;
-}
+@media (max-width: 480px) {
+  .dual-range-slider {
+    min-width: 175px;
+  }
 
-.dual-range-slider .range-label {
-  margin-right: 10px;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  white-space: nowrap;
-}
-
-.dual-range-slider .slider-track-container {
-  position: relative;
-  width: 100%;
-  height: 15px; /* maintain overall height */
-}
-
-.dual-range-slider .track {
-  position: absolute;
-  width: 100%;
-  height: 5px;
-  background: #3e2f28;
-  border-radius: 3px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 1;
-}
-
-/* Retain thumb styling from previous slider CSS */
-.dual-range-slider .range-slider {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: none;
-  top: 0;
-  left: 0;
-  margin: 0;
-}
-
-.dual-range-slider .range-slider::-webkit-slider-runnable-track {
-  background: transparent;
-}
-
-.dual-range-slider .range-slider::-webkit-slider-thumb {
-  pointer-events: all;
-  -webkit-appearance: none;
-  appearance: none;
-  width: 15px;
-  height: 15px;
-  background: #ffcc00;
-  border: 2px solid #3e2f28;
-  border-radius: 50%;
-  cursor: pointer;
-  margin-top: -5px;
-  position: relative;
-  z-index: 5;
-}
-
-.dual-range-slider .range-slider::-moz-range-thumb {
-  pointer-events: all;
-  width: 15px;
-  height: 15px;
-  background: #ffcc00;
-  border: 2px solid #3e2f28;
-  border-radius: 50%;
-  cursor: pointer;
-  position: relative;
-  z-index: 5;
-}
-
-.dual-range-slider .range-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-}
-
-
-.dual-range-slider {
-  position: relative;
-  width: 100%;
-  height: 15px;
-  margin-bottom: 10px; /* Reduce from 25px to 10px */
-}
-
-.scale-slider {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  margin-top: 0px; /* Reduce from 45px to 0px */
+  .dual-range-slider {
+    font-size: 0.8rem;
+  }
 }
