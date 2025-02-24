@@ -33,7 +33,7 @@ const getMarketStatus = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "latest chapter not released");
   }
 
-  let flag = isWindowOpen(latestChapter) ? "open" : "close";
+  let flag = isWindowOpen(latestChapter) ? "open" : "closed";
   res
     .status(200)
     .json(new ApiResponse(200, flag, "window status fetched successfully"));
@@ -306,49 +306,6 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
     );
 });
 
-// const getPriceUpdatesByAlgorithm = asyncHandler(async (req, res, _next) => {
-//   if (!req?.admin) {
-//     throw new ApiError(400, "unauthorized request");
-//   }
-
-//   const latestChapterDoc = await ChapterRelease.findOne().sort({
-//     releaseDate: -1,
-//   });
-
-//   if (!latestChapterDoc) {
-//     throw new ApiError(400, "no chapter has been released yet");
-//   }
-
-//   if (
-//     isWindowOpen(latestChapterDoc)
-//   ) {
-//     throw new ApiError(400, "window is still open");
-//   }
-
-//   if (latestChapterDoc?.isPriceUpdated) {
-//     throw new ApiError(400, "price has already been updated");
-//   }
-
-//   const latestChapter = latestChapterDoc.chapter;
-
-//   const priceChangeMap = await priceChangeByAlgorithm(latestChapter);
-//   if (!priceChangeMap) {
-//     throw new ApiError(500, "error in getting the price change map");
-//   }
-
-//   const priceChange = Object.fromEntries(priceChangeMap);
-
-//   res
-//     .status(200)
-//     .json(
-//       new ApiResponse(
-//         200,
-//         priceChange,
-//         "price change by algorithm fetched successfully"
-//       )
-//     );
-// });
-
 const postUpdatePrice = asyncHandler(async (req, res, _next) => {
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
@@ -366,10 +323,6 @@ const postUpdatePrice = asyncHandler(async (req, res, _next) => {
       new ApiResponse(200, stockUpdate, "stock price updated successfully")
     );
 });
-
-//now i need to create a route for changing the price manually
-//also there will be a route to only close the market but not do anything on closing
-//change price will be a different route
 
 export {
   getLatestChapter,
