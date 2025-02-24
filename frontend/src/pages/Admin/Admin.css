@@ -532,6 +532,7 @@
   width: 100%;
   height: 5px;
   -webkit-appearance: none;
+  appearance: none;
   background: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   outline: none;
@@ -656,4 +657,14 @@
   background: rgba(255, 0, 0, 0.1);
   border: 1px solid rgba(255, 0, 0, 0.2);
   color: #ff6666;
+}
+
+.forceUpdateButton {
+  background: rgba(255, 0, 0, 0.1) !important;
+  border: 1px solid rgba(255, 0, 0, 0.3) !important;
+  color: #cc7474 !important;
+}
+
+.forceUpdateButton:hover {
+  background: rgba(255, 0, 0, 0.2) !important;
 }

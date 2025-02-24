@@ -12,6 +12,7 @@ import {
   getMarketStatistics,
   getLatestChapter,
   releaseNewChapter,
+  forcePriceUpdates,
   callCustomEndpoint
 } from './AdminServices';
 import './Admin.css'
@@ -306,13 +307,11 @@ const Admin: React.FC = () => {
               name="username"
               type="text"
               className="loginInput"
-              placeholder="Username"
             />
             <input
               name="password"
               type="password"
               className="loginInput"
-              placeholder="Password"
             />
             <button type="submit" className="loginButton">
               Login
@@ -361,6 +360,13 @@ const Admin: React.FC = () => {
             >
               Release Chapter
             </button>
+            <button 
+      onClick={() => forcePriceUpdates()}
+      className="controlButton forceUpdateButton"
+    >
+      Force Price Update
+    </button>
+
           </div>
         </div>
 

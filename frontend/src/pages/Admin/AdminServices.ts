@@ -151,6 +151,16 @@ export const releaseNewChapter = async (): Promise<void> => {
     throw new Error(data.message || 'Failed to release new chapter');
 };
 
+export const forcePriceUpdates = async(): Promise<boolean> => {
+  const response = await fetch('/api/v1/market/update-price', {
+    method: 'POST', 
+    credentials: 'include',
+  })
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(data.message || 'Failed to force price updates');
+  return data.success;
+}
 export const callCustomEndpoint = async (
   url: string,
   method: string = 'GET',
