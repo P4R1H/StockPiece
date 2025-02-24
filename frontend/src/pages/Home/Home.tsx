@@ -133,7 +133,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     if (!stock) return;
     const quantity = Number(buyAmt);
   
-    const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio']);
+    const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
     if (!previousPortfolio) return;
     const newPortfolio = { ...previousPortfolio };
   
@@ -173,7 +173,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         return;
       }
     }
-    queryClient.setQueryData(['portfolio'], newPortfolio);
+    queryClient.setQueryData(['portfolio', isLoggedIn], newPortfolio);
   
     if (!pendingTransactions.current[stock.id]) {
       pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
