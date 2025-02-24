@@ -14,11 +14,15 @@ const maxAttempts = 3;
 const deleteTempFile = async (localFilePath) => {
   try {
     if (localFilePath) {
+      console.log("Attempting to delete file at:", localFilePath);
+      console.log("Exists before deletion:", fs.existsSync(localFilePath));
       await fs.promises.unlink(localFilePath);
-      console.log("temp file deleted: ", !fs.existsSync(localFilePath));
+      console.log("File deleted:", !fs.existsSync(localFilePath));
+    } else {
+      console.log("No file path provided.");
     }
   } catch (error) {
-    console.log("error deleting temp file", error.message);
+    console.error("Error deleting temp file", error.message);
   }
 };
 

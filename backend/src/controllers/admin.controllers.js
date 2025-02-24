@@ -81,11 +81,11 @@ const createAdmin = asyncHandler(async (req, res, _) => {
   }
 
   const existingAdmin = await Admin.findOne({
-    username: username.toLowerCase()
+    username: username.toLowerCase(),
   });
 
   if (existingAdmin) {
-    throw new ApiError(400,'admin already exists');
+    throw new ApiError(400, "admin already exists");
   }
 
   const createdAdmin = await Admin.create({
@@ -143,21 +143,16 @@ const createCharacterStock = asyncHandler(async (req, res, _) => {
 
   let characterStock;
   //check if the stock already exists and is removed
-  const existingCharacterStock = await CharacterStock.findOne({ 
-    $or: [
-      { name },
-      { tickerSymbol }
-    ]
-   });
+  const existingCharacterStock = await CharacterStock.findOne({
+    $or: [{ name }, { tickerSymbol }],
+  });
 
   if (existingCharacterStock && !existingCharacterStock.isRemoved) {
     throw new ApiError(400, "character stock or ticker symbol already added ");
   } else if (existingCharacterStock?.isRemoved) {
-
     existingCharacterStock.isRemoved = false;
-    existingCharacterStock.save({ validateModifiedOnly: true });
+    await existingCharacterStock.save({ validateModifiedOnly: true });
     characterStock = existingCharacterStock;
-
   } else {
     if (!initialValue?.trim()) {
       throw new ApiError(400, "initial value required");

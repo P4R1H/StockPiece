@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import priceChangeByAlgorithm from "../utils/priceChange.utils.js";
+import ChapterUpdate from "../models/chapterUpdate.models.js";
+import isWindowOpen from "../utils/windowStatus.js";
 
 const updatePriceService = async () => {
   const latestChapterDoc = await ChapterRelease.findOne().sort({
@@ -13,26 +15,39 @@ const updatePriceService = async () => {
     throw new ApiError(400, "no chapter has been released");
   }
 
-  if (
-    !latestChapterDoc.isWindowClosed &&
-    Date.now() < latestChapterDoc.windowEndDate
-  ) {
+  if (isWindowOpen(latestChapterDoc)) {
     throw new ApiError(400, "window is still open");
   }
 
   if (latestChapterDoc?.isPriceUpdated) {
     //i was thinking of throwing a error but maybe its not required
-    throw new ApiError(400,'price has already been updated');
+    throw new ApiError(400, "price has already been updated");
   }
 
   const latestChapterNumber = latestChapterDoc.chapter;
 
-  const priceUpdates = await priceChangeByAlgorithm(latestChapterNumber);
+  //now here we need to fetch the update array
+  const chapterUpdate = await ChapterUpdate.findOne({
+    chapter: latestChapterNumber,
+  });
 
-  if (!priceUpdates) {
-    throw new ApiError(500, "some error occurred while getting priceUpdates");
+  if (!chapterUpdate) {
+    throw new ApiError(500, "error in getting chapter updates");
   }
 
+  const chapterUpdateMap = new Map();
+
+  chapterUpdate.updates.forEach((element) => {
+    const stockID = element.stockID.toString();
+
+    chapterUpdateMap.set(stockID, {
+      newValue: element.newValue,
+      totalQuantity: element.totalQuantity,
+    });
+  });
+
+  //i can do the update without it but for extra safety i am including it
+  //since this is not a very frequent operation i can afford this
   const allStocks = await CharacterStock.find();
 
   if (!allStocks) {
@@ -40,7 +55,9 @@ const updatePriceService = async () => {
   }
 
   const bulkOps = allStocks.map((stock) => {
-    const { newValue, totalQuantity } = priceUpdates.get(stock.name);
+    const stockID = stock._id.toString();
+    const newValue = chapterUpdateMap.get(stockID)?.newValue || 0;
+    const totalQuantity = chapterUpdateMap.get(stockID)?.totalQuantity || 0;
     return {
       updateOne: {
         filter: { _id: stock._id },
@@ -61,7 +78,19 @@ const updatePriceService = async () => {
     };
   });
 
-  const response = Object.fromEntries(priceUpdates);
+  const formattedResponse = allStocks.map((stock) => {
+    const stockID = stock._id.toString();
+    const updateInfo = chapterUpdateMap.get(stockID) || {
+      newValue: 0,
+      totalQuantity: 0,
+    };
+    return {
+      stockID,
+      name: stock.name,
+      newValue: updateInfo.newValue,
+      totalQuantity: updateInfo.totalQuantity,
+    };
+  });
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -72,9 +101,9 @@ const updatePriceService = async () => {
     console.log("stock updated successfully");
 
     latestChapterDoc.isPriceUpdated = true;
-    latestChapterDoc.save({ validateModifiedOnly: true });
+    await latestChapterDoc.save({ validateModifiedOnly: true });
 
-    return response;
+    return formattedResponse;
   } catch (error) {
     await session.abortTransaction();
     console.log("there was some error rolling back the transaciton");
@@ -84,6 +113,7 @@ const updatePriceService = async () => {
   }
 };
 
+//on chapter update we wil make a new array
 const closeMarketService = async () => {
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
@@ -93,8 +123,46 @@ const closeMarketService = async () => {
     throw new ApiError(400, "market is already closed");
   }
 
+  const latestChapter = latestChapterDoc.chapter;
+
+  const priceUpdateMap = await priceChangeByAlgorithm(latestChapter);
+
+  const formattedUpdates = Array.from(priceUpdateMap).map(
+    ([stockID, stats]) => ({
+      stockID, // The stock id key from the map
+      name: stats.name, // The stock name from the map
+      oldValue: stats.currentValue,
+      newValue: stats.newValue,
+      totalBuys: stats.totalBuys,
+      totalSells: stats.totalSells,
+      totalQuantity: stats.totalQuantity,
+    })
+  );
+
+  const updatesArray = formattedUpdates.map(({ _name, ...stats }) => stats);
+
+  const chapterUpdate = await ChapterUpdate.findOneAndUpdate(
+    { chapter: latestChapter },
+    {
+      updates: updatesArray,
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
+
+  if (!chapterUpdate) {
+    throw new ApiError(
+      500,
+      "there was some error while performing the chapter udpate"
+    );
+  }
+
   latestChapterDoc.isWindowClosed = true;
-  latestChapterDoc.save({ validateModifiedOnly: true });
+  await latestChapterDoc.save({ validateModifiedOnly: true });
+
+  return formattedUpdates;
 };
 
 export { updatePriceService, closeMarketService };

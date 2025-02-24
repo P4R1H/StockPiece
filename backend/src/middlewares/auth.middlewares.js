@@ -35,6 +35,7 @@ const verifyAdminJWT = asyncHandler(async (req, _, next) => {
     req.headers.authorization?.replace("Bearer ", "");
 
   if (!adminToken) {
+    console.log('jwt');
     return next();
   }
 

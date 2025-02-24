@@ -3,17 +3,13 @@ import asyncHandler from "../utils/asyncHandler.utils.js";
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import releaseChapterService from "../services/releaseChapter.services.js";
-import {
-  closeMarketService,
-  updatePriceService,
-} from "../services/closeMarket.services.js";
+import ChapterUpdate from "../models/chapterUpdate.models.js";
+import { closeMarketService } from "../services/closeMarket.services.js";
 import priceChangeByAlgorithm from "../utils/priceChange.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
-import mongoose from "mongoose";
-import {
-  stockTotalQuantityBuyAndSells,
-  totalQuantityOfStocks,
-} from "../utils/stockStats.utils.js";
+import { stockStatistics } from "../utils/stockStats.utils.js";
+import isWindowOpen from "../utils/windowStatus.js";
+import { updatePriceService } from "../services/closeMarket.services.js";
 
 const getLatestChapter = asyncHandler(async (req, res, _) => {
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -36,11 +32,8 @@ const getMarketStatus = asyncHandler(async (req, res, _) => {
   if (!latestChapter) {
     throw new ApiError(400, "latest chapter not released");
   }
-  let flag =
-    Date.now() > latestChapter.windowEndDate.getTime() ||
-    latestChapter.isWindowClosed
-      ? "closed"
-      : "open";
+
+  let flag = isWindowOpen(latestChapter) ? "open" : "close";
   res
     .status(200)
     .json(new ApiResponse(200, flag, "window status fetched successfully"));
@@ -69,16 +62,16 @@ const openMarket = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "no chapter has been released yet");
   }
 
-  if (Date.now() > latestChapterDoc.windowEndDate.getTime()) {
+  if (Date.now() > latestChapterDoc.windowEndDate.getTime() || latestChapterDoc.isPriceUpdated) {
     throw new ApiError(400, "the market can no longer be opened");
   }
 
   if (!latestChapterDoc.isWindowClosed) {
-    throw new ApiError(400,'market is already opened');
+    throw new ApiError(400, "market is already opened");
   }
 
   latestChapterDoc.isWindowClosed = false;
-  latestChapterDoc.save({ validateModifiedOnly: true });
+  await latestChapterDoc.save({ validateModifiedOnly: true });
 
   res.status(200).json(new ApiResponse(200, "market opened successfully"));
 });
@@ -92,6 +85,7 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 });
 
 const getStockStatistics = asyncHandler(async (req, res, _next) => {
+  
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
@@ -104,28 +98,32 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
   }
 
   const latestChapter = latestChapterDoc.chapter;
-  const allStocks = await CharacterStock.find();
-  const stockMap = await stockTotalQuantityBuyAndSells(latestChapter);
+  const chapter = req.body.chapter;
 
-  if (!stockMap) {
-    throw new ApiError(500, "error in getting stock stats");
+  //if the window is open and we need the latest chapter
+  let response;
+  if ((!chapter || latestChapter === chapter) && isWindowOpen(latestChapterDoc)) {
+    const statistics = await priceChangeByAlgorithm(latestChapter);
+    response = Array.from(statistics.values());
+  } else {
+    //we fetch from the update collection
+    const chapterUpdate = await ChapterUpdate.findOne({
+      chapter: latestChapter,
+    })
+      .populate({
+        path: "updates.stockID",
+        select: "name", // Only fetch the 'name' field
+      })
+      .lean();
+    if (!chapterUpdate) {
+      throw new ApiError(400, "wrong chapter requested");
+    }
+
+    response = chapterUpdate.updates.map(({stockID,...update}) => ({
+      name: stockID.name, // Replace Object with just the name
+      ...update,
+    }));
   }
-
-  const stockStats = new Map();
-  allStocks.forEach((stock) => {
-    const name = stock.name;
-    const stockId = stock._id.toString();
-    const buys = stockMap.get(stockId)?.totalBuys || 0;
-    const sells = stockMap.get(stockId)?.totalSells || 0;
-    const totalQuantity = stockMap.get(stockId)?.totalQuantity || 0;
-    stockStats.set(name, {
-      buys,
-      sells,
-      totalQuantity,
-    });
-  });
-
-  const response = Object.fromEntries(stockStats);
 
   res
     .status(200)
@@ -140,10 +138,7 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
 
-  if (
-    !latestChapterDoc.isWindowClosed &&
-    Date.now() < latestChapterDoc.windowEndDate.getTime()
-  ) {
+  if (isWindowOpen(latestChapterDoc)) {
     throw new ApiError(400, "window is still open");
   }
 
@@ -158,113 +153,113 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
   //so we also have to fetch all stocks from database
   //why just form the bulkops togethor after fetching all stock
 
-  const usersStocks = await totalQuantityOfStocks();
+  const stockMap = await stockStatistics(latestChapter);
 
-  // Convert aggregation results into a map for easy lookup.
-  const stockMap = new Map();
-  usersStocks.forEach((stock) => {
-    stockMap.set(stock._id.toString(), stock.totalQuantity);
-  });
+  if (!stockMap) {
+    throw new ApiError(500, "error in getting stock statistics");
+  }
 
   const allStocks = await CharacterStock.find();
-  const stockUpdate = {};
-  //now for each stock we need the new price, new base Quantity
-  const bulkOps = allStocks.map((stock) => {
-    //get the new value for this stock from admin if not given then take the default value
-    const newValue = req.body[stock.name] || stock.currentValue;
-    const newBaseQuantity = stockMap.get(stock._id.toString()) || 0;
-    stockUpdate[stock.name] = newValue;
+
+  if (!allStocks) {
+    throw new ApiError(500, "error in getting all stocks");
+  }
+
+  const formattedResponse = allStocks.map((stock) => {
+    const stockID = stock._id.toString();
+    const name = stock.name;
+    const newValue = req.body[name] || stock.currentValue;
+    const oldValue = stock.currentValue;
+    const totalQuantity = stockMap.get(stockID)?.totalQuantity || 0;
+    const totalBuys = stockMap.get(stockID)?.totalBuys || 0;
+    const totalSells = stockMap.get(stockID)?.totalSells || 0;
 
     return {
-      updateOne: {
-        filter: { _id: stock._id },
-        update: {
-          $set: {
-            currentValue: newValue,
-            baseQuantity: newBaseQuantity,
-            initialValue: stock.currentValue,
-          },
-          $push: {
-            valueHistory: {
-              chapter: latestChapter,
-              value: newValue,
-            },
-          },
-        },
-      },
+      stockID,
+      name,
+      oldValue,
+      newValue,
+      totalBuys,
+      totalSells,
+      totalQuantity,
     };
   });
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-  try {
-    await CharacterStock.bulkWrite(bulkOps, { session });
-    await session.commitTransaction();
+  const updatesArray = formattedResponse.map(({ _name, ...stats }) => stats);
+  //now for each stock we need the new price, new base Quantity
+  const chapterUpdate = await ChapterUpdate.findOneAndUpdate(
+    { chapter: latestChapter },
+    {
+      updates: updatesArray,
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
 
-    console.log("stock updated successfully");
-
-    latestChapterDoc.isPriceUpdated = true;
-    latestChapterDoc.save({ validateModifiedOnly: true });
-  } catch (error) {
-    await session.abortTransaction();
-    console.log("there was some error rolling back the transaciton");
-    throw error;
-  } finally {
-    session.endSession();
-  }
-
-  res
-    .status(200)
-    .json(
-      new ApiResponse(200, stockUpdate, "stock price updated successfully")
+  if (!chapterUpdate) {
+    throw new ApiError(
+      500,
+      "there was some error while performing the chapter udpate"
     );
-});
-
-const getPriceUpdatesByAlgorithm = asyncHandler(async (req, res, _next) => {
-  if (!req?.admin) {
-    throw new ApiError(400, "unauthorized request");
   }
-
-  const latestChapterDoc = await ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
-
-  if (!latestChapterDoc) {
-    throw new ApiError(400, "no chapter has been released yet");
-  }
-
-  if (
-    !latestChapterDoc.isWindowClosed &&
-    Date.now() < latestChapterDoc.windowEndDate.getTime()
-  ) {
-    throw new ApiError(400, "window is still open");
-  }
-
-  if (latestChapterDoc?.isPriceUpdated) {
-    throw new ApiError(400, "price has already been updated");
-  }
-
-  const latestChapter = latestChapterDoc.chapter;
-
-  const priceChangeMap = await priceChangeByAlgorithm(latestChapter);
-  if (!priceChangeMap) {
-    throw new ApiError(500, "error in getting the price change map");
-  }
-
-  const priceChange = Object.fromEntries(priceChangeMap);
 
   res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        priceChange,
-        "price change by algorithm fetched successfully"
+        formattedResponse,
+        "stock price updated successfully"
       )
     );
 });
 
-const priceUpdateByAlgorithm = asyncHandler(async (req, res, _next) => {
+// const getPriceUpdatesByAlgorithm = asyncHandler(async (req, res, _next) => {
+//   if (!req?.admin) {
+//     throw new ApiError(400, "unauthorized request");
+//   }
+
+//   const latestChapterDoc = await ChapterRelease.findOne().sort({
+//     releaseDate: -1,
+//   });
+
+//   if (!latestChapterDoc) {
+//     throw new ApiError(400, "no chapter has been released yet");
+//   }
+
+//   if (
+//     isWindowOpen(latestChapterDoc)
+//   ) {
+//     throw new ApiError(400, "window is still open");
+//   }
+
+//   if (latestChapterDoc?.isPriceUpdated) {
+//     throw new ApiError(400, "price has already been updated");
+//   }
+
+//   const latestChapter = latestChapterDoc.chapter;
+
+//   const priceChangeMap = await priceChangeByAlgorithm(latestChapter);
+//   if (!priceChangeMap) {
+//     throw new ApiError(500, "error in getting the price change map");
+//   }
+
+//   const priceChange = Object.fromEntries(priceChangeMap);
+
+//   res
+//     .status(200)
+//     .json(
+//       new ApiResponse(
+//         200,
+//         priceChange,
+//         "price change by algorithm fetched successfully"
+//       )
+//     );
+// });
+
+const postUpdatePrice = asyncHandler(async (req, res, _next) => {
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
@@ -291,9 +286,9 @@ export {
   getMarketStatus,
   closeMarket,
   releaseChapter,
-  getPriceUpdatesByAlgorithm,
+  // getPriceUpdatesByAlgorithm,
   priceUpdateManual,
   getStockStatistics,
-  priceUpdateByAlgorithm,
+  postUpdatePrice,
   openMarket,
 };

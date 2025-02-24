@@ -6,6 +6,8 @@ import User from "../models/user.models.js";
 import mongoose from "mongoose";
 import CharacterStock from "../models/characterStock.models.js";
 import Transaction from "../models/transaction.models.js";
+import isWindowOpen from "../utils/windowStatus.js";
+import ChapterUpdate from "../models/chapterUpdate.models.js";
 
 const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
@@ -19,13 +21,10 @@ const buyStock = asyncHandler(async (req, res, _) => {
   });
 
   if (!latestChapter) {
-    throw new ApiError(400,'no chapter is released yet');
+    throw new ApiError(400, "no chapter is released yet");
   }
 
-  if (
-    latestChapter?.isWindowClosed ||
-    Date.now() > latestChapter?.windowEndDate.getTime()
-  ) {
+  if (!isWindowOpen(latestChapter)) {
     throw new ApiError(400, "buying window is closed");
   }
 
@@ -55,41 +54,52 @@ const buyStock = asyncHandler(async (req, res, _) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  const transaction = await Transaction.create(
-    [
-      {
-        purchasedBy: user._id,
-        stockID: characterStock._id,
-        quantity: parseInt(quantity),
-        value: characterStock.currentValue,
-        type: "buy",
-        chapterPurchasedAt: latestChapter.chapter,
-      },
-    ],
-    { session }
-  );
+  try {
+    const transaction = await Transaction.create(
+      [
+        {
+          purchasedBy: user._id,
+          stockID: characterStock._id,
+          quantity: parseInt(quantity),
+          value: characterStock.currentValue,
+          type: "buy",
+          chapterPurchasedAt: latestChapter.chapter,
+        },
+      ],
+      { session }
+    );
 
-  user.accountValue -= totalPrice;
-  const stockIndex = user.ownedStocks.findIndex(
-    (item) => item.stock.toString() === characterStock._id.toString()
-  );
-  if (stockIndex >= 0) {
-    user.ownedStocks[stockIndex].quantity += parseInt(quantity);
-  } else {
-    user.ownedStocks.push({
-      stock: characterStock._id,
-      quantity,
-    });
+    user.accountValue -= totalPrice;
+    const stockIndex = user.ownedStocks.findIndex(
+      (item) => item.stock.toString() === characterStock._id.toString()
+    );
+    if (stockIndex >= 0) {
+      user.ownedStocks[stockIndex].quantity += parseInt(quantity);
+    } else {
+      user.ownedStocks.push({
+        stock: characterStock._id,
+        quantity,
+      });
+    }
+
+    await user.save({ session, validateModifiedOnly: true });
+
+    await session.commitTransaction();
+
+    res
+      .status(200)
+      .json(new ApiResponse(200, transaction, "stock purchased successfully"));
+  } catch (error) {
+    await session.abortTransaction();
+    console.log("there was some error while buying rolling back transaction");
+    throw new ApiError(
+      500,
+      "some error occurred while making buy transaction",
+      error
+    );
+  } finally {
+    session.endSession();
   }
-
-  await user.save({ session, validateModifiedOnly: true });
-
-  await session.commitTransaction();
-  session.endSession();
-
-  res
-    .status(200)
-    .json(new ApiResponse(200, transaction, "stock purchased successfully"));
 });
 
 const sellStock = asyncHandler(async (req, res, _) => {
@@ -104,13 +114,10 @@ const sellStock = asyncHandler(async (req, res, _) => {
   });
 
   if (!latestChapter) {
-    throw new ApiError(400,'no chapter is released yet');
+    throw new ApiError(400, "no chapter is released yet");
   }
 
-  if (
-    latestChapter.isWindowClosed ||
-    Date.now() > latestChapter.windowEndDate.getTime()
-  ) {
+  if (!isWindowOpen(latestChapter)) {
     throw new ApiError(400, "selling window is closed");
   }
 
@@ -180,7 +187,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
     session.abortTransaction();
     throw new ApiError(
       500,
-      "some error occurred while making transaction",
+      "some error occurred while making sell transaction",
       error
     );
   } finally {
@@ -197,11 +204,8 @@ const getAllStocks = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
   const latestChapter = latestChapterDoc?.chapter;
-  if (!latestChapter) {
-    throw new ApiError(500, "not able to fetch latest chapter");
-  }
 
-  const allStocks = req.admin
+  const allStocks = req.admin || !latestChapter
     ? await CharacterStock.find()
     : await CharacterStock.aggregate([
         {
@@ -278,10 +282,11 @@ const changeStockValue = asyncHandler(async (req, res, _next) => {
 
   const latestChapter = latestChapterDoc.chapter;
 
-  if (
-    !latestChapterDoc.isWindowClosed &&
-    Date.now() < latestChapterDoc.windowEndDate.getTime()
-  ) {
+  if (latestChapterDoc.isPriceUpdated) {
+    throw new ApiError(400,'price has been updated for this chapter');
+  }
+
+  if (isWindowOpen(latestChapterDoc)) {
     throw new ApiError(400, "window is still open");
   }
 
@@ -293,39 +298,22 @@ const changeStockValue = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "stock with this name does not exists");
   }
 
-  const updatedStock = latestChapter
-    ? await CharacterStock.findOneAndUpdate(
-        {
-          name,
-          "valueHistory.chapter": latestChapter,
-        },
-        {
-          $set: {
-            currentValue: value,
-            "valueHistory.$.value": value,
-          },
-        },
-        { new: true }
-      )
-    : await CharacterStock.findOneAndUpdate(
-        { name },
-        {
-          $set: {
-            currentValue: value,
-          },
-        },
-        { new: true }
-      );
+  const updatedStockValue = await ChapterUpdate.findOneAndUpdate(
+    {
+      chapter: latestChapter,
+      "updates.stockID": stock._id,
+    },
+    { $set: { "updates.$.newValue": value } },
+    { new: true }
+  );
 
-  if (!updatedStock) {
-    throw new ApiError(500, "there was some error updating stock details");
+  if (!updatedStockValue) {
+    throw new ApiError(500, "error in updating stock value");
   }
 
   res
     .status(200)
-    .json(
-      new ApiResponse(200, updatedStock, "stock value changed successfully")
-    );
+    .json(new ApiResponse(200, null, "stock value changed successfully"));
 
   //so basically find this chapter in the array and edit the value
 });

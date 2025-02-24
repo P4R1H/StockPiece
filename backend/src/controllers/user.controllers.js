@@ -264,7 +264,9 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
 //as requested by the frontend
 const checkLogin = asyncHandler(async (req, res, _) => {
   if (!req.user) {
-    return res.status(200).json(new ApiResponse(200, false, "no logged in user"));
+    return res
+      .status(200)
+      .json(new ApiResponse(200, false, "no logged in user"));
   }
   res.status(200).json(new ApiResponse(200, true, "user is logged in"));
 });
