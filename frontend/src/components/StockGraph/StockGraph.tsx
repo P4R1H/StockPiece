@@ -170,14 +170,13 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   }
 
   useEffect(() => {
-    if (stocks.length > 0 && stocks[0].valueHistory && stocks[0].valueHistory.length > 0) {
+    if (stocks.length > 0 && stocks[0].valueHistory?.length > 0) {
       const minChapter = stocks[0].valueHistory[0].chapter
       const maxChapter = stocks[0].valueHistory[stocks[0].valueHistory.length - 1].chapter
       setChapterStart(minChapter)
       setChapterEnd(maxChapter)
     }
   }, [stocks])
-
   const filteredHistory = stocks.length > 0 && stocks[0].valueHistory ? stocks[0].valueHistory.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd) : []
   const labels = filteredHistory.filter((_, i) => i % chapterScale === 0).map(entry => entry.chapter)
   
@@ -358,8 +357,14 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         </div>
       </div>
       <div className="chart-wrapper">
-        <Line data={{ labels, datasets }} options={options} plugins={plugins} />
-      </div>
+      {labels.length > 0 && datasets.length > 0 && (
+  <Line 
+    key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
+    data={{ labels, datasets }} 
+    options={options} 
+    plugins={plugins} 
+  />
+)}</div>
     </div>
   )
 }
