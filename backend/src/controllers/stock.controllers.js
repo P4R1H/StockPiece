@@ -204,7 +204,7 @@ const getAllStocks = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
   const latestChapter = latestChapterDoc?.chapter;
-
+  console.log(latestChapterDoc);
   const allStocks = req.admin || !latestChapter
     ? await CharacterStock.find()
     : await CharacterStock.aggregate([
