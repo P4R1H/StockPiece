@@ -1,12 +1,10 @@
 import express from "express";
 import {
   getLatestChapter,
-  getPriceUpdatesByAlgorithm,
   getStockStatistics,
   getMarketStatus,
   closeMarket,
   priceUpdateManual,
-  priceUpdateByAlgorithm,
   releaseChapter,
   openMarket,
 } from "../controllers/market.controllers.js";
@@ -22,10 +20,10 @@ marketRouter.use(verifyAdminJWT);
 marketRouter.route("/chapters/release").post(releaseChapter);
 marketRouter.route("/close").patch(closeMarket);
 marketRouter.route("/open").patch(openMarket);
-marketRouter
-  .route("/price-updates/algorithm")
-  .get(getPriceUpdatesByAlgorithm) //done
-  .post(priceUpdateByAlgorithm); //done
+// marketRouter
+//   .route("/price-updates/algorithm")
+//   .get(getPriceUpdatesByAlgorithm) //done
+//   .post(priceUpdateByAlgorithm); //done
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
 

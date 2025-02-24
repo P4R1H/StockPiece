@@ -1,16 +1,13 @@
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
+import isWindowOpen from "../utils/windowStatus.js";
 
 const releaseChapterService = async () => {
   const latestChapter = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
 
-  if (
-    latestChapter &&
-    !latestChapter.isWindowClosed &&
-    Date.now() < latestChapter.windowEndDate
-  ) {
+  if (latestChapter && isWindowOpen(latestChapter)) {
     throw new ApiError(400, "window is still open");
   }
 

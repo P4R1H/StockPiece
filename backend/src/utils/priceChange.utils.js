@@ -1,15 +1,15 @@
-import {
-  stockTotalQuantityBuyAndSells,
-} from "./stockStats.utils.js";
+import { stockStatistics } from "./stockStats.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 
 //this will return
 // priceUpdateMap.set(name, {
 //   totalQuantity,
 //   newValue,
+//   buys,
+//   sells
 // });
 const priceChangeByAlgorithm = async (chapter) => {
-  const stockMap = await stockTotalQuantityBuyAndSells(chapter);
+  const stockMap = await stockStatistics(chapter);
 
   const allStocks = await CharacterStock.find();
   //we need to return a map with stock as the key and its new Value and newQuantity as the value
@@ -17,21 +17,25 @@ const priceChangeByAlgorithm = async (chapter) => {
   allStocks.forEach((stock) => {
     const stockID = stock._id.toString();
     const name = stock.name;
-    const buys = stockMap.get(stockID)?.totalBuys || 0;
-    const sells = stockMap.get(stockID)?.totalSells || 0;
+    const totalBuys = stockMap.get(stockID)?.totalBuys || 0;
+    const totalSells = stockMap.get(stockID)?.totalSells || 0;
     const prev_ciculation = stock.baseQuantity;
     const currentValue = stock.currentValue;
     const totalQuantity = stockMap.get(stockID)?.totalQuantity || 0;
     const newValue = calculatePriceUpdate(
       currentValue,
       prev_ciculation,
-      buys,
-      sells
+      totalBuys,
+      totalSells
     );
 
-    priceUpdateMap.set(name, {
+    priceUpdateMap.set(stockID, {
+      name,
       totalQuantity,
+      currentValue,
       newValue,
+      totalBuys,
+      totalSells,
     });
   });
 

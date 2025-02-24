@@ -48,12 +48,12 @@ const totalBuySellsForChapter = async (chapter) => {
         _id: "$stockID",
         totalBuys: {
           $sum: {
-            $cond: [{ $eq: [ "$type", "buy" ] }, "$quantity", 0],
+            $cond: [{ $eq: ["$type", "buy"] }, "$quantity", 0],
           },
         },
         totalSells: {
           $sum: {
-            $cond: [{ $eq: [ "$type", "sell" ] }, "$quantity", 0],
+            $cond: [{ $eq: ["$type", "sell"] }, "$quantity", 0],
           },
         },
       },
@@ -73,7 +73,7 @@ const totalBuySellsForChapter = async (chapter) => {
 //   totalBuys: transaction.totalBuys|| 0,
 //   totalSells: transaction.totalSells || 0,
 // });
-const stockTotalQuantityBuyAndSells = async (chapter) => {
+const stockStatistics = async (chapter) => {
   const usersStocks = await totalQuantityOfStocks();
   const buySellTransactions = await totalBuySellsForChapter(chapter);
 
@@ -112,8 +112,4 @@ const stockTotalQuantityBuyAndSells = async (chapter) => {
   return stockMap;
 };
 
-export {
-  totalQuantityOfStocks,
-  totalBuySellsForChapter,
-  stockTotalQuantityBuyAndSells,
-};
+export { totalQuantityOfStocks, totalBuySellsForChapter, stockStatistics };
