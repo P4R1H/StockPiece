@@ -98,4 +98,8 @@
     color: var(--gold);
     background: var(--emerald);
   }
-  
+
+
+  .logout-btn:focus {
+    outline: none;
+  }
