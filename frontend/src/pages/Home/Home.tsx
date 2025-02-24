@@ -191,7 +191,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         try {
           await buyStock(name, buy);
         } catch (error) {
-          queryClient.setQueryData(['portfolio'], previousPortfolio);
+          queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
           alert(error instanceof Error ? error.message : 'Buy transaction failed');
         }
       }
@@ -200,7 +200,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         try {
           await sellStock(name, sell);
         } catch (error) {
-          queryClient.setQueryData(['portfolio'], previousPortfolio);
+          queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
           alert(error instanceof Error ? error.message : 'Sell transaction failed');
         }
       }
