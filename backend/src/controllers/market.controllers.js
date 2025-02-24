@@ -84,31 +84,57 @@ const closeMarket = asyncHandler(async (req, res, _) => {
   res.status(200).json(new ApiResponse(200, "market closed successfully"));
 });
 
-const getAllStockStatistics = asyncHandler( async (req, res, _next) => {
+const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   if (!req.admin) {
-    throw new ApiError(400,"unauthorized request");
+    throw new ApiError(400, "unauthorized request");
   }
-
+  
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
-
+  
   if (!latestChapterDoc) {
     throw new ApiError(400, "no chapter has been released yet");
   }
-
-  const chapterUpdateHistory = await ChapterUpdate.find().lean();
-
-  if (!chapterUpdateHistory) {
-    throw new ApiError(500,'error in fetching chapter update history');
-  }
-
+  
+  // Use aggregation to group updates by chapter
+  const chapterUpdatesGrouped = await ChapterUpdate.aggregate([
+    // Group by chapter
+    {
+      $group: {
+        _id: "$chapter",
+        updates: { $push: "$updates" }
+      }
+    },
+    // Format the results
+    {
+      $project: {
+        _id: 0,
+        chapter: "$_id",
+        updates: 1
+      }
+    },
+    // Sort by chapter number
+    {
+      $sort: { chapter: 1 }
+    }
+  ]);
+  
+  // Transform array to object with chapters as keys
+  const chapterUpdatesObject = {};
+  
+  chapterUpdatesGrouped.forEach(item => {
+    // Flatten the nested updates array
+    const flattenedUpdates = item.updates.flat();
+    chapterUpdatesObject[item.chapter] = flattenedUpdates;
+  });
+  
   res
     .status(200)
     .json(
-      new ApiResponse(200,chapterUpdateHistory,'chapter update history fetched successfully')
-    )
-})
+      new ApiResponse(200, chapterUpdatesObject, 'chapter update history fetched successfully')
+    );
+});
 
 const getStockStatistics = asyncHandler(async (req, res, _next) => {
   
