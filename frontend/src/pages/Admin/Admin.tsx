@@ -293,10 +293,16 @@ const Admin: React.FC = () => {
         <div className="controlCard">
           <h3>Market Control</h3>
           <div className="buttonGroup">
-            <button onClick={openMarket} className="controlButton">
+            <button onClick={async () => {
+              await openMarket();
+              setMarketStatus('open');
+            }} className="controlButton">
               Open Market
             </button>
-            <button onClick={closeMarket} className="controlButton">
+            <button onClick={async () => {
+              await closeMarket();
+              setMarketStatus("closed");
+            }} className="controlButton">
               Close Market
             </button>
             <button onClick={releaseNewChapter} className="controlButton">
