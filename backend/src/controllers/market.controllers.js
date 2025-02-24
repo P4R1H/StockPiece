@@ -85,7 +85,6 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 });
 
 const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
-  
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
@@ -93,6 +92,20 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   if (!latestChapterDoc) {
     throw new ApiError(400, "no chapter has been released yet");
   }
+  
+  // Define the projection based on admin status
+  const updateProjection = req.admin ? {
+    name: "$stockName",
+    oldValue: "$updates.oldValue",
+    newValue: "$updates.newValue",
+    totalBuys: "$updates.totalBuys",
+    totalSells: "$updates.totalSells",
+    totalQuantity: "$updates.totalQuantity",
+    _id: "$updates._id"
+  } : {
+    name: "$stockName",
+    newValue: "$updates.newValue",
+  };
   
   // Use aggregation to group updates by chapter
   const chapterUpdatesGrouped = await ChapterUpdate.aggregate([
@@ -120,10 +133,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     {
       $project: {
         chapter: 1,
-        update: {
-          name: "$stockName",
-          newValue: "$updates.newValue",
-        }
+        update: updateProjection
       }
     },
     
