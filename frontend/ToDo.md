@@ -10,6 +10,7 @@
 ## Page-Specific Tasks
 
 ### Home Page
+- [ ] Rollback changes after error
 - [ ] Allow buying when logged out (Mock)
 - [/] Error message better UI
 - [/] Show loading while file is uploading

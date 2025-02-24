@@ -1,4 +1,3 @@
-/* Layout and Container Styles */
 .graph-container {
   min-width: calc(100% - 400px - 1rem);
   max-width: calc(1400px - 400px - 1rem - 3rem);
@@ -12,16 +11,12 @@
   border: 5px solid #3e2f28;
   border-radius: 15px;
   animation: floatIn 0.8s ease-out;
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Added matching shadow */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
 }
-
-/* Chart Wrapper */
 .chart-wrapper {
   height: 480px;
   position: relative;
 }
-
-/* Controls and Navigation */
 .graph-controls {
   display: flex;
   justify-content: space-between;
@@ -29,31 +24,25 @@
   margin-bottom: 20px;
   padding: 0 10px;
 }
-
 .advanced-options-button {
   display: flex;
   align-items: stretch;
   gap: 0;
   position: relative;
 }
-
-/* Slider Components */
 .slider-container {
   display: flex;
   flex-direction: column;
   width: 200px;
 }
-
-.chapter-slider,
 .scale-slider {
   display: flex;
   align-items: center;
   gap: 10px;
   font-family: 'Pirata One', cursive;
   color: #3e2f28;
+  margin-top: 45px;
 }
-
-.chapter-slider input[type="range"],
 .scale-slider input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
@@ -62,8 +51,6 @@
   background: #3e2f28;
   border-radius: 5px;
 }
-
-.chapter-slider input[type="range"]::-webkit-slider-thumb,
 .scale-slider input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 15px;
@@ -74,13 +61,9 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
-.chapter-slider input[type="range"]::-webkit-slider-thumb:hover,
 .scale-slider input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.1);
 }
-
-/* Select Dropdown & Search Bar */
 .pirate-select,
 .search-bar {
   padding: 8px 12px;
@@ -93,11 +76,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
 }
-
 .pirate-select {
   min-width: 180px;
   width: auto;
-  /* Rounded only on the left */
   border-radius: 5px 0 0 5px;
   appearance: none;
   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%233e2f28'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
@@ -105,20 +86,16 @@
   background-position: right 8px center;
   background-size: 16px;
 }
-
 .pirate-select:hover,
 .search-bar:hover {
   transform: translateY(-1px);
   box-shadow: 2px 2px 0 #3e2f28;
 }
-
 .search-bar:focus {
   outline: none;
   box-shadow: 3px 3px 0 #3e2f28;
   transform: translateY(-1px);
 }
-
-/* Side Panel Styles */
 .side-panel {
   position: absolute;
   top: 0;
@@ -136,32 +113,25 @@
   flex-direction: column;
   gap: 15px;
 }
-
 .side-panel.open {
   left: 0;
 }
-
-/* Panel Components */
 .panel-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 10px;
 }
-
 .panel-controls {
   margin-top: 5px;
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
-
 .sidebar-select {
   flex-grow: 1;
   max-width: 220px;
 }
-
-/* Button and Interactive Elements */
 .close-button {
   flex-shrink: 0;
   padding: 4px 8px;
@@ -173,24 +143,19 @@
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 .close-button:hover {
   transform: scale(1.2);
 }
-
-/* Character List Styles */
 .character-list {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .character-checkbox {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .character-checkbox label {
   display: flex;
   align-items: center;
@@ -199,20 +164,16 @@
   color: #3e2f28;
   cursor: pointer;
 }
-
 .color-box {
   width: 16px;
   height: 16px;
   border: 2px solid #3e2f28;
   border-radius: 4px;
 }
-
 .character-checkbox input {
   accent-color: #ffcc00;
   cursor: pointer;
 }
-
-/* Tooltip and Settings */
 .settings-tooltip-container {
   position: relative;
   display: flex;
@@ -224,12 +185,10 @@
   padding: 0 8px;
   transition: all 0.3s ease;
 }
-
 .settings-tooltip-container:hover {
   transform: translateY(-1px);
   box-shadow: 2px 2px 0 #3e2f28;
 }
-
 .settings-tooltip-container:hover::after {
   content: 'Advanced Options';
   position: absolute;
@@ -245,14 +204,11 @@
   font-family: 'Pirata One', cursive;
   z-index: 20;
 }
-
-/* Wheel Animation */
 .wheel-container {
   display: flex;
   align-items: center;
   height: 100%;
 }
-
 .pirate-wheel {
   width: 24px;
   height: 24px;
@@ -260,12 +216,87 @@
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
 .pirate-wheel:hover {
   transform: rotate(360deg);
 }
 
-/* Animations */
+
+.dual-range-slider {
+  position: relative;
+  width: 100%;
+  height: 15px;
+  margin-bottom: 25px;
+}
+
+.dual-range-slider .track {
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  background: #3e2f28;
+  border-radius: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.dual-range-slider .range-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  top: 0;
+  left: 0;
+  margin: 0;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 5px;
+  background: transparent;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-thumb {
+  pointer-events: all;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+  position: relative;
+  z-index: 5;
+}
+
+.dual-range-slider .range-slider::-moz-range-thumb {
+  pointer-events: all;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+.dual-range-slider .range-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+}
+
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -276,28 +307,19 @@
     transform: translateY(0);
   }
 }
-
-/* Add custom tooltip styles */
 :root {
   --tooltip-title-size: 18px;
   --tooltip-body-size: 16px;
 }
-
-/* Override Chart.js tooltip styles */
 .chartjs-tooltip {
   transition: all 0.2s ease;
 }
-
-/* Tooltip hover effect */
 .chart-wrapper:hover .chartjs-tooltip {
   transform: scale(1.1);
 }
-
-/* Add these chart tooltip styles */
 canvas:hover + .chartjs-tooltip {
   transform: scale(1.1);
 }
-
 @media (max-width: 768px) {
   .graph-container {
     border: 3px solid #3e2f28;
@@ -307,12 +329,10 @@ canvas:hover + .chartjs-tooltip {
     min-height: 100%;
     padding: 0px;
   }
-
   .chart-wrapper {
     height: 300px;
     padding: 0px;
   }
-
   .graph-controls {
     flex-wrap: nowrap;
     gap: 8px;
@@ -320,58 +340,139 @@ canvas:hover + .chartjs-tooltip {
     padding: 0;
     margin-top: 0;
   }
-
   .advanced-options-button {
     margin-right: 0;
     flex: none;
     min-width: auto;
   }
-
   .pirate-select {
     min-width: 100px;
     font-size: 0.9rem;
     padding: 6px 8px;
   }
-
   .slider-container {
     flex-direction: column;
     gap: 0px;
     width: auto;
     align-items: flex-start;
   }
-
-  .chapter-slider,
   .scale-slider {
     gap: 6px;
     font-size: 0.8rem;
   }
-
-  .chapter-slider input[type="range"],
   .scale-slider input[type="range"] {
     width: 60px;
   }
-
   .settings-tooltip-container {
     border-left: none;
     padding: 0 6px;
   }
-
   .pirate-wheel {
     width: 20px;
     height: 20px;
   }
-
   .side-panel {
     width: 280px;
     left: -280px;
   }
-
   .side-panel.open {
     left: 0;
   }
-
   :root {
     --tooltip-title-size: 16px;
     --tooltip-body-size: 14px;
   }
+}
+
+.dual-range-slider .slider-container-with-label {
+  display: flex;
+  align-items: center;
+}
+
+.dual-range-slider .range-label {
+  margin-right: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+  white-space: nowrap;
+}
+
+.dual-range-slider .slider-track-container {
+  position: relative;
+  width: 100%;
+  height: 15px; /* maintain overall height */
+}
+
+.dual-range-slider .track {
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  background: #3e2f28;
+  border-radius: 3px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Retain thumb styling from previous slider CSS */
+.dual-range-slider .range-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background: none;
+  top: 0;
+  left: 0;
+  margin: 0;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-thumb {
+  pointer-events: all;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-top: -5px;
+  position: relative;
+  z-index: 5;
+}
+
+.dual-range-slider .range-slider::-moz-range-thumb {
+  pointer-events: all;
+  width: 15px;
+  height: 15px;
+  background: #ffcc00;
+  border: 2px solid #3e2f28;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+  z-index: 5;
+}
+
+.dual-range-slider .range-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+}
+
+
+.dual-range-slider {
+  position: relative;
+  width: 100%;
+  height: 15px;
+  margin-bottom: 10px; /* Reduce from 25px to 10px */
+}
+
+.scale-slider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Pirata One', cursive;
+  color: #3e2f28;
+  margin-top: 0px; /* Reduce from 45px to 0px */
 }

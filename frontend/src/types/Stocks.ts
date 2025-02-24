@@ -1,3 +1,9 @@
+export interface ValueHistoryItem {
+  chapter: number;
+  value: number;
+  _id: string;
+}
+
 export interface CharacterStock {
   id: string;
   name: string;
@@ -8,6 +14,7 @@ export interface CharacterStock {
   ownedCount: number;
   visibility: 'show' | 'hide' | 'only';
   tickerSymbol: string;
+  valueHistory: ValueHistoryItem[]; // new
 }
 
 export interface CharacterCardProps {
