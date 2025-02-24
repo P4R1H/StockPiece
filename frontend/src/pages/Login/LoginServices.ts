@@ -1,10 +1,9 @@
 interface LoginResponse {
-    data: {
-      accessToken: string;
-      refreshToken: string;
-    };
-    message: string;
-  }
+  "success": boolean,
+  "data": boolean,
+  "message": string,
+  "statusCode": number
+}
   
 
 export const logoutUser = async (): Promise<void> => {

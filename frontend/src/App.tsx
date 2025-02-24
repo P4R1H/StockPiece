@@ -41,8 +41,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const checkLoginStatus = async () => {
       try {
-        await loginExists();
-        setIsLoggedIn(true);
+        const resp = await loginExists();
+        setIsLoggedIn(resp.data);
       } catch {
         setIsLoggedIn(false);
       }
