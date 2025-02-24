@@ -56,6 +56,12 @@
 
 .loginButton:hover {
   background: rgba(47, 16, 3, 0.2);
+  border: 1px solid #b31313;
+
+}
+
+.loginButton:focus {
+  outline: none;
 }
 
 .topBar {
