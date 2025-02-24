@@ -49,7 +49,7 @@ export const loginUser = async (username: string, password: string): Promise<Log
 };
   
 export const registerUser = async (username: string, password: string): Promise<LoginResponse> => {
-    const response = await fetch('/api/v1/user/register', {
+    const response = await fetch('/api/v1/user/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
