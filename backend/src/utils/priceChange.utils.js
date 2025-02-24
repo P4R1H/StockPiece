@@ -49,6 +49,9 @@ function calculatePriceUpdate(
   soldThisChap
 ) {
   // Calculate total trading volume
+  if (prevCirculation < 100) {
+    prevCirculation += 100;
+  }
   const totalVolume = boughtThisChap + soldThisChap;
   if (totalVolume === 0) {
     return currentPrice;
