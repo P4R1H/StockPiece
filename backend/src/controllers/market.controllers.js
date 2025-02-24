@@ -85,9 +85,6 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 });
 
 const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
-  if (!req.admin) {
-    throw new ApiError(400, "unauthorized request");
-  }
   
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
