@@ -84,6 +84,32 @@ const closeMarket = asyncHandler(async (req, res, _) => {
   res.status(200).json(new ApiResponse(200, "market closed successfully"));
 });
 
+const getAllStockStatistics = asyncHandler( async (req, res, _next) => {
+  if (!req.admin) {
+    throw new ApiError(400,"unauthorized request");
+  }
+
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+
+  if (!latestChapterDoc) {
+    throw new ApiError(400, "no chapter has been released yet");
+  }
+
+  const chapterUpdateHistory = await ChapterUpdate.find().lean();
+
+  if (!chapterUpdateHistory) {
+    throw new ApiError(500,'error in fetching chapter update history');
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200,chapterUpdateHistory,'chapter update history fetched successfully')
+    )
+})
+
 const getStockStatistics = asyncHandler(async (req, res, _next) => {
   
   if (!req?.admin) {
@@ -287,6 +313,7 @@ export {
   closeMarket,
   releaseChapter,
   // getPriceUpdatesByAlgorithm,
+  getAllStockStatistics,
   priceUpdateManual,
   getStockStatistics,
   postUpdatePrice,
