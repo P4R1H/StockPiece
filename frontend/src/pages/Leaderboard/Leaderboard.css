@@ -447,3 +447,11 @@
     height: 60px;
   }
 }
+
+
+.combined-leaderboard {
+  border: 1px solid rgb(204, 175, 32);
+  border-radius: 10px;
+  overflow: visible;
+  clip-path: inset(0 round 10px);
+}
