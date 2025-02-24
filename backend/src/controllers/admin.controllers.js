@@ -151,7 +151,7 @@ const createCharacterStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "character stock or ticker symbol already added ");
   } else if (existingCharacterStock?.isRemoved) {
     existingCharacterStock.isRemoved = false;
-    existingCharacterStock.save({ validateModifiedOnly: true });
+    await existingCharacterStock.save({ validateModifiedOnly: true });
     characterStock = existingCharacterStock;
   } else {
     if (!initialValue?.trim()) {

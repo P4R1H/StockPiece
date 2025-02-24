@@ -24,7 +24,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "no chapter is released yet");
   }
 
-  if (!isWindowOpen()) {
+  if (!isWindowOpen(latestChapter)) {
     throw new ApiError(400, "buying window is closed");
   }
 
@@ -204,11 +204,8 @@ const getAllStocks = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
   const latestChapter = latestChapterDoc?.chapter;
-  if (!latestChapter) {
-    throw new ApiError(500, "not able to fetch latest chapter");
-  }
 
-  const allStocks = req.admin
+  const allStocks = req.admin || !latestChapter
     ? await CharacterStock.find()
     : await CharacterStock.aggregate([
         {
@@ -284,6 +281,10 @@ const changeStockValue = asyncHandler(async (req, res, _next) => {
   });
 
   const latestChapter = latestChapterDoc.chapter;
+
+  if (latestChapterDoc.isPriceUpdated) {
+    throw new ApiError(400,'price has been updated for this chapter');
+  }
 
   if (isWindowOpen(latestChapterDoc)) {
     throw new ApiError(400, "window is still open");

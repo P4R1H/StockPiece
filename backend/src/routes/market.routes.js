@@ -7,6 +7,7 @@ import {
   priceUpdateManual,
   releaseChapter,
   openMarket,
+  postUpdatePrice,
 } from "../controllers/market.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
@@ -24,6 +25,7 @@ marketRouter.route("/open").patch(openMarket);
 //   .route("/price-updates/algorithm")
 //   .get(getPriceUpdatesByAlgorithm) //done
 //   .post(priceUpdateByAlgorithm); //done
+marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
 

@@ -9,6 +9,7 @@ import priceChangeByAlgorithm from "../utils/priceChange.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 import { stockStatistics } from "../utils/stockStats.utils.js";
 import isWindowOpen from "../utils/windowStatus.js";
+import { updatePriceService } from "../services/closeMarket.services.js";
 
 const getLatestChapter = asyncHandler(async (req, res, _) => {
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -31,7 +32,8 @@ const getMarketStatus = asyncHandler(async (req, res, _) => {
   if (!latestChapter) {
     throw new ApiError(400, "latest chapter not released");
   }
-  let flag = isWindowOpen(latestChapter);
+
+  let flag = isWindowOpen(latestChapter) ? "open" : "close";
   res
     .status(200)
     .json(new ApiResponse(200, flag, "window status fetched successfully"));
@@ -60,7 +62,7 @@ const openMarket = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "no chapter has been released yet");
   }
 
-  if (Date.now() > latestChapterDoc.windowEndDate.getTime()) {
+  if (Date.now() > latestChapterDoc.windowEndDate.getTime() || latestChapterDoc.isPriceUpdated) {
     throw new ApiError(400, "the market can no longer be opened");
   }
 
@@ -69,7 +71,7 @@ const openMarket = asyncHandler(async (req, res, _next) => {
   }
 
   latestChapterDoc.isWindowClosed = false;
-  latestChapterDoc.save({ validateModifiedOnly: true });
+  await latestChapterDoc.save({ validateModifiedOnly: true });
 
   res.status(200).json(new ApiResponse(200, "market opened successfully"));
 });
@@ -83,6 +85,7 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 });
 
 const getStockStatistics = asyncHandler(async (req, res, _next) => {
+  
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
@@ -99,7 +102,7 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
 
   //if the window is open and we need the latest chapter
   let response;
-  if ((!chapter || latestChapter === chapter) && isWindowOpen()) {
+  if ((!chapter || latestChapter === chapter) && isWindowOpen(latestChapterDoc)) {
     const statistics = await priceChangeByAlgorithm(latestChapter);
     response = Array.from(statistics.values());
   } else {
@@ -115,7 +118,11 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
     if (!chapterUpdate) {
       throw new ApiError(400, "wrong chapter requested");
     }
-    response = chapterUpdate.updates;
+
+    response = chapterUpdate.updates.map(({stockID,...update}) => ({
+      name: stockID.name, // Replace Object with just the name
+      ...update,
+    }));
   }
 
   res
@@ -252,23 +259,23 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
 //     );
 // });
 
-// const priceUpdateByAlgorithm = asyncHandler(async (req, res, _next) => {
-//   if (!req?.admin) {
-//     throw new ApiError(400, "unauthorized request");
-//   }
+const postUpdatePrice = asyncHandler(async (req, res, _next) => {
+  if (!req?.admin) {
+    throw new ApiError(400, "unauthorized request");
+  }
 
-//   const stockUpdate = await updatePriceService();
+  const stockUpdate = await updatePriceService();
 
-//   if (!stockUpdate) {
-//     throw new ApiError(500, "some error occured while getting stock updates");
-//   }
+  if (!stockUpdate) {
+    throw new ApiError(500, "some error occured while getting stock updates");
+  }
 
-//   res
-//     .status(200)
-//     .json(
-//       new ApiResponse(200, stockUpdate, "stock price updated successfully")
-//     );
-// });
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, stockUpdate, "stock price updated successfully")
+    );
+});
 
 //now i need to create a route for changing the price manually
 //also there will be a route to only close the market but not do anything on closing
@@ -282,6 +289,6 @@ export {
   // getPriceUpdatesByAlgorithm,
   priceUpdateManual,
   getStockStatistics,
-  // priceUpdateByAlgorithm,
+  postUpdatePrice,
   openMarket,
 };
