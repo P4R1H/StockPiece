@@ -54,13 +54,6 @@
   margin-top: 2px;
 }
 
-/* Combined Container for Top3, Table, and Current Rank */
-.combined-leaderboard {
-  border: 1px solid rgb(204, 175, 32);
-  border-radius: 10px;
-  overflow: hidden;
-}
-
 /* Top Three Section */
 .top-three-container {
   z-index: 0;
@@ -451,7 +444,5 @@
 
 .combined-leaderboard {
   border: 1px solid rgb(204, 175, 32);
-  border-radius: 10px;
   overflow: visible;
-  clip-path: inset(0 round 10px);
 }
