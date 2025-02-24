@@ -7,7 +7,7 @@ const purgecss = purgecssModule.default;
 export default {
   plugins: [
     tailwind,
-    autoprefixer,
+    autoprefixer({ grid: false }),
     process.env.NODE_ENV === 'production' &&
       purgecss({
         content: ['./index.html', './src/**/*.{vue,jsx,tsx,html}'],
