@@ -89,11 +89,13 @@
   z-index: 2;
 }
 .top-three-card.rank-2 {
+  grid-row: 1;
   grid-column: 1;
   z-index: 1;
   transform: translateY(6px);
 }
 .top-three-card.rank-3 {
+  grid-row: 1;
   grid-column: 3;
   z-index: 1;
   transform: translateY(6px);
