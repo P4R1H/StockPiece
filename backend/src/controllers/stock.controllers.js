@@ -13,7 +13,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
   if (!req?.user) {
-    throw new ApiError(401, "unauthenticated request");
+    throw new ApiError(401, "Unauthenticated request");
   }
 
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -33,11 +33,14 @@ const buyStock = asyncHandler(async (req, res, _) => {
   );
   //only allow single logged in user to try
   if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
-    throw new ApiError(409, "user logged in another session");
+    throw new ApiError(409, "User logged in another session");
   }
 
   //now i need to check the price of the stock and check if there is enough balance
   const { name, quantity } = req.body;
+  if (!quantity || quantity <= 0) {
+    throw new ApiError(400, "Invalid quantity provided");
+  }
 
   const characterStock = await CharacterStock.findOne({ name });
 
@@ -106,7 +109,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
   if (!req.user) {
-    throw new ApiError(401, "unauthenticated request");
+    throw new ApiError(401, "Unauthenticated request");
   }
 
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -126,7 +129,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
   );
   //only allow single logged in user to try
   if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
-    throw new ApiError(409, "user logged in another session");
+    throw new ApiError(409, "User logged in another session");
   }
 
   //now i need to check the price of the stock and check if there is enough balance
@@ -182,7 +185,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
 
     res
       .status(200)
-      .json(new ApiResponse(200, transaction, "stock purchased successfully"));
+      .json(new ApiResponse(200, transaction, "Stock sold successfully"));
   } catch (error) {
     session.abortTransaction();
     throw new ApiError(
