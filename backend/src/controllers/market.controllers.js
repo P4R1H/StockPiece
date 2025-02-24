@@ -125,12 +125,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
         chapter: 1,
         update: {
           name: "$stockName",
-          oldValue: "$updates.oldValue",
           newValue: "$updates.newValue",
-          totalBuys: "$updates.totalBuys",
-          totalSells: "$updates.totalSells",
-          totalQuantity: "$updates.totalQuantity",
-          _id: "$updates._id"
         }
       }
     },

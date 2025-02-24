@@ -16,6 +16,7 @@ const marketRouter = express.Router();
 
 marketRouter.route("/chapters/latest").get(getLatestChapter);
 marketRouter.route("/status").get(getMarketStatus);
+marketRouter.route("/statistics/all").get(getAllStockStatistics);
 
 //protected routes
 marketRouter.use(verifyAdminJWT);
@@ -29,6 +30,6 @@ marketRouter.route("/open").patch(openMarket);
 marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
-marketRouter.route("/statistics/all").get(getAllStockStatistics); //done
+ //done
 
 export default marketRouter;
