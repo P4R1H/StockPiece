@@ -28,7 +28,8 @@ export const checkWindowStatus = async(): Promise<Boolean> => {
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch window data');
 
-  return(data.data);
+  if(data.data === "closed") return false;
+  return true;
 }
 
 export const getPortfolioData = async (): Promise<UserPortfolio> => {
