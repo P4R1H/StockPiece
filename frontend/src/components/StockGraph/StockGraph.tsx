@@ -22,6 +22,25 @@ interface CustomDataset extends ChartDataset<"line", (number | Point | null)[]> 
   image?: HTMLImageElement
 }
 
+interface StockHistoryData {
+  name: string;
+  oldValue: number;
+  newValue: number;
+  totalBuys: number;
+  totalSells: number;
+  totalQuantity: number;
+  _id: string;
+}
+
+interface StockHistoryResponse {
+  success: boolean;
+  data: {
+    [chapter: string]: StockHistoryData[];
+  };
+  message: string;
+  statusCode: number;
+}
+
 const getColorForCharacter = (name: string) => {
   let hash = 0
   for (let i = 0; i < name.length; i++) {
@@ -95,6 +114,76 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const [images, setImages] = useState<Record<string, HTMLImageElement>>({})
   const graphRef = useRef<HTMLDivElement>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [stockHistory, setStockHistory] = useState<Record<string, { chapter: number, value: number }[]>>({})
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [availableChapters, setAvailableChapters] = useState<number[]>([])
+
+  useEffect(() => {
+    const fetchStockHistory = async () => {
+      try {
+        setIsLoading(true)
+        const response = await fetch('/api/v1/market/statistics/all') // Adjust the endpoint as needed
+        const data: StockHistoryResponse = await response.json()
+        
+        if (data.success) {
+          // Process and organize the history data
+          const processedHistory: Record<string, { chapter: number, value: number }[]> = {}
+          const chapters: number[] = []
+          
+          // Convert the chapter keys to numbers and sort them
+          const sortedChapters = Object.keys(data.data)
+            .map(chapter => parseInt(chapter))
+            .sort((a, b) => a - b)
+          
+          setAvailableChapters(sortedChapters)
+          
+          // Initialize the history arrays for each character
+          stocks.forEach(stock => {
+            processedHistory[stock.id] = []
+          })
+          
+          // Populate the history data
+          sortedChapters.forEach(chapter => {
+            chapters.push(chapter)
+            const chapterData = data.data[chapter.toString()]
+            
+            chapterData.forEach(stockData => {
+              const stockId = stocks.find(s => s.name === stockData.name)?.id
+              if (stockId && processedHistory[stockId]) {
+                // Add the previous value if it's not the first chapter entry
+                if (processedHistory[stockId].length > 0) {
+                  processedHistory[stockId].push({
+                    chapter,
+                    value: stockData.oldValue
+                  })
+                }
+                
+                // Add the new value
+                processedHistory[stockId].push({
+                  chapter,
+                  value: stockData.newValue
+                })
+              }
+            })
+          })
+          
+          setStockHistory(processedHistory)
+          
+          // Set initial chapter range
+          if (sortedChapters.length > 0) {
+            setChapterStart(sortedChapters[0])
+            setChapterEnd(sortedChapters[sortedChapters.length - 1])
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch stock history:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    fetchStockHistory()
+  }, [stocks])
 
   useEffect(() => {
     const imageMap: Record<string, HTMLImageElement> = {}
@@ -175,23 +264,21 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
   }
 
-  useEffect(() => {
-    if (stocks.length > 0 && stocks[0].valueHistory?.length > 0) {
-      const minChapter = stocks[0].valueHistory[0].chapter
-      const maxChapter = stocks[0].valueHistory[stocks[0].valueHistory.length - 1].chapter
-      setChapterStart(minChapter)
-      setChapterEnd(maxChapter)
-    }
-  }, [stocks])
-
-  const filteredHistory = stocks.length > 0 && stocks[0].valueHistory ? stocks[0].valueHistory.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd) : []
-  const labels = filteredHistory.filter((_, i) => i % chapterScale === 0).map(entry => entry.chapter)
+  const filteredLabels = availableChapters.filter(chapter => chapter >= chapterStart && chapter <= chapterEnd)
+  const labels = filteredLabels.filter((_, i) => i % chapterScale === 0)
   
   const datasets: CustomDataset[] = stocks
-    .filter(stock => stock.visibility !== 'hide' && stock.valueHistory?.length > 0)
+    .filter(stock => stock.visibility !== 'hide' && stockHistory[stock.id]?.length > 0)
     .map(stock => {
-      const filteredData = stock.valueHistory.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd)
-      const data = filteredData.filter((_, i) => i % chapterScale === 0).map(entry => entry.value)
+      const stockData = stockHistory[stock.id] || []
+      const filteredData = stockData.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd)
+      
+      // Find the closest data points for each label
+      const data = labels.map(chapter => {
+        const closest = filteredData.find(entry => entry.chapter === chapter)
+        return closest ? closest.value : null
+      })
+      
       return {
         label: stock.name,
         data,
@@ -205,11 +292,19 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
 
   const displayedAllValues: number[] = []
   stocks.forEach(stock => {
-    if (stock.visibility !== 'hide' && stock.valueHistory?.length > 0) {
-      const filteredData = stock.valueHistory.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd)
-      filteredData.filter((_, i) => i % chapterScale === 0).forEach(entry => displayedAllValues.push(entry.value))
+    if (stock.visibility !== 'hide' && stockHistory[stock.id]?.length > 0) {
+      const stockData = stockHistory[stock.id] || []
+      const filteredData = stockData.filter(entry => entry.chapter >= chapterStart && entry.chapter <= chapterEnd)
+      
+      labels.forEach(chapter => {
+        const closest = filteredData.find(entry => entry.chapter === chapter)
+        if (closest) {
+          displayedAllValues.push(closest.value)
+        }
+      })
     }
   })
+  
   const maxValue = displayedAllValues.length > 0 ? Math.max(...displayedAllValues) : 0
   let dynamicScaleFactor = 1
   let dynamicScaleUnit = ""
@@ -235,6 +330,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           const meta = chart.getDatasetMeta(i)
           if (meta.hidden) return
           const lastPoint = meta.data[meta.data.length - 1]
+          if (!lastPoint) return
+          
           const x = lastPoint.x
           const y = lastPoint.y
           const radius = 15
@@ -356,10 +453,16 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           </div>
         </div>
         <div className="slider-container">
-          <DualRangeSlider min={stocks.length > 0 && stocks[0].valueHistory ? stocks[0].valueHistory[0].chapter : 0} max={stocks.length > 0 && stocks[0].valueHistory ? stocks[0].valueHistory[stocks[0].valueHistory.length - 1].chapter : 0} start={chapterStart} end={chapterEnd} onChange={(s, e) => { setChapterStart(s); setChapterEnd(e) }} />
+          <DualRangeSlider 
+            min={availableChapters.length > 0 ? availableChapters[0] : 0} 
+            max={availableChapters.length > 0 ? availableChapters[availableChapters.length - 1] : 0} 
+            start={chapterStart} 
+            end={chapterEnd} 
+            onChange={(s, e) => { setChapterStart(s); setChapterEnd(e) }} 
+          />
           <div className="scale-slider">
             <span>Scale: {chapterScale}</span>
-            <input type="range" min="1" max={filteredHistory.length} value={chapterScale} onChange={(e) => setChapterScale(Number(e.target.value))} />
+            <input type="range" min="1" max={filteredLabels.length > 0 ? filteredLabels.length : 1} value={chapterScale} onChange={(e) => setChapterScale(Number(e.target.value))} />
           </div>
         </div>
       </div>
@@ -390,13 +493,17 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         </div>
       </div>
       <div className="chart-wrapper">
-        {labels.length > 0 && datasets.length > 0 && (
+        {isLoading ? (
+          <div className="loading-indicator">Loading stock history...</div>
+        ) : labels.length > 0 && datasets.length > 0 ? (
           <Line 
             key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
             data={{ labels, datasets }} 
             options={options} 
             plugins={plugins} 
           />
+        ) : (
+          <div className="no-data-message">No stock history data available</div>
         )}
       </div>
       <div className="fullscreen-button">
@@ -409,4 +516,3 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
 }
 
 export default PriceHistoryGraph
-
