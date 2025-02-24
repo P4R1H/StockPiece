@@ -55,7 +55,7 @@ const DualRangeSlider: React.FC<{ min: number; max: number; start: number; end: 
   return (
     <div className="dual-range-slider">
       <div className="slider-container-with-label">
-        <div className="range-label">Chapters {localStart} - {localEnd}</div>
+        <div className="range-label">Ch: {localStart}-{localEnd}</div>
         <div className="slider-track-container">
           <div className="track"></div>
           <input 
