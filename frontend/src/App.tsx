@@ -67,14 +67,13 @@ const App: React.FC = () => {
     }
   };
 
-  // Check if we're on admin subdomain
-  const isAdminDomain = window.location.host.startsWith('admin.');
+  const isAdminDomain = window.location.host.includes('admin.');
 
   return (
     <Router>
       <Routes>
         {isAdminDomain ? (
-          <Route path="/" element={<AdminPanel />} />
+          <Route path="/*" element={<AdminPanel />} />
         ) : (
           <>
             <Route
