@@ -99,13 +99,50 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   
   // Use aggregation to group updates by chapter
   const chapterUpdatesGrouped = await ChapterUpdate.aggregate([
-    // Group by chapter
+    // Unwind the updates array to work with individual update documents
+    { $unwind: "$updates" },
+    
+    // Lookup to join with the CharacterStock collection
+    {
+      $lookup: {
+        from: "characterstocks", // collection name (usually the lowercase, plural model name)
+        localField: "updates.stockID",
+        foreignField: "_id",
+        as: "stockDetails"
+      }
+    },
+    
+    // Get the first item from stockDetails array
+    {
+      $addFields: {
+        "stockName": { $arrayElemAt: ["$stockDetails.name", 0] }
+      }
+    },
+    
+    // Replace stockID with name and restructure the update object
+    {
+      $project: {
+        chapter: 1,
+        update: {
+          name: "$stockName",
+          oldValue: "$updates.oldValue",
+          newValue: "$updates.newValue",
+          totalBuys: "$updates.totalBuys",
+          totalSells: "$updates.totalSells",
+          totalQuantity: "$updates.totalQuantity",
+          _id: "$updates._id"
+        }
+      }
+    },
+    
+    // Group back by chapter with the modified updates
     {
       $group: {
         _id: "$chapter",
-        updates: { $push: "$updates" }
+        updates: { $push: "$update" }
       }
     },
+    
     // Format the results
     {
       $project: {
@@ -114,6 +151,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
         updates: 1
       }
     },
+    
     // Sort by chapter number
     {
       $sort: { chapter: 1 }
@@ -124,9 +162,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   const chapterUpdatesObject = {};
   
   chapterUpdatesGrouped.forEach(item => {
-    // Flatten the nested updates array
-    const flattenedUpdates = item.updates.flat();
-    chapterUpdatesObject[item.chapter] = flattenedUpdates;
+    chapterUpdatesObject[item.chapter] = item.updates;
   });
   
   res
@@ -162,11 +198,11 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
     const chapterUpdate = await ChapterUpdate.findOne({
       chapter: latestChapter,
     })
-      .populate({
-        path: "updates.stockID",
-        select: "name", // Only fetch the 'name' field
-      })
-      .lean();
+    .populate({
+      path: "updates.stockID",
+      select: "name", // Only fetch the 'name' field
+    })
+    .lean();
     if (!chapterUpdate) {
       throw new ApiError(400, "wrong chapter requested");
     }
