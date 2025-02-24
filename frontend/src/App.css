@@ -10,6 +10,9 @@ button, img {
   -webkit-touch-callout: none;                /* prevents callout on long-press */
 }
 
+button:focus {
+  outline: none;
+}
 /* Root Variables */
 :root {
   --dark-blue: #081B33;
