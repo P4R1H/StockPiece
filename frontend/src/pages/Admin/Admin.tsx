@@ -360,14 +360,16 @@ const Admin: React.FC = () => {
             >
               Release Chapter
             </button>
-            <button 
-      onClick={() => forcePriceUpdates()}
-      className="controlButton forceUpdateButton"
-    >
-      Force Price Update
-    </button>
-
-          </div>
+      <button 
+        onClick={async () => {
+          await forcePriceUpdates();
+          refreshData();
+        }}
+        className="controlButton forceUpdateButton"
+      >
+        Force Price Update
+      </button>
+    </div>
         </div>
 
         <div className="controlCard">
