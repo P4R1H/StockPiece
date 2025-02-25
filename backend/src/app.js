@@ -4,8 +4,7 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import { __dirname } from "./constants.js";
 import cors from "cors";
-import compression from 'compression';
-import clusterMiddleware from "./middlewares/cluster.middlewares.js";
+import compression from "compression";
 
 const app = express();
 

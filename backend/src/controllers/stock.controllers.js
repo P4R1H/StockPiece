@@ -207,57 +207,58 @@ const getAllStocks = asyncHandler(async (req, res, _) => {
     releaseDate: -1,
   });
   const latestChapter = latestChapterDoc?.chapter;
-  console.log(latestChapterDoc);
-  const allStocks = req.admin || !latestChapter
-    ? await CharacterStock.find()
-    : await CharacterStock.aggregate([
-        {
-          $match: {
-            isRemoved: false,
-          },
-        },
-        {
-          $lookup: {
-            from: "transactions",
-            let: {
-              stockID: "$_id",
+
+  const allStocks =
+    req.admin || !latestChapter
+      ? await CharacterStock.find()
+      : await CharacterStock.aggregate([
+          {
+            $match: {
+              isRemoved: false,
             },
-            pipeline: [
-              {
-                $match: {
-                  $expr: {
-                    $and: [
-                      {
-                        $eq: [
-                          { $toString: "$chapterPurchasedAt" }, // Ensure string comparison
-                          { $toString: latestChapter }, // Ensure consistency
-                        ],
-                      },
-                      {
-                        $eq: [
-                          "$stockID",
-                          { $toObjectId: "$$stockID" }, // Convert for ObjectId match
-                        ],
-                      },
-                    ],
+          },
+          {
+            $lookup: {
+              from: "transactions",
+              let: {
+                stockID: "$_id",
+              },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        {
+                          $eq: [
+                            { $toString: "$chapterPurchasedAt" }, // Ensure string comparison
+                            { $toString: latestChapter }, // Ensure consistency
+                          ],
+                        },
+                        {
+                          $eq: [
+                            "$stockID",
+                            { $toObjectId: "$$stockID" }, // Convert for ObjectId match
+                          ],
+                        },
+                      ],
+                    },
                   },
                 },
-              },
-            ],
-            as: "popularity",
-          },
-        },
-        {
-          $set: {
-            popularityCount: {
-              $size: "$popularity",
+              ],
+              as: "popularity",
             },
           },
-        },
-        {
-          $unset: ["popularity", "latestChapter"],
-        },
-      ]);
+          {
+            $set: {
+              popularityCount: {
+                $size: "$popularity",
+              },
+            },
+          },
+          {
+            $unset: ["popularity", "latestChapter"],
+          },
+        ]);
 
   res
     .status(200)
@@ -286,7 +287,7 @@ const changeStockValue = asyncHandler(async (req, res, _next) => {
   const latestChapter = latestChapterDoc.chapter;
 
   if (latestChapterDoc.isPriceUpdated) {
-    throw new ApiError(400,'price has been updated for this chapter');
+    throw new ApiError(400, "price has been updated for this chapter");
   }
 
   if (isWindowOpen(latestChapterDoc)) {

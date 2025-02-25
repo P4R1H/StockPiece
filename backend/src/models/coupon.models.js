@@ -19,20 +19,22 @@ const couponSchema = new mongoose.Schema(
     },
     usedCount: {
       type: Number,
-      default: 0
+      default: 0,
     },
     isFirstTimeOnly: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    usedBy: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
-    }],
+    usedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
     isActive: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
   { timestamps: true }
 );

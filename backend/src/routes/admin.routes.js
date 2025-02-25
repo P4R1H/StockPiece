@@ -6,6 +6,7 @@ import {
   deleteCharacterStockTemp,
   deleteAdmin,
   adminLogout,
+  updateStockImage,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middlewares.js";
@@ -23,5 +24,9 @@ adminRouter
   .route("/character-stocks")
   .post(upload.single("imageURL"), createCharacterStock)
   .delete(deleteCharacterStockTemp);
+
+adminRouter
+  .route("/character-stocks/image")
+  .patch(upload.single("imageURL"), updateStockImage);
 
 export default adminRouter;

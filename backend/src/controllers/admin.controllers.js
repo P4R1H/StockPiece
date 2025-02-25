@@ -4,7 +4,7 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 import { defaultAvatarUrl } from "../constants.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
 
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {
@@ -230,8 +230,66 @@ const deleteCharacterStockTemp = asyncHandler(async (req, res, _) => {
     );
 });
 
+const updateStockImage = asyncHandler(async (req, res, _) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const { stockId } = req.body;
+  const imageLocalPath = req.file?.path;
+
+  if (!stockId?.trim()) {
+    throw new ApiError(400, "stockId is required");
+  }
+
+  if (!imageLocalPath) {
+    throw new ApiError(400, "no file uploaded");
+  }
+
+  const stock = await CharacterStock.findById(stockId);
+
+  if (!stock) {
+    throw new ApiError(404, "stock not found");
+  }
+
+  const oldImageUrl = stock.imageURL;
+  if (oldImageUrl != defaultAvatarUrl) {
+    const result = await deleteFromCloudinary(oldImageUrl);
+    if (!result || result === "error") {
+      throw new ApiError(500, "error in deleting the old image", result);
+    }
+  }
+
+  const newImageUrl = await uploadOnCloudinary(imageLocalPath, true);
+  if (!newImageUrl) {
+    throw new ApiError(500, "not able to upload new image");
+  }
+
+  const updatedStock = await CharacterStock.findByIdAndUpdate(
+    stockId,
+    {
+      $set: {
+        imageURL: newImageUrl,
+      },
+    },
+    { new: true }
+  );
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        stock: updatedStock,
+        newImageUrl,
+      },
+      "stock image updated successfully"
+    )
+  );
+});
+
 export {
   adminLogin,
+  updateStockImage,
   createAdmin,
   createCharacterStock,
   deleteCharacterStockTemp,
