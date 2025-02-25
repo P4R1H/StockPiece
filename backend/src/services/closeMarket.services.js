@@ -5,8 +5,13 @@ import ApiError from "../utils/ApiError.utils.js";
 import priceChangeByAlgorithm from "../utils/priceChange.utils.js";
 import ChapterUpdate from "../models/chapterUpdate.models.js";
 import isWindowOpen from "../utils/windowStatus.js";
+import cache from "../utils/cache.js";
+import { CACHE_KEYS } from "../constants.js";
 
 const updatePriceService = async () => {
+
+  cache.del(CACHE_KEYS.STOCK_STATISTICS);
+
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
@@ -109,6 +114,9 @@ const updatePriceService = async () => {
 
 //on chapter update we wil make a new array
 const closeMarketService = async () => {
+
+  cache.del(CACHE_KEYS.STOCK_STATISTICS);
+
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });

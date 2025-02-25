@@ -88,8 +88,6 @@ const closeMarket = asyncHandler(async (req, res, _) => {
     throw new ApiError(500,'not able to close market');
   }
 
-  cache.del(CACHE_KEYS.STOCK_STATISTICS);
-
   res.status(200).json(new ApiResponse(200, "market closed successfully"));
 });
 
@@ -179,6 +177,8 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
       $sort: { chapter: 1 }
     }
   ]);
+
+  console.log(chapterUpdatesGrouped);
   
   // Transform array to object with chapters as keys
   const chapterUpdatesObject = {};
