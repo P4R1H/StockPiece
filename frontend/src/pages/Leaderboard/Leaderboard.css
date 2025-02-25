@@ -6,7 +6,7 @@
 .page-container {
   padding: 1rem;
   max-width: 575px;
-  max-height: 1vh;
+  min-height: 1vh;
   margin: 0 auto;
   background-size: cover;
   min-height: 30vh;
@@ -314,6 +314,7 @@
   .container-title .subtitle {
     font-size: 0.7rem;
   }
+
   
   .luffy-background {
     grid-template-columns: repeat(3, 1fr);

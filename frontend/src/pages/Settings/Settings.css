@@ -228,6 +228,17 @@ body {
 }
 
 @media (max-width: 600px) {
+
+  .container-title {
+    top: -15px;
+  }
+  .container-title .main-title {
+    font-size: 1.6rem;
+  }
+  .container-title .subtitle {
+    font-size: 0.7rem;
+  }
+
   /* Main Page Container: keep top margin intact */
   .main-page-container {
     padding: 0.25rem;
