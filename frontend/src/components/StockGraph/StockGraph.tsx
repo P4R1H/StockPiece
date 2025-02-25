@@ -372,7 +372,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
   ]
 
-  // Memoize chart options to prevent unnecessary recalculations
   const options = React.useMemo(() => ({
     responsive: true,
     maintainAspectRatio: false,
@@ -498,17 +497,17 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       </div>
       <div className="chart-wrapper">
         {isLoading ? (
-          <div className="loading-indicator">Loading stock history...</div>
-        ) : labels.length > 0 && datasets.length > 0 ? (
+              <div className="graph-spinner-overlay">
+              <div className="spinner"></div>
+            </div>
+      ) : (
           <Line 
             key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
             data={{ labels, datasets }} 
             options={options} 
             plugins={plugins} 
           />
-        ) : (
-          <div className="no-data-message">No stock history data available</div>
-        )}
+        ) }
       </div>
       <div className="fullscreen-button">
         <button onClick={handleFullscreen}>

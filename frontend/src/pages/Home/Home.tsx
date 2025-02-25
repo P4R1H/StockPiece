@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
 import PriceHistoryGraph from '../../components/StockGraph/StockGraph';
-import { PLACEHOLDER_PORTFOLIO, PLACEHOLDER_STOCKS } from '../../assets/data/sampleStocks';
+import { PLACEHOLDER_PORTFOLIO } from '../../assets/data/sampleStocks';
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
@@ -32,14 +32,14 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     checkStatus();
   }, [isLoggedIn]);
 
-  const { data: stocks = PLACEHOLDER_STOCKS } = useQuery<CharacterStock[]>({
+  const { data: stocks = [] } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
     queryFn: async () => {
       try {
         return await getStockMarketData();
       } catch (error) {
         console.error('Failed to fetch stocks:', error);
-        return PLACEHOLDER_STOCKS;
+        return [];
       }
     },
     staleTime: 1000 * 60 * 10,

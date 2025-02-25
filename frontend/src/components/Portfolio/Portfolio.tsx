@@ -9,22 +9,18 @@ const formatNumber = (value: string | number): string => {
   
   if (isNaN(num)) return '0';
 
-  if (Math.abs(num) >= 1000000) {
+  // If the value is a percentage (detected by % in parent component)
+  if (cleanValue.includes('%')) {
     return num.toLocaleString(undefined, { 
-      maximumFractionDigits: 0 
-    });
-  }
-  
-  if (Math.abs(num) >= 1000) {
-    return num.toLocaleString(undefined, { 
-      minimumFractionDigits: 0,
+      minimumFractionDigits: 1,
       maximumFractionDigits: 1 
     });
   }
-  
+
+  // For all other numbers (berries), show no decimals
   return num.toLocaleString(undefined, { 
     minimumFractionDigits: 0,
-    maximumFractionDigits: 3
+    maximumFractionDigits: 0
   });
 };
 
