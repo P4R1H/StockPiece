@@ -17,6 +17,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('alpha-asc');
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState<boolean>(false);
 
   const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
@@ -35,7 +36,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   const { data: stocks = [] } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
-    queryFn: async () => {
+    queryFn: async () => { 
       try {
         return await getStockMarketData();
       } catch (error) {
@@ -126,10 +127,16 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   };
 
   const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
-    if (!windowOpen) {
+    if (!isLoggedIn && type === 'buy' && !hasShownLoginPrompt) {
+      showError("To save your progress, Login/Create account, Enjoy testing!");
+      setHasShownLoginPrompt(true);
+    }
+    
+    if (isLoggedIn && !windowOpen) {
       showError("To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.");
       return; 
     }
+    
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
     const quantity = Number(buyAmt);
@@ -176,40 +183,43 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     }
     queryClient.setQueryData(['portfolio', isLoggedIn], newPortfolio);
   
-    if (!pendingTransactions.current[stock.id]) {
-      pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
-    }
-    pendingTransactions.current[stock.id][type] += quantity;
+    // Only send backend requests if the user is logged in
+    if (isLoggedIn) {
+      if (!pendingTransactions.current[stock.id]) {
+        pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
+      }
+      pendingTransactions.current[stock.id][type] += quantity;
   
-    // Use a separate debounce timer for each stock
-    if (debounceTimers.current[stock.id]) {
-      clearTimeout(debounceTimers.current[stock.id]);
-    }
-  
-    debounceTimers.current[stock.id] = setTimeout(async () => {
-      const { buy, sell } = pendingTransactions.current[stock.id];
-  
-      if (buy > 0) {
-        try {
-          await buyStock(name, buy);
-        } catch (error) {
-          queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
-          alert(error instanceof Error ? error.message : 'Buy transaction failed');
-        }
+      // Use a separate debounce timer for each stock
+      if (debounceTimers.current[stock.id]) {
+        clearTimeout(debounceTimers.current[stock.id]);
       }
   
-      if (sell > 0) {
-        try {
-          await sellStock(name, sell);
-        } catch (error) {
-          queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
-          alert(error instanceof Error ? error.message : 'Sell transaction failed');
-        }
-      }
+      debounceTimers.current[stock.id] = setTimeout(async () => {
+        const { buy, sell } = pendingTransactions.current[stock.id];
   
-      pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
-      delete debounceTimers.current[stock.id];
-    }, 500);
+        if (buy > 0) {
+          try {
+            await buyStock(name, buy);
+          } catch (error) {
+            queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
+            alert(error instanceof Error ? error.message : 'Buy transaction failed');
+          }
+        }
+  
+        if (sell > 0) {
+          try {
+            await sellStock(name, sell);
+          } catch (error) {
+            queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
+            alert(error instanceof Error ? error.message : 'Sell transaction failed');
+          }
+        }
+  
+        pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
+        delete debounceTimers.current[stock.id];
+      }, 500);
+    }
   };
 
   return (

@@ -2,7 +2,7 @@ import { CharacterStock, UserPortfolio } from '../../types/Stocks'
 
 export const PLACEHOLDER_PORTFOLIO: UserPortfolio = {
   username: 'Guest Pirate',
-  cash: 0,
+  cash: 10000,
   stocks: [],
   isLoggedIn: false,
   profit: 0,
