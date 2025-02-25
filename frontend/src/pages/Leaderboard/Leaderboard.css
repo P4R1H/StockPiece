@@ -5,7 +5,8 @@
 /* Page and Container Styles */
 .page-container {
   padding: 1rem;
-  max-width: 1200px;
+  max-width: 575px;
+  max-height: 1vh;
   margin: 0 auto;
   background-size: cover;
   min-height: 30vh;
@@ -25,7 +26,6 @@
   border-radius: 2%;
 }
 
-/* Title on the border of the container */
 .container-title {
   color: rgb(212, 169, 59);
   position: absolute;

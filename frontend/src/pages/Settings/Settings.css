@@ -1,6 +1,8 @@
 /* Define CSS Variables */
 :root {
   --max-container-width: 500px; /* Adjusted for reduced horizontal space */
+  --primary-gradient: linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%);
+  
 }
 
 /* General Styles */
@@ -95,6 +97,34 @@ body {
 
 .danger-button:hover {
   background: #cc0000;
+}
+
+.container-title {
+  color: rgb(212, 169, 59);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid black;
+  background: url("/assets/wood.webp");
+  padding: 0 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.container-title .main-title {
+  font-size: 2.2rem;
+  line-height: 1;
+  margin: 0;
+  display: block;
+}
+.container-title .subtitle {
+  font-size: 0.9rem;
+  line-height: 1;
+  margin: 0;
+  opacity: 0.6;
+  display: block;
+  margin-top: 2px;
 }
 
 /* Crew Section */
