@@ -380,7 +380,6 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
   const { orderBy = "totalValue" } = req.body;
   const validOrders = [
-    "totalQuantity",
     "accountValue",
     "stockValue",
     "totalValue",
