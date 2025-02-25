@@ -47,6 +47,8 @@ const setupCronJobs = () => {
     } catch (error) {
       console.error("Error during release chapter:", error);
     }
+  },{
+    timezone: "Asia/Kolkata"
   });
 
   // Close market at 00:00 every Tuesday
@@ -58,6 +60,8 @@ const setupCronJobs = () => {
     } catch (error) {
       console.error("Error during close market:", error);
     }
+  },{
+    timezone: "Asia/Kolkata"
   });
 
   // Update price at 00:00 every Wednesday
@@ -69,6 +73,8 @@ const setupCronJobs = () => {
     } catch (error) {
       console.error("Error during update price:", error);
     }
+  },{
+    timezone: "Asia/Kolkata"
   });
 };
 
