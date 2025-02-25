@@ -4,7 +4,7 @@ import { URL } from "node:url";
 
 const connectDB = async () => {
   try {
-    const url = new URL(`mongodb+srv://admin:BAwwLq8tcOMtqsVP@roadmap.ykhw9zp.mongodb.net/stockpiece?retryWrites=true&w=majority&appName=roadmap`);
+    const url = new URL(`${process.env.MONGO_URI}/${DB_NAME}`);
     console.log(url.toString());
     const connectionInstance = await mongoose.connect(url.toString());
     console.log(
