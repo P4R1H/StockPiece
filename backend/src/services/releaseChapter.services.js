@@ -1,6 +1,7 @@
 import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import isWindowOpen from "../utils/windowStatus.js";
+import User from "../models/user.models.js";
 
 const releaseChapterService = async () => {
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -12,24 +13,52 @@ const releaseChapterService = async () => {
   }
 
   const newChapterNumber = latestChapter ? latestChapter.chapter + 1 : 1;
-  //set the release to now
   const releaseDate = new Date();
   const windowEndDate = new Date(releaseDate);
-  //we have a 3 day window to buy stock
   windowEndDate.setDate(windowEndDate.getDate() + 3);
 
-  const newChapter = await ChapterRelease.create({
-    chapter: newChapterNumber,
-    releaseDate,
-    windowEndDate,
-  });
+  // Start a session for the transaction
+  const session = await mongoose.startSession();
+  session.startTransaction();
 
-  if (!newChapter) {
-    throw new Error("problem releasing chapter");
+  try {
+    // Create new chapter
+    const newChapter = await ChapterRelease.create([{
+      chapter: newChapterNumber,
+      releaseDate,
+      windowEndDate,
+    }], { session });
+
+    if (!newChapter?.[0]) {
+      throw new Error("problem releasing chapter");
+    }
+
+    // Update all users' prevNetWorth with their current total value
+    const users = await User.find({}).populate({
+      path: "ownedStocks.stock",
+      select: "currentValue",
+    }).session(session);
+
+    for (const user of users) {
+      const stockValue = user.ownedStocks.reduce((total, stock) => 
+        total + (stock.stock.currentValue * stock.quantity), 0);
+      const currentNetWorth = user.accountValue + stockValue;
+
+      await User.findByIdAndUpdate(user._id, {
+        prevNetWorth: currentNetWorth
+      }, { session });
+    }
+
+    await session.commitTransaction();
+    console.log(`new chapter ${newChapterNumber} released`);
+    return newChapterNumber;
+
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
   }
-
-  console.log(`new chapter ${newChapterNumber} released`);
-  return newChapterNumber;
 };
 
 export default releaseChapterService;

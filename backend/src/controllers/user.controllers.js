@@ -1,4 +1,5 @@
 import { defaultAvatarUrl } from "../constants.js";
+import ChapterRelease from "../models/chapterRelease.models.js";
 import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
@@ -8,6 +9,7 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
+import isWindowOpen from "../utils/windowStatus.js";
 
 const generateAccessRefreshToken = async (user) => {
   try {
@@ -61,6 +63,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
     password,
     avatar: avatarUrl,
     accountValue: 10000,
+    prevNetWorth: 10000
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -287,19 +290,19 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "no user found");
   }
 
-  let totalInitialValue = 0;
-  let totalCurrentValue = 0;
+  // current net worth account + stockValue
+  const currentStockValue = user.ownedStocks.reduce((total, stock) => 
+    total + (stock.stock.currentValue * stock.quantity), 0);
+  const currentNetWorth = user.accountValue + currentStockValue;
 
-  user.ownedStocks.forEach((stock) => {
-    totalInitialValue += stock.stock.initialValue * stock.quantity;
-    totalCurrentValue += stock.stock.currentValue * stock.quantity;
-  });
-
-  const profitPercentage =
-    ((totalCurrentValue - totalInitialValue) / totalInitialValue) * 100;
+  // profit percentage based on previous net worth
+  const profitPercentage = user.prevNetWorth > 0
+    ? ((currentNetWorth - user.prevNetWorth) / user.prevNetWorth) * 100
+    : 0;
 
   user.profit = profitPercentage;
-  user.stockValue = totalCurrentValue;
+  user.stockValue = currentStockValue;
+  user.netWorth = currentNetWorth;
 
   res
     .status(200)

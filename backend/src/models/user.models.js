@@ -26,7 +26,11 @@ const userSchema = new mongoose.Schema(
     },
     accountValue: {
       type: Number,
-      default: 1000,
+      default: 10000,
+    },
+    prevNetWorth: {
+      type: Number,
+      default: 10000
     },
     ownedStocks: {
       type: [
