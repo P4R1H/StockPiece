@@ -66,13 +66,7 @@ const updatePriceService = async () => {
             currentValue: newValue,
             initialValue: stock.currentValue,
             baseQuantity: totalQuantity,
-          },
-          $push: {
-            valueHistory: {
-              chapter: latestChapterNumber,
-              value: newValue,
-            },
-          },
+          }
         },
       },
     };
