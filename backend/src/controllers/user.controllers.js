@@ -378,7 +378,7 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
-  const { orderBy = "totalQuantity" } = req.body;
+  const { orderBy = "totalValue" } = req.body;
   const validOrders = [
     "totalQuantity",
     "accountValue",

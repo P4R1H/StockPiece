@@ -16,9 +16,10 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapter = await ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
+  const latestChapterPromise = ChapterRelease.findOne().sort({ releaseDate: -1 });
+  const userPromise = User.findById(req.user?._id).select("-password -refreshToken");
+
+  const [latestChapter, user] = await Promise.all([latestChapterPromise, userPromise]);
 
   if (!latestChapter) {
     throw new ApiError(400, "no chapter is released yet");
@@ -28,9 +29,10 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "buying window is closed");
   }
 
-  const user = await User.findById(req.user?._id).select(
-    "-password -refreshToken"
-  );
+  if (!user) {
+    throw new ApiError(400,'no user found');
+  }
+
   //only allow single logged in user to try
   if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
     throw new ApiError(409, "User logged in another session");
@@ -112,21 +114,23 @@ const sellStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapter = await ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
+  const latestChapterPromise = ChapterRelease.findOne().sort({ releaseDate: -1 });
+  const userPromise = User.findById(req.user?._id).select("-password -refreshToken");
+
+  const [latestChapter, user] = await Promise.all([latestChapterPromise, userPromise]);
 
   if (!latestChapter) {
     throw new ApiError(400, "no chapter is released yet");
   }
 
   if (!isWindowOpen(latestChapter)) {
-    throw new ApiError(400, "selling window is closed");
+    throw new ApiError(400, "buying window is closed");
   }
 
-  const user = await User.findById(req.user?._id).select(
-    "-password -refreshToken"
-  );
+  if (!user) {
+    throw new ApiError(400,'no user found');
+  }
+
   //only allow single logged in user to try
   if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
     throw new ApiError(409, "User logged in another session");
