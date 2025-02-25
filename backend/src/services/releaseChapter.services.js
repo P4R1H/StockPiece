@@ -2,6 +2,7 @@ import ChapterRelease from "../models/chapterRelease.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import isWindowOpen from "../utils/windowStatus.js";
 import User from "../models/user.models.js";
+import mongoose from "mongoose";
 
 const releaseChapterService = async () => {
   const latestChapter = await ChapterRelease.findOne().sort({
