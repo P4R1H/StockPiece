@@ -18,7 +18,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // Use a separate debounce timer per stock id
   const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
 
