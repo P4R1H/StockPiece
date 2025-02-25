@@ -17,7 +17,7 @@ const startServer = async () => {
     await initializeAdmin();
     
     // Set up cron jobs (second approach)
-    setupCronJobs();
+    // setupCronJobs();
 
     // Start the server
     server = app.listen(PORT, () => {
