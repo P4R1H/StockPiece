@@ -38,9 +38,8 @@ const startServer = async () => {
 };
 
 const setupCronJobs = () => {
-  // Cron job for release chapter service at minute 0 of every 3-minute cycle
-  // This means it runs when the minute value is 0, 3, 6, 9, etc.
-  cron.schedule("0-59/3 * * * *", async () => {
+  // Runs at minute 0, 3, 6, 9, 12, etc. (every 3 minutes, starting at 0)
+  cron.schedule("0/3 * * * *", async () => {
     try {
       console.log("Cron job: Running release chapter service");
       await releaseChapterService();
@@ -49,9 +48,8 @@ const setupCronJobs = () => {
     }
   });
 
-  // Cron job for close market service at minute 1 of every 3-minute cycle
-  // This means it runs when the minute value is 1, 4, 7, 10, etc.
-  cron.schedule("1-59/3 * * * *", async () => {
+  // Runs at minute 1, 4, 7, 10, 13, etc. (every 3 minutes, starting at 1)
+  cron.schedule("1/3 * * * *", async () => {
     try {
       console.log("Cron job: Running close market service");
       await closeMarketService();
@@ -60,9 +58,8 @@ const setupCronJobs = () => {
     }
   });
 
-  // Cron job for update price service at minute 2 of every 3-minute cycle
-  // This means it runs when the minute value is 2, 5, 8, 11, etc.
-  cron.schedule("2-59/3 * * * *", async () => {
+  // Runs at minute 2, 5, 8, 11, 14, etc. (every 3 minutes, starting at 2)
+  cron.schedule("2/3 * * * *", async () => {
     try {
       console.log("Cron job: Running update price service");
       await updatePriceService();
