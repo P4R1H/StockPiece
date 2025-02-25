@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react'; 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
@@ -17,15 +17,17 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('alpha-asc');
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Use a separate debounce timer per stock id
+  const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
 
   const queryClient = useQueryClient();
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkStatus = async () => {
-      if(isLoggedIn) {
-        const windowStatus = await checkWindowStatus()
+      if (isLoggedIn) {
+        const windowStatus = await checkWindowStatus();
         setWindowOpen(windowStatus);        
       }
     }
@@ -49,7 +51,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const { data: portfolio = PLACEHOLDER_PORTFOLIO } = useQuery<UserPortfolio>({
     queryKey: ['portfolio', isLoggedIn],
     queryFn: async () => {
-      if(isLoggedIn) {
+      if (isLoggedIn) {
         try {
           return await getPortfolioData();
         } catch (error) {
@@ -125,7 +127,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   };
 
   const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
-    if(!windowOpen) {
+    if (!windowOpen) {
       showError("To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.");
       return; 
     }
@@ -180,11 +182,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     }
     pendingTransactions.current[stock.id][type] += quantity;
   
-    if (debounceTimer.current) {
-      clearTimeout(debounceTimer.current);
+    // Use a separate debounce timer for each stock
+    if (debounceTimers.current[stock.id]) {
+      clearTimeout(debounceTimers.current[stock.id]);
     }
   
-    debounceTimer.current = setTimeout(async () => {
+    debounceTimers.current[stock.id] = setTimeout(async () => {
       const { buy, sell } = pendingTransactions.current[stock.id];
   
       if (buy > 0) {
@@ -206,6 +209,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       }
   
       pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
+      delete debounceTimers.current[stock.id];
     }, 500);
   };
 
