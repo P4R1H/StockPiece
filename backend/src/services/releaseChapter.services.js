@@ -13,6 +13,10 @@ const releaseChapterService = async () => {
     throw new ApiError(400, "window is still open");
   }
 
+  if (!latestChapter.isPriceUpdated) {
+    throw new ApiError(400,'price needs to updated before chapter release');
+  }
+
   const newChapterNumber = latestChapter ? latestChapter.chapter + 1 : 1;
   const releaseDate = new Date();
   const windowEndDate = new Date(releaseDate);
