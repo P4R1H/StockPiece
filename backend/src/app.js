@@ -28,7 +28,6 @@ app.use(
   })
 );
 app.use(compression());
-app.use(clusterMiddleware);
 
 import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
