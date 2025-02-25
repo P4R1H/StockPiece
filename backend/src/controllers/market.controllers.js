@@ -102,16 +102,16 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "no chapter has been released yet");
   }
 
-  // if (!req.admin) {
-  //   const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
-  //   if (cachedData) {
-  //     return res
-  //       .status(200)
-  //       .json(
-  //         new ApiResponse(200,cachedData,"stock stats fetched successfully from cache")
-  //       )
-  //   }
-  // }
+  if (!req.admin) {
+    const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
+    if (cachedData) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200,cachedData,"stock stats fetched successfully from cache")
+        )
+    }
+  }
   
   // Define the projection based on admin status
   const updateProjection = req.admin ? {
@@ -187,9 +187,9 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     chapterUpdatesObject[item.chapter] = item.updates;
   });
 
-  // if (!req.admin) {
-  //   cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
-  // }
+  if (!req.admin) {
+    cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
+  }
   
   res
     .status(200)
