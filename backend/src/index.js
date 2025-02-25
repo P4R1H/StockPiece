@@ -38,35 +38,36 @@ const startServer = async () => {
 };
 
 const setupCronJobs = () => {
-  // This cron job runs every 3 minutes.
-  // It chains three tasks with 1 minute delay between them.
-  cron.schedule("* * * * *", async () => {
-    console.log("hello");
-  })
-  cron.schedule("*/3 * * * *", async () => {
+  // Release chapter at 00:00 every Friday
+  cron.schedule("0 0 * * 5", async () => {
     try {
-      console.log("Cron cycle started: release chapter, then close market, then update price");
-
-      // Start release chapter immediately
       console.log("Starting release chapter service...");
       await releaseChapterService();
-      console.log("Chapter released. Waiting 1 minute before closing market...");
-
-      // Wait 1 minute, then run close market service
-      setTimeout(async () => {
-        console.log("Starting close market service...");
-        await closeMarketService();
-        console.log("Market closed. Waiting 1 minute before updating price...");
-
-        // Wait another 1 minute, then run update price service
-        setTimeout(async () => {
-          console.log("Starting update price service...");
-          await updatePriceService();
-          console.log("Price updated. Cycle complete.");
-        }, 60000); // Delay for update price: 1 minute (60,000 ms)
-      }, 60000); // Delay for close market: 1 minute (60,000 ms)
+      console.log("Chapter released successfully");
     } catch (error) {
-      console.error("Error during scheduled tasks:", error);
+      console.error("Error during release chapter:", error);
+    }
+  });
+
+  // Close market at 00:00 every Tuesday
+  cron.schedule("0 0 * * 2", async () => {
+    try {
+      console.log("Starting close market service...");
+      await closeMarketService();
+      console.log("Market closed successfully");
+    } catch (error) {
+      console.error("Error during close market:", error);
+    }
+  });
+
+  // Update price at 00:00 every Wednesday
+  cron.schedule("0 0 * * 3", async () => {
+    try {
+      console.log("Starting update price service...");
+      await updatePriceService();
+      console.log("Price updated successfully");
+    } catch (error) {
+      console.error("Error during update price:", error);
     }
   });
 };
@@ -87,3 +88,7 @@ const gracefulShutdown = async () => {
 };
 
 startServer();
+
+
+//friday12:01
+//tuesday 12:01
