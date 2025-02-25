@@ -668,3 +668,37 @@
 .forceUpdateButton:hover {
   background: rgba(255, 0, 0, 0.2) !important;
 }
+
+/* Add these new styles */
+.imageContainer {
+  position: relative;
+  cursor: pointer;
+}
+
+.imageContainer:hover .imageOverlay {
+  opacity: 1;
+}
+
+.imageOverlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  border-radius: 8px;
+}
+
+.imageOverlay span {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}

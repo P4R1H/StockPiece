@@ -13,7 +13,8 @@ import {
   getLatestChapter,
   releaseNewChapter,
   forcePriceUpdates,
-  callCustomEndpoint
+  callCustomEndpoint,
+  changeCharacterImage
 } from './AdminServices';
 import './Admin.css'
 
@@ -56,13 +57,15 @@ interface AdminStockCardProps {
   stats: Stats;
   onRemove: (name: string) => void;
   onPriceUpdate: (name: string, price: number) => void;
+  onImageClick: (stock: Stock) => void;
 }
 
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
   stock,
   stats,
   onRemove,
-  onPriceUpdate
+  onPriceUpdate,
+  onImageClick
 }) => {
   const [manualPrice, setManualPrice] = useState<string>('');
   const newPrice = stats[stock.name]?.newValue;
@@ -83,11 +86,16 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
   return (
     <div className="adminStockCard">
       <div className="cardHeader">
-        <img
-          src={stock.image}
-          alt={stock.name}
-          className="stockImage"
-        />
+        <div className="imageContainer" onClick={() => onImageClick(stock)}>
+          <img
+            src={stock.image}
+            alt={stock.name}
+            className="stockImage"
+          />
+          <div className="imageOverlay">
+            <span>Change?</span>
+          </div>
+        </div>
         <h3 className="stockName">
           {stock.name}
           <span className="tickerSymbol">{stock.tickerSymbol}</span>
@@ -160,6 +168,8 @@ const Admin: React.FC = () => {
   const [customEndpoint, setCustomEndpoint] = useState('');
   const [requestMethod, setRequestMethod] = useState('GET');
   const [jsonBody, setJsonBody] = useState('');
+  const [showImageUpdateModal, setShowImageUpdateModal] = useState(false);
+  const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   
   // Using a refreshCounter instead of a string-based triggerRefresh
   const [refreshCounter, setRefreshCounter] = useState(0);
@@ -289,6 +299,24 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleImageClick = (stock: Stock) => {
+    setSelectedStock(stock);
+    setShowImageUpdateModal(true);
+  };
+
+  const handleImageUpdate = async (imageFile: File) => {
+    if (selectedStock) {
+      try {
+        await changeCharacterImage(selectedStock.id, imageFile);
+        refreshData();
+        setShowImageUpdateModal(false);
+        setSelectedStock(null);
+      } catch (error) {
+        console.error('Failed to update image:', error);
+      }
+    }
+  };
+
   const filteredStocks = stocks.filter(stock =>
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -360,16 +388,16 @@ const Admin: React.FC = () => {
             >
               Release Chapter
             </button>
-      <button 
-        onClick={async () => {
-          await forcePriceUpdates();
-          refreshData();
-        }}
-        className="controlButton forceUpdateButton"
-      >
-        Force Price Update
-      </button>
-    </div>
+            <button 
+              onClick={async () => {
+                await forcePriceUpdates();
+                refreshData();
+              }}
+              className="controlButton forceUpdateButton"
+            >
+              Force Price Update
+            </button>
+          </div>
         </div>
 
         <div className="controlCard">
@@ -451,6 +479,7 @@ const Admin: React.FC = () => {
               stats={stats}
               onRemove={handleRemoveStock}
               onPriceUpdate={handleManualPriceUpdate}
+              onImageClick={handleImageClick}
             />
           ))}
         </div>
@@ -460,6 +489,17 @@ const Admin: React.FC = () => {
         <AddStockModal
           onClose={() => setShowAddModal(false)}
           onSubmit={handleAddStock}
+        />
+      )}
+
+      {showImageUpdateModal && selectedStock && (
+        <ImageUpdateModal
+          stock={selectedStock}
+          onClose={() => {
+            setShowImageUpdateModal(false);
+            setSelectedStock(null);
+          }}
+          onSubmit={handleImageUpdate}
         />
       )}
     </div>
@@ -781,5 +821,242 @@ const AddStockModal: React.FC<AddStockModalProps> = ({ onClose, onSubmit }) => {
     </div>
   );
 };
+
+interface ImageUpdateModalProps {
+  stock: Stock;
+  onClose: () => void;
+  onSubmit: (imageFile: File) => void;
+}
+
+const ImageUpdateModal: React.FC<ImageUpdateModalProps> = ({ stock, onClose, onSubmit }) => {
+  // Image optimization states
+  const [originalImage, setOriginalImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>(stock.image || '');
+  const [quality, setQuality] = useState<number>(25);
+  const [optimizedSize, setOptimizedSize] = useState<number | null>(null);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [optimizedBlob, setOptimizedBlob] = useState<Blob | null>(null);
+  const [statusMessage, setStatusMessage] = useState<{text: string, type: 'success' | 'error' | ''}>(
+    {text: '', type: ''}
+  );
+  const [optimizedFile, setOptimizedFile] = useState<File | null>(null);
+  
+  // Refs
+  const timeoutRef = useRef<number | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  
+  // Trigger file input click when preview area is clicked
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+  
+  // Handle file selection
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Reset status message
+      setStatusMessage({text: '', type: ''});
+      
+      setOriginalImage(file);
+      const objectUrl = URL.createObjectURL(file);
+      setPreviewUrl(objectUrl);
+      
+      // Process with current quality
+      processImage(file, quality);
+      
+      return () => URL.revokeObjectURL(objectUrl);
+    }
+  };
+  
+  // Process image with WebP conversion and quality adjustment
+  const processImage = async (file: File, qualityValue: number) => {
+    setIsProcessing(true);
+    
+    try {
+      // Create an image element to load the file
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      
+      img.onload = () => {
+        // Calculate dimensions (similar to Python resize logic)
+        const origWidth = img.width;
+        const origHeight = img.height;
+        const newWidth = 300;
+        const newHeight = Math.floor(origHeight * (newWidth / origWidth));
+        
+        // Draw to canvas for processing
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+        
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, newWidth, newHeight);
+        
+        // Convert to WebP with quality adjustment
+        canvas.toBlob((blob) => {
+          if (blob) {
+            // Update the optimized blob and size
+            setOptimizedBlob(blob);
+            setOptimizedSize(blob.size);
+            
+            // Update the preview
+            const optimizedUrl = URL.createObjectURL(blob);
+            setPreviewUrl(optimizedUrl);
+            
+            // Create optimized file
+            const optimizedFile = new File([blob], `${stock.name.replace(/\s+/g, '_')}.webp`, { 
+              type: 'image/webp' 
+            });
+            setOptimizedFile(optimizedFile);
+            
+            setIsProcessing(false);
+          }
+        }, 'image/webp', qualityValue / 100);
+        
+        // Cleanup
+        URL.revokeObjectURL(img.src);
+      };
+    } catch (error) {
+      console.error('Error processing image:', error);
+      setIsProcessing(false);
+      setStatusMessage({
+        text: 'Error processing image. Please try again.',
+        type: 'error'
+      });
+    }
+  };
+  
+  // Debounce quality slider changes
+  const handleQualityChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newQuality = parseInt(e.target.value);
+    setQuality(newQuality);
+    
+    // Clear previous timeout
+    if (timeoutRef.current) {
+      window.clearTimeout(timeoutRef.current);
+    }
+    
+    // Set a new timeout
+    timeoutRef.current = window.setTimeout(() => {
+      if (originalImage) {
+        processImage(originalImage, newQuality);
+      }
+    }, 300) as unknown as number;
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    if (!optimizedFile) {
+      setStatusMessage({
+        text: 'Please select and process an image first',
+        type: 'error'
+      });
+      return;
+    }
+    
+    try {
+      onSubmit(optimizedFile);
+    } catch (error) {
+      setStatusMessage({
+        text: 'Failed to update image. Please try again.',
+        type: 'error'
+      });
+    }
+  };
+
+  return (
+    <div className="modalOverlay">
+      <div className="modalContent">
+        <h2 className="modalTitle">Update Image for {stock.name}</h2>
+        
+        {/* Hidden canvas for image processing */}
+        <canvas ref={canvasRef} style={{ display: 'none' }}></canvas>
+        
+        {/* Status message */}
+        {statusMessage.text && (
+          <div className={`statusMessage ${statusMessage.type}Message`}>
+            {statusMessage.text}
+          </div>
+        )}
+        
+        {/* Image preview / upload area */}
+        <div 
+          className="imagePreviewContainer" 
+          onClick={triggerFileInput}
+        >
+          {previewUrl ? (
+            <>
+              <img 
+                src={previewUrl} 
+                alt="Preview" 
+                className="imagePreview" 
+              />
+              <div className="previewOverlay">
+                <span>{isProcessing ? 'Processing...' : 'Click to change'}</span>
+              </div>
+            </>
+          ) : (
+            <div className="emptyPreview">
+              <span>Click to upload image</span>
+            </div>
+          )}
+          
+          <input
+            ref={fileInputRef}
+            id="imageFile"
+            type="file"
+            accept="image/*"
+            required
+            onChange={handleFileChange}
+            className="fileInput"
+          />
+        </div>
+        
+        {optimizedSize !== null && (
+          <div className="sizeInfo">
+            Size: {(optimizedSize / 1024).toFixed(2)} KB
+          </div>
+        )}
+        
+        <div className="qualitySliderContainer">
+          <div className="sliderLabel">
+            <span>Quality</span>
+            <span className="qualityValue">{quality}%</span>
+          </div>
+          <input
+            id="qualitySlider"
+            type="range"
+            min="2"
+            max="100"
+            value={quality}
+            onChange={handleQualityChange}
+            className="qualitySlider"
+            disabled={isProcessing || !originalImage}
+          />
+        </div>
+        
+        <form onSubmit={handleSubmit}>
+          <div className="modalButtons">
+            <button type="button" onClick={onClose} className="cancelButton">
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              className="submitButton" 
+              disabled={isProcessing || !optimizedBlob}
+            >
+              {isProcessing ? 'Processing...' : 'Update Image'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
 
 export default Admin;
