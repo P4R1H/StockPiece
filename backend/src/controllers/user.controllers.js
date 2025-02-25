@@ -404,6 +404,7 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     }, 0);
 
     const totalValue = stockValue + user.accountValue;
+    console.log("");
 
     return {
       _id: user._id.toString(),
