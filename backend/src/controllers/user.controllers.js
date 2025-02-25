@@ -392,7 +392,7 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
       path: "ownedStocks.stock",
       select: "currentValue",
     })
-    .select("username ownedStocks")
+    .select("username ownedStocks accountValue")
     .lean();
 
   // Calculate stock values for all users
