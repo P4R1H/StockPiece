@@ -10,6 +10,46 @@ import {
 } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
 import isWindowOpen from "../utils/windowStatus.js";
+import Coupon from "../models/coupon.models.js";
+
+const verifyCoupon = async (couponCode,user) => {
+  const coupon = await Coupon.findOne({ 
+    code: couponCode.toUpperCase(),
+    isActive: true
+  });
+
+  if (!coupon) {
+    throw new ApiError(404, "Invalid coupon code");
+  }
+
+  // Check if user has already used this coupon
+  if (coupon.usedBy.includes(user._id)) {
+    throw new ApiError(400, "Coupon already used");
+  }
+
+  // Check if coupon is first-time only
+  if (coupon.isFirstTimeOnly && user.lastLogin) {
+    throw new ApiError(400, "This coupon is for first time users only");
+  }
+
+  // Check if max users limit reached
+  if (coupon.usedCount >= coupon.maxUsers) {
+    coupon.isActive = false;
+    await coupon.save();
+    throw new ApiError(400, "Coupon usage limit reached");
+  }
+
+  // Update coupon usage
+  await Coupon.findByIdAndUpdate(
+    coupon._id,
+    {
+      $inc: { usedCount: 1 },
+      $push: { usedBy: user._id }
+    }
+  );
+
+  return coupon.amount;
+}
 
 const generateAccessRefreshToken = async (user) => {
   try {
@@ -80,7 +120,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
 });
 
 const loginUser = asyncHandler(async (req, res, _) => {
-  const { username, password } = req.body;
+  const { username, password, couponCode } = req.body;
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
@@ -94,32 +134,32 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  //check if the user needs to get extra 100 dollars for daily login
-  const midNightTime = () => new Date(new Date.setHours(0, 0, 0, 0));
+  //handling coupon if it exists
+  let couponAmount = couponCode?.trim() ? 
+    await verifyCoupon(couponCode,user) : 0;
 
-  const loggedInUser =
-    !user.lastLogin || user.lastLogin < midNightTime
-      ? await User.findByIdAndUpdate(
-          user._id,
-          {
-            $set: {
-              lastLogin: Date.now(),
-            },
-            $inc: {
-              accountValue: 100,
-            },
-          },
-          { new: true }
-        ).select("-password -refreshToken")
-      : await User.findByIdAndUpdate(
-          user._id,
-          {
-            $set: {
-              lastLogin: Date.now(),
-            },
-          },
-          { new: true }
-        ).select("-password -refreshToken");
+  //check if the user needs to get extra 100 dollars for daily login
+  const midNightTime = () => new Date((new Date()).setHours(0, 0, 0, 0));
+  const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
+
+  const updateObject = {
+    $set: {
+      lastLogin: Date.now(),
+    }
+  }
+
+  const totalBonus = (isDailyLoginBonus ? 100 : 0) + couponAmount;
+  if (totalBonus > 0) {
+    updateObject.$inc = {
+      accountValue: totalBonus
+    };
+  }
+
+  const loggedInUser = await User.findByIdAndUpdate(
+    user._id,
+    updateObject,
+    { new: true }
+  ).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -137,6 +177,10 @@ const loginUser = asyncHandler(async (req, res, _) => {
           user: loggedInUser,
           accessToken,
           refreshToken,
+          bonusApplied: {
+            dailyLogin: isDailyLoginBonus ? 100 : 0,
+            coupon: couponAmount
+          }
         },
         "user logged in successfully"
       )
@@ -187,13 +231,25 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
+  const midNightTime = () => new Date((new Date()).setHours(0, 0, 0, 0));
+  const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
+
+  const updateObject = {
+    $set: {
+      lastLogin: Date.now(),
+    }
+  };
+
+  // Add bonus if applicable
+  if (isDailyLoginBonus) {
+    updateObject.$inc = {
+      accountValue: 100
+    };
+  }
+
   const loggedInUser = await User.findByIdAndUpdate(
     user._id,
-    {
-      $set: {
-        lastLogin: Date.now(),
-      },
-    },
+    updateObject,
     { new: true }
   ).select("-password -refreshToken");
 
@@ -201,6 +257,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
     httpOnly: true,
     secure: true,
   };
+
   res
     .status(200)
     .cookie("accessToken", accessToken, { options, maxAge: 86400000 })
@@ -212,6 +269,9 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
           user: loggedInUser,
           accessToken,
           refreshToken: refreshToken,
+          bonusApplied: {
+            dailyLogin: isDailyLoginBonus ? 100 : 0,
+          }
         },
         "User logged in successfully using refresh token"
       )
