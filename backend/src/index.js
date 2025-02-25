@@ -38,33 +38,32 @@ const startServer = async () => {
 };
 
 const setupCronJobs = () => {
-  // Runs at minute 0, 3, 6, 9, 12, etc. (every 3 minutes, starting at 0)
-  cron.schedule("0/3 * * * *", async () => {
+  // This cron job runs every 3 minutes.
+  // It chains three tasks with 1 minute delay between them.
+  cron.schedule("*/3 * * * *", async () => {
     try {
-      console.log("Cron job: Running release chapter service");
+      console.log("Cron cycle started: release chapter, then close market, then update price");
+
+      // Start release chapter immediately
+      console.log("Starting release chapter service...");
       await releaseChapterService();
-    } catch (error) {
-      console.error("Error in release chapter service:", error);
-    }
-  });
+      console.log("Chapter released. Waiting 1 minute before closing market...");
 
-  // Runs at minute 1, 4, 7, 10, 13, etc. (every 3 minutes, starting at 1)
-  cron.schedule("1/3 * * * *", async () => {
-    try {
-      console.log("Cron job: Running close market service");
-      await closeMarketService();
-    } catch (error) {
-      console.error("Error in close market service:", error);
-    }
-  });
+      // Wait 1 minute, then run close market service
+      setTimeout(async () => {
+        console.log("Starting close market service...");
+        await closeMarketService();
+        console.log("Market closed. Waiting 1 minute before updating price...");
 
-  // Runs at minute 2, 5, 8, 11, 14, etc. (every 3 minutes, starting at 2)
-  cron.schedule("2/3 * * * *", async () => {
-    try {
-      console.log("Cron job: Running update price service");
-      await updatePriceService();
+        // Wait another 1 minute, then run update price service
+        setTimeout(async () => {
+          console.log("Starting update price service...");
+          await updatePriceService();
+          console.log("Price updated. Cycle complete.");
+        }, 60000); // Delay for update price: 1 minute (60,000 ms)
+      }, 60000); // Delay for close market: 1 minute (60,000 ms)
     } catch (error) {
-      console.error("Error in update price service:", error);
+      console.error("Error during scheduled tasks:", error);
     }
   });
 };
