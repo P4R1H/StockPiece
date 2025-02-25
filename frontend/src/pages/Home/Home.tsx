@@ -13,7 +13,7 @@ import './Home.css';
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
-  const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100">("1");
+  const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
   const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('alpha-asc');
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -126,6 +126,10 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     setTimeout(() => setErrorMessage(""), 2000);
   };
 
+  const calculateMaxBuyAmount = useCallback((stockPrice: number): number => {
+    return Math.floor(portfolio.cash / stockPrice);
+  }, [portfolio.cash]);
+
   const handleStockTransaction = async (type: 'buy' | 'sell', name: string) => {
     if (!isLoggedIn && type === 'buy' && !hasShownLoginPrompt) {
       showError("To save your progress, Login/Create account, Enjoy testing!");
@@ -139,7 +143,37 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
-    const quantity = Number(buyAmt);
+    
+    // Calculate quantity based on buyAmt
+    let quantity: number;
+    if (buyAmt === "max" && type === 'buy') {
+      quantity = calculateMaxBuyAmount(stock.currentPrice);
+      if (quantity <= 0) {
+        showError("Insufficient funds to buy any shares");
+        return;
+      }
+    } else if (buyAmt === "max" && type === 'sell') {
+      const holding = portfolio.stocks.find(h => h.stock.id === stock.id);
+      quantity = holding ? holding.quantity : 0;
+      if (quantity <= 0) {
+        showError("No shares to sell");
+        return;
+      }
+    } else {
+      quantity = Number(buyAmt);
+      // For selling, make sure we don't try to sell more than we own
+      if (type === 'sell') {
+        const holding = portfolio.stocks.find(h => h.stock.id === stock.id);
+        const maxSellable = holding ? holding.quantity : 0;
+        if (quantity > maxSellable) {
+          quantity = maxSellable;
+          if (quantity <= 0) {
+            showError("No shares to sell");
+            return;
+          }
+        }
+      }
+    }
   
     const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
     if (!previousPortfolio) return;
@@ -222,6 +256,17 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     }
   };
 
+  // Calculate max quantities for each stock at render time
+  const getMaxBuyQuantity = (stock: CharacterStock): number => {
+    return Math.floor(portfolio.cash / stock.currentPrice);
+  };
+
+  // Get owned quantity for a stock
+  const getOwnedQuantity = (stockId: string): number => {
+    const holding = portfolio.stocks.find(h => h.stock.id === stockId);
+    return holding ? holding.quantity : 0;
+  };
+
   return (
     <div className="dashboard-container">
       <div className="dashboard">
@@ -275,7 +320,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 className="stock-amt-btn"
                 value={buyAmt}
                 onChange={e =>
-                  setBuyAmt(e.target.value as "1" | "5" | "10" | "25" | "50" | "100")
+                  setBuyAmt(e.target.value as "1" | "5" | "10" | "25" | "50" | "100" | "max")
                 }
               >
                 <option value="1">Qty: 1</option>
@@ -284,6 +329,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
                 <option value="25">Qty: 25</option>
                 <option value="50">Qty: 50</option>
                 <option value="100">Qty: 100</option>
+                <option value="max">Qty: Max</option>
               </select>
             </div>
             <div className="news-ticker">
@@ -297,19 +343,23 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
             </div>
           </div>
           <div className="stock-grid">
-            {sortedStocks.map(stock => (
-              <CharacterStockCard
-                key={stock.id}
-                stock={stock}
-                qty={buyAmt}
-                onBuy={() => handleStockTransaction('buy', stock.name)}
-                onSell={() => handleStockTransaction('sell', stock.name)}
-                onVisibilityChange={updateStockVisibility}
-                ownedQuantity={
-                  portfolio.stocks.find(holding => holding.stock.id === stock.id)?.quantity || 0
-                }
-              />
-            ))}
+            {sortedStocks.map(stock => {
+              const ownedQuantity = getOwnedQuantity(stock.id);
+              const maxBuyQuantity = getMaxBuyQuantity(stock);
+              
+              return (
+                <CharacterStockCard
+                  key={stock.id}
+                  stock={stock}
+                  qty={buyAmt}
+                  maxQty={maxBuyQuantity}
+                  onBuy={() => handleStockTransaction('buy', stock.name)}
+                  onSell={() => handleStockTransaction('sell', stock.name)}
+                  onVisibilityChange={updateStockVisibility}
+                  ownedQuantity={ownedQuantity}
+                />
+              );
+            })}
           </div>
           <div className={`window-overlay ${errorMessage ? 'active' : ''}`}>
             <span>{errorMessage}</span>

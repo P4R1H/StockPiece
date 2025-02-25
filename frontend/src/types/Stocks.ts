@@ -14,6 +14,7 @@ export interface CharacterStock {
 export interface CharacterCardProps {
   stock: CharacterStock;
   qty: string;
+  maxQty?: number;
   onBuy: (name: string) => void;
   onSell: (name: string) => void;
   onVisibilityChange: (id: string, visibility: 'show' | 'hide' | 'only') => void;

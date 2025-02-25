@@ -10,7 +10,7 @@ const visibilityIcons = {
 };
 
 const CharacterCard: React.FC<CharacterCardProps> = React.memo(
-  ({ stock, qty, onBuy, onSell, onVisibilityChange, ownedQuantity }) => {
+  ({ stock, qty, maxQty, onBuy, onSell, onVisibilityChange, ownedQuantity }) => {
     const { id, name, image, currentPrice, visibility } = stock;
     const IconComponent = visibilityIcons[visibility] || Eye;
 
@@ -19,6 +19,15 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
         visibility === 'show' ? 'hide' : visibility === 'hide' ? 'only' : 'show';
       onVisibilityChange(id, nextState);
     }, [visibility, id, onVisibilityChange]);
+
+    const buyQuantity = qty === "max" ? maxQty || 0 : parseInt(qty);
+    const sellQuantity = qty === "max" ? ownedQuantity : 
+                        parseInt(qty) > ownedQuantity ? ownedQuantity : parseInt(qty);
+
+    const displayPrice = (Math.floor(currentPrice) * buyQuantity).toLocaleString() + "฿";
+    const sellValue = Math.floor(currentPrice) * sellQuantity;
+    const formattedSellValue = sellValue.toLocaleString() + "฿";
+    const sellTooltip = sellQuantity > 0 ? `Earns ${formattedSellValue}` : "";
 
     return (
       <div className="op-stock-card">
@@ -41,9 +50,10 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
               {name} <span className="op-ticker-symbol">{stock.tickerSymbol}</span>
             </h3>
             <span className="op-character-price">
-              {(Math.floor(currentPrice) * parseInt(qty)).toLocaleString()}฿
+              {displayPrice}
             </span>
-            {qty !== "1" && (
+            {/* Always show the base price when max is selected, even if quantity is 0 */}
+            {(qty === "max" || buyQuantity > 1) && (
               <span className="op-base-price">
                 ({Math.floor(currentPrice).toLocaleString()}฿ each)
               </span>
@@ -55,14 +65,17 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
               <button
                 className="op-buy-button"
                 onClick={() => onBuy(name)}
+                disabled={buyQuantity <= 0}
               >
-                Buy{qty !== "1" ? ` ${qty}` : ''}
+                Buy{qty === "max" ? (buyQuantity > 0 ? ` ${buyQuantity}` : " 0") : buyQuantity > 1 ? ` ${buyQuantity}` : ''}
               </button>
               <button
                 className="op-sell-button"
                 onClick={() => onSell(name)}
+                disabled={sellQuantity <= 0}
+                title={sellTooltip}
               >
-                Sell{qty !== "1" ? ` ${qty}` : ''}
+                Sell{sellQuantity > 1 ? ` ${sellQuantity}` : ''}
               </button>
             </div>
           </div>
