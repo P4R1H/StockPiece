@@ -382,6 +382,14 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
+  const { orderBy = "totalQuantity" } = req.body;
+  const validOrders = ["totalQuantity", "accountValue", "stockValue", "totalValue"];
+
+  // Validate orderBy parameter
+  if ( !validOrders.includes(orderBy)) {
+    throw new ApiError(400, "Invalid orderBy parameter");
+  }
+
   //since we want guests to also have a look at the leader board
   // if (!currentUserId) {
   //   throw new ApiError(401, "Unauthenticated request");
@@ -417,7 +425,7 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
 
   // Sort all users by stock value
   const sortedUsers = usersWithTotalValue.sort(
-    (a, b) => b.totalValue - a.totalValue
+    (a, b) => b[orderBy] - a[orderBy]
   );
 
   //get the top hundred users and only the relevent data
