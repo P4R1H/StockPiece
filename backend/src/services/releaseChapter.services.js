@@ -13,7 +13,7 @@ const releaseChapterService = async () => {
     throw new ApiError(400, "window is still open");
   }
 
-  if (!latestChapter.isPriceUpdated) {
+  if (latestChapter && !latestChapter.isPriceUpdated) {
     throw new ApiError(400,'price needs to updated before chapter release');
   }
 

@@ -40,6 +40,9 @@ const startServer = async () => {
 const setupCronJobs = () => {
   // This cron job runs every 3 minutes.
   // It chains three tasks with 1 minute delay between them.
+  cron.schedule("* * * * *", async () => {
+    console.log("hello");
+  })
   cron.schedule("*/3 * * * *", async () => {
     try {
       console.log("Cron cycle started: release chapter, then close market, then update price");
