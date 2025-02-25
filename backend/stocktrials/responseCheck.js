@@ -1,6 +1,6 @@
 import { performance } from "perf_hooks";
 
-const URL = "http://localhost:8000/api/v1/market/statistics/all";
+const URL = "http://localhost:3000/api/v1/market/statistics/all";
 const NUM_REQUESTS = 1000; // Change this to the number of concurrent requests
 
 async function sendRequests() {

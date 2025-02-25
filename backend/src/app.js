@@ -5,7 +5,6 @@ import path from "node:path";
 import { __dirname } from "./constants.js";
 import cors from "cors";
 import compression from 'compression';
-import clusterMiddleware from "./middlewares/cluster.middlewares.js";
 
 const app = express();
 
@@ -29,7 +28,6 @@ app.use(
   })
 );
 app.use(compression());
-app.use(clusterMiddleware);
 
 import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";

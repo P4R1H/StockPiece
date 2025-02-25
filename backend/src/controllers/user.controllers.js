@@ -396,18 +396,26 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     .lean();
 
   // Calculate stock values for all users
-  const usersWithStockValue = allUsers.map((user) => ({
-    _id: user._id.toString(),
-    name: user.username,
-    stockValue: user.ownedStocks.reduce((total, ownedStock) => {
+  const usersWithTotalValue = allUsers.map((user) => {
+    const stockValue = user.ownedStocks.reduce((total, ownedStock) => {
       const currentValue = ownedStock.stock?.currentValue || 0;
       const quantity = ownedStock.quantity || 0;
       return total + currentValue * quantity;
-    }, 0),
-  }));
+    }, 0);
+
+    const totalValue = stockValue + user.accountValue;
+
+    return {
+      _id: user._id.toString(),
+      name: user.username,
+      stockValue,
+      accountValue: user.accountValue,
+      totalValue,
+    };
+  });
 
   // Sort all users by stock value
-  const sortedUsers = usersWithStockValue.sort(
+  const sortedUsers = usersWithTotalValue.sort(
     (a, b) => b.stockValue - a.stockValue
   );
 
@@ -415,6 +423,8 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const topUsers = sortedUsers.slice(0, 100).map((user) => ({
     name: user.name,
     stockValue: user.stockValue,
+    accountValue: user.accountValue,
+    totalValue: user.totalValue,
   }));
 
   // Find current user's position
@@ -428,6 +438,8 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     currentUserData = {
       name: sortedUsers[currentUserIndex].name,
       stockValue: sortedUsers[currentUserIndex].stockValue,
+      accountValue: sortedUsers[currentUserIndex].accountValue,
+      totalValue: sortedUsers[currentUserIndex].totalValue,
       rank: currentUserIndex + 1,
     };
   }
