@@ -99,7 +99,7 @@ export const changeCharacterImage = async(
   imageFile: File
 ): Promise<boolean> => {
   const formData = new FormData();
-  formData.append('stockID', stockID);
+  formData.append('stockId', stockID);
   formData.append('imageURL', imageFile);
   const response = await fetch('/api/v1/admin/character-stocks/image', {
     method: 'PATCH', 
