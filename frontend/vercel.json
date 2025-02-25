@@ -8,5 +8,7 @@
       "source": "/:path*",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "analytics": true
+
 }
