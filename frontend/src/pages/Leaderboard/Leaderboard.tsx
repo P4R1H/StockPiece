@@ -25,7 +25,7 @@ const LeaderboardPage: React.FC = () => {
         (user, index) => ({
           rank: index + 1,
           username: user.name,
-          totalValue: Math.floor(user.stockValue),
+          totalValue: Math.floor(user.totalValue),
         })
       );
 
@@ -34,7 +34,7 @@ const LeaderboardPage: React.FC = () => {
         currentUser = {
           rank: response.data.currentUser.rank,
           username: response.data.currentUser.name,
-          totalValue: Math.floor(response.data.currentUser.stockValue),
+          totalValue: Math.floor(response.data.currentUser.totalValue),
         };
       } else {
         currentUser = {

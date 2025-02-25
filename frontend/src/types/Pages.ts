@@ -17,12 +17,12 @@ export interface LeaderboardEntry {
 
 export interface LeaderboardUser {
   name: string;
-  stockValue: number;
+  totalValue: number;
 }
 
 export interface CurrentUser {
   name: string;
-  stockValue: number;
+  totalValue: number;
   rank: number;
 }
 
