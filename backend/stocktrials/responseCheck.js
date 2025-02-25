@@ -7,7 +7,9 @@ async function sendRequests() {
   const startTime = performance.now(); // Start time
 
   const requests = Array.from({ length: NUM_REQUESTS }, () =>
-    fetch(URL).then((res) => res.status).catch((err) => err)
+    fetch(URL)
+      .then((res) => res.status)
+      .catch((err) => err)
   );
 
   const responses = await Promise.all(requests); // Send all requests concurrently

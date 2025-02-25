@@ -4,7 +4,7 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 import { defaultAvatarUrl } from "../constants.js";
-import { uploadOnCloudinary } from "../utils/cloudinary.utils.js";
+import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
 
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {

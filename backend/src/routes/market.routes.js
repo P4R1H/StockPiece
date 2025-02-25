@@ -30,6 +30,6 @@ marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
 marketRouter.route("/statistics/all").get(getAllStockStatistics);
- //done
+//done
 
 export default marketRouter;

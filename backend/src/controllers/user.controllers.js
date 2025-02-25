@@ -12,10 +12,10 @@ import jwt from "jsonwebtoken";
 import isWindowOpen from "../utils/windowStatus.js";
 import Coupon from "../models/coupon.models.js";
 
-const verifyCoupon = async (couponCode,user) => {
-  const coupon = await Coupon.findOne({ 
+const verifyCoupon = async (couponCode, user) => {
+  const coupon = await Coupon.findOne({
     code: couponCode.toUpperCase(),
-    isActive: true
+    isActive: true,
   });
 
   if (!coupon) {
@@ -40,16 +40,13 @@ const verifyCoupon = async (couponCode,user) => {
   }
 
   // Update coupon usage
-  await Coupon.findByIdAndUpdate(
-    coupon._id,
-    {
-      $inc: { usedCount: 1 },
-      $push: { usedBy: user._id }
-    }
-  );
+  await Coupon.findByIdAndUpdate(coupon._id, {
+    $inc: { usedCount: 1 },
+    $push: { usedBy: user._id },
+  });
 
   return coupon.amount;
-}
+};
 
 const generateAccessRefreshToken = async (user) => {
   try {
@@ -103,7 +100,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
     password,
     avatar: avatarUrl,
     accountValue: 10000,
-    prevNetWorth: 10000
+    prevNetWorth: 10000,
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -134,33 +131,31 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const [tokens, couponAmount] = await Promise.all([
     generateAccessRefreshToken(user),
-    couponCode?.trim() ? verifyCoupon(couponCode, user) : Promise.resolve(0)
+    couponCode?.trim() ? verifyCoupon(couponCode, user) : Promise.resolve(0),
   ]);
 
   const { accessToken, refreshToken } = tokens;
 
   //check if the user needs to get extra 100 dollars for daily login
-  const midNightTime = () => new Date((new Date()).setHours(0, 0, 0, 0));
+  const midNightTime = () => new Date(new Date().setHours(0, 0, 0, 0));
   const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
 
   const updateObject = {
     $set: {
       lastLogin: Date.now(),
-    }
-  }
+    },
+  };
 
   const totalBonus = (isDailyLoginBonus ? 100 : 0) + couponAmount;
   if (totalBonus > 0) {
     updateObject.$inc = {
-      accountValue: totalBonus
+      accountValue: totalBonus,
     };
   }
 
-  const loggedInUser = await User.findByIdAndUpdate(
-    user._id,
-    updateObject,
-    { new: true }
-  ).select("-password -refreshToken");
+  const loggedInUser = await User.findByIdAndUpdate(user._id, updateObject, {
+    new: true,
+  }).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -180,8 +175,8 @@ const loginUser = asyncHandler(async (req, res, _) => {
           refreshToken,
           bonusApplied: {
             dailyLogin: isDailyLoginBonus ? 100 : 0,
-            coupon: couponAmount
-          }
+            coupon: couponAmount,
+          },
         },
         "user logged in successfully"
       )
@@ -232,27 +227,25 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  const midNightTime = () => new Date((new Date()).setHours(0, 0, 0, 0));
+  const midNightTime = () => new Date(new Date().setHours(0, 0, 0, 0));
   const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
 
   const updateObject = {
     $set: {
       lastLogin: Date.now(),
-    }
+    },
   };
 
   // Add bonus if applicable
   if (isDailyLoginBonus) {
     updateObject.$inc = {
-      accountValue: 100
+      accountValue: 100,
     };
   }
 
-  const loggedInUser = await User.findByIdAndUpdate(
-    user._id,
-    updateObject,
-    { new: true }
-  ).select("-password -refreshToken");
+  const loggedInUser = await User.findByIdAndUpdate(user._id, updateObject, {
+    new: true,
+  }).select("-password -refreshToken");
 
   const options = {
     httpOnly: true,
@@ -272,7 +265,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
           refreshToken: refreshToken,
           bonusApplied: {
             dailyLogin: isDailyLoginBonus ? 100 : 0,
-          }
+          },
         },
         "User logged in successfully using refresh token"
       )
@@ -352,14 +345,17 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
   }
 
   // current net worth account + stockValue
-  const currentStockValue = user.ownedStocks.reduce((total, stock) => 
-    total + (stock.stock.currentValue * stock.quantity), 0);
+  const currentStockValue = user.ownedStocks.reduce(
+    (total, stock) => total + stock.stock.currentValue * stock.quantity,
+    0
+  );
   const currentNetWorth = user.accountValue + currentStockValue;
 
   // profit percentage based on previous net worth
-  const profitPercentage = user.prevNetWorth > 0
-    ? ((currentNetWorth - user.prevNetWorth) / user.prevNetWorth) * 100
-    : 0;
+  const profitPercentage =
+    user.prevNetWorth > 0
+      ? ((currentNetWorth - user.prevNetWorth) / user.prevNetWorth) * 100
+      : 0;
 
   user.profit = profitPercentage;
   user.stockValue = currentStockValue;
@@ -383,10 +379,15 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
   const { orderBy = "totalQuantity" } = req.body;
-  const validOrders = ["totalQuantity", "accountValue", "stockValue", "totalValue"];
+  const validOrders = [
+    "totalQuantity",
+    "accountValue",
+    "stockValue",
+    "totalValue",
+  ];
 
   // Validate orderBy parameter
-  if ( !validOrders.includes(orderBy)) {
+  if (!validOrders.includes(orderBy)) {
     throw new ApiError(400, "Invalid orderBy parameter");
   }
 

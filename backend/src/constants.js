@@ -20,7 +20,15 @@ const defaultAvatarpublidId = "WhatsApp_Image_2025-01-31_at_8.25.11_PM_subn0w";
 const defaultAvatarUrl = cloudinary.url(defaultAvatarpublidId);
 
 const CACHE_KEYS = {
-  STOCK_STATISTICS: 'stock_statistics_public'
+  STOCK_STATISTICS: "stock_statistics_public",
 };
 
-export { DB_NAME, __dirname, defaultAvatarUrl, k, epsilon, decayFactor, CACHE_KEYS };
+export {
+  DB_NAME,
+  __dirname,
+  defaultAvatarUrl,
+  k,
+  epsilon,
+  decayFactor,
+  CACHE_KEYS,
+};

@@ -1,4 +1,4 @@
-import nodeCache from 'node-cache';
+import nodeCache from "node-cache";
 
 const cache = new nodeCache();
 

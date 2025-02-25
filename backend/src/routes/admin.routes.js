@@ -27,6 +27,6 @@ adminRouter
 
 adminRouter
   .route("/character-stocks/image")
-  .patch(upload.single("imageURL"), updateStockImage)
+  .patch(upload.single("imageURL"), updateStockImage);
 
 export default adminRouter;

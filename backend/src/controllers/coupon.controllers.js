@@ -5,7 +5,7 @@ import Coupon from "../models/coupon.models.js";
 
 const createCoupon = asyncHandler(async (req, res) => {
   if (!req.admin) {
-    throw new ApiError(400,'Unauthorized request');
+    throw new ApiError(400, "Unauthorized request");
   }
 
   const { code, amount, maxUsers, isFirstTimeOnly } = req.body;
@@ -30,7 +30,7 @@ const createCoupon = asyncHandler(async (req, res) => {
     code: code.toUpperCase(),
     amount,
     maxUsers,
-    isFirstTimeOnly: isFirstTimeOnly || false
+    isFirstTimeOnly: isFirstTimeOnly || false,
   });
 
   res
@@ -38,30 +38,28 @@ const createCoupon = asyncHandler(async (req, res) => {
     .json(new ApiResponse(201, coupon, "Coupon created successfully"));
 });
 
-const getAllCoupons = asyncHandler ( async (req, res, _next) => {
+const getAllCoupons = asyncHandler(async (req, res, _next) => {
   if (!req.admin) {
-    throw new ApiError(400, 'Unauthorized request');
+    throw new ApiError(400, "Unauthorized request");
   }
 
   const all = req.query.all;
 
-  const coupons = all==="true" ? await Coupon.find() : await Coupon.find({Active: true});
+  const coupons =
+    all === "true" ? await Coupon.find() : await Coupon.find({ Active: true });
 
   if (!coupons) {
-    throw new ApiError(500, 'error in accessing all the coupons');
+    throw new ApiError(500, "error in accessing all the coupons");
   }
 
   res
     .status(200)
-    .json(
-      new ApiResponse(200,coupons,'coupons fetched successfully')
-    )
-
-})
+    .json(new ApiResponse(200, coupons, "coupons fetched successfully"));
+});
 
 const deleteCoupon = asyncHandler(async (req, res) => {
   if (!req.admin) {
-    throw new ApiError(400,'Unauthorized request');
+    throw new ApiError(400, "Unauthorized request");
   }
 
   const { code } = req.body;
@@ -81,8 +79,4 @@ const deleteCoupon = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, coupon, "Coupon deleted successfully"));
 });
 
-export {
-  createCoupon,
-  deleteCoupon,
-  getAllCoupons
-}
+export { createCoupon, deleteCoupon, getAllCoupons };

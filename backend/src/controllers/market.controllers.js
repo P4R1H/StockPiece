@@ -64,7 +64,10 @@ const openMarket = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "no chapter has been released yet");
   }
 
-  if (Date.now() > latestChapterDoc.windowEndDate.getTime() || latestChapterDoc.isPriceUpdated) {
+  if (
+    Date.now() > latestChapterDoc.windowEndDate.getTime() ||
+    latestChapterDoc.isPriceUpdated
+  ) {
     throw new ApiError(400, "the market can no longer be opened");
   }
 
@@ -85,7 +88,7 @@ const closeMarket = asyncHandler(async (req, res, _) => {
   const closeMarketSuccess = await closeMarketService();
 
   if (!closeMarketSuccess) {
-    throw new ApiError(500,'not able to close market');
+    throw new ApiError(500, "not able to close market");
   }
 
   cache.del(CACHE_KEYS.STOCK_STATISTICS);
@@ -97,7 +100,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
-  
+
   if (!latestChapterDoc) {
     throw new ApiError(400, "no chapter has been released yet");
   }
@@ -108,98 +111,107 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
       return res
         .status(200)
         .json(
-          new ApiResponse(200,cachedData,"stock stats fetched successfully from cache")
-        )
+          new ApiResponse(
+            200,
+            cachedData,
+            "stock stats fetched successfully from cache"
+          )
+        );
     }
   }
-  
+
   // Define the projection based on admin status
-  const updateProjection = req.admin ? {
-    name: "$stockName",
-    oldValue: "$updates.oldValue",
-    newValue: "$updates.newValue",
-    totalBuys: "$updates.totalBuys",
-    totalSells: "$updates.totalSells",
-    totalQuantity: "$updates.totalQuantity",
-    _id: "$updates._id"
-  } : {
-    name: "$stockName",
-    newValue: "$updates.newValue",
-  };
-  
+  const updateProjection = req.admin
+    ? {
+        name: "$stockName",
+        oldValue: "$updates.oldValue",
+        newValue: "$updates.newValue",
+        totalBuys: "$updates.totalBuys",
+        totalSells: "$updates.totalSells",
+        totalQuantity: "$updates.totalQuantity",
+        _id: "$updates._id",
+      }
+    : {
+        name: "$stockName",
+        newValue: "$updates.newValue",
+      };
+
   // Use aggregation to group updates by chapter
   const chapterUpdatesGrouped = await ChapterUpdate.aggregate([
     // Unwind the updates array to work with individual update documents
     { $unwind: "$updates" },
-    
+
     // Lookup to join with the CharacterStock collection
     {
       $lookup: {
         from: "characterstocks", // collection name (usually the lowercase, plural model name)
         localField: "updates.stockID",
         foreignField: "_id",
-        as: "stockDetails"
-      }
+        as: "stockDetails",
+      },
     },
-    
+
     // Get the first item from stockDetails array
     {
       $addFields: {
-        "stockName": { $arrayElemAt: ["$stockDetails.name", 0] }
-      }
+        stockName: { $arrayElemAt: ["$stockDetails.name", 0] },
+      },
     },
-    
+
     // Replace stockID with name and restructure the update object
     {
       $project: {
         chapter: 1,
-        update: updateProjection
-      }
+        update: updateProjection,
+      },
     },
-    
+
     // Group back by chapter with the modified updates
     {
       $group: {
         _id: "$chapter",
-        updates: { $push: "$update" }
-      }
+        updates: { $push: "$update" },
+      },
     },
-    
+
     // Format the results
     {
       $project: {
         _id: 0,
         chapter: "$_id",
-        updates: 1
-      }
+        updates: 1,
+      },
     },
-    
+
     // Sort by chapter number
     {
-      $sort: { chapter: 1 }
-    }
+      $sort: { chapter: 1 },
+    },
   ]);
-  
+
   // Transform array to object with chapters as keys
   const chapterUpdatesObject = {};
-  
-  chapterUpdatesGrouped.forEach(item => {
+
+  chapterUpdatesGrouped.forEach((item) => {
     chapterUpdatesObject[item.chapter] = item.updates;
   });
 
   if (!req.admin) {
     cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
   }
-  
+
   res
     .status(200)
     .json(
-      new ApiResponse(200, chapterUpdatesObject, 'chapter update history fetched successfully')
+      new ApiResponse(
+        200,
+        chapterUpdatesObject,
+        "chapter update history fetched successfully"
+      )
     );
 });
 
 const getStockStatistics = asyncHandler(async (req, res, _next) => {
-  
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
@@ -216,7 +228,10 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
 
   //if the window is open and we need the latest chapter
   let response;
-  if ((!chapter || latestChapter === chapter) && isWindowOpen(latestChapterDoc)) {
+  if (
+    (!chapter || latestChapter === chapter) &&
+    isWindowOpen(latestChapterDoc)
+  ) {
     const statistics = await priceChangeByAlgorithm(latestChapter);
     response = Array.from(statistics.values());
   } else {
@@ -224,16 +239,16 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
     const chapterUpdate = await ChapterUpdate.findOne({
       chapter: latestChapter,
     })
-    .populate({
-      path: "updates.stockID",
-      select: "name", // Only fetch the 'name' field
-    })
-    .lean();
+      .populate({
+        path: "updates.stockID",
+        select: "name", // Only fetch the 'name' field
+      })
+      .lean();
     if (!chapterUpdate) {
       throw new ApiError(400, "wrong chapter requested");
     }
 
-    response = chapterUpdate.updates.map(({stockID,...update}) => ({
+    response = chapterUpdate.updates.map(({ stockID, ...update }) => ({
       name: stockID.name, // Replace Object with just the name
       ...update,
     }));

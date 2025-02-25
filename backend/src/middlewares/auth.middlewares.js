@@ -25,7 +25,9 @@ const verifyJWT = asyncHandler(async (req, _, next) => {
     throw new ApiError(401, "Invalid Access Token");
   }
 
-  const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
+  const user = await User.findById(decodedToken?._id).select(
+    "-password -refreshToken"
+  );
 
   if (!user) {
     throw new ApiError(401, "Invalid Access Token");
@@ -47,7 +49,10 @@ const verifyAdminJWT = asyncHandler(async (req, _, next) => {
 
   let decodedToken;
   try {
-    decodedToken = jwt.verify(adminToken, process.env.ADMIN_ACCESS_TOKEN_SECRET);
+    decodedToken = jwt.verify(
+      adminToken,
+      process.env.ADMIN_ACCESS_TOKEN_SECRET
+    );
   } catch (err) {
     // If token has expired, simply call next() without attaching anything to req.
     if (err.name === "TokenExpiredError") {
