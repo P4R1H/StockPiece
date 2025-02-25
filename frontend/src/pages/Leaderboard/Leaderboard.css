@@ -262,7 +262,7 @@
 /* Force the third (empty) column to have a minimum width */
 .leaderboard-table th:nth-child(3),
 .leaderboard-table td:nth-child(3) {
-  min-width: 100px;
+  min-width: 70px;
 }
 
 .center-spinner-container {

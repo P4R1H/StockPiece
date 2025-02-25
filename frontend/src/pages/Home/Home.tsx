@@ -81,7 +81,12 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     return stocks.filter(stock => {
       if (filter === 'Owned')
         return portfolio.stocks.some(ownedStock => ownedStock.stock.id === stock.id);
-      if (filter === 'Popular') return stock.popularity > 7;
+      if (filter === 'Popular') {
+        const topCount = Math.ceil(stocks.length * 0.1);
+        const sortedByPopularity = [...stocks].sort((a, b) => b.popularity - a.popularity);
+        const topStockIds = sortedByPopularity.slice(0, topCount).map(s => s.id);
+        return topStockIds.includes(stock.id);
+      }
       return true;
     });
   }, [stocks, filter, portfolio.stocks]);
