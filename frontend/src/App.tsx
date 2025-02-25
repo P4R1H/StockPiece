@@ -10,7 +10,7 @@ const LeaderboardPage = React.lazy(() => import('./pages/Leaderboard/Leaderboard
 const LoginPage = React.lazy(() => import('./pages/Login/Login'));
 const SettingsPage = React.lazy(() => import('./pages/Settings/Settings'));
 const AdminPanel = React.lazy(() => import('./pages/Admin/Admin'));
-
+const NotFound = React.lazy(() => import('./pages/NotFound/NotFound'));
 
 interface OnePieceStockMarketProps { 
   isLoggedIn: boolean; 
@@ -30,6 +30,9 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
         <Route path="/settings" element={
             <SettingsPage />
         } /> 
+        <Route path="*" element={
+            <NotFound />
+        } />
       </Routes>
  
       <footer className="market-footer"> 
