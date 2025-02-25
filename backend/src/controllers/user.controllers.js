@@ -132,11 +132,12 @@ const loginUser = asyncHandler(async (req, res, _) => {
     throw new ApiError(500, "Unexpected Error: user verification failed");
   }
 
-  const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
+  const [tokens, couponAmount] = await Promise.all([
+    generateAccessRefreshToken(user),
+    couponCode?.trim() ? verifyCoupon(couponCode, user) : Promise.resolve(0)
+  ]);
 
-  //handling coupon if it exists
-  let couponAmount = couponCode?.trim() ? 
-    await verifyCoupon(couponCode,user) : 0;
+  const { accessToken, refreshToken } = tokens;
 
   //check if the user needs to get extra 100 dollars for daily login
   const midNightTime = () => new Date((new Date()).setHours(0, 0, 0, 0));
@@ -416,7 +417,7 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
 
   // Sort all users by stock value
   const sortedUsers = usersWithTotalValue.sort(
-    (a, b) => b.stockValue - a.stockValue
+    (a, b) => b.totalValue - a.totalValue
   );
 
   //get the top hundred users and only the relevent data
