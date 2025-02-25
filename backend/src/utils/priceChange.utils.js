@@ -9,37 +9,43 @@ import CharacterStock from "../models/characterStock.models.js";
 //   sells
 // });
 const priceChangeByAlgorithm = async (chapter) => {
-  const stockMap = await stockStatistics(chapter);
+  try {
+    const [stockMap, allStocks] = await Promise.all([
+      stockStatistics(chapter),
+      CharacterStock.find().lean()
+    ]);
 
-  const allStocks = await CharacterStock.find();
-  //we need to return a map with stock as the key and its new Value and newQuantity as the value
-  const priceUpdateMap = new Map();
-  allStocks.forEach((stock) => {
-    const stockID = stock._id.toString();
-    const name = stock.name;
-    const totalBuys = stockMap.get(stockID)?.totalBuys || 0;
-    const totalSells = stockMap.get(stockID)?.totalSells || 0;
-    const prev_ciculation = stock.baseQuantity;
-    const currentValue = stock.currentValue;
-    const totalQuantity = stockMap.get(stockID)?.totalQuantity || 0;
-    const newValue = calculatePriceUpdate(
-      currentValue,
-      prev_ciculation,
-      totalBuys,
-      totalSells
-    );
+    if (!stockMap || !allStocks) {
+      throw new ApiError(500, "Failed to fetch stock data");
+    }
 
-    priceUpdateMap.set(stockID, {
-      name,
-      totalQuantity,
-      currentValue,
-      newValue,
-      totalBuys,
-      totalSells,
+    const priceUpdateMap = new Map();
+
+    allStocks.forEach((stock) => {
+      const stockID = stock._id.toString();
+      const stockStats = stockMap.get(stockID) || { totalBuys: 0, totalSells: 0, totalQuantity: 0 };
+
+      const priceUpdate = {
+        name: stock.name,
+        totalQuantity: stockStats.totalQuantity,
+        currentValue: stock.currentValue,
+        newValue: calculatePriceUpdate(
+          stock.currentValue,
+          stock.baseQuantity,
+          stockStats.totalBuys,
+          stockStats.totalSells
+        ),
+        totalBuys: stockStats.totalBuys,
+        totalSells: stockStats.totalSells
+      };
+
+      priceUpdateMap.set(stockID, priceUpdate);
     });
-  });
 
-  return priceUpdateMap;
+    return priceUpdateMap;
+  } catch (error) {
+    throw new ApiError(500, `Price calculation failed: ${error.message}`);
+  }
 };
 
 function calculatePriceUpdate(
@@ -48,53 +54,40 @@ function calculatePriceUpdate(
   boughtThisChap,
   soldThisChap
 ) {
-  // Calculate total trading volume
-  if (prevCirculation < 100) {
-    prevCirculation += 100;
-  }
+  const MIN_CIRCULATION = 100;
+  const MIN_PRICE = 10;
+  const BASE_VOLUME_IMPACT = 2;
+  const PRICE_DAMPENER_FACTOR = 100;
+  const MAX_RISE_BASE = 300;
+  const SELL_PENALTY_THRESHOLD = 0.5;
+  const DROP_MULTIPLIER_BASE = 1.2;
+
+  const adjustedCirculation = Math.max(prevCirculation, MIN_CIRCULATION);
   const totalVolume = boughtThisChap + soldThisChap;
-  if (totalVolume === 0) {
-    return currentPrice;
-  }
 
-  // Prevent division by zero in volume impact calculation
-  const effectiveCirculation = Math.max(prevCirculation, 1);
+  if (totalVolume === 0) return currentPrice;
 
-  // Calculate net pressure (-1 to +1)
+  const effectiveCirculation = Math.max(adjustedCirculation, 1);
   const buyPressure = (boughtThisChap - soldThisChap) / totalVolume;
-
-  // Volume ratio (trading volume relative to circulation)
   const volumeRatio = totalVolume / effectiveCirculation;
-  const volumeImpact = Math.log(1 + volumeRatio) * 2;
+  const volumeImpact = Math.log(1 + volumeRatio) * BASE_VOLUME_IMPACT;
+  const priceDampener = 1 / (1 + Math.log(1 + currentPrice / PRICE_DAMPENER_FACTOR));
 
   let percentChange;
-
-  // Separate logic for price rises and falls
   if (buyPressure >= 0) {
-    // Dampening factor for expensive stocks
-    const priceDampener = 1 / (1 + Math.log(1 + currentPrice / 100));
-    // Increase max rise allowed if volumeRatio > 1
-    const extraRiseFactor = volumeRatio > 1 ? volumeRatio : 1;
-    const maxRisePercent =
-      (300 / (1 + Math.log(1 + currentPrice / 50))) * extraRiseFactor;
-
+    const extraRiseFactor = Math.max(volumeRatio, 1);
+    const maxRisePercent = (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) * extraRiseFactor;
     const rawPercentChange = buyPressure * volumeImpact * priceDampener * 100;
     percentChange = Math.min(rawPercentChange, maxRisePercent);
   } else {
-    // For declines, amplify drop if selling dominates
     const sellRatio = soldThisChap / totalVolume;
-    const dropMultiplier = 1 + Math.max(0, sellRatio - 0.5); // extra penalty if >50% of trades are sells
-
-    const priceDampener = 1 / (1 + Math.log(1 + currentPrice / 100));
-    const rawPercentChange =
-      buyPressure * volumeImpact * priceDampener * 100 * dropMultiplier;
-    // Allow a larger drop than rise cap (e.g. 20% more)
-    const maxDropPercent = (300 / (1 + Math.log(1 + currentPrice / 50))) * 1.2;
+    const dropMultiplier = 1 + Math.max(0, sellRatio - SELL_PENALTY_THRESHOLD);
+    const rawPercentChange = buyPressure * volumeImpact * priceDampener * 100 * dropMultiplier;
+    const maxDropPercent = (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) * DROP_MULTIPLIER_BASE;
     percentChange = Math.max(rawPercentChange, -maxDropPercent);
   }
 
-  const newPrice = currentPrice * (1 + percentChange / 100);
-  return Math.max(newPrice, 10); // Ensure price never falls below 10
+  return Math.max(currentPrice * (1 + percentChange / 100), MIN_PRICE);
 }
 
 export default priceChangeByAlgorithm;

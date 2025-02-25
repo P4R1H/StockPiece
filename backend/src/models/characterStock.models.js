@@ -33,21 +33,6 @@ const characterStockSchema = new mongoose.Schema(
       unique: true,
       uppercase: true,
     },
-    valueHistory: {
-      type: [
-        {
-          chapter: {
-            type: Number,
-            required: true,
-          },
-          value: {
-            type: Number,
-            required: true,
-          },
-        },
-      ],
-      default: [],
-    },
     isRemoved: {
       type: Boolean,
       default: false,

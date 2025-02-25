@@ -261,8 +261,9 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
 
 const priceUpdateManual = asyncHandler(async (req, res, _) => {
   if (!req?.admin) {
-    throw new ApiError(400, "unauthroized request");
+    throw new ApiError(400, "unauthorized request");
   }
+
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
   });
@@ -277,18 +278,15 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
 
   const latestChapter = latestChapterDoc.chapter;
 
-  //we also need the map for stock and its corresponding new price
-  //then we will form bulk operations for that we need stock ids
-  //so we also have to fetch all stocks from database
-  //why just form the bulkops togethor after fetching all stock
-
-  const stockMap = await stockStatistics(latestChapter);
+  // Fetch stock statistics and all stocks in parallel
+  const [stockMap, allStocks] = await Promise.all([
+    stockStatistics(latestChapter),
+    CharacterStock.find().lean(),
+  ]);
 
   if (!stockMap) {
     throw new ApiError(500, "error in getting stock statistics");
   }
-
-  const allStocks = await CharacterStock.find();
 
   if (!allStocks) {
     throw new ApiError(500, "error in getting all stocks");
@@ -315,7 +313,8 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
   });
 
   const updatesArray = formattedResponse.map(({ _name, ...stats }) => stats);
-  //now for each stock we need the new price, new base Quantity
+
+  // Update chapter with new stock prices
   const chapterUpdate = await ChapterUpdate.findOneAndUpdate(
     { chapter: latestChapter },
     {
@@ -330,7 +329,7 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
   if (!chapterUpdate) {
     throw new ApiError(
       500,
-      "there was some error while performing the chapter udpate"
+      "there was some error while performing the chapter update"
     );
   }
 
