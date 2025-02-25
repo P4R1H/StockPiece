@@ -1,3 +1,5 @@
+[ ] Bug: If you move to next chapter without forcing price updates, graph shows different price than stock
+
 ## Overall Improvements
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement

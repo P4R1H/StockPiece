@@ -60,15 +60,6 @@
   margin: 0;
 }
 
-.luffy-background {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  background: url('/assets/luffyKing.webp') no-repeat center center;
-  background-size: cover;
-  padding: 10px;
-}
-
 .top-three-card {
   position: relative;
   background: #3e2f28cc;
@@ -81,24 +72,32 @@
   transform: scale(1.05);
 }
 
-/* Top Three Card Ranks */
+.luffy-background {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: url('/assets/luffyKing.webp') no-repeat center center;
+  background-size: cover;
+  padding: 10px;
+}
+
 .top-three-card.rank-1 {
-  grid-row: 1;
-  grid-column: 2;
-  transform: translateY(-1px);
-  z-index: 2;
+  grid-row: 1 !important;
+  grid-column: 2 !important;
+  transform: translateY(-1px) !important;
+  z-index: 2 !important;
 }
 .top-three-card.rank-2 {
-  grid-row: 1;
-  grid-column: 1;
-  z-index: 1;
-  transform: translateY(6px);
+  grid-row: 1 !important;
+  grid-column: 1 !important;
+  z-index: 1 !important;
+  transform: translateY(6px) !important;
 }
 .top-three-card.rank-3 {
-  grid-row: 1;
-  grid-column: 3;
-  z-index: 1;
-  transform: translateY(6px);
+  grid-row: 1 !important;
+  grid-column: 3 !important;
+  z-index: 1 !important;
+  transform: translateY(6px) !important;
 }
 
 /* Rank Badge */

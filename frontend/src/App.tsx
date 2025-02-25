@@ -28,7 +28,7 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       </Routes>
 
       <footer className="market-footer">
-        <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
+        <p>© {new Date().getFullYear()} StockPiece. Sailing the Seas of Profit!</p>
       </footer>
     </div>
   );
