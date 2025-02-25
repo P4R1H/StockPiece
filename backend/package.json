@@ -36,6 +36,7 @@
     "argon2": "^0.41.1",
     "cloudinary": "^2.5.1",
     "cloudinary-build-url": "^0.2.4",
+    "compression": "^1.8.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
