@@ -10,6 +10,8 @@ import CharacterStock from "../models/characterStock.models.js";
 import { stockStatistics } from "../utils/stockStats.utils.js";
 import isWindowOpen from "../utils/windowStatus.js";
 import { updatePriceService } from "../services/closeMarket.services.js";
+import cache from "../utils/cache.js";
+import { CACHE_KEYS } from "../constants.js";
 
 const getLatestChapter = asyncHandler(async (req, res, _) => {
   const latestChapter = await ChapterRelease.findOne().sort({
@@ -80,7 +82,14 @@ const closeMarket = asyncHandler(async (req, res, _) => {
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
-  await closeMarketService();
+  const closeMarketSuccess = await closeMarketService();
+
+  if (!closeMarketSuccess) {
+    throw new ApiError(500,'not able to close market');
+  }
+
+  cache.del(CACHE_KEYS.STOCK_STATISTICS);
+
   res.status(200).json(new ApiResponse(200, "market closed successfully"));
 });
 
@@ -91,6 +100,17 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   
   if (!latestChapterDoc) {
     throw new ApiError(400, "no chapter has been released yet");
+  }
+
+  if (!req.admin) {
+    const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
+    if (cachedData) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(200,cachedData,"stock stats fetched successfully from cache")
+        )
+    }
   }
   
   // Define the projection based on admin status
@@ -166,6 +186,10 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   chapterUpdatesGrouped.forEach(item => {
     chapterUpdatesObject[item.chapter] = item.updates;
   });
+
+  if (!req.admin) {
+    cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
+  }
   
   res
     .status(200)

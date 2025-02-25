@@ -31,11 +31,13 @@ import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
 import stockRoute from "./routes/stock.routes.js";
 import marketRoute from "./routes/market.routes.js";
+import couponRouter from "./routes/coupon.routes.js";
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/stock", stockRoute);
 app.use("/api/v1/market", marketRoute);
+app.use("/api/v1/coupon", couponRouter);
 
 app.get("/api/v1",(_req, res, _next) => {
   res.status(200).json('hello')
