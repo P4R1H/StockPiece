@@ -94,6 +94,24 @@ export const addCharacterStock = async (
     throw new Error(data.message || 'Failed to add character stock');
 };
 
+export const changeCharacterImage = async(
+  stockID : string,
+  imageFile: File
+): Promise<boolean> => {
+  const formData = new FormData();
+  formData.append('stockID', stockID);
+  formData.append('imageURL', imageFile);
+  const response = await fetch('/api/v1/admin/character-stocks/image', {
+    method: 'PATCH', 
+    credentials: 'include',
+    body: formData
+  });
+  const data = await response.json();
+  if (!response.ok) 
+    throw new Error(data.message || 'Failed to update character image');
+  return data.success;
+};
+
 export const removeCharacterStock = async (name: string): Promise<void> => {
   const response = await fetch('/api/v1/admin/character-stocks', {
     method: 'DELETE',
@@ -161,6 +179,7 @@ export const forcePriceUpdates = async(): Promise<boolean> => {
     throw new Error(data.message || 'Failed to force price updates');
   return data.success;
 }
+
 export const callCustomEndpoint = async (
   url: string,
   method: string = 'GET',
