@@ -114,8 +114,8 @@ const registerUser = asyncHandler(async (req, res, _) => {
     username: username?.trim().toLowerCase(),
     password,
     avatar: avatarUrl,
-    accountValue: 2500,
-    prevNetWorth: 2500,
+    accountValue: 5000,
+    prevNetWorth: 5000,
   });
 
   const createdUser = await User.findById(user._id).select(
