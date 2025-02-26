@@ -604,3 +604,34 @@
   }
 }
 
+/* iOS fullscreen styles */
+.fullscreen-ios {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+}
+
+.ios-orientation-tip {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  text-align: center;
+  padding: 5px;
+  background-color: rgba(255, 245, 230, 0.5);
+  border-radius: 5px;
+  font-size: 12px;
+  font-family: 'pirata one', bold;
+  color: #3e2f28;
+  z-index: 10000;
+  display: block;
+  opacity: 1;
+  transition: opacity 3s;
+}
+
+.ios-orientation-tip.fade-out {
+  opacity: 0;
+}

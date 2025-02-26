@@ -428,18 +428,95 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const handleFullscreen = async () => {
     if (!isFullscreen) {
       try {
-        await graphRef.current?.requestFullscreen()
-        if ('orientation' in screen && 'lock' in (screen as any).orientation) {
-          await (screen as any).orientation.lock('landscape')
+        // Check for iOS only when needed
+        const isIOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+        
+        // For non-iOS devices, use standard fullscreen API
+        if (graphRef.current && !isIOS) {
+          await graphRef.current.requestFullscreen();
+          
+          // Orientation lock for supported devices
+          if ('orientation' in screen && 'lock' in (screen.orientation as any)) {
+            try {
+              await (screen.orientation as any).lock('landscape');
+            } catch (orientationErr) {
+              console.error('Failed to lock screen orientation:', orientationErr);
+            }
+          }
+
+        } else {
+          // iOS fullscreen-like approach
+          if (graphRef.current) {
+            // Save original styles to restore later
+            const originalStyles = {
+              position: graphRef.current.style.position,
+              top: graphRef.current.style.top,
+              left: graphRef.current.style.left,
+              width: graphRef.current.style.width,
+              height: graphRef.current.style.height,
+              zIndex: graphRef.current.style.zIndex
+            };
+            
+            // Store original styles for later restoration
+            graphRef.current.dataset.originalStyles = JSON.stringify(originalStyles);
+            
+            // Apply fullscreen-like styles
+            graphRef.current.classList.add('fullscreen-ios');
+            
+            // Add iOS orientation tip
+            const orientationTip = document.createElement('div');
+            orientationTip.innerText = "IOS doesn't let me from force landscape :(";
+            orientationTip.id = 'ios-orientation-tip';
+            orientationTip.className = 'ios-orientation-tip';
+            
+            // Auto-hide the tip after 5 seconds
+            setTimeout(() => {
+              orientationTip.classList.add('fade-out');
+              setTimeout(() => {
+                if (graphRef.current && graphRef.current.contains(orientationTip)) {
+                  graphRef.current.removeChild(orientationTip);
+                }
+              }, 3000);
+            }, 5000);
+            
+            graphRef.current.appendChild(orientationTip);
+          }
         }
+        setIsFullscreen(true);
       } catch (err) {
-        console.error('Failed to enter fullscreen or lock orientation', err)
+        console.error('Failed to enter fullscreen or lock orientation', err);
       }
     } else {
-      document.exitFullscreen()
+      // Check for iOS only when needed
+      const isIOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
+      
+      // Exit fullscreen for standard devices
+      if (!isIOS && document.fullscreenElement) {
+        document.exitFullscreen();
+      } else {
+        // Exit custom fullscreen for iOS
+        exitCustomFullscreen();
+      }
+      setIsFullscreen(false);
     }
-  }
-
+  };
+  
+  // Helper function to exit custom fullscreen on iOS
+  const exitCustomFullscreen = () => {
+    if (graphRef.current && graphRef.current.dataset.originalStyles) {
+      const originalStyles = JSON.parse(graphRef.current.dataset.originalStyles);
+      Object.assign(graphRef.current.style, originalStyles);
+      
+      // Remove iOS-specific class
+      graphRef.current.classList.remove('fullscreen-ios');
+      
+      // Remove orientation tip if it exists
+      const orientationTip = document.getElementById('ios-orientation-tip');
+      if (orientationTip && graphRef.current.contains(orientationTip)) {
+        graphRef.current.removeChild(orientationTip);
+      }
+    }
+  };
   return (
     <div className={`graph-container ${isFullscreen ? 'fullscreen' : ''}`} ref={graphRef}>
       <div className="graph-controls">
