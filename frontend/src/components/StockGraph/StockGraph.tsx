@@ -327,7 +327,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   }
 
   // Memoize chart data to prevent unnecessary recalculations
-  const { labels, datasets, dynamicScaleFactor, dynamicScaleUnit, hasData } = React.useMemo(() => {
+  const { labels, datasets, dynamicScaleFactor, dynamicScaleUnit } = React.useMemo(() => {
     const filteredLabels = availableChapters.filter(chapter => chapter >= chapterStart && chapter <= chapterEnd)
     const labels = filteredLabels.filter((_, i) => i % chapterScale === 0)
     
@@ -353,9 +353,6 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           image: images[stock.id]
         }
       })
-
-    // Check if we have any data to display
-    const hasData = datasets.length > 0 && datasets.some(ds => ds.data.some(val => val !== null))
 
     const displayedAllValues: number[] = []
     stocks.forEach(stock => {
@@ -386,7 +383,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       dynamicScaleUnit = "K"
     }
 
-    return { labels, datasets, dynamicScaleFactor, dynamicScaleUnit, hasData }
+    return { labels, datasets, dynamicScaleFactor, dynamicScaleUnit }
   }, [stocks, stockHistory, availableChapters, chapterStart, chapterEnd, chapterScale, images])
 
   const plugins: Plugin<'line'>[] = [
