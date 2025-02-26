@@ -258,17 +258,21 @@ const Admin: React.FC = () => {
     if (isLoggedIn) {
       const loadData = async () => {
         try {
-          const [status, stocksData, statistics, chapter, autoReleaseStatus] = await Promise.all([
-            getMarketStatus(),
-            getStocks(),
-            getMarketStatistics(),
-            getLatestChapter(),
-            getNextReleaseStatus()
-          ]);
+          const status = await getMarketStatus();
           setMarketStatus(status);
+        } catch (error) {
+          console.error('Failed to load market status:', error);
+        }
+  
+        try {
+          const stocksData = await getStocks();
           setStocks(stocksData);
-          
-          // Process statistics data to create combined stats object
+        } catch (error) {
+          console.error('Failed to load stocks:', error);
+        }
+  
+        try {
+          const statistics = await getMarketStatistics();
           const processedStats: Stats = {};
           statistics.forEach((stat: StockStats) => {
             processedStats[stat.name] = {
@@ -279,16 +283,29 @@ const Admin: React.FC = () => {
             };
           });
           setStats(processedStats);
+        } catch (error) {
+          console.error('Failed to load statistics:', error);
+          setStats({});
+        }
+  
+        try {
+          const chapter = await getLatestChapter();
           setLatestChapter(chapter);
+        } catch (error) {
+          console.error('Failed to load latest chapter:', error);
+        }
+  
+        try {
+          const autoReleaseStatus = await getNextReleaseStatus();
           setNextReleaseStatus(autoReleaseStatus);
         } catch (error) {
-          console.error('Failed to load data:', error);
+          console.error('Failed to load next release status:', error);
         }
       };
       loadData();
     }
-  }, [isLoggedIn, refreshCounter]); // Using refreshCounter as dependency
-
+  }, [isLoggedIn, refreshCounter]);
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
