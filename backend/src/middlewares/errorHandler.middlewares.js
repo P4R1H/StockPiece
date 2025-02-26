@@ -13,11 +13,12 @@ const errorHandler = async (err, _req, res, _next) => {
     data: null,
   };
 
-  response.debug = {
+  console.log({
+    ...response,
     stack: err.stack,
     name: err.name || "UnknownError",
     rawError: isApiError ? undefined : err,
-  };
+  });
 
   if (statusCode === 500 || isHighPriority) {
     try {

@@ -46,7 +46,7 @@ const getAllCoupons = asyncHandler(async (req, res, _next) => {
   const all = req.query.all;
 
   const coupons =
-    all === "true" ? await Coupon.find() : await Coupon.find({ Active: true });
+    all === "true" ? await Coupon.find() : await Coupon.find({ isActive: true });
 
   if (!coupons) {
     throw new ApiError(500, "error in accessing all the coupons");
