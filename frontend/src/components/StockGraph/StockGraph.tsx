@@ -143,6 +143,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     },
     staleTime: 15 * 60 * 1000, // Consider data fresh for 5 minutes
     gcTime: 30 * 60 * 1000, // Keep data in cache for 30 minutes
+    refetchOnWindowFocus: false, // Prevent refetching when tab regains focus
     retry: 0
   })
 
