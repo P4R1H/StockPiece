@@ -180,6 +180,41 @@ export const forcePriceUpdates = async(): Promise<boolean> => {
   return data.success;
 }
 
+interface ErrorLog {
+  _id: string;
+  message: string;
+  stack: string;
+  name: string;
+  statusCode: number;
+  isInternalServerError: boolean;
+  isHighPriority: boolean;
+  additionalInfo: {
+    path: string;
+    method: string;
+    timestamp: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
+
+
+export const fetchErrors = async (type: string = 'all'): Promise<ErrorLog[]> => {
+  try {
+    const response = await fetch(`/api/v1/admin/errors?type=${type}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      return data.data.errors;
+    }
+    throw new Error(data.message || 'Failed to fetch errors');
+  } catch (error) {
+    console.error('Error fetching error logs:', error);
+    return [];
+  }
+};
+
+
 export const callCustomEndpoint = async (
   url: string,
   method: string = 'GET',
@@ -199,3 +234,4 @@ export const callCustomEndpoint = async (
     throw new Error(data.message || 'Custom endpoint call failed');
   return data;
 };
+
