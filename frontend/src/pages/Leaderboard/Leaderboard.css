@@ -405,7 +405,8 @@
   .leaderboard-container {
     padding: 25px 10px 10px 10px;
     min-width: 80vw;
-    min-height: 60vh;
+    max-height: 70vh;
+
   }
   
   
@@ -426,7 +427,7 @@
     font-size: 0.8rem;
   }
   .scrollable-list {
-    max-height: 70vh;
+    max-height: 40vh;
   }
   
   .leaderboard-table th {
