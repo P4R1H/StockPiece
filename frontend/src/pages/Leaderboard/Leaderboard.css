@@ -5,21 +5,20 @@
 /* Page and Container Styles */
 .page-container {
   padding: 1rem;
-  max-width: 575px;
-  min-height: 1vh;
-  margin: 0 auto;
+  min-width: 30vw;
+  margin: 2vh auto;
   background-size: cover;
-  min-height: 30vh;
+  min-height: 80vh;
   font-family: 'Pirata One', cursive;
   animation: floatIn 0.8s ease-out;
 }
 
 .leaderboard-container {
   position: relative;
+  min-height: 70vh;
   background: linear-gradient(45deg, #b8860b 0%, #daa520 20%, #ffd700 40%, #ffd700 60%, #daa520 80%, #b8860b 100%);
   background-size: cover;
   padding: 40px 25px 25px 25px; /* extra top padding to accommodate the title */
-  margin: 20px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
   border: 5px solid transparent;
   border-image: var(--primary-gradient) 1;
@@ -209,7 +208,7 @@
 
 /* Scrollable List */
 .scrollable-list {
-  max-height: 300px;
+  max-height: auto;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -262,7 +261,7 @@
 /* Force the third (empty) column to have a minimum width */
 .leaderboard-table th:nth-child(3),
 .leaderboard-table td:nth-child(3) {
-  min-width: 70px;
+  min-width: 90px;
 }
 
 .center-spinner-container {
@@ -400,8 +399,15 @@
 }
 
 @media screen and (max-width: 480px) {
+  .page-container {
+    min-width: 90vw;
+    min-height: 60vh;
+
+  }
   .leaderboard-container {
-    padding: 25px 10px 10px 10px;
+    margin-bottom: -20px;
+    min-height: 65vh;
+    max-height: 65vh;
   }
   
   .container-title .main-title {
