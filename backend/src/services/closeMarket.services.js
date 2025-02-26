@@ -9,7 +9,6 @@ import cache from "../utils/cache.js";
 import { CACHE_KEYS } from "../constants.js";
 
 const updatePriceService = async () => {
-
   cache.del(CACHE_KEYS.STOCK_STATISTICS);
 
   const latestChapterDoc = await ChapterRelease.findOne().sort({
@@ -71,7 +70,7 @@ const updatePriceService = async () => {
             currentValue: newValue,
             initialValue: stock.currentValue,
             baseQuantity: totalQuantity,
-          }
+          },
         },
       },
     };
@@ -114,7 +113,6 @@ const updatePriceService = async () => {
 
 //on chapter update we wil make a new array
 const closeMarketService = async () => {
-
   cache.del(CACHE_KEYS.STOCK_STATISTICS);
 
   const latestChapterDoc = await ChapterRelease.findOne().sort({

@@ -14,7 +14,7 @@ const releaseChapterService = async () => {
   }
 
   if (latestChapter && !latestChapter.isPriceUpdated) {
-    throw new ApiError(400,'price needs to updated before chapter release');
+    throw new ApiError(400, "price needs to updated before chapter release");
   }
 
   if (latestChapter && !latestChapter.canReleaseNext) {

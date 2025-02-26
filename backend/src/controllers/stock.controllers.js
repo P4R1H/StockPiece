@@ -16,10 +16,17 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapterPromise = ChapterRelease.findOne().sort({ releaseDate: -1 });
-  const userPromise = User.findById(req.user?._id).select("-password -refreshToken");
+  const latestChapterPromise = ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+  const userPromise = User.findById(req.user?._id).select(
+    "-password -refreshToken"
+  );
 
-  const [latestChapter, user] = await Promise.all([latestChapterPromise, userPromise]);
+  const [latestChapter, user] = await Promise.all([
+    latestChapterPromise,
+    userPromise,
+  ]);
 
   if (!latestChapter) {
     throw new ApiError(400, "no chapter is released yet");
@@ -30,7 +37,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
   }
 
   if (!user) {
-    throw new ApiError(400,'no user found');
+    throw new ApiError(400, "no user found");
   }
 
   //only allow single logged in user to try
@@ -114,10 +121,17 @@ const sellStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapterPromise = ChapterRelease.findOne().sort({ releaseDate: -1 });
-  const userPromise = User.findById(req.user?._id).select("-password -refreshToken");
+  const latestChapterPromise = ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+  const userPromise = User.findById(req.user?._id).select(
+    "-password -refreshToken"
+  );
 
-  const [latestChapter, user] = await Promise.all([latestChapterPromise, userPromise]);
+  const [latestChapter, user] = await Promise.all([
+    latestChapterPromise,
+    userPromise,
+  ]);
 
   if (!latestChapter) {
     throw new ApiError(400, "no chapter is released yet");
@@ -128,7 +142,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
   }
 
   if (!user) {
-    throw new ApiError(400,'no user found');
+    throw new ApiError(400, "no user found");
   }
 
   //only allow single logged in user to try

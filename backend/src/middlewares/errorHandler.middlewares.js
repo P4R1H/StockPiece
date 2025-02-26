@@ -35,8 +35,8 @@ const errorHandler = async (err, _req, res, _next) => {
           method: _req.method,
           query: _req.query,
           body: _req.body,
-          timestamp: new Date()
-        }
+          timestamp: new Date(),
+        },
       });
     } catch (logError) {
       console.error("Error logging failed:", logError);

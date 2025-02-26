@@ -7,16 +7,16 @@ import {
 } from "../controllers/stock.controllers.js";
 import { verifyAdminJWT, verifyJWT } from "../middlewares/auth.middlewares.js";
 
-const stockRoute = express.Router();
+const stockRouter = express.Router();
 
-stockRoute.route("/stocks").get(verifyAdminJWT, getAllStocks);
+stockRouter.route("/stocks").get(verifyAdminJWT, getAllStocks);
 
 //safe routes
-stockRoute.route("/value").patch(verifyAdminJWT, changeStockValue); //done
+stockRouter.route("/value").patch(verifyAdminJWT, changeStockValue); //done
 
-stockRoute.use(verifyJWT);
+stockRouter.use(verifyJWT);
 
-stockRoute.route("/transactions/buy").post(buyStock);
-stockRoute.route("/transactions/sell").post(sellStock);
+stockRouter.route("/transactions/buy").post(buyStock);
+stockRouter.route("/transactions/sell").post(sellStock);
 
-export default stockRoute;
+export default stockRouter;

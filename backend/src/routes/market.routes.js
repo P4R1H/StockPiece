@@ -32,9 +32,10 @@ marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
 marketRouter.route("/statistics/all").get(getAllStockStatistics);
-marketRouter.route("/chapters/next-release")
+marketRouter
+  .route("/chapters/next-release")
   .get(getNextChapterReleaseStatus)
-  .patch(toggleNextChapterRelease)
+  .patch(toggleNextChapterRelease);
 //done
 
 export default marketRouter;
