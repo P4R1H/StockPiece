@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from 'react';
+import { ErrorLog, Stock, LatestChapter, Stats, StockStats, AdminStockCardProps} from '../../types/Pages';
 import {
   adminLogin,
   adminLogout,
@@ -15,70 +16,13 @@ import {
   forcePriceUpdates,
   callCustomEndpoint,
   fetchErrors,
-  changeCharacterImage
+  changeCharacterImage,
+  toggleNextRelease,
+  getNextReleaseStatus
 } from './AdminServices';
 import './Admin.css'
 
-interface Stock {
-  id: string;
-  name: string;
-  tickerSymbol: string;
-  currentPrice: number;
-  image: string;
-}
 
-interface StockStats {
-  name: string;
-  oldValue: number;
-  newValue: number;
-  totalBuys: number;
-  totalSells: number;
-  totalQuantity: number;
-  _id: string;
-}
-
-interface Stats {
-  [key: string]: {
-    buys?: number;
-    sells?: number;
-    totalQuantity?: number;
-    newValue?: number;
-  };
-}
-
-interface LatestChapter {
-  chapter: number;
-  releaseDate: string;
-  windowEndDate: string;
-  isWindowClosed: boolean;
-}
-
-interface AdminStockCardProps {
-  stock: Stock;
-  stats: Stats;
-  onRemove: (name: string) => void;
-  onPriceUpdate: (name: string, price: number) => void;
-  onImageClick: (stock: Stock) => void;
-}
-
-// New interface for error objects
-interface ErrorLog {
-  _id: string;
-  message: string;
-  stack: string;
-  name: string;
-  statusCode: number;
-  isInternalServerError: boolean;
-  isHighPriority: boolean;
-  additionalInfo: {
-    path: string;
-    method: string;
-    timestamp: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
 
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
   stock,
@@ -253,6 +197,9 @@ const Admin: React.FC = () => {
   // Using a refreshCounter instead of a string-based triggerRefresh
   const [refreshCounter, setRefreshCounter] = useState(0);
   
+  // New state for next release status
+  const [nextReleaseStatus, setNextReleaseStatus] = useState<boolean>(false);
+  
   // Function to trigger a refresh by incrementing the counter
   const refreshData = () => setRefreshCounter(prev => prev + 1);
 
@@ -313,11 +260,12 @@ const Admin: React.FC = () => {
     if (isLoggedIn) {
       const loadData = async () => {
         try {
-          const [status, stocksData, statistics, chapter] = await Promise.all([
+          const [status, stocksData, statistics, chapter, autoReleaseStatus] = await Promise.all([
             getMarketStatus(),
             getStocks(),
             getMarketStatistics(),
-            getLatestChapter()
+            getLatestChapter(),
+            getNextReleaseStatus()
           ]);
           setMarketStatus(status);
           setStocks(stocksData);
@@ -334,6 +282,7 @@ const Admin: React.FC = () => {
           });
           setStats(processedStats);
           setLatestChapter(chapter);
+          setNextReleaseStatus(autoReleaseStatus);
         } catch (error) {
           console.error('Failed to load data:', error);
         }
@@ -449,6 +398,16 @@ const Admin: React.FC = () => {
     }
   };
 
+  const handleToggleNextRelease = async () => {
+    try {
+      await toggleNextRelease();
+      const newStatus = await getNextReleaseStatus();
+      setNextReleaseStatus(newStatus);
+    } catch (error) {
+      console.error('Failed to toggle next release:', error);
+    }
+  };
+
   const filteredStocks = stocks.filter(stock =>
     stock.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -530,6 +489,12 @@ const Admin: React.FC = () => {
               Release Chapter
             </button>
             <button 
+              onClick={handleToggleNextRelease} 
+              className="controlButton"
+            >
+              Toggle Release
+            </button>
+            <button 
               onClick={async () => {
                 await forcePriceUpdates();
                 refreshData();
@@ -553,6 +518,9 @@ const Admin: React.FC = () => {
             <p>Current Chapter: {latestChapter?.chapter}</p>
             <p>Released: {latestChapter ? new Date(latestChapter.releaseDate).toLocaleDateString() : 'N/A'}</p>
             <p>Closes: {latestChapter ? new Date(latestChapter.windowEndDate).toLocaleDateString() : 'N/A'}</p>
+            <p>Auto Release: <span className={nextReleaseStatus ? 'marketStatusOpen' : 'marketStatusClosed'}>
+              {nextReleaseStatus ? 'Enabled' : 'Disabled'}
+            </span></p>
           </div>
         </div>
 

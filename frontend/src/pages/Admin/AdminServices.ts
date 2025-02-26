@@ -1,3 +1,5 @@
+import { ErrorLog } from "../../types/Pages";
+
 export const adminLogin = async (
   username: string,
   password: string
@@ -180,25 +182,6 @@ export const forcePriceUpdates = async(): Promise<boolean> => {
   return data.success;
 }
 
-interface ErrorLog {
-  _id: string;
-  message: string;
-  stack: string;
-  name: string;
-  statusCode: number;
-  isInternalServerError: boolean;
-  isHighPriority: boolean;
-  additionalInfo: {
-    path: string;
-    method: string;
-    timestamp: string;
-  };
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-
 export const fetchErrors = async (type: string = 'all'): Promise<ErrorLog[]> => {
   try {
     const response = await fetch(`/api/v1/admin/errors?type=${type}`);
@@ -234,4 +217,28 @@ export const callCustomEndpoint = async (
     throw new Error(data.message || 'Custom endpoint call failed');
   return data;
 };
+
+
+export const toggleNextRelease = async (): Promise<boolean> => {
+  const response = await fetch('/api/v1/market/chapters/next-release', {
+    method: 'PATCH',
+    credentials: 'include',
+  });
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(data.message || 'Failed to toggle next release');
+  return data.success;
+};
+
+export const getNextReleaseStatus = async (): Promise<boolean> => {
+  const response = await fetch('/api/v1/market/chapters/next-release', {
+    method: 'GET',
+    credentials: 'include',
+  });
+  const data = await response.json();
+  if (!response.ok)
+    throw new Error(data.message || 'Failed to get next release status');
+  return data.data.canReleaseNext;
+};
+
 

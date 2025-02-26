@@ -121,7 +121,8 @@
 
 .buttonGroup {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 0.8rem;
 }
 
@@ -130,10 +131,13 @@
   border: 1px solid rgba(255, 215, 0, 0.3);
   color: #fff;
   padding: 10px;
-  width: 100%;
+  flex: 1 0 calc(50% - 0.8rem); 
+  min-width: 120px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .controlButton:hover {
@@ -663,6 +667,8 @@
   background: rgba(255, 0, 0, 0.1) !important;
   border: 1px solid rgba(255, 0, 0, 0.3) !important;
   color: #cc7474 !important;
+  flex: 1 0 100%; 
+  margin-top: 0.4rem;
 }
 
 .forceUpdateButton:hover {
