@@ -591,6 +591,7 @@
     height: 24px;
     padding: 3px;
   }
+  
 
   .fullscreen-icon {
     width: 14px;
@@ -615,11 +616,14 @@
 }
 
 .ios-orientation-tip {
+  max-width: fit-content;
   position: absolute;
   bottom: 10px;
   left: 10px;
   right: 10px;
   text-align: center;
+  margin: 0 auto;
+  width: 80%;
   padding: 5px;
   background-color: rgba(255, 245, 230, 0.5);
   border-radius: 5px;
@@ -634,4 +638,12 @@
 
 .ios-orientation-tip.fade-out {
   opacity: 0;
+}
+
+/* iOS fullscreen button position with higher specificity */
+.graph-container.fullscreen-ios .fullscreen-button {
+  position: absolute !important;
+  bottom: 10px !important;
+  left: 10px !important;
+  right: auto !important;
 }

@@ -428,14 +428,11 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const handleFullscreen = async () => {
     if (!isFullscreen) {
       try {
-        // Check for iOS only when needed
         const isIOS = /(iPad|iPhone|iPod)/g.test(navigator.userAgent);
         
-        // For non-iOS devices, use standard fullscreen API
         if (graphRef.current && !isIOS) {
           await graphRef.current.requestFullscreen();
           
-          // Orientation lock for supported devices
           if ('orientation' in screen && 'lock' in (screen.orientation as any)) {
             try {
               await (screen.orientation as any).lock('landscape');
@@ -443,11 +440,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
               console.error('Failed to lock screen orientation:', orientationErr);
             }
           }
-
         } else {
-          // iOS fullscreen-like approach
           if (graphRef.current) {
-            // Save original styles to restore later
             const originalStyles = {
               position: graphRef.current.style.position,
               top: graphRef.current.style.top,
@@ -457,15 +451,20 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
               zIndex: graphRef.current.style.zIndex
             };
             
-            // Store original styles for later restoration
             graphRef.current.dataset.originalStyles = JSON.stringify(originalStyles);
             
-            // Apply fullscreen-like styles
             graphRef.current.classList.add('fullscreen-ios');
+            
+            // Explicitly reposition the fullscreen button for iOS
+            const fsButton = graphRef.current.querySelector('.fullscreen-button') as HTMLElement;
+            if (fsButton) {
+              fsButton.style.left = '10px';
+              fsButton.style.right = 'auto';
+            }
             
             // Add iOS orientation tip
             const orientationTip = document.createElement('div');
-            orientationTip.innerText = "IOS doesn't let me from force landscape :(";
+            orientationTip.innerText = "IOS doesn't let me force landscape :(";
             orientationTip.id = 'ios-orientation-tip';
             orientationTip.className = 'ios-orientation-tip';
             
@@ -500,23 +499,29 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       setIsFullscreen(false);
     }
   };
-  
-  // Helper function to exit custom fullscreen on iOS
-  const exitCustomFullscreen = () => {
-    if (graphRef.current && graphRef.current.dataset.originalStyles) {
-      const originalStyles = JSON.parse(graphRef.current.dataset.originalStyles);
-      Object.assign(graphRef.current.style, originalStyles);
-      
-      // Remove iOS-specific class
-      graphRef.current.classList.remove('fullscreen-ios');
-      
-      // Remove orientation tip if it exists
-      const orientationTip = document.getElementById('ios-orientation-tip');
-      if (orientationTip && graphRef.current.contains(orientationTip)) {
-        graphRef.current.removeChild(orientationTip);
-      }
+
+const exitCustomFullscreen = () => {
+  if (graphRef.current && graphRef.current.dataset.originalStyles) {
+    const originalStyles = JSON.parse(graphRef.current.dataset.originalStyles);
+    Object.assign(graphRef.current.style, originalStyles);
+    
+    // Remove iOS-specific class
+    graphRef.current.classList.remove('fullscreen-ios');
+    
+    // Reset fullscreen button position
+    const fsButton = graphRef.current.querySelector('.fullscreen-button') as HTMLElement;
+    if (fsButton) {
+      fsButton.style.left = '';
+      fsButton.style.right = '10px';
     }
-  };
+    
+    // Remove orientation tip if it exists
+    const orientationTip = document.getElementById('ios-orientation-tip');
+    if (orientationTip && graphRef.current.contains(orientationTip)) {
+      graphRef.current.removeChild(orientationTip);
+    }
+  }
+};
   return (
     <div className={`graph-container ${isFullscreen ? 'fullscreen' : ''}`} ref={graphRef}>
       <div className="graph-controls">
