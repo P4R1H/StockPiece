@@ -8,6 +8,11 @@ const createCoupon = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Unauthorized request");
   }
 
+  //we also need to check if it is an super admin
+  if (!req.admin.isSuperAdmin) {
+    throw new ApiError(403, "only super admin access");
+  }
+
   const { code, amount, maxUsers, isFirstTimeOnly } = req.body;
 
   if (!code?.trim() || !amount || !maxUsers) {
