@@ -23,6 +23,16 @@ const CACHE_KEYS = {
   STOCK_STATISTICS: "stock_statistics_public",
 };
 
+const CRON_SCHEDULES = {
+  MONDAY: "0 0 * * 1",
+  TUESDAY: "0 0 * * 2",
+  WEDNESDAY: "0 0 * * 3",
+  THURSDAY: "0 0 * * 4",
+  FRIDAY: "0 0 * * 5",
+  SATURDAY: "0 0 * * 6",
+  SUNDAY: "0 0 * * 0",
+};
+
 export {
   DB_NAME,
   __dirname,
@@ -31,4 +41,5 @@ export {
   epsilon,
   decayFactor,
   CACHE_KEYS,
+  CRON_SCHEDULES,
 };

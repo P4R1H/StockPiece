@@ -9,6 +9,7 @@ import {
 } from "./services/closeMarket.services.js";
 import cron from "node-cron";
 import ErrorLog from "./models/errorLog.models.js";
+import { CRON_SCHEDULES } from "./constants.js";
 
 const PORT = process.env.PORT || 8000;
 let server;
@@ -44,7 +45,7 @@ const startServer = async () => {
 const setupCronJobs = () => {
   // Release chapter at 00:00AM every Thursday
   cron.schedule(
-    "0 0 * * 4",
+    CRON_SCHEDULES.THURSDAY,
     async () => {
       try {
         console.log("Starting release chapter service...");
@@ -75,7 +76,7 @@ const setupCronJobs = () => {
 
   // Close market at 00:00 every Tuesday
   cron.schedule(
-    "0 0 * * 2",
+    CRON_SCHEDULES.TUESDAY,
     async () => {
       try {
         console.log("Starting close market service...");
@@ -106,7 +107,7 @@ const setupCronJobs = () => {
 
   // Update price at 00:00 every Wednesday
   cron.schedule(
-    "0 0 * * 3",
+    CRON_SCHEDULES.WEDNESDAY,
     async () => {
       try {
         console.log("Starting update price service...");
