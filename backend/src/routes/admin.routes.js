@@ -19,8 +19,9 @@ adminRouter.route("/auth/login").post(adminLogin);
 //protected routes
 adminRouter.use(verifyAdminJWT);
 
-adminRouter.route("/auth/logout").post(adminLogout);
 adminRouter.route("/admins").post(createAdmin).delete(deleteAdmin);
+
+adminRouter.route("/auth/logout").post(adminLogout);
 adminRouter
   .route("/character-stocks")
   .post(upload.single("imageURL"), createCharacterStock)
@@ -30,8 +31,6 @@ adminRouter
   .route("/character-stocks/image")
   .patch(upload.single("imageURL"), updateStockImage);
 
-adminRouter
-  .route("/errors")
-  .get(getErrorLogs)
+adminRouter.route("/errors").get(getErrorLogs);
 
 export default adminRouter;

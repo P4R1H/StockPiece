@@ -4,7 +4,10 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/asyncHandler.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 import { defaultAvatarUrl } from "../constants.js";
-import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
+import {
+  uploadOnCloudinary,
+  deleteFromCloudinary,
+} from "../utils/cloudinary.utils.js";
 import ErrorLog from "../models/errorLog.models.js";
 
 //the super admin has already been registered we only need to have login
@@ -293,14 +296,14 @@ const getErrorLogs = asyncHandler(async (req, res) => {
     throw new ApiError(403, "Unauthorized access to error logs");
   }
 
-  const { type = 'all' } = req.query;
+  const { type = "all" } = req.query;
 
   const query = {};
 
   // Filter by error type
-  if (type === 'internal') {
+  if (type === "internal") {
     query.isInternalServerError = true;
-  } else if (type === 'highPriority') {
+  } else if (type === "highPriority") {
     query.isHighPriority = true;
   }
 
@@ -308,13 +311,15 @@ const getErrorLogs = asyncHandler(async (req, res) => {
     .sort({ createdAt: -1 })
     .select("-rawError"); // Exclude raw error for security
 
-  res.status(200).json(
-    new ApiResponse(
-      200, 
-      { errors }, 
-      `${type} error logs fetched successfully`
-    )
-  );
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { errors },
+        `${type} error logs fetched successfully`
+      )
+    );
 });
 
 export {
@@ -325,5 +330,5 @@ export {
   deleteCharacterStockTemp,
   deleteAdmin,
   adminLogout,
-  getErrorLogs
+  getErrorLogs,
 };

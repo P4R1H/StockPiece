@@ -30,10 +30,10 @@ const errorSchema = new mongoose.Schema(
     },
     additionalInfo: {
       type: mongoose.Schema.Types.Mixed,
-    }
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 

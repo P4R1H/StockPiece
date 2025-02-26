@@ -385,11 +385,7 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
   const { orderBy = "totalValue" } = req.body;
-  const validOrders = [
-    "accountValue",
-    "stockValue",
-    "totalValue",
-  ];
+  const validOrders = ["accountValue", "stockValue", "totalValue"];
 
   // Validate orderBy parameter
   if (!validOrders.includes(orderBy)) {

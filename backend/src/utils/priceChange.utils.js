@@ -1,5 +1,6 @@
 import { stockStatistics } from "./stockStats.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
+import ApiError from "./ApiError.utils.js";
 
 //this will return
 // priceUpdateMap.set(name, {
@@ -12,7 +13,7 @@ const priceChangeByAlgorithm = async (chapter) => {
   try {
     const [stockMap, allStocks] = await Promise.all([
       stockStatistics(chapter),
-      CharacterStock.find().lean()
+      CharacterStock.find().lean(),
     ]);
 
     if (!stockMap || !allStocks) {
@@ -23,7 +24,11 @@ const priceChangeByAlgorithm = async (chapter) => {
 
     allStocks.forEach((stock) => {
       const stockID = stock._id.toString();
-      const stockStats = stockMap.get(stockID) || { totalBuys: 0, totalSells: 0, totalQuantity: 0 };
+      const stockStats = stockMap.get(stockID) || {
+        totalBuys: 0,
+        totalSells: 0,
+        totalQuantity: 0,
+      };
 
       const priceUpdate = {
         name: stock.name,
@@ -36,7 +41,7 @@ const priceChangeByAlgorithm = async (chapter) => {
           stockStats.totalSells
         ),
         totalBuys: stockStats.totalBuys,
-        totalSells: stockStats.totalSells
+        totalSells: stockStats.totalSells,
       };
 
       priceUpdateMap.set(stockID, priceUpdate);
@@ -71,19 +76,24 @@ function calculatePriceUpdate(
   const buyPressure = (boughtThisChap - soldThisChap) / totalVolume;
   const volumeRatio = totalVolume / effectiveCirculation;
   const volumeImpact = Math.log(1 + volumeRatio) * BASE_VOLUME_IMPACT;
-  const priceDampener = 1 / (1 + Math.log(1 + currentPrice / PRICE_DAMPENER_FACTOR));
+  const priceDampener =
+    1 / (1 + Math.log(1 + currentPrice / PRICE_DAMPENER_FACTOR));
 
   let percentChange;
   if (buyPressure >= 0) {
     const extraRiseFactor = Math.max(volumeRatio, 1);
-    const maxRisePercent = (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) * extraRiseFactor;
+    const maxRisePercent =
+      (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) * extraRiseFactor;
     const rawPercentChange = buyPressure * volumeImpact * priceDampener * 100;
     percentChange = Math.min(rawPercentChange, maxRisePercent);
   } else {
     const sellRatio = soldThisChap / totalVolume;
     const dropMultiplier = 1 + Math.max(0, sellRatio - SELL_PENALTY_THRESHOLD);
-    const rawPercentChange = buyPressure * volumeImpact * priceDampener * 100 * dropMultiplier;
-    const maxDropPercent = (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) * DROP_MULTIPLIER_BASE;
+    const rawPercentChange =
+      buyPressure * volumeImpact * priceDampener * 100 * dropMultiplier;
+    const maxDropPercent =
+      (MAX_RISE_BASE / (1 + Math.log(1 + currentPrice / 50))) *
+      DROP_MULTIPLIER_BASE;
     percentChange = Math.max(rawPercentChange, -maxDropPercent);
   }
 

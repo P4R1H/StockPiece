@@ -7,12 +7,11 @@ const profanityPatterns = [
   // Pattern for "faggot" with common leetspeak substitutions and inserted symbols.
   /f[\W_]*[a@4][\W_]*[g9][\W_]*[g9][\W_]*[o0][\W_]*t/gi,
   // Pattern for "fag" using word boundaries to ensure it matches the full word.
-  /\bfag\b/gi
+  /\bfag\b/gi,
 ];
 
-
 function containsProfanity(text) {
-  return profanityPatterns.some(pattern => pattern.test(text));
+  return profanityPatterns.some((pattern) => pattern.test(text));
 }
 
 export default containsProfanity;
