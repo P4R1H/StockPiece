@@ -45,7 +45,7 @@ body {
 }
 
 .market-logo:hover {
-  animation: flagShake 0.5s ease-in-out infinite;
+  animation: flagShake 0.5s ease-in-out;
 }
 
 /* One Piece Stock Market Container */
@@ -88,9 +88,6 @@ body {
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
-.pirate-flag:hover {
-  animation: flagShake 0.5s ease-in-out infinite;
-}
 
 @keyframes flagShake {
   0%, 100% { transform: translateX(0) rotate(0deg); }
