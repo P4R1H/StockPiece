@@ -11,6 +11,7 @@ import {
   getAllStockStatistics,
   toggleNextChapterRelease,
   getNextChapterReleaseStatus,
+  getAllChapters,
 } from "../controllers/market.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
@@ -36,6 +37,7 @@ marketRouter
   .route("/chapters/next-release")
   .get(getNextChapterReleaseStatus)
   .patch(toggleNextChapterRelease);
+marketRouter.route("/chapters").get(getAllChapters);
 //done
 
 export default marketRouter;

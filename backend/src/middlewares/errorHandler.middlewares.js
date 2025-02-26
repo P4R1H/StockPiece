@@ -29,7 +29,7 @@ const errorHandler = async (err, _req, res, _next) => {
         statusCode,
         isInternalServerError: statusCode === 500,
         isHighPriority,
-        rawError: isApiError ? undefined : err,
+        rawError: err,
         additionalInfo: {
           path: _req.path,
           method: _req.method,
