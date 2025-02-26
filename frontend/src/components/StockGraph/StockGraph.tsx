@@ -645,19 +645,15 @@ const exitCustomFullscreen = () => {
         </div>
       </div>
       <div className="chart-wrapper">
-        {isLoading ? (
+              {isLoading ? (
               <div className="graph-spinner-overlay">
               <div className="spinner"></div>
             </div>
-      ) : !hasData ? (
-          <div className="no-data-message">
-            <p>History will be shown from the next chapter</p>
-          </div>
         ) : (
           <>
             {usingMockData && (
               <div className="mock-data-notice">
-                <p>Actual history will be shown from next chapter</p>
+                <p>This is an example history. Actual history will be shown from next chapter</p>
               </div>
             )}
             <Line 
@@ -668,6 +664,7 @@ const exitCustomFullscreen = () => {
             />
           </>
         )}
+
       </div>
       <div className="fullscreen-button">
         <button onClick={handleFullscreen}>
