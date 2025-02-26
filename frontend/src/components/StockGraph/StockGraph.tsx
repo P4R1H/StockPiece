@@ -464,7 +464,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
             
             // Add iOS orientation tip
             const orientationTip = document.createElement('div');
-            orientationTip.innerText = "IOS doesn't let me force landscape :(";
+            orientationTip.innerText = "IOS doesn't support fullscreen :( Might not work well."
             orientationTip.id = 'ios-orientation-tip';
             orientationTip.className = 'ios-orientation-tip';
             

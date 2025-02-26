@@ -186,6 +186,33 @@
   box-shadow: 0 0 10px var(--gold);
 }
 
+/* Coupon Input Animation */
+.coupon-input {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Coupon Toggle */
+.coupon-toggle {
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--gold);
+  opacity: 0.6;
+  font-size: 0.7rem;
+  text-align: center;
+  margin-top: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.coupon-toggle:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
 /* Pirate Button */
 .pirate-button {
   width: 100%;

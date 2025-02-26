@@ -30,13 +30,13 @@ export const logoutUser = async (): Promise<void> => {
   }
 };
 
-export const loginUser = async (username: string, password: string): Promise<LoginResponse> => {
+export const loginUser = async (username: string, password: string, couponCode: string): Promise<LoginResponse> => {
     const response = await fetch('/api/v1/user/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, couponCode }),
     });
   
     const data = await response.json();

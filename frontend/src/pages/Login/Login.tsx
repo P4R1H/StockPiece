@@ -11,21 +11,27 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const [formState, setFormState] = useState({
     username: '',
     password: '',
+    couponCode: '',
+    showCouponField: false,
     activeTab: 'login' as 'login' | 'register',
     isLoading: false,
     error: null as string | null,
-    validationErrors: {} as { username?: string; password?: string }
+    validationErrors: {} as { username?: string; password?: string; couponCode?: string }
   });
 
   const navigate = useNavigate();
 
   const isValid = useMemo(() => {
-    const errors: { username?: string; password?: string } = {};
+    const errors: { username?: string; password?: string; couponCode?: string } = {};
     if (formState.username.length < 3 && formState.username.length != 0) errors.username = 'Username must be at least 3 characters long.';
     if (formState.password.length < 6 && formState.password.length != 0) errors.password = 'Password must be at least 6 characters long.';
     setFormState(prev => ({ ...prev, validationErrors: errors }));
     return Object.keys(errors).length === 0;
   }, [formState.username, formState.password]);
+
+  const toggleCouponField = useCallback(() => {
+    setFormState(prev => ({ ...prev, showCouponField: !prev.showCouponField }));
+  }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,18 +40,19 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     setFormState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const apiCall = formState.activeTab === 'login' ? loginUser : registerUser;
-      await apiCall(formState.username, formState.password);
-
       if (formState.activeTab === 'login') {
+        await loginUser(formState.username, formState.password, formState.couponCode);
         onLogin();
         navigate('/');
       } else {
+        await registerUser(formState.username, formState.password);
         setFormState(prev => ({
           ...prev,
           activeTab: 'login',
           username: '',
           password: '',
+          couponCode: '',
+          showCouponField: false,
           isLoading: false
         }));
       }
@@ -56,7 +63,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         isLoading: false
       }));
     }
-  }, [formState.activeTab, formState.username, formState.password, isValid, navigate, onLogin]);
+  }, [formState.activeTab, formState.username, formState.password, formState.couponCode, isValid, navigate, onLogin]);
 
   return (
     <div className="login-container">
@@ -128,11 +135,31 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             )}
           </div>
 
+          {formState.showCouponField && (
+            <div className="input-group pirate-input coupon-input">
+              <input
+                type="text"
+                value={formState.couponCode}
+                onChange={(e) => setFormState(prev => ({ ...prev, couponCode: e.target.value }))}
+                placeholder="Enter coupon code"
+              />
+              {formState.validationErrors.couponCode && (
+                <div className="tooltip">{formState.validationErrors.couponCode}</div>
+              )}
+            </div>
+          )}
+
           <button type="submit" className="login-button pirate-button" disabled={formState.isLoading}>
             {formState.isLoading ? 'Setting Sail...' : formState.activeTab === 'login' ? 'Hoist the Flag!' : 'Join the Crew!'}
             <div className="button-sheen"></div>
           </button>
         </form>
+
+        {formState.activeTab === 'login' && (
+          <div className="coupon-toggle" onClick={toggleCouponField}>
+            Have a coupon?
+          </div>
+        )}
       </div>
     </div>
   );
