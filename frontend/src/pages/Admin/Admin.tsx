@@ -22,8 +22,6 @@ import {
 } from './AdminServices';
 import './Admin.css'
 
-
-
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
   stock,
   stats,
