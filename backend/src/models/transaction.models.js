@@ -10,6 +10,7 @@ const transactionSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "CharacterStock",
     required: true,
+    index: true,
   },
   quantity: {
     type: Number,
@@ -27,6 +28,7 @@ const transactionSchema = new mongoose.Schema({
   chapterPurchasedAt: {
     type: Number,
     required: true,
+    index: true
   },
 });
 

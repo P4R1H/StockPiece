@@ -13,12 +13,14 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       minLength: [3, "username should be minimum 3 characters"],
+      maxLength: [30, "username cannot exceed 30 characters"],
       index: true,
     },
     password: {
       type: String,
       required: [true, "password is required"],
       minLength: [6, "password should be minimum 6 characters"],
+      maxLength: [128, "password cannot exceed 128 characters"],
     },
     avatar: {
       type: String, //cloudinary

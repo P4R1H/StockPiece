@@ -42,9 +42,9 @@ const startServer = async () => {
 };
 
 const setupCronJobs = () => {
-  // Release chapter at 00:00 every Friday
+  // Release chapter at 00:00AM every Thursday
   cron.schedule(
-    "0 0 * * 5",
+    "0 0 * * 4",
     async () => {
       try {
         console.log("Starting release chapter service...");
