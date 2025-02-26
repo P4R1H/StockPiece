@@ -66,7 +66,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     gcTime: 1000 * 60 * 30
   });
 
-  const initialInvestment = 2500;
+  const initialInvestment = 5000;
   const portfolioStats = useMemo(() => {
     const netWorthValue = portfolio.stockValue + portfolio.cash;
     return {

@@ -150,6 +150,13 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   // Process stock history data
   const stockHistory = React.useMemo(() => {
     if (!stockHistoryData?.success) {
+      return {} // Return empty object if request failed
+    }
+    
+    // Check if data is empty (no chapters or empty chapters)
+    const hasData = Object.keys(stockHistoryData.data).length > 0;
+    
+    if (!hasData) {
       setUsingMockData(true);
       return generateMockStockHistory();
     }
@@ -190,19 +197,34 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   // Set available chapters when stock history data changes
   useEffect(() => {
     if (stockHistoryData?.success) {
-      const sortedChapters = Object.keys(stockHistoryData.data)
-        .map(chapter => parseInt(chapter))
-        .sort((a, b) => a - b)
+      const chapters = Object.keys(stockHistoryData.data);
       
-      setAvailableChapters(sortedChapters)
-      
-      // Set initial chapter range
-      if (sortedChapters.length > 0 && chapterStart === 0 && chapterEnd === 0) {
-        setChapterStart(sortedChapters[0])
-        setChapterEnd(sortedChapters[sortedChapters.length - 1])
+      if (chapters.length === 0) {
+        // No real data available, use mock data chapters
+        const mockChapters = Array.from({length: 20}, (_, i) => i + 1);
+        setAvailableChapters(mockChapters);
+        
+        // Set initial chapter range for mock data
+        if (chapterStart === 0 && chapterEnd === 0) {
+          setChapterStart(1);
+          setChapterEnd(20);
+        }
+      } else {
+        // Use real data chapters
+        const sortedChapters = chapters
+          .map(chapter => parseInt(chapter))
+          .sort((a, b) => a - b);
+        
+        setAvailableChapters(sortedChapters);
+        
+        // Set initial chapter range
+        if (sortedChapters.length > 0 && chapterStart === 0 && chapterEnd === 0) {
+          setChapterStart(sortedChapters[0]);
+          setChapterEnd(sortedChapters[sortedChapters.length - 1]);
+        }
       }
     } else if (usingMockData && availableChapters.length === 0) {
-      // Set mock chapters 1-20
+      // Set mock chapters for when API response failed
       const mockChapters = Array.from({length: 20}, (_, i) => i + 1);
       setAvailableChapters(mockChapters);
       
