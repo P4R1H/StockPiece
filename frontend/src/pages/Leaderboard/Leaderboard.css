@@ -297,7 +297,7 @@
     align-items: center;
     margin-top: 10px;
     min-width: 80vw;
-    min-height: 80vh;
+    min-height: 70vh;
   }
   
   .leaderboard-container {
@@ -405,11 +405,12 @@
   .leaderboard-container {
     padding: 25px 10px 10px 10px;
     min-width: 80vw;
-    min-height: 80vh;
+    min-height: 60vh;
   }
   
+  
   .container-title .main-title {
-    font-size: 1.4rem;
+    font-size: 1.4rem !important;
   }
   
   .luffy-background {
