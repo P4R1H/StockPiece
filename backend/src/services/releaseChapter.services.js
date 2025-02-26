@@ -17,7 +17,11 @@ const releaseChapterService = async () => {
     throw new ApiError(400,'price needs to updated before chapter release');
   }
 
-  const newChapterNumber = latestChapter ? latestChapter.chapter + 1 : 1;
+  if (latestChapter && !latestChapter.canReleaseNext) {
+    throw new ApiError(400, "Next chapter release is not allowed at this time");
+  }
+
+  const newChapterNumber = latestChapter ? latestChapter.chapter + 1 : 1141;
   const releaseDate = new Date();
   const windowEndDate = new Date(releaseDate);
   windowEndDate.setDate(windowEndDate.getDate() + 3);

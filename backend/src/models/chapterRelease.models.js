@@ -22,6 +22,10 @@ const chapterReleaseSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  canReleaseNext: {
+    type: Boolean,
+    default: true
+  }
 });
 
 const ChapterRelease = mongoose.model("ChapterRelease", chapterReleaseSchema);

@@ -5,6 +5,7 @@ import initializeAdmin from "./services/initializeAdmin.services.js";
 import releaseChapterService from "./services/releaseChapter.services.js";
 import { closeMarketService, updatePriceService } from "./services/closeMarket.services.js";
 import cron from "node-cron";
+import ErrorLog from "./models/errorLog.models.js";
 
 const PORT = process.env.PORT || 8000;
 let server;
@@ -44,8 +45,22 @@ const setupCronJobs = () => {
       console.log("Starting release chapter service...");
       await releaseChapterService();
       console.log("Chapter released successfully");
-    } catch (error) {
-      console.error("Error during release chapter:", error);
+    } catch (err) {
+      console.error("Error during release chapter:", err);
+      try {
+        await ErrorLog.create({
+          message: err.message,
+          stack: err.stack,
+          name: err.name || "UnknownError",
+          statusCode: 500,
+          isHighPriority: true,
+          additionalInfo: {
+            timestamp: new Date()
+          }
+        });
+      } catch (logError) {
+        console.error("Error logging failed:", logError);
+      }
     }
   },{
     timezone: "Asia/Kolkata"
@@ -59,6 +74,20 @@ const setupCronJobs = () => {
       console.log("Market closed successfully");
     } catch (error) {
       console.error("Error during close market:", error);
+      try {
+        await ErrorLog.create({
+          message: err.message,
+          stack: err.stack,
+          name: err.name || "UnknownError",
+          statusCode: 500,
+          isHighPriority: true,
+          additionalInfo: {
+            timestamp: new Date()
+          }
+        });
+      } catch (logError) {
+        console.error("Error logging failed:", logError);
+      }
     }
   },{
     timezone: "Asia/Kolkata"
@@ -72,6 +101,20 @@ const setupCronJobs = () => {
       console.log("Price updated successfully");
     } catch (error) {
       console.error("Error during update price:", error);
+      try {
+        await ErrorLog.create({
+          message: err.message,
+          stack: err.stack,
+          name: err.name || "UnknownError",
+          statusCode: 500,
+          isHighPriority: true,
+          additionalInfo: {
+            timestamp: new Date()
+          }
+        });
+      } catch (logError) {
+        console.error("Error logging failed:", logError);
+      }
     }
   },{
     timezone: "Asia/Kolkata"

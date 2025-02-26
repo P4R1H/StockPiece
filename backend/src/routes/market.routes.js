@@ -9,6 +9,8 @@ import {
   openMarket,
   postUpdatePrice,
   getAllStockStatistics,
+  toggleNextChapterRelease,
+  getNextChapterReleaseStatus,
 } from "../controllers/market.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
@@ -30,6 +32,9 @@ marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
 marketRouter.route("/statistics").get(getStockStatistics); //done
 marketRouter.route("/statistics/all").get(getAllStockStatistics);
+marketRouter.route("/chapters/next-release")
+  .get(getNextChapterReleaseStatus)
+  .patch(toggleNextChapterRelease)
 //done
 
 export default marketRouter;

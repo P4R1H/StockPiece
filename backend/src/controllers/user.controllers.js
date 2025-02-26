@@ -11,6 +11,7 @@ import {
 import jwt from "jsonwebtoken";
 import isWindowOpen from "../utils/windowStatus.js";
 import Coupon from "../models/coupon.models.js";
+import containsProfanity from "../utils/profanity.utils.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -78,6 +79,11 @@ const registerUser = asyncHandler(async (req, res, _) => {
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
+  }
+
+  // Check for profanity in username
+  if (containsProfanity(username)) {
+    throw new ApiError(400, "Username contains inappropriate content");
   }
 
   const existingUser = await User.findOne({ username });
