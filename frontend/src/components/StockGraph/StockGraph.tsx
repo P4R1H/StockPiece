@@ -51,6 +51,53 @@ const getColorForCharacter = (name: string) => {
   return `hsl(${hue}, 65%, 50%)`
 }
 
+///////////////////////////////////////
+//  TEMPORARY, TO REMOVE LATER !!!! //
+/////////////////////////////////////
+
+const generateMockStockHistory = (stocks: any[], numChapters = 20) => {
+  const mockHistory: Record<string, { chapter: number, value: number }[]> = {};
+  
+  // Initialize with starting prices
+  stocks.forEach(stock => {
+    // Base value is related to popularity - more popular characters have higher starting values
+    const baseValue = 1000 + (stock.popularity || 5) * 200;
+    mockHistory[stock.id] = [];
+    
+    // Generate price history with realistic trends
+    let currentValue = baseValue;
+    
+    for (let chapter = 1; chapter <= numChapters; chapter++) {
+      // Create a general trend (up or down) that lasts several chapters
+      const trendStrength = Math.sin(chapter / (3 + Math.random() * 2)) * 0.7;
+      
+      // Add some randomness to each chapter's movement
+      const randomFactor = (Math.random() * 2 - 1) * 0.3;
+      
+      // Combine trend and randomness
+      const changePercent = trendStrength + randomFactor;
+      
+      // Update value with the percent change (limited to avoid extreme changes)
+      currentValue *= (1 + changePercent * 0.15);
+      
+      // Ensure value stays positive and reasonable
+      currentValue = Math.max(100, currentValue);
+      
+      mockHistory[stock.id].push({
+        chapter,
+        value: Math.round(currentValue)
+      });
+    }
+  });
+  
+  return mockHistory;
+};
+
+///////////////////////////////////////
+//  TEMPORARY, TO REMOVE LATER !!!! //
+/////////////////////////////////////
+
+
 const DualRangeSlider: React.FC<{ min: number; max: number; start: number; end: number; onChange: (start: number, end: number) => void }> = ({ min, max, start, end, onChange }) => {
   const [localStart, setLocalStart] = useState(start)
   const [localEnd, setLocalEnd] = useState(end)
@@ -116,6 +163,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const graphRef = useRef<HTMLDivElement>(null)
   const [isFullscreen, setIsFullscreen] = useState(false)
   const [availableChapters, setAvailableChapters] = useState<number[]>([])
+  const [usingMockData, setUsingMockData] = useState<boolean>(false);
 
   const { data: stockHistoryData, isLoading } = useQuery<StockHistoryResponse>({
     queryKey: ['stockHistory'],
@@ -133,8 +181,13 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
 
   // Process stock history data
   const stockHistory = React.useMemo(() => {
-    if (!stockHistoryData?.success) return {}
+    if (!stockHistoryData?.success) {
+      // Generate mock data when real data isn't available
+      setUsingMockData(true);
+      return generateMockStockHistory(stocks);
+    }
     
+    setUsingMockData(false);
     const processedHistory: Record<string, { chapter: number, value: number }[]> = {}
     const chapters: number[] = []
     
@@ -181,8 +234,18 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         setChapterStart(sortedChapters[0])
         setChapterEnd(sortedChapters[sortedChapters.length - 1])
       }
+    } else if (usingMockData && availableChapters.length === 0) {
+      // Set mock chapters 1-20
+      const mockChapters = Array.from({length: 20}, (_, i) => i + 1);
+      setAvailableChapters(mockChapters);
+      
+      // Set initial chapter range for mock data
+      if (chapterStart === 0 && chapterEnd === 0) {
+        setChapterStart(1);
+        setChapterEnd(20);
+      }
     }
-  }, [stockHistoryData, chapterStart, chapterEnd])
+  }, [stockHistoryData, chapterStart, chapterEnd, usingMockData])
 
   useEffect(() => {
     const imageMap: Record<string, HTMLImageElement> = {}
@@ -591,13 +654,20 @@ const exitCustomFullscreen = () => {
             <p>History will be shown from the next chapter</p>
           </div>
         ) : (
-          <Line 
-            key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
-            data={{ labels, datasets }} 
-            options={options} 
-            plugins={plugins} 
-          />
-        ) }
+          <>
+            {usingMockData && (
+              <div className="mock-data-notice">
+                <p>Actual history will be shown from next chapter</p>
+              </div>
+            )}
+            <Line 
+              key={`chart-${chapterStart}-${chapterEnd}-${chapterScale}`}
+              data={{ labels, datasets }} 
+              options={options} 
+              plugins={plugins} 
+            />
+          </>
+        )}
       </div>
       <div className="fullscreen-button">
         <button onClick={handleFullscreen}>
