@@ -16,6 +16,7 @@ import { Line } from 'react-chartjs-2'
 import { PriceHistoryGraphProps } from '../../types/Components'
 import { Expand, Shrink } from 'lucide-react'
 import './StockGraph.css'
+import { mockHistory } from '../../assets/data/sampleStocks'
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend)
 
@@ -55,41 +56,7 @@ const getColorForCharacter = (name: string) => {
 //  TEMPORARY, TO REMOVE LATER !!!! //
 /////////////////////////////////////
 
-const generateMockStockHistory = (stocks: any[], numChapters = 20) => {
-  const mockHistory: Record<string, { chapter: number, value: number }[]> = {};
-  
-  // Initialize with starting prices
-  stocks.forEach(stock => {
-    // Base value is related to popularity - more popular characters have higher starting values
-    const baseValue = 1000 + (stock.popularity || 5) * 200;
-    mockHistory[stock.id] = [];
-    
-    // Generate price history with realistic trends
-    let currentValue = baseValue;
-    
-    for (let chapter = 1; chapter <= numChapters; chapter++) {
-      // Create a general trend (up or down) that lasts several chapters
-      const trendStrength = Math.sin(chapter / (3 + Math.random() * 2)) * 0.7;
-      
-      // Add some randomness to each chapter's movement
-      const randomFactor = (Math.random() * 2 - 1) * 0.3;
-      
-      // Combine trend and randomness
-      const changePercent = trendStrength + randomFactor;
-      
-      // Update value with the percent change (limited to avoid extreme changes)
-      currentValue *= (1 + changePercent * 0.15);
-      
-      // Ensure value stays positive and reasonable
-      currentValue = Math.max(100, currentValue);
-      
-      mockHistory[stock.id].push({
-        chapter,
-        value: Math.round(currentValue)
-      });
-    }
-  });
-  
+const generateMockStockHistory = () => {
   return mockHistory;
 };
 
@@ -182,9 +149,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   // Process stock history data
   const stockHistory = React.useMemo(() => {
     if (!stockHistoryData?.success) {
-      // Generate mock data when real data isn't available
       setUsingMockData(true);
-      return generateMockStockHistory(stocks);
+      return generateMockStockHistory();
     }
     
     setUsingMockData(false);
