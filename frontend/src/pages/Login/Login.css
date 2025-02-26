@@ -186,14 +186,14 @@
   box-shadow: 0 0 10px var(--gold);
 }
 
-/* Coupon Input Animation */
-.coupon-input {
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Coupon Container and Animation */
+.coupon-container {
+  margin-top: 0.5rem;
+  margin-bottom: -10px;
+  text-align: center;
+  height: 20px;
+  position: relative;
+  transition: all 0.3s ease;
 }
 
 /* Coupon Toggle */
@@ -202,16 +202,50 @@
   color: var(--gold);
   opacity: 0.6;
   font-size: 0.7rem;
-  text-align: center;
-  margin-top: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  display: inline-block;
 }
 
 .coupon-toggle:hover {
   opacity: 1;
   text-decoration: underline;
 }
+
+/* Coupon Input Container */
+.coupon-input-container {
+  animation: expandWidth 0.3s ease-in-out;
+  position: relative;
+  display: inline-block;
+  width: 160px;
+  max-width: 100%;
+}
+
+@keyframes expandWidth {
+  from { width: 0; opacity: 0; }
+  to { width: 160px; opacity: 1; }
+}
+
+/* Coupon Field */
+.coupon-field {
+  font-family: 'Pirata One', monospace;
+  width: 100%;
+  padding: 0.2rem 0.4rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  color: var(--gold);
+  font-size: 0.65rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.coupon-field:focus {
+  outline: none;
+}
+
 
 /* Pirate Button */
 .pirate-button {
@@ -308,4 +342,55 @@
     padding: 0.5rem 1rem;
     font-size: 1rem;
   }
+
+  .coupon-container {
+    margin-top: 0.3rem;
+    margin-bottom: -10px;
+    text-align: center;
+    height: 20px;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  
+  .coupon-toggle:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+  
+  /* Coupon Input Container */
+  .coupon-input-container {
+    animation: expandWidth 0.3s ease-in-out;
+    position: relative;
+    display: inline-block;
+    width: 180px;
+    max-width: 100%;
+  }
+  
+  @keyframes expandWidth {
+    from { width: 0; opacity: 0; }
+    to { width: 180px; opacity: 1; }
+  }
+  
+  /* Coupon Field */
+  .coupon-field {
+    font-family: 'Pirata One', monospace;
+    width: 90%;
+    padding: 0.2rem 0.3rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--gold);
+    border-radius: 6px;
+    color: var(--gold);
+    font-size: 0.65rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+    box-sizing: border-box;
+  }
+  
+  .coupon-field:focus {
+    outline: none;
+  }
+  
 }
+

@@ -12,7 +12,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     username: '',
     password: '',
     couponCode: '',
-    showCouponField: false,
+    isCouponActive: false,
     activeTab: 'login' as 'login' | 'register',
     isLoading: false,
     error: null as string | null,
@@ -30,8 +30,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   }, [formState.username, formState.password]);
 
   const toggleCouponField = useCallback(() => {
-    setFormState(prev => ({ ...prev, showCouponField: !prev.showCouponField }));
-  }, []);
+    if (!formState.isCouponActive) {
+      setFormState(prev => ({ ...prev, isCouponActive: true }));
+    }
+  }, [formState.isCouponActive]);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,7 +54,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           username: '',
           password: '',
           couponCode: '',
-          showCouponField: false,
+          isCouponActive: false,
           isLoading: false
         }));
       }
@@ -135,20 +137,6 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
             )}
           </div>
 
-          {formState.showCouponField && (
-            <div className="input-group pirate-input coupon-input">
-              <input
-                type="text"
-                value={formState.couponCode}
-                onChange={(e) => setFormState(prev => ({ ...prev, couponCode: e.target.value }))}
-                placeholder="Enter coupon code"
-              />
-              {formState.validationErrors.couponCode && (
-                <div className="tooltip">{formState.validationErrors.couponCode}</div>
-              )}
-            </div>
-          )}
-
           <button type="submit" className="login-button pirate-button" disabled={formState.isLoading}>
             {formState.isLoading ? 'Setting Sail...' : formState.activeTab === 'login' ? 'Hoist the Flag!' : 'Join the Crew!'}
             <div className="button-sheen"></div>
@@ -156,8 +144,31 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         </form>
 
         {formState.activeTab === 'login' && (
-          <div className="coupon-toggle" onClick={toggleCouponField}>
-            Have a coupon?
+          <div className={`coupon-container ${formState.isCouponActive ? 'active' : ''}`}>
+            {!formState.isCouponActive ? (
+              <div className="coupon-toggle" onClick={toggleCouponField}>
+          Have a coupon?
+              </div>
+            ) : (
+              <div className="coupon-input-container">
+          <input
+            type="text"
+            value={formState.couponCode}
+            onChange={(e) => setFormState(prev => ({ ...prev, couponCode: e.target.value }))}
+            placeholder="Enter coupon code"
+            className="coupon-field"
+            autoFocus
+            onBlur={() => {
+              if (!formState.couponCode.trim()) {
+                setFormState(prev => ({ ...prev, isCouponActive: false }));
+              }
+            }}
+          />
+          {formState.validationErrors.couponCode && (
+            <div className="tooltip">{formState.validationErrors.couponCode}</div>
+          )}
+              </div>
+            )}
           </div>
         )}
       </div>
