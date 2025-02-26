@@ -28,11 +28,11 @@ const userSchema = new mongoose.Schema(
     },
     accountValue: {
       type: Number,
-      default: 10000,
+      default: 2500,
     },
     prevNetWorth: {
       type: Number,
-      default: 10000,
+      default: 2500,
     },
     ownedStocks: {
       type: [
@@ -54,6 +54,10 @@ const userSchema = new mongoose.Schema(
     },
     refreshToken: {
       type: String,
+    },
+    hasUsedReferral: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

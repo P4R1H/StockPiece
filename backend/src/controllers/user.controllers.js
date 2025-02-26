@@ -12,6 +12,7 @@ import jwt from "jsonwebtoken";
 import isWindowOpen from "../utils/windowStatus.js";
 import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
+import Transaction from "../models/transaction.models.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -23,30 +24,38 @@ const verifyCoupon = async (couponCode, user) => {
     throw new ApiError(404, "Invalid coupon code");
   }
 
+  // Check if user has already used a referral code
+  if (coupon.couponType === "REFERRAL" && user.hasUsedReferral) {
+    throw new ApiError(400, "You have already used a referral code");
+  }
+
   // Check if user has already used this coupon
   if (coupon.usedBy.includes(user._id)) {
-    throw new ApiError(400, "Coupon already used");
+    throw new ApiError(400, "Coupon already used by you");
   }
 
   // Check if coupon is first-time only
-  if (coupon.isFirstTimeOnly && user.lastLogin) {
-    throw new ApiError(400, "This coupon is for first time users only");
+  if (coupon.isFirstTimeOnly) {
+    const hasTransactions = await Transaction.exists({ user: user._id });
+    if (hasTransactions) {
+      throw new ApiError(400, "This coupon is for first-time users only");
+    }
   }
 
   // Check if max users limit reached
   if (coupon.usedCount >= coupon.maxUsers) {
-    coupon.isActive = false;
-    await coupon.save();
     throw new ApiError(400, "Coupon usage limit reached");
   }
 
   // Update coupon usage
-  await Coupon.findByIdAndUpdate(coupon._id, {
-    $inc: { usedCount: 1 },
-    $push: { usedBy: user._id },
-  });
+  coupon.usedCount += 1;
+  coupon.usedBy.push(user._id);
+  if (coupon.usedCount >= coupon.maxUsers) {
+    coupon.isActive = false;
+  }
+  await coupon.save();
 
-  return coupon.amount;
+  return coupon;
 };
 
 const generateAccessRefreshToken = async (user) => {
@@ -105,8 +114,8 @@ const registerUser = asyncHandler(async (req, res, _) => {
     username: username?.trim().toLowerCase(),
     password,
     avatar: avatarUrl,
-    accountValue: 10000,
-    prevNetWorth: 10000,
+    accountValue: 2500,
+    prevNetWorth: 2500,
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -135,10 +144,12 @@ const loginUser = asyncHandler(async (req, res, _) => {
     throw new ApiError(500, "Unexpected Error: user verification failed");
   }
 
-  const [tokens, couponAmount] = await Promise.all([
+  const [tokens, coupon] = await Promise.all([
     generateAccessRefreshToken(user),
     couponCode?.trim() ? verifyCoupon(couponCode, user) : Promise.resolve(0),
   ]);
+
+  const couponAmount = coupon?.amount || 0;
 
   const { accessToken, refreshToken } = tokens;
 
@@ -156,6 +167,17 @@ const loginUser = asyncHandler(async (req, res, _) => {
   if (totalBonus > 0) {
     updateObject.$inc = {
       accountValue: totalBonus,
+    };
+  }
+
+  // If it's a referral coupon, add bonus to referrer's account
+  if (coupon?.couponType === "REFERRAL" && coupon?.createdBy) {
+    await User.findByIdAndUpdate(coupon.createdBy._id, {
+      $inc: { balance: coupon.referrerBonus },
+    });
+    //set this user
+    updateObject.$set = {
+      hasUsedReferral: true,
     };
   }
 

@@ -81,4 +81,48 @@ const deleteCoupon = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, coupon, "Coupon deleted successfully"));
 });
 
-export { createCoupon, deleteCoupon, getAllCoupons };
+const generateReferralCoupon = asyncHandler(async (req, res) => {
+  const user = req.user;
+
+  // Check if user already has an active referral coupon
+  const existingCoupon = await Coupon.findOne({
+    createdBy: user._id,
+    couponType: "REFERRAL",
+    isActive: true,
+  });
+
+  if (existingCoupon) {
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          existingCoupon,
+          "Existing referral coupon retrieved"
+        )
+      );
+  }
+
+  // Generate unique referral code (user's username + random numbers)
+  const randomNum = Math.floor(1000 + Math.random() * 9000);
+  const referralCode = `${user.username.toUpperCase()}${randomNum}`;
+
+  // Create new referral coupon
+  const coupon = await Coupon.create({
+    code: referralCode,
+    amount: 1000, // Fixed bonus for referred user
+    referrerBonus: 500, // Fixed bonus for referrer
+    maxUsers: 10, // Limit number of referrals
+    isFirstTimeOnly: true, // Only for new users
+    couponType: "REFERRAL",
+    createdBy: user._id,
+  });
+
+  res
+    .status(201)
+    .json(
+      new ApiResponse(201, coupon, "Referral coupon generated successfully")
+    );
+});
+
+export { createCoupon, deleteCoupon, getAllCoupons, generateReferralCoupon };
