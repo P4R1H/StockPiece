@@ -90,3 +90,25 @@ export const loginExists = async(): Promise<LoginResponse> => {
   return data;
 };
 
+
+export const refreshToken = async(): Promise<LoginResponse> => {
+  try {
+    const response = await fetch('/api/v1/user/auth/refresh', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to refresh token');
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Token refresh failed:', error);
+    throw error;
+  }
+};

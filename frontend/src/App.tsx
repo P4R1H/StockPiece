@@ -47,10 +47,6 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
  
   useEffect(() => { 
-    const screenWidth = window.innerWidth;
-const screenHeight = window.innerHeight;
-console.log(`Screen Width: ${screenWidth}px, Screen Height: ${screenHeight}px`);
-
     const checkLoginStatus = async () => { 
       try { 
         const resp = await loginExists(); 
