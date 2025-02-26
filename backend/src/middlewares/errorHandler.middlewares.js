@@ -7,6 +7,7 @@ const errorHandler = async (err, _req, res, _next) => {
   const isHighPriority = isApiError ? err.isHighPriority : false;
 
   const response = {
+    name: err.name || "UnknownError",
     message: err.message,
     errors: isApiError ? err.errors : [],
     success: false,
@@ -16,7 +17,6 @@ const errorHandler = async (err, _req, res, _next) => {
   console.log({
     ...response,
     stack: err.stack,
-    name: err.name || "UnknownError",
     rawError: isApiError ? undefined : err,
   });
 
