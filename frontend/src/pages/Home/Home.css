@@ -270,10 +270,14 @@
 
 .window-overlay span {
   font-size: 1.5rem;
-  text-align: center;
   color: #f4f1ea;
   padding: 10px;
   font-family: 'VT323', monospace; 
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 /* Media Queries */
@@ -462,12 +466,16 @@
 
   .window-overlay span {
     font-size: 1rem;
-    text-align: center;
     color: #f4f1ea;
     padding: 10px;
-    font-family: 'VT323', monospace; /* Consistent with ticker font */
+    font-family: 'VT323', monospace; 
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
   }
-  
+    
 }
 
 @media (max-width: 768px) {
