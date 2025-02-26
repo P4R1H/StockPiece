@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, ChangeEvent, FormEvent } from 'react';
+import React, { useState, useEffect, useRef, ChangeEvent, FormEvent } from 'react';
 import {
   adminLogin,
   adminLogout,
@@ -58,6 +58,25 @@ interface AdminStockCardProps {
   onRemove: (name: string) => void;
   onPriceUpdate: (name: string, price: number) => void;
   onImageClick: (stock: Stock) => void;
+}
+
+// New interface for error objects
+interface ErrorLog {
+  _id: string;
+  message: string;
+  stack: string;
+  name: string;
+  statusCode: number;
+  isInternalServerError: boolean;
+  isHighPriority: boolean;
+  additionalInfo: {
+    path: string;
+    method: string;
+    timestamp: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
@@ -156,6 +175,107 @@ const AdminStockCard: React.FC<AdminStockCardProps> = ({
   );
 };
 
+// New component for error modal
+const ErrorModal: React.FC<{
+  errors: ErrorLog[];
+  onClose: () => void;
+}> = ({ errors, onClose }) => {
+  return (
+    <div className="errorModalOverlay">
+      <div className="errorModal">
+        <div className="errorModalHeader">
+          <h2>System Errors</h2>
+          <button onClick={onClose} className="closeButton">×</button>
+        </div>
+        <div className="errorModalContent">
+          {errors.length === 0 ? (
+            <p className="noErrors">No errors to display</p>
+          ) : (
+            <div className="errorsList">
+              {errors.map((error) => (
+                <div key={error._id} className={`errorItem ${error.isHighPriority ? 'highPriority' : ''}`}>
+                  <div className="errorHeader">
+                    <span className="errorType">{error.name}</span>
+                    <span className="errorTimestamp">
+                      {new Date(error.createdAt).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="errorMessage">{error.message}</div>
+                  <div className="errorDetails">
+                    <div className="errorSource">
+                      <span className="sourceLabel">Source:</span>
+                      <span className="sourceValue">
+                        {error.isInternalServerError ? 'Backend' : 'Frontend'}
+                      </span>
+                    </div>
+                    <div className="errorEndpoint">
+                      <span className="endpointLabel">Endpoint:</span>
+                      <span className="endpointValue">
+                        {error.additionalInfo?.method} {error.additionalInfo?.path}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="errorStack">
+                    <pre>{error.stack}</pre>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Function to handle errors globally
+const createErrorHandler = (
+  setFrontendErrors: React.Dispatch<React.SetStateAction<ErrorLog[]>>,
+  setHasFrontendErrors: React.Dispatch<React.SetStateAction<boolean>>
+) => {
+  return (error: Error, info: { componentStack: string }) => {
+    const errorLog: ErrorLog = {
+      _id: Date.now().toString(),
+      message: error.message,
+      stack: error.stack || 'No stack trace available',
+      name: error.name,
+      statusCode: 500,
+      isInternalServerError: false,
+      isHighPriority: true,
+      additionalInfo: {
+        path: window.location.pathname,
+        method: 'CLIENT',
+        timestamp: new Date().toISOString()
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      __v: 0
+    };
+    
+    setFrontendErrors(prev => [...prev, errorLog]);
+    setHasFrontendErrors(true);
+    
+    // You can also send this to your backend API to log it
+    console.error('Frontend error:', error);
+  };
+};
+
+// Service function to fetch errors from backend
+const fetchErrors = async (type: string = 'all'): Promise<ErrorLog[]> => {
+  try {
+    const response = await fetch(`/api/v1/admin/errors?type=${type}`);
+    const data = await response.json();
+    
+    if (data.success) {
+      return data.data.errors;
+    }
+    throw new Error(data.message || 'Failed to fetch errors');
+  } catch (error) {
+    console.error('Error fetching error logs:', error);
+    return [];
+  }
+};
+
 const Admin: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [admin, setAdmin] = useState('');
@@ -171,11 +291,73 @@ const Admin: React.FC = () => {
   const [showImageUpdateModal, setShowImageUpdateModal] = useState(false);
   const [selectedStock, setSelectedStock] = useState<Stock | null>(null);
   
+  // New state for error handling
+  const [backendErrors, setBackendErrors] = useState<ErrorLog[]>([]);
+  const [frontendErrors, setFrontendErrors] = useState<ErrorLog[]>([]);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [hasFrontendErrors, setHasFrontendErrors] = useState(false);
+  const [isLoadingErrors, setIsLoadingErrors] = useState(false);
+  
   // Using a refreshCounter instead of a string-based triggerRefresh
   const [refreshCounter, setRefreshCounter] = useState(0);
   
   // Function to trigger a refresh by incrementing the counter
   const refreshData = () => setRefreshCounter(prev => prev + 1);
+
+  // Set up global error handler
+  useEffect(() => {
+    const originalConsoleError = console.error;
+    console.error = (...args) => {
+      // Only capture actual Error objects
+      const errorArg = args.find(arg => arg instanceof Error);
+      if (errorArg && !args[0].includes('fetchErrors')) {
+        const error = errorArg as Error;
+        const errorLog: ErrorLog = {
+          _id: Date.now().toString(),
+          message: error.message,
+          stack: error.stack || 'No stack trace available',
+          name: error.name,
+          statusCode: 500,
+          isInternalServerError: false,
+          isHighPriority: false,
+          additionalInfo: {
+            path: window.location.pathname,
+            method: 'CLIENT',
+            timestamp: new Date().toISOString()
+          },
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          __v: 0
+        };
+        
+        setFrontendErrors(prev => [...prev, errorLog]);
+        setHasFrontendErrors(true);
+      }
+      
+      // Still call original console.error
+      originalConsoleError.apply(console, args);
+    };
+    
+    return () => {
+      console.error = originalConsoleError;
+    };
+  }, []);
+
+  // Load backend errors when error modal is opened
+  const handleOpenErrorModal = async () => {
+    setIsLoadingErrors(true);
+    try {
+      const errors = await fetchErrors();
+      setBackendErrors(errors);
+      // Clear the error indicator when errors are viewed
+      setHasFrontendErrors(false);
+    } catch (error) {
+      console.error('Failed to fetch error logs:', error);
+    } finally {
+      setIsLoadingErrors(false);
+      setShowErrorModal(true);
+    }
+  };
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -353,11 +535,20 @@ const Admin: React.FC = () => {
   return (
     <div className="adminContainer">
       <div className="topBar">
-        <img
-          src="/assets/stockpiecelogo.png"
-          alt="Logo"
-          className="logo"
-        />
+        <div className="leftSide">
+          <img
+            src="/assets/stockpiecelogo.png"
+            alt="Logo"
+            className="logo"
+          />
+          <button 
+            onClick={handleOpenErrorModal} 
+            className={`errorButton ${hasFrontendErrors ? 'hasErrors' : ''}`}
+          >
+            Errors
+            {hasFrontendErrors && <span className="errorIndicator"></span>}
+          </button>
+        </div>
         <div className="adminInfo">
           <span>Welcome {admin}</span>
           <button onClick={handleLogout} className="logoutButton">
@@ -500,6 +691,13 @@ const Admin: React.FC = () => {
             setSelectedStock(null);
           }}
           onSubmit={handleImageUpdate}
+        />
+      )}
+
+      {showErrorModal && (
+        <ErrorModal 
+          errors={[...backendErrors, ...frontendErrors]} 
+          onClose={() => setShowErrorModal(false)} 
         />
       )}
     </div>
