@@ -8,6 +8,8 @@ import {
   adminLogout,
   updateStockImage,
   getErrorLogs,
+  getUserByUsername,
+  getTopTradersByChapter,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middlewares.js";
@@ -31,6 +33,10 @@ adminRouter
   .route("/character-stocks/image")
   .patch(upload.single("imageURL"), updateStockImage);
 
+adminRouter.route("/users").get(getUserByUsername);
+
 adminRouter.route("/errors").get(getErrorLogs);
+
+adminRouter.route("/top-traders").get(getTopTradersByChapter);
 
 export default adminRouter;

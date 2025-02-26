@@ -9,7 +9,9 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinary.utils.js";
 import ErrorLog from "../models/errorLog.models.js";
-
+import Transaction from "../models/transaction.models.js";
+import User from "../models/user.models.js";
+import ChapterRelease from "../models/chapterRelease.models.js";
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {
   const { username, password } = req.body;
@@ -44,8 +46,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     .json(
       new ApiResponse(
         200,
-        {loggedInAdmin,
-        accessToken },
+        { loggedInAdmin, accessToken },
         "admin logged in successfully"
       )
     );
@@ -322,6 +323,150 @@ const getErrorLogs = asyncHandler(async (req, res) => {
     );
 });
 
+const getUserByUsername = asyncHandler(async (req, res) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const { username } = req.body;
+
+  if (!username?.trim()) {
+    throw new ApiError(400, "username is required");
+  }
+
+  const user = await User.findOne({ username: username.toLowerCase() })
+    .populate({
+      path: "ownedStocks.stock",
+      select: "name currentValue initialValue",
+    })
+    .select("-password -refreshToken");
+
+  if (!user) {
+    throw new ApiError(404, "user not found");
+  }
+
+  // Calculate current stock value and net worth
+  const currentStockValue = user.ownedStocks.reduce(
+    (total, stock) => total + stock.stock.currentValue * stock.quantity,
+    0
+  );
+  const currentNetWorth = user.accountValue + currentStockValue;
+
+  // Calculate profit percentage
+  const profitPercentage =
+    user.prevNetWorth > 0
+      ? ((currentNetWorth - user.prevNetWorth) / user.prevNetWorth) * 100
+      : 0;
+
+  const userResponse = user.toObject();
+  userResponse.profit = profitPercentage;
+  userResponse.stockValue = currentStockValue;
+  userResponse.netWorth = currentNetWorth;
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, userResponse, "user details fetched successfully")
+    );
+});
+
+const getTopTradersByChapter = asyncHandler(async (req, res) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const { chapterNumber } = req.body;
+  let targetChapter;
+
+  if (chapterNumber) {
+    // If chapter number provided, verify it exists
+    targetChapter = await ChapterRelease.findOne({ chapter: chapterNumber });
+    if (!targetChapter) {
+      throw new ApiError(404, `Chapter ${chapterNumber} not found`);
+    }
+  } else {
+    // If no chapter number, get the latest chapter
+    targetChapter = await ChapterRelease.findOne({})
+      .sort({ chapter: -1 })
+      .limit(1);
+
+    if (!targetChapter) {
+      throw new ApiError(404, "No chapters found");
+    }
+  }
+
+  // Aggregate pipeline to calculate number of transactions per user
+  const topTraders = await Transaction.aggregate([
+    // Match transactions for the specified chapter
+    {
+      $match: {
+        chapterPurchasedAt: targetChapter.chapter,
+      },
+    },
+    // Group by user and calculate transactions
+    {
+      $group: {
+        _id: "$purchasedBy",
+        totalTransactions: { $sum: 1 },
+        buyCount: {
+          $sum: {
+            $cond: [{ $eq: ["$type", "buy"] }, 1, 0],
+          },
+        },
+        sellCount: {
+          $sum: {
+            $cond: [{ $eq: ["$type", "sell"] }, 1, 0],
+          },
+        },
+      },
+    },
+    // Lookup user details
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "_id",
+        as: "userDetails",
+      },
+    },
+    // Unwind the userDetails array
+    {
+      $unwind: "$userDetails",
+    },
+    // Project only needed fields
+    {
+      $project: {
+        _id: 1,
+        username: "$userDetails.username",
+        totalTransactions: 1,
+        buyCount: 1,
+        sellCount: 1,
+      },
+    },
+    // Sort by total transactions in descending order
+    {
+      $sort: {
+        totalTransactions: -1,
+      },
+    },
+    // Limit to top 100
+    {
+      $limit: 100,
+    },
+  ]);
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        traders: topTraders,
+        chapter: targetChapter.chapter,
+      },
+      `Top traders for chapter ${targetChapter.chapter} fetched successfully`
+    )
+  );
+});
+
 export {
   adminLogin,
   updateStockImage,
@@ -331,4 +476,6 @@ export {
   deleteAdmin,
   adminLogout,
   getErrorLogs,
+  getUserByUsername,
+  getTopTradersByChapter,
 };
