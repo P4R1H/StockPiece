@@ -647,3 +647,31 @@
   left: 10px !important;
   right: auto !important;
 }
+
+
+.no-data-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90%;
+  width: 100%;
+}
+
+.no-data-message p {
+  font-family: 'Pirata One', cursive;
+  font-size: 1.8rem;
+  color: #3e2f28;
+  text-align: center;
+  background-color: rgba(255, 245, 230, 0.7);
+  padding: 15px 30px;
+  border-radius: 10px;
+  border: 2px solid #3e2f28;
+  box-shadow: 3px 3px 0 #3e2f28;
+}
+
+@media (max-width: 768px) {
+  .no-data-message p {
+    font-size: 1.5rem;
+    padding: 10px 20px;
+  }
+}
