@@ -1,0 +1,314 @@
+/* Define CSS Variables */
+:root {
+  --max-container-width: 500px; /* Adjusted for reduced horizontal space */
+  --primary-gradient: linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%);
+  
+}
+
+/* General Styles */
+body {
+  margin: 0;
+  padding: 0;
+  background-size: 200% 200%;
+  font-family: 'Pirata One', cursive;
+}
+
+/* Page Container */
+.main-page-container {
+  padding: 0.5rem;
+  max-width: var(--max-container-width);
+  margin: 1rem auto;
+  animation: floatIn 0.8s ease-out;
+  background-size: cover;
+  overflow-y: auto;
+}
+
+/* Settings Container */
+.settings-container {
+  position: relative;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/assets/settings.webp') no-repeat center center ;
+
+  background-size: cover;
+  padding: 20px;
+  
+  will-change: transform;
+
+  margin: 10px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+  border: 5px solid transparent;
+  border-image: var(--primary-gradient) 1;
+  border-radius: 2%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.settings-section {
+  margin-top: 15px;
+}
+
+/* Section Title */
+.settings-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+/* Semi-transparent Box for Section Content */
+.section-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+}
+
+/* Specific adjustment for supplies box to reduce horizontal space */
+.supplies-box {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Section Divider */
+.section-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 1rem 0;
+}
+
+/* Controls Section */
+.controls-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.danger-button {
+  background: #ff4d4d;
+  border: none;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  font-family: 'Pirata One', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.danger-button:hover {
+  background: #cc0000;
+}
+
+.container-title {
+  color: rgb(212, 169, 59);
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 1px solid black;
+  background: url("/assets/wood.webp");
+  padding: 0 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+.container-title .main-title {
+  font-size: 2.2rem;
+  line-height: 1;
+  margin: 0;
+  display: block;
+}
+.container-title .subtitle {
+  font-size: 0.9rem;
+  line-height: 1;
+  margin: 0;
+  opacity: 0.6;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Crew Section */
+.crew-members {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.crew-member {
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.crew-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid gold;
+}
+
+/* Crew Links */
+.crew-links {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.crew-links img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.crew-links img:hover {
+  transform: scale(1.1);
+  filter: invert(85%) sepia(15%) saturate(694%) hue-rotate(202deg) brightness(100%) contrast(96%);
+}
+
+/* Supplies Icons Section */
+.supplies-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.supply-icon {
+  width: 35px;
+  height: 35px;
+  transition: transform 0.2s ease;
+}
+
+.supply-icon:hover {
+  transform: scale(1.2);
+}
+
+/* Manifesto Text */
+.manifesto-text {
+  font-size: 0.85rem;
+  line-height: 1.4;
+  color: #fff;
+  opacity: 0.9;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Footer Links */
+.footer-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 0.7rem;
+  margin-top: 1rem;
+}
+
+.footer-links a {
+  color: #fff;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom 0.2s ease;
+}
+
+.footer-links a:hover {
+  border-bottom: 1px solid #fff;
+}
+
+/* Animation */
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+
+  .container-title {
+    top: -15px;
+  }
+  .container-title .main-title {
+    font-size: 1.6rem;
+  }
+  .container-title .subtitle {
+    font-size: 0.7rem;
+  }
+
+  /* Main Page Container: keep top margin intact */
+  .main-page-container {
+    padding: 0.25rem;
+    max-width: 90%;
+    margin: 1rem auto; /* Top spacing remains unchanged */
+  }
+  /* Settings Container: keep component size, just ensure tighter spacing between elements */
+  .settings-container {
+    padding: 15px;
+    margin: -2px;
+    margin-top: 7px;
+  }
+  /* Section Titles: reduce the gap below the title */
+  .settings-section h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0rem; /* Slightly reduced gap */
+  }
+  /* Content Boxes: reduce bottom margin only */
+  .section-box {
+    padding: 0.4rem;
+    margin-bottom: 0.5rem; /* Reduced vertical gap between boxes */
+  }
+  /* Controls Section: tighten spacing between buttons */
+  .controls-buttons {
+    flex-direction: column;
+    gap: 0.3rem; /* Reduced gap */
+  }
+  .danger-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  /* Crew Section: reduce gaps between crew members without resizing them too much */
+  .crew-members {
+    gap: 0.7rem; /* Reduced gap between crew items */
+  }
+  .crew-avatar {
+    width: 60px;
+    height: 60px;
+  }
+  .crew-links img {
+    width: 18px;
+    height: 18px;
+  }
+  /* Supplies Icons Section: reduce gap between icons */
+  .supplies-icons {
+    gap: 0.3rem;
+  }
+  .supply-icon {
+    width: 23px;
+    height: 23px;
+  }
+  /* Manifesto Text: maintain readability while tightening spacing */
+  .manifesto-text {
+    font-size: 0.5rem;
+  }
+  /* Footer: reduce space before footer links */
+  .footer-links {
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Ensure buttons stay in a row */
+  .controls-buttons {
+    flex-direction: row; /* Changed from column to row */
+    gap: 0.3rem; /* You can adjust the gap as needed */
+    flex-wrap: nowrap; /* Prevent wrapping */
+  }
+  .danger-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}

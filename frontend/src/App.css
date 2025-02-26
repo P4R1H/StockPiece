@@ -1,6 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Pirata+One&family=Treasure+Map&display=swap');
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+@font-face {
+  font-family: 'Pirata One';
+  src: url('/fonts/PirataOne-Regular.ttf') format('truetype');
+}
 
+/* Disable tap highlights and text selection on buttons and images */
+button, img {
+  -webkit-tap-highlight-color: transparent;  /* for iOS Safari */
+  user-select: none;                         /* prevents text selection */
+  -webkit-touch-callout: none;                /* prevents callout on long-press */
+}
+
+button:focus {
+  outline: none;
+}
+/* Root Variables */
 :root {
   --dark-blue: #081B33;
   --gold: #FFD700;
@@ -11,6 +24,7 @@
   --emerald: #008000;
 }
 
+/* Global Styles */
 body {
   margin: 0;
   font-family: 'Treasure Map', cursive;
@@ -19,8 +33,23 @@ body {
   overflow-x: hidden;
 }
 
+.market-logo {
+  width: 200px;
+  height: auto;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
+  display: flex;
+  align-self: center; /* Centers vertically within flex container */
+  margin: auto 0; /* Additional vertical centering */
+}
+
+.market-logo:hover {
+  animation: flagShake 0.5s ease-in-out;
+}
+
+/* One Piece Stock Market Container */
 .one-piece-stock-market {
-  background: url('/assets/grand-line-map.jpg') no-repeat center center fixed;
   background-size: cover;
   min-height: 100vh;
   display: flex;
@@ -29,19 +58,21 @@ body {
   position: relative;
 }
 
-/* Enhanced Navbar with Gradient */
+/* Market Header */
 .market-header {
   background: linear-gradient(145deg, var(--ocean-blue) 30%, #0e4a7a 100%);
   padding: 10px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: center; /* Ensures vertical centering of all items */
   border-bottom: 3px solid var(--gold);
   position: relative;
   z-index: 1000;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  min-height: 80px; /* Ensure consistent height */
 }
 
+/* Pirate Banner */
 .pirate-banner {
   display: flex;
   align-items: center;
@@ -57,9 +88,6 @@ body {
   filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.3));
 }
 
-.pirate-flag:hover {
-  animation: flagShake 0.5s ease-in-out infinite;
-}
 
 @keyframes flagShake {
   0%, 100% { transform: translateX(0) rotate(0deg); }
@@ -69,88 +97,13 @@ body {
 
 .market-title {
   color: var(--gold);
-  font-size: 2.2rem;
+  font-size: 2.5rem;
   margin: 0;
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   letter-spacing: 1.5px;
   position: relative;
+  margin-top: -2px;
 }
-
-/* Compact Icon Navigation */
-.nav-group {
-  align-items: center;
-  background: rgba(0, 0, 0, 0.15);
-  border-radius: 8px;
-  border: 2px solid var(--gold);
-}
-
-.nav-btn {
-  color: var(--gold);
-  border: none;
-  padding: 12px 18px;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  background: transparent;
-  position: relative;
-  margin: 0 -2px;
-  border-radius: 0;
-}
-
-.nav-btn:first-child {
-  border-radius: 6px 0 0 6px;
-}
-
-.nav-btn:last-child {
-  border-radius: 0 6px 6px 0;
-}
-
-.nav-btn:hover {
-  background: var(--gold);
-  color: var(--ocean-blue);
-  transform: scale(1.1);
-  z-index: 2;
-  box-shadow: 0 0 15px rgba(255,215,0,0.4);
-}
-
-.nav-btn::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 60%;
-  width: 2px;
-  background: var(--gold);
-  opacity: 0.3;
-}
-
-.nav-btn:last-child::after {
-  display: none;
-}
-
-.nav-btn:hover::after {
-  opacity: 0;
-}
-
-.logout-btn {
-  color: var(--crimson);
-}
-
-.logout-btn:hover {
-  color: var(--gold);
-  background: var(--crimson);
-}
-
-.login-btn {
-  color: var(--emerald);
-}
-
-.login-btn:hover {
-  color: var(--gold);
-  background: var(--emerald);
-}
-
 
 /* Footer Styling */
 .market-footer {
@@ -161,19 +114,91 @@ body {
   border-top: 3px solid #ffcc00;
   margin-top: auto;
 }
+
+/* Mobile styles */
 @media (max-width: 768px) {
-  .market-header {
-    flex-wrap: wrap;
-    gap: 15px;
-    padding: 15px;
-  }
-  
-  .nav-btn {
-    padding: 10px 14px;
-    font-size: 1.2rem;
+  .market-header .desktop-nav {
+    display: none;
   }
   
   .market-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
+    margin-top: 0px;
+  }
+  
+  .nav-group.mobile-nav {
+    position: fixed;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(145deg, rgba(18, 93, 152, 0.95) 30%, rgba(14, 74, 122, 0.95) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 8px;
+    display: flex;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 1001;
+  }
+  
+  .nav-group.mobile-nav.hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .nav-btn {
+    padding: 12px 18px;
+    font-size: 1.4rem;
+    margin: 0 -2px;
+  }
+  
+  .collapse-btn {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: linear-gradient(145deg, rgba(18, 93, 152, 0.95) 30%, rgba(14, 74, 122, 0.95) 100%);
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+    
+  }
+  
+  .collapse-btn .nav-icon {
+    min-width: 14px;  
+    min-height: 14px; 
+    }
+
+  .collapse-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .collapse-btn.shine {
+    box-shadow: 0 0 15px var(--gold);
+  }
+
+  .collapse-btn:focus {
+    outline: none;
+  }
+  
+}
+
+/* Desktop-specific styles */
+@media (min-width: 769px) {
+  .nav-group.mobile-nav,
+  .collapse-btn {
+    display: none;
   }
 }
+

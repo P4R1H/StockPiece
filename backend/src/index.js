@@ -26,7 +26,7 @@ const startServer = async () => {
 
     // Start the server
     server = app.listen(PORT, () => {
-      console.log(`Server ${process.pid} started on port: ${PORT}`);
+      console.log(`Server ${process.pid} listening on port: ${PORT}`);
     });
 
     // Graceful shutdown handlers

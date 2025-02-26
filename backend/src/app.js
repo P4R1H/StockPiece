@@ -44,9 +44,9 @@ app.use("/api/v1/stock", stockRouter);
 app.use("/api/v1/market", marketRoute);
 app.use("/api/v1/coupon", couponRouter);
 
-// app.get("*",(_req, res, _next) => {
-//   res.redirect('/')
-// })
+app.get("/api/v1",(_req, res, _next) => {
+  res.status(200).json('hello')
+})
 
 app.use(errorHandler);
 

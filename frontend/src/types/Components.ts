@@ -1,12 +1,12 @@
-import { CharacterStock } from "./Stocks";
+import { CharacterStock } from './Stocks';
 
-
-/* Graph */
 export interface PriceHistoryGraphProps {
   stocks: CharacterStock[];
   ownedStocks: string[];
+  onVisibilityChange: (characterId: string, newVisibility: 'show' | 'hide' | 'only') => void;
+  currentFilter: 'All' | 'Owned' | 'Popular';
 }
-  
+
 export interface Dataset {
     label: string;
     borderColor: string;
@@ -40,7 +40,9 @@ export interface ChartPlugin {
 export interface BountyProfileCardProps {
   userName: string;
   netWorth: string;
+  cash: string;
   profitLossOverall: string;
   profitLossLastChapter: string;
   profileImage?: string;
+  isLoggedIn: boolean;
 }

@@ -1,33 +1,50 @@
+:root {
+  /* Colors */
+  --bg-light: #f9f0e0;
+  --border-color: #3e2f28;
+  --primary-text: #3e2f28;
+  --secondary-text: #7c5648;
+  --highlight: #c41e3a;
+  --overlay-bg: rgba(0, 0, 0, 0.6);
+  --overlay-hover-bg: rgba(0, 0, 0, 0.7);
+  --dashed-border: #ccc;
+  --profit-color: #2e8b32; /* Darker green */
+  --loss-color: #d32f2f; /* Darker red */
+
+  /* Fonts */
+  --font-family: 'Pirata One', cursive;
+}
+
 .bounty-card {
-  background: url('/assets/bounty-template.jpg') no-repeat center center;
+  background: url('/assets/bounty-template.webp') no-repeat center center, #d9ccbc;
   background-size: contain;
   width: min(90vw, 400px);
   min-height: min(132vw, 585px);
   aspect-ratio: 3/4;
-  font-family: 'Pirata One', cursive;
+  font-family: var(--font-family);
   position: relative;
   text-align: center;
-  border: 5px solid #3e2f28;
-  border-radius: 12px;
+  border: 5px solid var(--border-color);
+  border-radius: 15px;
   margin: auto;
   padding: 0;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
-  background-color: #f9f0e0; 
   animation: floatIn 0.8s ease-out;
   flex-shrink: 0;
 }
 
+/* Image Container and Upload Area */
 .bounty-image-container {
   position: absolute;
-  top: 22%;  /* Adjusted to align with transparent area */
+  top: 22%;
   left: 50%;
   transform: translateX(-50%);
   width: min(85%, 330px);
   height: min(50vw, 235px);
-  background-color: #f9f0e0;
+  background-color: var(--bg-light);
   overflow: hidden;
   border-radius: 8px;
-  border: 3px solid #3e2f28;
+  border: 3px solid var(--border-color);
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -35,11 +52,95 @@
   width: 100%;
   height: 100%;
   filter: sepia(0.3) contrast(1.1);
+  object-fit: cover;
 }
 
+.upload-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed var(--dashed-border);
+  border-radius: 2%;
+  text-align: center;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+
+.upload-area.clickable {
+  cursor: pointer;
+}
+
+.upload-area.clickable:hover {
+  border-color: #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.upload-area.disabled {
+  cursor: not-allowed;
+}
+
+.upload-area span {
+  color: #666;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.upload-area.login-prompt {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+
+.upload-area.login-prompt:hover span {
+  font-weight: bold;
+  text-decoration: underline;
+  color: #000000;
+  transform: scale(1.2);
+}
+
+/* En sure smooth transition */
+.upload-area.login-prompt span {
+  transition: all 0.3s ease;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Overlay Styles */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--overlay-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: clamp(14px, 3vw, 18px);
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.overlay.overlay-visible {
+  opacity: 1;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.overlay:hover {
+  background: var(--overlay-hover-bg);
+}
+
+/* Text Content Styles */
 .bounty-details {
   position: absolute;
-  bottom: 10%;
+  bottom: 11%; /* Moved slightly up from 10% */
   left: 50%;
   transform: translateX(-50%);
   width: 90%;
@@ -49,36 +150,47 @@
 .bounty-name {
   font-size: clamp(20px, 5vw, 32px);
   text-transform: uppercase;
-  margin: 20px 0 -5px 0;  /* Increased top margin from 10px to 20px */
-  color: #3e2f28;
+  margin: 15px 0 0; /* Adjusted from 20px 0 -5px */
+  color: var(--primary-text);
   letter-spacing: 2px;
 }
 
 .bounty-status {
   font-size: clamp(14px, 4vw, 20px);
   margin: 5px 0;
-  color: #7c5648;
+  color: var(--secondary-text);
   font-weight: bold;
   font-style: italic;
 }
 
 .bounty-net-worth,
-.bounty-profit-loss {
+.bounty-profit-loss,
+.bounty-cash {
   font-size: clamp(12px, 3vw, 18px);
-  margin: 5px 0;
-  color: #3e2f28;
+  color: var(--primary-text);
 }
 
 .profit-loss-last-chapter {
   font-size: clamp(10px, 2.5vw, 14px);
-  color: #8b4e4e;
+  color: var(--secondary-text); /* Using variable instead of hard-coded color */
+  font-weight: 500; /* Slightly bolder */
 }
 
 .highlight {
-  color: #c41e3a;
+  color: var(--highlight);
   font-weight: bold;
+  padding: 0 4px; /* Add padding around numbers */
 }
 
+.highlight.profit {
+  color: var(--profit-color);
+}
+
+.highlight.loss {
+  color: var(--loss-color);
+}
+
+/* Animation */
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -90,6 +202,7 @@
   }
 }
 
+/* Media Queries */
 @media (max-width: 500px) {
   .bounty-card {
     width: 90vw;
@@ -99,4 +212,46 @@
     width: 80%;
     height: 45vw;
   }
+}
+
+
+/* Spinner overlay covers the entire container */
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* A darker, dramatic overlay reminiscent of a night at sea */
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* The spinner styled as a rotating gold coin */
+.spinner {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  /* Using a dual–tone border to evoke a coin with a rich, golden center and a darker rim */
+  border: 6px solid #8B4513;      /* SaddleBrown: a nod to aged wood or the coin’s edge */
+  border-top-color: #FFD700;       /* Gold */
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+/* Keyframes for spinner animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 500px) {
+  .bounty-name {
+    font-size: clamp(25px, 5.5vw, 32px); 
+  }
+
 }

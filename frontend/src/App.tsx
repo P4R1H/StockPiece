@@ -1,117 +1,106 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { PLACEHOLDER_STOCKS } from './assets/data/sampleStocks';
-import { CharacterStock, UserPortfolio } from './types/Stocks';
-import HomePage from './pages/Home/Home';
-import LeaderboardPage from './pages/Leaderboard/Leaderboard';
-import LoginPage from './pages/Login/Login';
-import './App.css';
+import React, { useState, useEffect } from 'react'; 
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; 
+import { useQueryClient } from '@tanstack/react-query'; 
+import './App.css'; 
+import { loginExists, logoutUser } from './pages/Login/LoginServices'; 
+import Navbar from './components/Navbar/Navbar'; 
+import HomePage from './pages/Home/Home'; 
 
-interface OnePieceStockMarketProps {
-  isLoggedIn: boolean;
-  onLogout: () => void;
-}
+const LeaderboardPage = React.lazy(() => import('./pages/Leaderboard/Leaderboard'));
+const LoginPage = React.lazy(() => import('./pages/Login/Login'));
+const SettingsPage = React.lazy(() => import('./pages/Settings/Settings'));
+const AdminPanel = React.lazy(() => import('./pages/Admin/Admin'));
+const NotFound = React.lazy(() => import('./pages/NotFound/NotFound'));
 
-const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => {
-  const [stocks, setStocks] = useState<CharacterStock[]>(PLACEHOLDER_STOCKS);
-  const [portfolio, setPortfolio] = useState<UserPortfolio>({
-    cash: 100000,
-    stocks: {}
-  });
-
-  // Get stocks and portfolio
-
-  return (
-    <div className="one-piece-stock-market">
-      <header className="market-header">
-        <div className="pirate-banner">
-          <img 
-            src="/assets/skull-flag.png" 
-            alt="Pirate Flag" 
-            className="pirate-flag" 
-          />
-          <h1 className="market-title">StockPiece: Grand Line Exchange</h1>
-        </div>
-        
-        <div className="nav-group">
-          <Link 
-            to="/" 
-            className="nav-btn" 
-            data-tooltip="Home"
-          >
-            <i className="fas fa-home"></i>
-          </Link>
-          <Link 
-            to="/leaderboard" 
-            className="nav-btn" 
-            data-tooltip="Leaderboard"
-          >
-            <i className="fas fa-trophy"></i>
-          </Link>
-          <button 
-            className="nav-btn" 
-            data-tooltip="Settings"
-          >
-          <i className="fas fa-cog"></i>
-          </button>
-          {isLoggedIn ? (
-            <button 
-              className="nav-btn logout-btn" 
-              data-tooltip="Logout"
-              onClick={onLogout}
-            >
-            <i className="fas fa-door-open"></i>
-            </button>
-          ) : (
-            <Link 
-              to="/login" 
-              className="nav-btn login-btn" 
-              data-tooltip="Login"
-            >
-              <i className="fas fa-sign-in-alt"></i>
-            </Link>
-          )}
-        </div>
-      </header>
-      <Routes>
-        <Route path="/" element={
-          <HomePage
-            stocks={stocks}
-            portfolio={portfolio}
-            isLoggedIn={isLoggedIn}
-          />
+interface OnePieceStockMarketProps { 
+  isLoggedIn: boolean; 
+  onLogout: () => void; 
+} 
+ 
+const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout }) => { 
+  return ( 
+    <div className="one-piece-stock-market"> 
+      <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} /> 
+      
+      <Routes> 
+        <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} /> 
+        <Route path="/leaderboard" element={
+            <LeaderboardPage />
+        } /> 
+        <Route path="/settings" element={
+            <SettingsPage />
+        } /> 
+        <Route path="*" element={
+            <NotFound />
         } />
-        <Route path="/leaderboard" element={<LeaderboardPage />} />
       </Routes>
-      <footer className="market-footer">
-        <p>© {new Date().getFullYear()} Straw Hat Investments. Sailing the Seas of Profit!</p>
-      </footer>
-    </div>
-  );
-};
-
-const App: React.FC = () => {
+ 
+      <footer className="market-footer"> 
+        <p>© {new Date().getFullYear()} StockPiece. Sailing the Seas of Profit!</p> 
+      </footer> 
+    </div> 
+  ); 
+}; 
+ 
+const App: React.FC = () => { 
+  const queryClient = useQueryClient(); 
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
-
-  const handleLogin = () => setIsLoggedIn(true);
-  const handleLogout = () => setIsLoggedIn(false);
-
-  // Set isLoggedIn based on cookies
-
-  return (
-    <Router>
-      <Routes>
-        <Route
-          path="/login"
-          element={!isLoggedIn ? <LoginPage onLogin={handleLogin} /> : <Navigate to="/" />}
-        />
-        <Route
-          path="/*"
-          element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />}
-        />
+ 
+  useEffect(() => { 
+    const checkLoginStatus = async () => { 
+      try { 
+        const resp = await loginExists(); 
+        setIsLoggedIn(resp.data); 
+      } catch { 
+        setIsLoggedIn(false); 
+      } 
+    }; 
+    checkLoginStatus(); 
+  }, []); 
+ 
+  const handleLogin = () => { 
+    queryClient.invalidateQueries({ queryKey: ['portfolio'] }); 
+    queryClient.invalidateQueries({ queryKey: ['leaderboardData'] }); 
+    setIsLoggedIn(true); 
+  }; 
+ 
+  const handleLogout = async () => { 
+    try { 
+      await logoutUser(); 
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] }); 
+      queryClient.invalidateQueries({ queryKey: ['leaderboardData'] }); 
+      setIsLoggedIn(false); 
+    } catch (error) { 
+      console.error('Logout failed:', error); 
+    } 
+  }; 
+ 
+  const isAdminDomain = window.location.host.includes('admin.'); 
+ 
+  return ( 
+    <Router> 
+      <Routes> 
+        {isAdminDomain ? ( 
+          <Route path="/*" element={
+              <AdminPanel />
+          } /> 
+        ) : ( 
+          <> 
+            <Route 
+              path="/login" 
+              element={isLoggedIn ? <Navigate to="/" /> : (
+                  <LoginPage onLogin={handleLogin} />
+              )} 
+            /> 
+            <Route 
+              path="/*" 
+              element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+            /> 
+          </> 
+        )} 
       </Routes>
-    </Router>
-  );
-};
-
+    </Router> 
+  ); 
+}; 
+ 
 export default App;

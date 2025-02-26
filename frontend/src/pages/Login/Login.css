@@ -1,297 +1,396 @@
+/* Root Variables */
 :root {
-    --gold: #FFD700;
-    --deep-blue: #003366;
-    --blood-red: #AA0000;
-    --wood-brown: #6B4423;
-  }
-  
-  .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background: linear-gradient(45deg, var(--deep-blue), #000033);
-    overflow: hidden;
-    position: relative;
-  }
-  
-  .ocean-background {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    bottom: 0;
-    left: 0;
-  }
-  
-  .wave {
-    background: rgba(0, 102, 255, 0.2);
-    position: absolute;
-    bottom: -25%;
-    width: 200%;
-    height: 200px;
-    border-radius: 40%;
-    animation: drift 15s infinite linear;
-  }
-  
-  .wave:nth-child(1) {
-    animation-delay: -5s;
-    opacity: 0.7;
-  }
-  
-  .wave:nth-child(2) {
-    animation-delay: -10s;
-    opacity: 0.5;
-  }
-  
-  @keyframes drift {
-    from { transform: rotate(0deg) translateX(-50%); }
-    to { transform: rotate(360deg) translateX(50%); }
-  }
-  
-  .sun-beam {
-    position: absolute;
-    top: -50vh;
-    left: -50vw;
-    width: 200vw;
-    height: 200vh;
-    background: radial-gradient(circle at center, 
-      rgba(255,215,0,0.1) 0%,
-      rgba(255,215,0,0) 70%);
-    animation: sun-glow 8s infinite ease-in-out;
-  }
-  
-  @keyframes sun-glow {
-    0%, 100% { transform: scale(1); opacity: 0.3; }
-    50% { transform: scale(1.2); opacity: 0.5; }
-  }
-  
+  --gold: #FFD700;
+  --deep-blue: #003366;
+  --blood-red: #AA0000;
+  --wood-brown: #6B4423;
+}
+
+/* Login Container */
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(45deg, var(--deep-blue), #000033);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Ocean Background and Waves */
+.ocean-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.wave {
+  background: rgba(0, 102, 255, 0.2);
+  position: absolute;
+  bottom: -25%;
+  width: 200%;
+  height: 200px;
+  border-radius: 40%;
+  animation: drift 15s infinite linear;
+}
+
+.wave:nth-child(1) {
+  animation-delay: -5s;
+  opacity: 0.7;
+}
+
+.wave:nth-child(2) {
+  animation-delay: -10s;
+  opacity: 0.5;
+}
+
+@keyframes drift {
+  from { transform: rotate(0deg) translateX(-50%); }
+  to { transform: rotate(360deg) translateX(50%); }
+}
+
+/* Sun Beam */
+.sun-beam {
+  position: absolute;
+  top: -50vh;
+  left: -50vw;
+  width: 200vw;
+  height: 200vh;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0) 70%);
+  animation: sun-glow 8s infinite ease-in-out;
+}
+
+@keyframes sun-glow {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+}
+
+/* Login Box */
+.login-box {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 0 50px rgba(255,215,0,0.3);
+  position: relative;
+  z-index: 2;
+  border: 2px solid var(--gold);
+  max-width: 400px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+/* Jolly Roger */
+.jolly-roger-container {
+  position: relative;
+  width: 150px;
+  margin: -100px auto 20px;
+}
+
+.jolly-roger {
+  width: 100%;
+  filter: drop-shadow(0 0 10px var(--gold));
+  animation: float 3s ease-in-out infinite;
+}
+
+.jolly-roger-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Login Title and Subtitle */
+.login-title,
+.login-subtitle {
+  font-family: 'Pirata One', cursive;
+  color: var(--gold);
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
+
+.login-title span {
+  display: block;
+  line-height: 1.2;
+}
+
+.login-title + h3 {
+  color: var(--gold);
+  text-align: center;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  opacity: 0.8;
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+}
+
+.tab {
+  background: transparent;
+  color: var(--gold);
+  border: 1px solid var(--gold);
+  padding: 0.5rem 1.5rem;
+  cursor: pointer;
+  font-family: 'Pirata One', cursive;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+}
+
+.tab:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.tab.active {
+  background: rgba(255, 215, 0, 0.2);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+/* Pirate Input */
+.pirate-input {
+  position: relative;
+  margin-bottom: 1.5rem;
+  width: 100%;
+}
+
+.pirate-input input {
+  font-family: 'Pirata One', monospace;
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 0.75rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--gold);
+  border-radius: 5px;
+  color: var(--gold);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.pirate-input input:focus {
+  outline: none;
+  box-shadow: 0 0 10px var(--gold);
+}
+
+/* Coupon Container and Animation */
+.coupon-container {
+  margin-top: 0.5rem;
+  margin-bottom: -10px;
+  text-align: center;
+  height: 20px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Coupon Toggle */
+.coupon-toggle {
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--gold);
+  opacity: 0.6;
+  font-size: 0.7rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.coupon-toggle:hover {
+  opacity: 1;
+  text-decoration: underline;
+}
+
+/* Coupon Input Container */
+.coupon-input-container {
+  animation: expandWidth 0.3s ease-in-out;
+  position: relative;
+  display: inline-block;
+  width: 160px;
+  max-width: 100%;
+}
+
+@keyframes expandWidth {
+  from { width: 0; opacity: 0; }
+  to { width: 160px; opacity: 1; }
+}
+
+/* Coupon Field */
+.coupon-field {
+  font-family: 'Pirata One', monospace;
+  width: 100%;
+  padding: 0.2rem 0.4rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--gold);
+  border-radius: 4px;
+  color: var(--gold);
+  font-size: 0.65rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  box-sizing: border-box;
+}
+
+.coupon-field:focus {
+  outline: none;
+}
+
+
+/* Pirate Button */
+.pirate-button {
+  width: 100%;
+  background: linear-gradient(to bottom, var(--wood-brown), #4A2C1A);
+  color: var(--gold);
+  padding: 1rem 2rem;
+  border: 2px solid var(--gold);
+  border-radius: 5px;
+  font-size: 1.2rem;
+  font-family: 'Pirata One', cursive;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.pirate-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px var(--gold);
+}
+
+.button-sheen {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent 25%, rgba(255,215,0,0.2) 50%, transparent 75%);
+  animation: sheen 3s infinite;
+}
+
+@keyframes sheen {
+  0% { transform: translateX(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) rotate(45deg); }
+}
+
+/* Error Message and Tooltip */
+.error-message {
+  font-family: 'Courier New', Courier, monospace;
+  color: red;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.tooltip {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Login Ship */
+.login-ship {
+  position: absolute;
+  bottom: -35px;
+  width: 1000px;
+  height: 500px;
+  background: url('/assets/shipSunny.webp') no-repeat center/contain;
+  opacity: 0.5;
+  right: -100%;
+  animation: 
+    sail-ship 45s linear infinite,
+    ship-sway 5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes sail-ship {
+  from { right: -50%; }
+  to { right: 100%; }
+}
+
+@keyframes ship-sway {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(2deg) translateY(-15px); }
+}
+
+/* Media Queries */
+@media (max-width: 480px) {
   .login-box {
-    background: rgba(0, 0, 0, 0.8);
-    padding: 2rem 3rem;
-    border-radius: 15px;
-    box-shadow: 0 0 50px rgba(255,215,0,0.3);
-    position: relative;
-    z-index: 2;
-    border: 2px solid var(--gold);
-    max-width: 400px;
-    width: 90%;
-    margin: 0 auto;
-  }
-  
-  .jolly-roger-container {
-    position: relative;
-    width: 150px;
-    margin: -100px auto 20px;
-  }
-  
-  .jolly-roger {
-    width: 100%;
-    filter: drop-shadow(0 0 10px var(--gold));
-    animation: float 3s ease-in-out infinite;
-  }
-  
-  .jolly-roger-glow {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, 
-      rgba(255,215,0,0.4) 0%, 
-      rgba(255,215,0,0) 70%);
-  }
-  
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-  
-  .login-title {
-    font-family: 'Pirata One', cursive;
-    color: var(--gold);
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(255,215,0,0.5);
-  }
-  
-  .login-subtitle {
-    font-family: 'Pirata One', cursive;
-    color: var(--gold);
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
-    text-shadow: 0 0 10px rgba(255,215,0,0.5);
+    padding: 1.5rem 2rem;
   }
 
-  .login-title span {
-    display: block;
-    line-height: 1.2;
+  .login-title {
+    font-size: 2rem;
   }
-  
-  .login-title + h3 {
-    color: var(--gold);
-    text-align: center;
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    opacity: 0.8;
+
+  .jolly-roger-container {
+    width: 120px;
+    margin: -80px auto 15px;
   }
-  
-  /* New tab styles */
-  .tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-    gap: 1rem;
-  }
-  
+
   .tab {
-    background: transparent;
-    color: var(--gold);
-    border: 1px solid var(--gold);
-    padding: 0.5rem 1.5rem;
-    cursor: pointer;
-    font-family: 'Pirata One', cursive;
-    font-size: 1.2rem;
-    transition: all 0.3s ease;
-    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
   }
-  
-  .tab:hover {
-    background: rgba(255, 215, 0, 0.1);
-  }
-  
-  .tab.active {
-    background: rgba(255, 215, 0, 0.2);
-    box-shadow: 0 0 10px var(--gold);
-  }
-  
-  .pirate-input {
+
+  .coupon-container {
+    margin-top: 0.3rem;
+    margin-bottom: -10px;
+    text-align: center;
+    height: 20px;
     position: relative;
-    margin-bottom: 1.5rem;
-    width: 100%;
+    transition: all 0.3s ease;
   }
   
-  .pirate-input input {
+  
+  .coupon-toggle:hover {
+    opacity: 1;
+    text-decoration: underline;
+  }
+  
+  /* Coupon Input Container */
+  .coupon-input-container {
+    animation: expandWidth 0.3s ease-in-out;
+    position: relative;
+    display: inline-block;
+    width: 180px;
+    max-width: 100%;
+  }
+  
+  @keyframes expandWidth {
+    from { width: 0; opacity: 0; }
+    to { width: 180px; opacity: 1; }
+  }
+  
+  /* Coupon Field */
+  .coupon-field {
     font-family: 'Pirata One', monospace;
-    width: 100%;
-    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    width: 90%;
+    padding: 0.2rem 0.3rem;
     background: rgba(0, 0, 0, 0.7);
     border: 1px solid var(--gold);
-    border-radius: 5px;
+    border-radius: 6px;
     color: var(--gold);
-    font-size: 1rem;
+    font-size: 0.65rem;
+    text-align: center;
     transition: all 0.3s ease;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
     box-sizing: border-box;
   }
   
-  .pirate-input input:focus {
+  .coupon-field:focus {
     outline: none;
-    box-shadow: 0 0 10px var(--gold);
   }
   
-  .pirate-button {
-    width: 100%;
-    background: linear-gradient(to bottom, var(--wood-brown), #4A2C1A);
-    color: var(--gold);
-    padding: 1rem 2rem;
-    border: 2px solid var(--gold);
-    border-radius: 5px;
-    font-size: 1.2rem;
-    font-family: 'Pirata One', cursive;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: all 0.3s ease;
-  }
-  
-  .pirate-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 20px var(--gold);
-  }
-  
-  .button-sheen {
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(
-      45deg,
-      transparent 25%,
-      rgba(255,215,0,0.2) 50%,
-      transparent 75%
-    );
-    animation: sheen 3s infinite;
-  }
-  
-  
-  .error-message {
-    font-family: 'Courier New', Courier, monospace;
-    color: red;
-    margin-bottom: 10px;
-    text-align: center;
-  }
+}
 
-  .tooltip {
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
-    color: #ff6b6b;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-  }
-  
-  @keyframes sheen {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-  }
-  
-  .login-ship {
-    position: absolute;
-    bottom: -35px;
-    width: 1000px;
-    height: 500px;
-    background: url('/assets/shipSunny.png') no-repeat center/contain;
-    opacity: 0.5;
-    right: -100%; /* Start the ship off-screen to the right */
-    animation: 
-      sail-ship 45s linear infinite,
-      ship-sway 5s ease-in-out infinite;
-    z-index: 1;
-  }
-  
-  @keyframes sail-ship {
-    from {
-      right: -50%; /* Start from right edge */
-    }
-    to {
-      right: 100%; /* Move to left edge */
-    }
-  }  
-  @keyframes ship-sway {
-    0%, 100% {
-      transform: rotate(-2deg) translateY(0);
-    }
-    50% {
-      transform: rotate(2deg) translateY(-15px);
-    }
-  }  
-  
-  @media (max-width: 480px) {
-    .login-box {
-      padding: 1.5rem 2rem;
-    }
-    
-    .login-title {
-      font-size: 2rem;
-    }
-    
-    .jolly-roger-container {
-      width: 120px;
-      margin: -80px auto 15px;
-    }
-  
-    .tab {
-      padding: 0.5rem 1rem;
-      font-size: 1rem;
-    }
-  }
