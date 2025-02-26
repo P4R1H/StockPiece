@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import path from "node:path";
 import { __dirname } from "./constants.js";
 import compression from "compression";
-import cors from 'cors'
+import cors from "cors";
 
 const app = express();
 

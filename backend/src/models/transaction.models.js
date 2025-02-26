@@ -28,7 +28,7 @@ const transactionSchema = new mongoose.Schema({
   chapterPurchasedAt: {
     type: Number,
     required: true,
-    index: true
+    index: true,
   },
 });
 

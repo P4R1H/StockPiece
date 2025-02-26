@@ -13,6 +13,10 @@ const couponSchema = new mongoose.Schema(
       required: true,
       max: 10000,
     },
+    referrerBonus: {
+      type: Number,
+      default: 0, // Amount the referrer gets
+    },
     maxUsers: {
       type: Number,
       required: true,
@@ -24,6 +28,18 @@ const couponSchema = new mongoose.Schema(
     isFirstTimeOnly: {
       type: Boolean,
       default: false,
+    },
+    couponType: {
+      type: String,
+      enum: ["ADMIN", "REFERRAL"],
+      default: "ADMIN",
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: function () {
+        return this.couponType === "REFERRAL";
+      },
     },
     usedBy: [
       {

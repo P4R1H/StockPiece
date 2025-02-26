@@ -4,9 +4,12 @@ import {
   deleteCoupon,
   getAllCoupons,
 } from "../controllers/coupon.controllers.js";
-import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
+import { verifyAdminJWT, verifyJWT } from "../middlewares/auth.middlewares.js";
+import { generateReferralCoupon } from "../controllers/coupon.controllers.js";
 
 const couponRouter = express.Router();
+
+couponRouter.post("/coupons/referral", verifyJWT, generateReferralCoupon);
 
 // Admin routes
 couponRouter.use(verifyAdminJWT);
