@@ -404,7 +404,7 @@
 @media screen and (max-width: 480px) {
   .leaderboard-container {
     padding: 25px 10px 10px 10px;
-    min-width: 80vw;
+    min-width: 90vw;
     max-height: 70vh;
 
   }
