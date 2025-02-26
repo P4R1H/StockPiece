@@ -177,8 +177,6 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
       $sort: { chapter: 1 }
     }
   ]);
-
-  console.log(chapterUpdatesGrouped);
   
   // Transform array to object with chapters as keys
   const chapterUpdatesObject = {};
@@ -348,11 +346,64 @@ const postUpdatePrice = asyncHandler(async (req, res, _next) => {
     );
 });
 
+const toggleNextChapterRelease = asyncHandler(async (req, res) => {
+  if (!req?.admin) {
+    throw new ApiError(400, "unauthorized request");
+  }
+
+  const latestChapter = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+
+  if (!latestChapter) {
+    throw new ApiError(400, "no chapter has been released yet");
+  }
+
+  latestChapter.canReleaseNext = !latestChapter.canReleaseNext;
+  await latestChapter.save();
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200, 
+        { canReleaseNext: latestChapter.canReleaseNext },
+        `Next chapter release ${latestChapter.canReleaseNext ? 'enabled' : 'disabled'} successfully`
+      )
+    );
+});
+
+const getNextChapterReleaseStatus = asyncHandler(async (req, res) => {
+  if (!req?.admin) {
+    throw new ApiError(400, "unauthorized request");
+  }
+
+  const latestChapter = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+
+  if (!latestChapter) {
+    throw new ApiError(400, "no chapter has been released yet");
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        { canReleaseNext: latestChapter.canReleaseNext },
+        "Next chapter release status fetched successfully"
+      )
+    );
+});
+
 export {
   getLatestChapter,
   getMarketStatus,
   closeMarket,
   releaseChapter,
+  getNextChapterReleaseStatus,
+  toggleNextChapterRelease,
   // getPriceUpdatesByAlgorithm,
   getAllStockStatistics,
   priceUpdateManual,

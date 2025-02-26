@@ -5,7 +5,6 @@ import { URL } from "node:url";
 const connectDB = async () => {
   try {
     const url = new URL(`${process.env.MONGO_URI}/${DB_NAME}`);
-    console.log(url.toString());
     const connectionInstance = await mongoose.connect(url.toString());
     console.log(
       `MONGODB connected host:${connectionInstance.connection.host} `

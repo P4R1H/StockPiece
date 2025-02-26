@@ -5,6 +5,7 @@ import asyncHandler from "../utils/asyncHandler.utils.js";
 import CharacterStock from "../models/characterStock.models.js";
 import { defaultAvatarUrl } from "../constants.js";
 import { uploadOnCloudinary, deleteFromCloudinary } from "../utils/cloudinary.utils.js";
+import ErrorLog from "../models/errorLog.models.js";
 
 //the super admin has already been registered we only need to have login
 const adminLogin = asyncHandler(async (req, res, _) => {
@@ -287,6 +288,35 @@ const updateStockImage = asyncHandler(async (req, res, _) => {
   );
 });
 
+const getErrorLogs = asyncHandler(async (req, res) => {
+  if (!req?.admin) {
+    throw new ApiError(403, "Unauthorized access to error logs");
+  }
+
+  const { type = 'all' } = req.query;
+
+  const query = {};
+
+  // Filter by error type
+  if (type === 'internal') {
+    query.isInternalServerError = true;
+  } else if (type === 'highPriority') {
+    query.isHighPriority = true;
+  }
+
+  const errors = await ErrorLog.find(query)
+    .sort({ createdAt: -1 })
+    .select("-rawError"); // Exclude raw error for security
+
+  res.status(200).json(
+    new ApiResponse(
+      200, 
+      { errors }, 
+      `${type} error logs fetched successfully`
+    )
+  );
+});
+
 export {
   adminLogin,
   updateStockImage,
@@ -295,4 +325,5 @@ export {
   deleteCharacterStockTemp,
   deleteAdmin,
   adminLogout,
+  getErrorLogs
 };
