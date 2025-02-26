@@ -205,7 +205,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
       .status(200)
       .json(new ApiResponse(200, transaction, "Stock sold successfully"));
   } catch (error) {
-    session.abortTransaction();
+    await session.abortTransaction();
     throw new ApiError(
       500,
       "some error occurred while making sell transaction",
