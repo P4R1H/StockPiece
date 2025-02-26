@@ -13,7 +13,6 @@ import { registerUser } from "../controllers/user.controllers.js";
 import { verifyJWT } from "../middlewares/auth.middlewares.js";
 import {
   globalRequestLimiter,
-  registrationLimiter,
 } from "../middlewares/requestLimit.middlewares.js";
 
 const userRouter = Router();
@@ -22,7 +21,6 @@ userRouter
   .route("/auth/register")
   .post(
     globalRequestLimiter,
-    registrationLimiter,
     upload.single("avatar"),
     registerUser
   );
