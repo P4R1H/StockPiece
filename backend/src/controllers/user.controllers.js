@@ -14,6 +14,15 @@ import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
 
+const validateTransactionQuantity = (quantity) => {
+  const parsedQuantity = Number(quantity);
+  
+  if (!Number.isInteger(parsedQuantity) || parsedQuantity <= 0) {
+    throw new ApiError(400, "Invalid quantity. Must be a positive integer");
+  }
+  return parsedQuantity;
+};
+
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
     code: couponCode.toUpperCase(),
@@ -36,8 +45,7 @@ const verifyCoupon = async (couponCode, user) => {
 
   // Check if coupon is first-time only
   if (coupon.isFirstTimeOnly) {
-    const hasTransactions = await Transaction.exists({ user: user._id });
-    if (hasTransactions) {
+    if (user.lastLogin) {
       throw new ApiError(400, "This coupon is for first-time users only");
     }
   }

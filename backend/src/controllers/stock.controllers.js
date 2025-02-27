@@ -9,6 +9,15 @@ import Transaction from "../models/transaction.models.js";
 import isWindowOpen from "../utils/windowStatus.js";
 import ChapterUpdate from "../models/chapterUpdate.models.js";
 
+const validateTransactionQuantity = (quantity) => {
+  const parsedQuantity = Number(quantity);
+
+  if (!Number.isInteger(parsedQuantity) || parsedQuantity <= 0) {
+    throw new ApiError(400, "Invalid quantity. Must be a positive integer");
+  }
+  return parsedQuantity;
+};
+
 const buyStock = asyncHandler(async (req, res, _) => {
   //we need to check if the chapter is active or not
   //first check if the window is open
@@ -47,9 +56,9 @@ const buyStock = asyncHandler(async (req, res, _) => {
 
   //now i need to check the price of the stock and check if there is enough balance
   const { name, quantity } = req.body;
-  if (!quantity || quantity <= 0) {
-    throw new ApiError(400, "Invalid quantity provided");
-  }
+
+  // Use validateTransactionQuantity instead of direct validation
+  const validatedQuantity = validateTransactionQuantity(quantity);
 
   const characterStock = await CharacterStock.findOne({ name });
 
@@ -57,7 +66,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, `${name} stock not available`);
   }
 
-  const totalPrice = characterStock.currentValue * parseInt(quantity);
+  const totalPrice = characterStock.currentValue * validatedQuantity;
 
   if (user.accountValue < totalPrice) {
     throw new ApiError(400, "insufficient funds");
@@ -72,7 +81,7 @@ const buyStock = asyncHandler(async (req, res, _) => {
         {
           purchasedBy: user._id,
           stockID: characterStock._id,
-          quantity: parseInt(quantity),
+          quantity: validatedQuantity,
           value: characterStock.currentValue,
           type: "buy",
           chapterPurchasedAt: latestChapter.chapter,
@@ -86,16 +95,15 @@ const buyStock = asyncHandler(async (req, res, _) => {
       (item) => item.stock.toString() === characterStock._id.toString()
     );
     if (stockIndex >= 0) {
-      user.ownedStocks[stockIndex].quantity += parseInt(quantity);
+      user.ownedStocks[stockIndex].quantity += validatedQuantity;
     } else {
       user.ownedStocks.push({
         stock: characterStock._id,
-        quantity,
+        quantity: validatedQuantity,
       });
     }
 
     await user.save({ session, validateModifiedOnly: true });
-
     await session.commitTransaction();
 
     res
@@ -153,6 +161,9 @@ const sellStock = asyncHandler(async (req, res, _) => {
   //now i need to check the price of the stock and check if there is enough balance
   const { name, quantity } = req.body;
 
+  // Use validateTransactionQuantity instead of direct validation
+  const validatedQuantity = validateTransactionQuantity(quantity);
+
   const characterStock = await CharacterStock.findOne({ name });
 
   if (!characterStock || characterStock.isRemoved) {
@@ -166,12 +177,13 @@ const sellStock = asyncHandler(async (req, res, _) => {
   if (stockIndex < 0) {
     throw new ApiError(400, "user does not have this stock");
   }
+
   //check if the quantity we want to sell is even available
-  if (parseInt(quantity) > user.ownedStocks[stockIndex].quantity) {
+  if (validatedQuantity > user.ownedStocks[stockIndex].quantity) {
     throw new ApiError(400, "not enough stock to sell");
   }
 
-  const totalPrice = characterStock.currentValue * parseInt(quantity);
+  const totalPrice = characterStock.currentValue * validatedQuantity;
 
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -182,7 +194,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
         {
           purchasedBy: user._id,
           stockID: characterStock._id,
-          quantity: parseInt(quantity),
+          quantity: validatedQuantity,
           value: characterStock.currentValue,
           type: "sell",
           chapterPurchasedAt: latestChapter.chapter,
@@ -192,7 +204,7 @@ const sellStock = asyncHandler(async (req, res, _) => {
     );
 
     user.accountValue += totalPrice;
-    user.ownedStocks[stockIndex].quantity -= parseInt(quantity);
+    user.ownedStocks[stockIndex].quantity -= validatedQuantity;
     //if user does not own any quantity then remove from the owned stock
     if (user.ownedStocks[stockIndex].quantity === 0) {
       user.ownedStocks.splice(stockIndex, 1);
