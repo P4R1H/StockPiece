@@ -178,85 +178,132 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           }
         }
       }
+      // For buying, check if we have enough funds
+      else if (type === 'buy') {
+        const totalCost = stock.currentPrice * quantity;
+        if (portfolio.cash < totalCost) {
+          showError("Insufficient funds");
+          return;
+        }
+      }
     }
   
+    // Apply optimistic update
     const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
     if (!previousPortfolio) return;
-    const newPortfolio = { ...previousPortfolio };
-  
+    
+    const newPortfolio = structuredClone(previousPortfolio); // Deep clone to avoid reference issues
     const holdingIndex = newPortfolio.stocks.findIndex(
       holding => holding.stock.id === stock.id
     );
   
     if (type === 'buy') {
       const totalCost = stock.currentPrice * quantity;
-      if (newPortfolio.cash >= totalCost) {
-        newPortfolio.cash -= totalCost;
-        newPortfolio.stockValue += totalCost;
-        if (holdingIndex !== -1) {
-          newPortfolio.stocks[holdingIndex].quantity += quantity;
-        } else {
-          newPortfolio.stocks.push({
-            stock: stock,
-            quantity: quantity,
-            holdingId: Math.random().toString(36).substring(7)
-          });
-        }
+      newPortfolio.cash -= totalCost;
+      newPortfolio.stockValue += totalCost;
+      if (holdingIndex !== -1) {
+        newPortfolio.stocks[holdingIndex].quantity += quantity;
       } else {
-        showError("Insufficient funds");
-        return;
+        newPortfolio.stocks.push({
+          stock: { ...stock }, // Clone to avoid reference issues
+          quantity: quantity,
+          holdingId: Math.random().toString(36).substring(7)
+        });
       }
     } else { // 'sell'
-      if (holdingIndex !== -1 && newPortfolio.stocks[holdingIndex].quantity >= quantity) {
-        const totalCost = stock.currentPrice * quantity;
-        newPortfolio.cash += totalCost;
-        newPortfolio.stockValue -= totalCost;
+      if (holdingIndex !== -1) {
+        const totalValue = stock.currentPrice * quantity;
+        newPortfolio.cash += totalValue;
+        newPortfolio.stockValue -= totalValue;
         newPortfolio.stocks[holdingIndex].quantity -= quantity;
         if (newPortfolio.stocks[holdingIndex].quantity === 0) {
           newPortfolio.stocks.splice(holdingIndex, 1);
         }
-      } else {
-        showError("Not enough shares to sell");
-        return;
       }
     }
+    
+    // Apply optimistic update to UI
     queryClient.setQueryData(['portfolio', isLoggedIn], newPortfolio);
   
     // Only send backend requests if the user is logged in
     if (isLoggedIn) {
+      // Track this transaction in the pending queue
       if (!pendingTransactions.current[stock.id]) {
         pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
       }
+      
+      // Update the pending transactions for this stock
       pendingTransactions.current[stock.id][type] += quantity;
   
-      // Use a separate debounce timer for each stock
+      // Clear any existing timer for this stock
       if (debounceTimers.current[stock.id]) {
         clearTimeout(debounceTimers.current[stock.id]);
       }
   
+      // Set up a new debounce timer
       debounceTimers.current[stock.id] = setTimeout(async () => {
-        const { buy, sell } = pendingTransactions.current[stock.id];
-  
-        if (buy > 0) {
-          try {
-            await buyStock(name, buy);
-          } catch (error) {
-            queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
-            alert(error instanceof Error ? error.message : 'Buy transaction failed');
-          }
-        }
-  
-        if (sell > 0) {
-          try {
-            await sellStock(name, sell);
-          } catch (error) {
-            queryClient.setQueryData(['portfolio', isLoggedIn], previousPortfolio);
-            alert(error instanceof Error ? error.message : 'Sell transaction failed');
-          }
-        }
-  
+        // Calculate net transaction
+        const pendingBuy = pendingTransactions.current[stock.id].buy;
+        const pendingSell = pendingTransactions.current[stock.id].sell;
+        
+        // Clear pending transactions before processing
         pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
-        delete debounceTimers.current[stock.id];
+        
+        try {
+          // Determine if it's a net buy or sell
+          if (pendingBuy > pendingSell) {
+            // Net buy
+            const netBuy = pendingBuy - pendingSell;
+            await buyStock(name, netBuy);
+          } else if (pendingSell > pendingBuy) {
+            // Net sell
+            const netSell = pendingSell - pendingBuy;
+            await sellStock(name, netSell);
+          }
+          // If they're equal, no transaction needed
+        } catch (error) {
+          console.error("Transaction failed:", error);
+          showError(error instanceof Error ? error.message : 'Transaction failed');
+          
+          // Revert only the failed net transaction
+          const currentPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
+          if (!currentPortfolio) return;
+          const updatedPortfolio = structuredClone(currentPortfolio);
+          const revertIndex = updatedPortfolio.stocks.findIndex(h => h.stock.id === stock.id);
+
+          if (pendingBuy > pendingSell) {
+            // Undo the failed net buy
+            const netBuy = pendingBuy - pendingSell;
+            const totalCost = stock.currentPrice * netBuy;
+            updatedPortfolio.cash += totalCost;         // Restore cash spent
+            updatedPortfolio.stockValue -= totalCost;   // Reduce stock value
+            if (revertIndex !== -1) {
+              updatedPortfolio.stocks[revertIndex].quantity -= netBuy;
+              if (updatedPortfolio.stocks[revertIndex].quantity <= 0) {
+                updatedPortfolio.stocks.splice(revertIndex, 1);
+              }
+            }
+          } else if (pendingSell > pendingBuy) {
+            // Undo the failed net sell
+            const netSell = pendingSell - pendingBuy;
+            const totalValue = stock.currentPrice * netSell;
+            updatedPortfolio.cash -= totalValue;        // Remove cash gained
+            updatedPortfolio.stockValue += totalValue;  // Restore stock value
+            if (revertIndex === -1) {
+              updatedPortfolio.stocks.push({
+                stock: { ...stock },
+                quantity: netSell,
+                holdingId: Math.random().toString(36).substring(7)
+              });
+            } else {
+              updatedPortfolio.stocks[revertIndex].quantity += netSell;
+            }
+          }
+          queryClient.setQueryData(['portfolio', isLoggedIn], updatedPortfolio);
+        } finally {
+          // Clear the debounce timer
+          delete debounceTimers.current[stock.id];
+        }
       }, 500);
     }
   };
