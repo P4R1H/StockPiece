@@ -181,6 +181,11 @@ const SettingsPage: React.FC = () => {
             >
               Contribute?
             </a>
+            <a
+              href="https://discord.gg/weFsk76xtq"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Join Our Discord!</a>
           </div>
         </div>
       </div>
