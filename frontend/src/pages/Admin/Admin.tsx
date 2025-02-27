@@ -591,8 +591,7 @@ const Admin: React.FC = () => {
           <div className="statusInfo">
             {chapterStats ? (
               <>
-                <p>Total Users: <b>{chapterStats.totalUsers}</b></p>
-                <p>New Users: {chapterStats.newUsers}</p>
+                <p>New Users: <b>{chapterStats.newUsers}</b>/{chapterStats.totalUsers}</p>
                 <p>Market Value: ${chapterStats.marketStats?.totalMarketValue?.toLocaleString()}</p>
                 <p>Chapter volume: ${chapterStats.chapterTransactions?.totalVolume.toLocaleString()}</p>
                 <p>Total purchases: {chapterStats.chapterTransactions?.totalTransactions}</p>
