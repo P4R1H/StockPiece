@@ -4,7 +4,7 @@ import { BountyProfileCardProps } from '../../types/Components';
 import './Portfolio.css'
 
 const formatWorth = (value: number): string => {  
-  return isNaN(value) ? '0' : Math.floor(value).toLocaleString();
+  return isNaN(value) ? '0' : Math.floor(value).toLocaleString(undefined);
 };
 
 const formatPercentage = (value: number): string => {

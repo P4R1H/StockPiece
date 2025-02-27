@@ -375,7 +375,25 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { chapterNumber } = req.body;
+  const { chapterNumber, sortBy = "totalTransactions", limit = 100 } = req.body;
+
+  // Validate sort field
+  const validSortFields = [
+    "totalTransactions",
+    "buyCount",
+    "sellCount",
+    "buyVolume",
+    "sellVolume",
+    "totalVolume",
+  ];
+
+  if (!validSortFields.includes(sortBy)) {
+    throw new ApiError(
+      400,
+      `Invalid sort field. Must be one of: ${validSortFields.join(", ")}`
+    );
+  }
+
   let targetChapter;
 
   if (chapterNumber) {
@@ -395,15 +413,15 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
     }
   }
 
-  // Aggregate pipeline to calculate number of transactions per user
-  const topTraders = await Transaction.aggregate([
+  // Aggregate pipeline to calculate both transaction counts and volumes
+  const traders = await Transaction.aggregate([
     // Match transactions for the specified chapter
     {
       $match: {
         chapterPurchasedAt: targetChapter.chapter,
       },
     },
-    // Group by user and calculate transactions
+    // Group by user and calculate metrics
     {
       $group: {
         _id: "$purchasedBy",
@@ -417,6 +435,27 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
           $sum: {
             $cond: [{ $eq: ["$type", "sell"] }, 1, 0],
           },
+        },
+        buyVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "buy"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        sellVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "sell"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        totalVolume: {
+          $sum: { $multiply: ["$quantity", "$value"] },
         },
       },
     },
@@ -441,17 +480,20 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
         totalTransactions: 1,
         buyCount: 1,
         sellCount: 1,
+        buyVolume: 1,
+        sellVolume: 1,
+        totalVolume: 1,
       },
     },
-    // Sort by total transactions in descending order
+    // Sort by the specified field
     {
       $sort: {
-        totalTransactions: -1,
+        [sortBy]: -1,
       },
     },
-    // Limit to top 100
+    // Limit results
     {
-      $limit: 100,
+      $limit: limit,
     },
   ]);
 
@@ -459,8 +501,9 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       {
-        traders: topTraders,
+        traders,
         chapter: targetChapter.chapter,
+        sortedBy: sortBy,
       },
       `Top traders for chapter ${targetChapter.chapter} fetched successfully`
     )
