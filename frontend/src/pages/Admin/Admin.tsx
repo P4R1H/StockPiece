@@ -594,7 +594,7 @@ const Admin: React.FC = () => {
                 <p>Total Users: <b>{chapterStats.totalUsers}</b></p>
                 <p>New Users: {chapterStats.newUsers}</p>
                 <p>Market Value: ${chapterStats.marketStats?.totalMarketValue?.toLocaleString()}</p>
-                <p>Chapter volume: {chapterStats.chapterTransactions?.totalVolume}</p>
+                <p>Chapter volume: {chapterStats.chapterTransactions?.totalVolume.toLocaleString()}</p>
                 <p>Active Stocks: {chapterStats.marketStats?.activeStocks}/ {chapterStats.marketStats?.totalStocks}</p>
               </>
             ) : (
