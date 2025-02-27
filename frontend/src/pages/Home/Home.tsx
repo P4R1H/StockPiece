@@ -70,13 +70,13 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const portfolioStats = useMemo(() => {
     const netWorthValue = portfolio.stockValue + portfolio.cash;
     return {
-      netWorth: netWorthValue.toLocaleString(),
-      cash: portfolio.cash.toLocaleString(),
-      profitLossOverall: (((netWorthValue - initialInvestment) / initialInvestment) * 100).toFixed(2) + '%',
-      profitLossLastChapter: ((portfolio.profit ?? 0).toFixed(2)) + '%'
+      netWorth: netWorthValue, 
+      cash: portfolio.cash,
+      profitLossOverall: ((netWorthValue - initialInvestment) / initialInvestment) * 100, 
+      profitLossLastChapter: portfolio.profit ?? 0 
     };
   }, [portfolio]);
-
+  
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned')
