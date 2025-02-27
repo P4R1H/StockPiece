@@ -188,10 +188,10 @@
 
 .ticker-content {
   display: flex;
-  width: 300%;
+  width: 1200%;
   height: 100%;
   transform: translateX(100%);
-  animation: ticker 25s linear infinite;
+  animation: ticker 90s linear infinite;
 }
 
 .ticker-item {

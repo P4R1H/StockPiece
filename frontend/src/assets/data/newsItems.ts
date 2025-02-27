@@ -1,6 +1,6 @@
 export const NEWS_ITEMS = [
-  "INFO: Buying Window Closes 8:30 PM (UTC) Monday, Prices Update 6 Hours After Window Close",
   "BREAKING: Zoro Gets Lost in Bermuda Triangle, Claims It's a Shortcut to Wano",
+  "INFO: Buying Window Closes 8:30 PM (UTC) Monday, Prices Update 6 Hours After Window Close",
   "INFO: Buying Window Opens 8:30 PM (UTC) Thursday On Non-Break Weeks",
   "ALERT: Luffy Declares All-You-Can-Eat Buffets His New Territory",
   "UPDATE: Nami Raises Interest Rates on Crew Debt by 3000%",
