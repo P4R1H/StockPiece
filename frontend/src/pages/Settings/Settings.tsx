@@ -62,7 +62,7 @@ const SettingsPage: React.FC = () => {
 
               <div className="crew-member">
                 <img
-                  src="https://styles.redditmedia.com/t5_w4pxp/styles/profileIcon_8piqdbuaa8m91.png"
+                  src="https://avatars.githubusercontent.com/u/76397616"
                   alt="Developer 2"
                   className="crew-avatar"
                 />
