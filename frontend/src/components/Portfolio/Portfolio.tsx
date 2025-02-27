@@ -7,7 +7,7 @@ const formatNumber = (value: string | number): string => {
   // Handle percentage values
   if (typeof value === 'string' && value.includes('%')) {
     const numValue = parseFloat(value);
-    return isNaN(numValue) ? '0%' : numValue.toLocaleString(undefined, { 
+    return isNaN(numValue) ? '0%' : numValue.toLocaleString('de-DE', { 
       minimumFractionDigits: 1,
       maximumFractionDigits: 1
     }) + '%';
@@ -16,13 +16,12 @@ const formatNumber = (value: string | number): string => {
   // Handle numeric values (berries)
   let numValue: number;
   if (typeof value === 'string') {
-    // Remove any existing commas before parsing
-    numValue = parseFloat(value.replace(/,/g, ''));
+    numValue = parseFloat(value);
   } else {
     numValue = value;
   }
   
-  return isNaN(numValue) ? '0' : numValue.toLocaleString(undefined, {
+  return isNaN(numValue) ? '0' : numValue.toLocaleString('de-DE', {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   });
@@ -139,14 +138,14 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
         </p>
         <p className="bounty-profit-loss">
           Profit/Loss Overall: 
-          <span className={`highlight ${parseFloat(String(profitLossOverall)) >= 0 ? 'profit' : 'loss'}`}>
-            {formatNumber(profitLossOverall)}%
+          <span className={`highlight ${profitLossOverall >= 0 ? 'profit' : 'loss'}`}>
+            {formatNumber(profitLossOverall + '%')}
           </span>
           <span className="profit-loss-last-chapter">
             {' '}
             (Last Chapter: 
-            <span className={`highlight ${parseFloat(String(profitLossLastChapter)) >= 0 ? 'profit' : 'loss'}`}>
-              {formatNumber(profitLossLastChapter)}%
+            <span className={`highlight ${profitLossLastChapter >= 0 ? 'profit' : 'loss'}`}>
+              {formatNumber(profitLossLastChapter + '%')}
             </span>)
           </span>
         </p>
