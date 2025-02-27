@@ -533,21 +533,16 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
   // Get total users
   const totalUsers = await User.countDocuments();
 
-  // Get new users for this chapter (users who registered after previous chapter release)
-  const previousChapter = await ChapterRelease.findOne({
-    chapter: targetChapter.chapter - 1
-  });
-
-  const newUsersQuery = previousChapter 
-    ? { createdAt: { $gte: previousChapter.releaseDate } }
-    : { createdAt: { $lte: targetChapter.releaseDate } };
+  const newUsersQuery = {
+    createdAt: { $gte: targetChapter.releaseDate },
+  };
 
   const newUsers = await User.countDocuments(newUsersQuery);
 
   // Calculate total market value (sum of all stocks * their current values)
   const marketStats = await CharacterStock.aggregate([
     {
-      $match: { isRemoved: false }
+      $match: { isRemoved: false },
     },
     {
       $lookup: {
@@ -555,30 +550,30 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
         let: { stockId: "$_id" },
         pipeline: [
           {
-            $unwind: "$ownedStocks"
+            $unwind: "$ownedStocks",
           },
           {
             $match: {
               $expr: {
-                $eq: ["$ownedStocks.stock", "$$stockId"]
-              }
-            }
+                $eq: ["$ownedStocks.stock", "$$stockId"],
+              },
+            },
           },
           {
             $group: {
               _id: null,
-              totalQuantity: { $sum: "$ownedStocks.quantity" }
-            }
-          }
+              totalQuantity: { $sum: "$ownedStocks.quantity" },
+            },
+          },
         ],
-        as: "ownership"
-      }
+        as: "ownership",
+      },
     },
     {
       $unwind: {
         path: "$ownership",
-        preserveNullAndEmptyArrays: true
-      }
+        preserveNullAndEmptyArrays: true,
+      },
     },
     {
       $group: {
@@ -587,9 +582,9 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
           $sum: {
             $multiply: [
               "$currentValue",
-              { $ifNull: ["$ownership.totalQuantity", 0] }
-            ]
-          }
+              { $ifNull: ["$ownership.totalQuantity", 0] },
+            ],
+          },
         },
         totalStocks: { $sum: 1 },
         activeStocks: {
@@ -597,12 +592,117 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
             $cond: [
               { $gt: [{ $ifNull: ["$ownership.totalQuantity", 0] }, 0] },
               1,
-              0
-            ]
-          }
-        }
-      }
-    }
+              0,
+            ],
+          },
+        },
+      },
+    },
+  ]);
+
+  // Get transaction statistics for this chapter
+  const chapterTransactionStats = await Transaction.aggregate([
+    {
+      $match: {
+        chapterPurchasedAt: targetChapter.chapter,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        totalTransactions: { $sum: 1 },
+        buyCount: {
+          $sum: { $cond: [{ $eq: ["$type", "buy"] }, 1, 0] },
+        },
+        sellCount: {
+          $sum: { $cond: [{ $eq: ["$type", "sell"] }, 1, 0] },
+        },
+        totalVolume: {
+          $sum: { $multiply: ["$quantity", "$value"] },
+        },
+        buyVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "buy"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        sellVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "sell"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        uniqueTraders: { $addToSet: "$purchasedBy" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totalTransactions: 1,
+        buyCount: 1,
+        sellCount: 1,
+        totalVolume: 1,
+        buyVolume: 1,
+        sellVolume: 1,
+        uniqueTraders: { $size: "$uniqueTraders" },
+      },
+    },
+  ]);
+
+  // Get overall transaction statistics
+  const overallTransactionStats = await Transaction.aggregate([
+    {
+      $group: {
+        _id: null,
+        totalTransactions: { $sum: 1 },
+        buyCount: {
+          $sum: { $cond: [{ $eq: ["$type", "buy"] }, 1, 0] },
+        },
+        sellCount: {
+          $sum: { $cond: [{ $eq: ["$type", "sell"] }, 1, 0] },
+        },
+        totalVolume: {
+          $sum: { $multiply: ["$quantity", "$value"] },
+        },
+        buyVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "buy"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        sellVolume: {
+          $sum: {
+            $cond: [
+              { $eq: ["$type", "sell"] },
+              { $multiply: ["$quantity", "$value"] },
+              0,
+            ],
+          },
+        },
+        uniqueTraders: { $addToSet: "$purchasedBy" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        totalTransactions: 1,
+        buyCount: 1,
+        sellCount: 1,
+        totalVolume: 1,
+        buyVolume: 1,
+        sellVolume: 1,
+        uniqueTraders: { $size: "$uniqueTraders" },
+      },
+    },
   ]);
 
   const stats = {
@@ -612,18 +712,38 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
     marketStats: marketStats[0] || {
       totalMarketValue: 0,
       totalStocks: 0,
-      activeStocks: 0
+      activeStocks: 0,
     },
-    timestamp: new Date()
+    chapterTransactions: chapterTransactionStats[0] || {
+      totalTransactions: 0,
+      buyCount: 0,
+      sellCount: 0,
+      totalVolume: 0,
+      buyVolume: 0,
+      sellVolume: 0,
+      uniqueTraders: 0,
+    },
+    overallTransactions: overallTransactionStats[0] || {
+      totalTransactions: 0,
+      buyCount: 0,
+      sellCount: 0,
+      totalVolume: 0,
+      buyVolume: 0,
+      sellVolume: 0,
+      uniqueTraders: 0,
+    },
+    timestamp: new Date(),
   };
 
-  res.status(200).json(
-    new ApiResponse(
-      200,
-      stats,
-      `Statistics for chapter ${targetChapter.chapter} fetched successfully`
-    )
-  );
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        stats,
+        `Statistics for chapter ${targetChapter.chapter} fetched successfully`
+      )
+    );
 });
 
 export {
