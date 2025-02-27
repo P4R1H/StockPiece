@@ -4,21 +4,25 @@ import { BountyProfileCardProps } from '../../types/Components';
 import './Portfolio.css'
 
 const formatNumber = (value: string | number): string => {
-  const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value.toString();
-  const num = parseFloat(cleanValue);
-  
-  if (isNaN(num)) return '0';
-
-  // If the value is a percentage (detected by % in parent component)
-  if (cleanValue.includes('%')) {
-    return num.toLocaleString(undefined, { 
+  // Handle percentage values
+  if (typeof value === 'string' && value.includes('%')) {
+    const numValue = parseFloat(value);
+    return isNaN(numValue) ? '0%' : numValue.toLocaleString(undefined, { 
       minimumFractionDigits: 1,
-      maximumFractionDigits: 1 
-    });
+      maximumFractionDigits: 1
+    }) + '%';
   }
-
-  // For all other numbers (berries), show no decimals
-  return num.toLocaleString(undefined, { 
+  
+  // Handle numeric values (berries)
+  let numValue: number;
+  if (typeof value === 'string') {
+    // Remove any existing commas before parsing
+    numValue = parseFloat(value.replace(/,/g, ''));
+  } else {
+    numValue = value;
+  }
+  
+  return isNaN(numValue) ? '0' : numValue.toLocaleString(undefined, {
     minimumFractionDigits: 0,
     maximumFractionDigits: 0
   });
