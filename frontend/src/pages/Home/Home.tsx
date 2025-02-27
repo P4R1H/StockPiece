@@ -44,8 +44,11 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         return [];
       }
     },
-    staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30
+    staleTime: 1000 * 60 * 15,
+    gcTime: 1000 * 60 * 30,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   });
   
   const { data: portfolio = PLACEHOLDER_PORTFOLIO } = useQuery<UserPortfolio>({
@@ -63,7 +66,10 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       }
     },
     staleTime: 1000 * 60 * 10,
-    gcTime: 1000 * 60 * 30
+    gcTime: 1000 * 60 * 30,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
   });
 
   const initialInvestment = 5000;
