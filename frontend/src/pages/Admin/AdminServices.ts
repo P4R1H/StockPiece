@@ -241,4 +241,20 @@ export const getNextReleaseStatus = async (): Promise<boolean> => {
   return data.data.canReleaseNext;
 };
 
-
+export const getChapterStatistics = async (chapter?: number): Promise<any> => {
+  const url = chapter 
+    ? `/api/v1/admin/statistics?chapterNumber=${chapter}`
+    : '/api/v1/admin/statistics';
+    
+  const response = await fetch(url, {
+    method: 'GET',
+    credentials: 'include',
+  });
+  
+  const data = await response.json();
+  
+  if (!response.ok)
+    throw new Error(data.message || 'Failed to fetch admin statistics');
+    
+  return data.data;
+};
