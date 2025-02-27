@@ -10,6 +10,7 @@ import {
   getErrorLogs,
   getUserByUsername,
   getTopTradersByChapter,
+  getChapterStatistics,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middlewares.js";
@@ -38,5 +39,7 @@ adminRouter.route("/users").get(getUserByUsername);
 adminRouter.route("/errors").get(getErrorLogs);
 
 adminRouter.route("/top-traders").get(getTopTradersByChapter);
+
+adminRouter.route("/statistics").get(getChapterStatistics)
 
 export default adminRouter;

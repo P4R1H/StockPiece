@@ -510,8 +510,125 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
   );
 });
 
+const getChapterStatistics = asyncHandler(async (req, res) => {
+  if (!req.admin) {
+    throw new ApiError(401, "unauthenticated request");
+  }
+
+  const { chapterNumber } = req.body;
+
+  let targetChapter;
+  if (chapterNumber) {
+    targetChapter = await ChapterRelease.findOne({ chapter: chapterNumber });
+    if (!targetChapter) {
+      throw new ApiError(404, `Chapter ${chapterNumber} not found`);
+    }
+  } else {
+    targetChapter = await ChapterRelease.findOne({}).sort({ chapter: -1 });
+    if (!targetChapter) {
+      throw new ApiError(404, "No chapters found");
+    }
+  }
+
+  // Get total users
+  const totalUsers = await User.countDocuments();
+
+  // Get new users for this chapter (users who registered after previous chapter release)
+  const previousChapter = await ChapterRelease.findOne({
+    chapter: targetChapter.chapter - 1
+  });
+
+  const newUsersQuery = previousChapter 
+    ? { createdAt: { $gte: previousChapter.releaseDate } }
+    : { createdAt: { $lte: targetChapter.releaseDate } };
+
+  const newUsers = await User.countDocuments(newUsersQuery);
+
+  // Calculate total market value (sum of all stocks * their current values)
+  const marketStats = await CharacterStock.aggregate([
+    {
+      $match: { isRemoved: false }
+    },
+    {
+      $lookup: {
+        from: "users",
+        let: { stockId: "$_id" },
+        pipeline: [
+          {
+            $unwind: "$ownedStocks"
+          },
+          {
+            $match: {
+              $expr: {
+                $eq: ["$ownedStocks.stock", "$$stockId"]
+              }
+            }
+          },
+          {
+            $group: {
+              _id: null,
+              totalQuantity: { $sum: "$ownedStocks.quantity" }
+            }
+          }
+        ],
+        as: "ownership"
+      }
+    },
+    {
+      $unwind: {
+        path: "$ownership",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        totalMarketValue: {
+          $sum: {
+            $multiply: [
+              "$currentValue",
+              { $ifNull: ["$ownership.totalQuantity", 0] }
+            ]
+          }
+        },
+        totalStocks: { $sum: 1 },
+        activeStocks: {
+          $sum: {
+            $cond: [
+              { $gt: [{ $ifNull: ["$ownership.totalQuantity", 0] }, 0] },
+              1,
+              0
+            ]
+          }
+        }
+      }
+    }
+  ]);
+
+  const stats = {
+    chapter: targetChapter.chapter,
+    totalUsers,
+    newUsers,
+    marketStats: marketStats[0] || {
+      totalMarketValue: 0,
+      totalStocks: 0,
+      activeStocks: 0
+    },
+    timestamp: new Date()
+  };
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      stats,
+      `Statistics for chapter ${targetChapter.chapter} fetched successfully`
+    )
+  );
+});
+
 export {
   adminLogin,
+  getChapterStatistics,
   updateStockImage,
   createAdmin,
   createCharacterStock,
