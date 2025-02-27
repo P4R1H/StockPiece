@@ -82,7 +82,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       if (filter === 'Owned')
         return portfolio.stocks.some(ownedStock => ownedStock.stock.id === stock.id);
       if (filter === 'Popular') {
-        const topCount = Math.ceil(stocks.length * 0.1);
+        const topCount = Math.ceil(stocks.length * 0.2);
         const sortedByPopularity = [...stocks].sort((a, b) => b.popularity - a.popularity);
         const topStockIds = sortedByPopularity.slice(0, topCount).map(s => s.id);
         return topStockIds.includes(stock.id);
