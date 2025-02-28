@@ -141,7 +141,7 @@ This fan-made simulation game is not affiliated with or endorsed by the official
 - **Toei Animation**
 
 StockPiece is a non-profit project created for entertainment purposes only. No copyright infringement is intended.  
-For concerns regarding copyrighted content, please contact us immediately.
+For concerns regarding copyrighted content, please contact us immediately at stockpieceofficial@gmail.com.
 
 ---
 
