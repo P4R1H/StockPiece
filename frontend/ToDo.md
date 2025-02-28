@@ -1,4 +1,5 @@
 [ ] Bug: If you move to next chapter without forcing price updates, graph shows different price than stock
+[ ] Bug: Daily login needs relogout login
 
 ## Overall Improvements
 - [ ] Show alert after login if coupon or daily
