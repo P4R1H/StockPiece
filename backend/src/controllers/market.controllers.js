@@ -64,7 +64,7 @@ const openMarket = asyncHandler(async (req, res, _next) => {
   }
 
   if (
-    Date.now() > latestChapterDoc.windowEndDate.getTime() ||
+    // Date.now() > latestChapterDoc.windowEndDate.getTime() ||
     latestChapterDoc.isPriceUpdated
   ) {
     throw new ApiError(400, "the market can no longer be opened");
