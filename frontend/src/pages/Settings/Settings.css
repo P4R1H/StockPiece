@@ -31,7 +31,7 @@ body {
 .settings-container {
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-   url('/assets/settings.webp') no-repeat center center;
+    url('/assets/settings.webp') no-repeat center center;
   background-size: cover;
   padding: 20px;
   will-change: transform;
@@ -47,8 +47,8 @@ body {
   margin-top: 15px;
 }
 
-/* Container Title */
-.container-title {
+/* Container Title - Scoped to settings-container to avoid conflicts */
+.settings-container .container-title {
   color: rgb(212, 169, 59);
   position: absolute;
   top: -20px;
@@ -62,14 +62,14 @@ body {
   text-align: center;
 }
 
-.container-title .main-title {
+.settings-container .container-title .main-title {
   font-size: 2.2rem;
   line-height: 1;
   margin: 0;
   display: block;
 }
 
-.container-title .subtitle {
+.settings-container .container-title .subtitle {
   font-size: 0.9rem;
   line-height: 1;
   margin: 0;
@@ -375,103 +375,103 @@ body {
 /* Animations */
 @keyframes floatIn {
   from {
-   opacity: 0;
-   transform: translateY(20px);
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
-   opacity: 1;
-   transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* Mobile - Improved styles */
+/* Mobile */
 @media (max-width: 600px) {
   /* Title & Layout */
-  .container-title {
-   top: -13px;
+  .settings-container .container-title {
+    top: -13px;
   }
   
-  .container-title .main-title {
-    font-size: 1.6rem !important; /* Force this font size */
+  .settings-container .container-title .main-title {
+    font-size: 1.6rem !important;
   }
   
-  .container-title .subtitle {
-    font-size: 0.7rem !important; /* Force this font size */
-    transition: none !important; /* Prevent any transitions */
-   }
+  .settings-container .container-title .subtitle {
+    font-size: 0.7rem !important; 
+    transition: none !important; 
+  }
 
   .main-page-container {
-   padding: 0.25rem;
-   max-width: 95%;
-   margin: 1rem auto;
+    padding: 0.25rem;
+    max-width: 95%;
+    margin: 1rem auto;
   }
   
   .settings-container {
-   padding: 15px;
-   margin: 5px;
+    padding: 15px;
+    margin: 5px;
   }
   
   .settings-section h2 {
-   font-size: 1.2rem;
-   margin-bottom: 0.3rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
   }
   
   .section-box {
-   padding: 0.4rem;
-   margin-bottom: 0.5rem;
+    padding: 0.4rem;
+    margin-bottom: 0.5rem;
   }
   
   /* Controls & Buttons */
   .controls-buttons {
-   flex-direction: row;
-   flex-wrap: wrap;
-   gap: 0.3rem;
-   justify-content: space-between;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: space-between;
   }
   
   .danger-button, 
   .primary-button {
-   padding: 0.4rem 0.8rem;
-   font-size: 0.9rem;
-   flex: 1 0 45%;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.9rem;
+    flex: 1 0 45%;
   }
   
   .referral-info {
-    width: 90%; /* Use percentage width instead of fixed width */
+    width: 90%;
     max-width: 220px;
     padding: 5px;
-    left: 0; /* Keep left positioning */
-    right: auto; /* Don't set right positioning */
-    position: absolute; 
-    z-index: 10; 
-    height: auto; /* Allow height to adjust to content */
-    overflow-wrap: break-word; /* Allow words to break */
+    left: 0;
+    right: auto;
+    position: absolute;
+    z-index: 10;
+    height: auto;
+    overflow-wrap: break-word;
     word-wrap: break-word;
-    white-space: normal; /* Ensure text wraps properly */
+    white-space: normal;
   }
   
   .referral-info p {
     font-size: 0.75rem;
-    word-break: normal; /* Prevent awkward breaks */
-    hyphens: auto; /* Add hyphens for better text wrapping */
+    word-break: normal;
+    hyphens: auto;
     overflow-wrap: break-word;
   }
   
   .referral-code-container {
-   width: auto;
-   max-width: 185px;
-   padding: 0.3rem;
+    width: auto;
+    max-width: 185px;
+    padding: 0.3rem;
   }
 
   .referral-info-wrapper {
-   flex-direction: row;
-   align-items: center;
-   gap: 0.3rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.3rem;
   }
 
   .referral-label {
-   font-size: 0.7rem;
-   margin-bottom: 0;
+    font-size: 0.7rem;
+    margin-bottom: 0;
   }
 
   .controls-buttons {
@@ -479,104 +479,100 @@ body {
     flex-wrap: wrap;
     gap: 0.3rem;
     justify-content: space-between;
-   }
+  }
    
-   .danger-button, 
-   .primary-button {
+  .danger-button, 
+  .primary-button {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
-    flex: 1 0 auto; /* Changed from 45% to auto to allow natural width */
-    min-width: unset; /* Remove minimum width constraint */
-    max-width: unset; /* Remove maximum width constraint */
-   }
+    flex: 1 0 auto;
+    min-width: unset;
+    max-width: unset;
+  }
    
-   /* Ensure the referral button container doesn't affect button sizing */
-   .referral-button-container {
-    width: auto; /* Allow the button to size based on content */
-    max-width: none; /* Remove max-width constraint */
-    white-space: nowrap; /* Prevent text wrapping */
-   }
+  .referral-button-container {
+    width: auto;
+    max-width: none;
+    white-space: nowrap;
+  }
    
-   .controls-buttons > .primary-button:not(.referral-button),
-   .controls-buttons > .danger-button:not(.referral-button) {
-     flex: 1 0 45%;
-     min-width: 45%;
-     max-width: calc(50% - 0.15rem);
-   }
+  .controls-buttons > .primary-button:not(.referral-button),
+  .controls-buttons > .danger-button:not(.referral-button) {
+    flex: 1 0 45%;
+    min-width: 45%;
+    max-width: calc(50% - 0.15rem);
+  }
  
-   .referral-button-container .primary-button {
-     width: 100%;
-     max-width: calc(50% - 0.15rem); /* Match the other buttons */
-   }
+  .referral-button-container .primary-button {
+    width: 100%;
+    max-width: calc(50% - 0.15rem);
+  }
  
   .referral-usage {
-   font-size: 0.65rem;
+    font-size: 0.65rem;
   }
 
   .referral-code-input {
-   padding: 0.2rem;
-   width: 80px;
-   font-size: 0.75rem;
+    padding: 0.2rem;
+    width: 80px;
+    font-size: 0.75rem;
   }
   
   .copy-button {
-   padding: 0.2rem;
+    padding: 0.2rem;
   }
   
   .copy-icon {
-   width: 14px;
-   height: 14px;
+    width: 14px;
+    height: 14px;
   }
   
   /* Crew Section */
   .crew-members {
-   gap: 0.7rem;
+    gap: 0.7rem;
   }
   
   .crew-avatar {
-   width: 60px;
-   height: 60px;
+    width: 60px;
+    height: 60px;
   }
   
   .crew-links img {
-   width: 18px;
-   height: 18px;
+    width: 18px;
+    height: 18px;
   }
   
   /* Supplies & Footer */
   .supplies-icons {
-   gap: 0.2rem;
+    gap: 0.2rem;
   }
   
   .supply-icon {
-   width: 26px;
-   height: 26px;
+    width: 26px;
+    height: 26px;
   }
   
   .footer-links {
-   gap: 1.5rem;
+    gap: 1.5rem;
   }
   
   .footer-icon {
-   width: 32px;
-   height: 32px;
+    width: 32px;
+    height: 32px;
   }
   
-  /* Fix the referral button container */
   .referral-button-container {
     position: relative;
-    width: 100%; /* Keep full width for container */
+    width: 100%;
     margin-top: 0.5rem;
   }
   
-  /* Make the button within the container expand properly */
   .referral-button-container .primary-button {
-    width: auto; /* Allow natural width */
-    white-space: nowrap; /* Prevent text wrapping */
-    flex: 0 1 auto; /* Don't force growth, allow shrinking, use content width */
+    width: auto;
+    white-space: nowrap;
+    flex: 0 1 auto;
   }
   
-  /* Override grid layout for the referral button specifically */
   .controls-buttons > .referral-button-container,
   .controls-buttons > .referral-button-container .primary-button {
     flex: 0 0 auto;
