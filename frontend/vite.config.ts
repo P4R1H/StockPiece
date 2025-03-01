@@ -8,7 +8,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'https://stockpiece.onrender.com/',
+        target: 'https://stockpiece-xadz.onrender.com/api/v1/',
         changeOrigin: true,
         secure: false,
       },
