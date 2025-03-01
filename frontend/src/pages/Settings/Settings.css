@@ -435,15 +435,25 @@ body {
    flex: 1 0 45%;
   }
   
-  /* Referral Section - Improved for mobile */
   .referral-info {
-   width: auto;
-   max-width: 200px;
-   padding: 5px;
+    width: 90%; /* Use percentage width instead of fixed width */
+    max-width: 220px;
+    padding: 5px;
+    left: 0; /* Keep left positioning */
+    right: auto; /* Don't set right positioning */
+    position: absolute; 
+    z-index: 10; 
+    height: auto; /* Allow height to adjust to content */
+    overflow-wrap: break-word; /* Allow words to break */
+    word-wrap: break-word;
+    white-space: normal; /* Ensure text wraps properly */
   }
   
   .referral-info p {
-   font-size: 0.75rem;
+    font-size: 0.75rem;
+    word-break: normal; /* Prevent awkward breaks */
+    hyphens: auto; /* Add hyphens for better text wrapping */
+    overflow-wrap: break-word;
   }
   
   .referral-code-container {
@@ -538,8 +548,8 @@ body {
   }
   
   .supply-icon {
-   width: 28px;
-   height: 28px;
+   width: 26px;
+   height: 26px;
   }
   
   .footer-links {
@@ -551,5 +561,25 @@ body {
    height: 32px;
   }
   
+  /* Fix the referral button container */
+  .referral-button-container {
+    position: relative;
+    width: 100%; /* Keep full width for container */
+    margin-top: 0.5rem;
+  }
   
+  /* Make the button within the container expand properly */
+  .referral-button-container .primary-button {
+    width: auto; /* Allow natural width */
+    white-space: nowrap; /* Prevent text wrapping */
+    flex: 0 1 auto; /* Don't force growth, allow shrinking, use content width */
+  }
+  
+  /* Override grid layout for the referral button specifically */
+  .controls-buttons > .referral-button-container,
+  .controls-buttons > .referral-button-container .primary-button {
+    flex: 0 0 auto;
+    min-width: auto;
+    max-width: none;
+  }
 }
