@@ -213,7 +213,7 @@ const SettingsPage: React.FC = () => {
                 />
               </a>
               <a
-                href="https://github.com/StockPieceOfficial/StockPiece"
+                href="https://github.com/P4R1H/StockPiece"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="icon-link"
