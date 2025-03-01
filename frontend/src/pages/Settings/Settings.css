@@ -388,16 +388,17 @@ body {
 @media (max-width: 600px) {
   /* Title & Layout */
   .container-title {
-   top: -15px;
+   top: -13px;
   }
   
   .container-title .main-title {
-   font-size: 1.6rem;
+    font-size: 1.6rem !important; /* Force this font size */
   }
   
   .container-title .subtitle {
-   font-size: 0.7rem;
-  }
+    font-size: 0.7rem !important; /* Force this font size */
+    transition: none !important; /* Prevent any transitions */
+   }
 
   .main-page-container {
    padding: 0.25rem;
