@@ -81,7 +81,7 @@ export const registerUser = async (username: string, password: string): Promise<
   
     if (!response.ok) {
       if (response.status === 409) {
-        throw new Error('Username already exists. Please choose a different username.');
+        throw new Error('Username already exists.');
       }
       throw new Error(data.message || 'Registration failed. Please try again.');
     }
