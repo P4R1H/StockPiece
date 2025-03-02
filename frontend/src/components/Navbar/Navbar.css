@@ -8,6 +8,31 @@
   --emerald: #008000;
 }
 
+img, svg {
+   -webkit-user-drag: none;
+   -moz-user-drag: none;
+   -ms-user-drag: none;
+}
+
+/* Add this to your Navbar.css file */
+.nav-icon, 
+.market-logo {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  -ms-user-drag: none;
+}
+
+/* Also prevent text selection when dragging near icons */
+.nav-btn, 
+.collapse-btn {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .nav-group {
     align-items: center;
     background: rgba(0, 0, 0, 0.15);

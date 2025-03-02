@@ -48,6 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
               src="/assets/stockpiecelogo.png"
               alt="StockPiece Logo"
               className="market-logo"
+              draggable="false"
             />
           </Link>
           <h1 className="market-title">Grand Line Exchange</h1>
