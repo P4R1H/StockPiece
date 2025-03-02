@@ -103,7 +103,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
 
   let maxAccountCreated = false;
 
-  if (fingerprint) {
+  if (fingerprint?.trim()) {
     //if finger print provided then we need to check if max 3 accounts created or not for the week
     const existingFingerPrint = await UserFingerprint.findOne({ fingerprint });
     if (existingFingerPrint) {
