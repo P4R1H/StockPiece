@@ -24,7 +24,7 @@ const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: ["https://stockpiece.fun","https://admin.stockpiece.fun","https://stockpiece.pages.dev"],
     credentials: true,
   })
 );
