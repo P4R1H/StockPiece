@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { getReferralCode } from './SettingsServices';
@@ -246,3 +245,5 @@ const SettingsPage: React.FC = () => {
     </div>
   );
 };
+
+export default SettingsPage
