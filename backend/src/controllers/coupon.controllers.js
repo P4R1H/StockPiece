@@ -88,6 +88,10 @@ const deleteCoupon = asyncHandler(async (req, res) => {
 });
 
 const generateReferralCoupon = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new ApiError(400, "unauthorized error");
+  }
+
   const user = req.user;
 
   // Check if user already has an active referral coupon
@@ -111,7 +115,7 @@ const generateReferralCoupon = asyncHandler(async (req, res) => {
 
   // Generate unique referral code (user's username + random numbers)
   const randomNum = Math.floor(1000 + Math.random() * 9000);
-  const referralCode = `${user.username.toUpperCase()}${randomNum}`;
+  const referralCode = `${user.username.toUpperCase().slice(0, 10)}${randomNum}`;
 
   // Create new referral coupon
   const coupon = await Coupon.create({

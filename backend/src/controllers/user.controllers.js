@@ -11,6 +11,7 @@ import jwt from "jsonwebtoken";
 import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
+import UserFingerPrint from "../models/fingerPrint.models.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -34,7 +35,7 @@ const verifyCoupon = async (couponCode, user) => {
 
   // Check if coupon is first-time only
   if (coupon.isFirstTimeOnly) {
-    const hasTransactions = await Transaction.exists({ user: user._id });
+    const hasTransactions = await Transaction.exists({ purchasedBy: user._id });
     if (hasTransactions) {
       throw new ApiError(400, "This coupon is for first-time users only");
     }
@@ -94,10 +95,30 @@ const registerUser = asyncHandler(async (req, res, _) => {
   //we need to get the username and password
   //check if it is valid
   //then store tha password
-  const { username, password } = req.body;
+  const { username, password, fingerPrint } = req.body;
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
+  }
+
+  let maxAccountCreated = false;
+
+  if (fingerPrint) {
+    //if finger print provided then we need to check if max 3 accounts created or not for the week
+    const existingFingerPrint = await UserFingerPrint.findOne({ fingerPrint });
+    if (existingFingerPrint) {
+      maxAccountCreated = true;
+      if (existingFingerPrint.count >= 3) {
+        throw new ApiError(429, "max accounts created for your device");
+      } else {
+        existingFingerPrint.count += 1;
+        existingFingerPrint.save({ validateModifiedOnly: true });
+      }
+    } else {
+      await UserFingerPrint.create({
+        fingerPrint,
+      });
+    }
   }
 
   // Check for profanity in username
@@ -136,13 +157,22 @@ const registerUser = asyncHandler(async (req, res, _) => {
     throw new ApiError(500, "some error occurred while creating user");
   }
 
-  res
-    .status(200)
-    .json(new ApiResponse(200, createdUser, "user created successfully"));
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        createdUser,
+        maxAccountCreated,
+      },
+      "user created successfully"
+    )
+  );
 });
 
 const loginUser = asyncHandler(async (req, res, _) => {
   const { username, password, couponCode } = req.body;
+
+  console.log(req.headers["accept-language"]);
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
