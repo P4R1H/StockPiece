@@ -116,7 +116,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
       }
     } else {
       await UserFingerprint.create({
-        fingerprint,
+        fingerprint: fingerprint.trim(),
       });
     }
   }
