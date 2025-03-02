@@ -22,7 +22,6 @@
 }
 
 .error-title {
-
   font-family: 'Pirata One', cursive;
   font-size: clamp(5rem, 15vw, 10rem);
   color: var(--gold);
