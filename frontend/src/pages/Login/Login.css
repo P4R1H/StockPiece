@@ -115,11 +115,12 @@
   color: var(--gold);
   text-align: center;
   font-size: 2.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   text-shadow: 0 0 10px rgba(255,215,0,0.5);
 }
 
 .login-title span {
+  margin-top: -10px;
   display: block;
   line-height: 1.2;
 }
@@ -129,21 +130,23 @@
   text-align: center;
   font-size: 1rem;
   margin-bottom: 2rem;
+  letter-spacing: 0.5px;
   opacity: 0.8;
 }
 
 /* Tabs */
 .tabs {
+  margin-top: -0.5rem;
   display: flex;
   justify-content: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;  /* Reduced from 2rem */
   gap: 1rem;
 }
 
 .tab {
   background: transparent;
   color: var(--gold);
-  border: 1px solid var(--gold);
+  border: 2px solid rgba(255, 215, 0, 0.5);  /* Reduced opacity to 40% */
   padding: 0.5rem 1.5rem;
   cursor: pointer;
   font-family: 'Pirata One', cursive;
@@ -154,17 +157,19 @@
 
 .tab:hover {
   background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.75);  /* Increased opacity on hover */
 }
 
 .tab.active {
   background: rgba(255, 215, 0, 0.2);
+  border-color: var(--gold);  /* Full opacity for active tab */
   box-shadow: 0 0 10px var(--gold);
 }
 
 /* Pirate Input */
 .pirate-input {
   position: relative;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;  /* Reduced from 1.5rem */
   width: 100%;
 }
 
@@ -173,7 +178,7 @@
   width: 100%;
   padding: 0.75rem 1rem 0.75rem 0.75rem;
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid var(--gold);
+  border: 2px solid rgba(255, 215, 0, 0.5);  /* Reduced opacity to 40% */
   border-radius: 5px;
   color: var(--gold);
   font-size: 1rem;
@@ -181,8 +186,13 @@
   box-sizing: border-box;
 }
 
+.pirate-input input:hover {
+  border-color: rgba(255, 215, 0, 0.75);  /* Increased opacity on hover */
+}
+
 .pirate-input input:focus {
   outline: none;
+  border-color: var(--gold);  /* Full opacity when focused */
   box-shadow: 0 0 10px var(--gold);
 }
 
@@ -201,7 +211,7 @@
   font-family: 'Courier New', Courier, monospace;
   color: var(--gold);
   opacity: 0.6;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.3s ease;
   display: inline-block;
@@ -232,20 +242,25 @@
   width: 100%;
   padding: 0.2rem 0.4rem;
   background: rgba(0, 0, 0, 0.7);
-  border: 1px solid var(--gold);
+  border: 1px solid rgba(255, 215, 0, 0.5);  /* Reduced opacity to 40% */
   border-radius: 4px;
   color: var(--gold);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   text-align: center;
   transition: all 0.3s ease;
-  box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.1);  /* Reduced shadow opacity */
   box-sizing: border-box;
+}
+
+.coupon-field:hover {
+  border-color: rgba(255, 215, 0, 0.75);  /* Increased opacity on hover */
 }
 
 .coupon-field:focus {
   outline: none;
+  border-color: var(--gold);  /* Full opacity when focused */
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
 }
-
 
 /* Pirate Button */
 .pirate-button {
@@ -253,7 +268,7 @@
   background: linear-gradient(to bottom, var(--wood-brown), #4A2C1A);
   color: var(--gold);
   padding: 1rem 2rem;
-  border: 2px solid var(--gold);
+  border: 2px solid rgba(255, 215, 0);  /* Slightly higher opacity for main button */
   border-radius: 5px;
   font-size: 1.2rem;
   font-family: 'Pirata One', cursive;
@@ -265,6 +280,7 @@
 
 .pirate-button:hover {
   transform: scale(1.05);
+  border-color: var(--gold);  /* Full opacity on hover */
   box-shadow: 0 0 20px var(--gold);
 }
 
@@ -286,9 +302,20 @@
 /* Error Message and Tooltip */
 .error-message {
   font-family: 'Courier New', Courier, monospace;
-  color: red;
-  margin-bottom: 10px;
+  color: #ff6b6b;
+  margin-bottom: 15px;
   text-align: center;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .tooltip {
@@ -296,6 +323,7 @@
   color: #ff6b6b;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+  text-transform: capitalize;
 }
 
 /* Login Ship */
