@@ -1,1 +1,5 @@
-/api/v1/*  https://stockpiece-xadz.onrender.com/api/v1/:splat  200!  {  Access-Control-Allow-Origin: *  Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS  Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization}# Handle actual API requests/api/v1/*  https://stockpiece-xadz.onrender.com/api/v1/:splat  200!
+# API proxy with CORS headers
+/api/v1/*  https://stockpiece-xadz.onrender.com/api/v1/:splat  200!
+    Access-Control-Allow-Origin: *
+    Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+    Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization
