@@ -64,10 +64,12 @@ const SettingsPage: React.FC = () => {
               ) : (
                 <div className="referral-code-container">
                   <span className="referral-label">Your Code:</span>
-                  <span className="referral-code">{referralCode}</span>
-                  <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
-                    {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
-                  </button>
+                  <div className="code-copy-group">
+                    <span className="referral-code">{referralCode}</span>
+                    <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
+                      {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
+                    </button>
+                  </div>
                   <span className="referral-usage">{referralUses}/10</span>
                 </div>
               )}
@@ -244,4 +246,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage;
+export default SettingsPage

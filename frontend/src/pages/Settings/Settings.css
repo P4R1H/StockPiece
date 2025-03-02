@@ -222,8 +222,8 @@ body {
   font-size: 0.9rem;
   white-space: nowrap;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
-  margin-right: 0.5rem; /* Add more space after the label */
-  margin-left: 0.5rem; /* Add more space after the label */
+  margin-right: 0.3rem;
+  margin-left: 0.3rem;
 }
 
 .referral-usage {
@@ -237,20 +237,27 @@ body {
   white-space: nowrap;
 }
 
+.code-copy-group {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-right: 0.3rem;
+}
+
 .referral-code {
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid rgba(212, 169, 59, 0.5);
+  border-right: none;
   color: var(--gold-color);
   font-family: monospace;
-  border-radius: 3px;
+  border-radius: 3px 0 0 3px;
   font-weight: bold;
   padding: 0 0.5rem;
-  height: 28px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  margin-right: -0.4rem;
 }
 
 .copy-button {
@@ -261,16 +268,15 @@ body {
   align-items: center;
   justify-content: center;
   color: var(--gold-color);
-  padding: 0.3rem;
-  border-radius: 3px;
-  transition: background 0.2s ease, transform 0.2s ease;
-  height: 28px;
-  width: 28px;
+  border-radius: 0 3px 3px 0;
+  transition: background 0.2s ease;
+  height: 26px;
+  width: 26px;
+  padding: 0;
 }
 
 .copy-button:hover {
   background: rgba(0, 0, 0, 0.5);
-  transform: scale(1.05);
 }
 
 .copy-icon {
@@ -451,29 +457,34 @@ body {
   }
   
   .referral-code-container {
-    padding: 0.4rem;
-    gap: 0.2rem;
+    padding: 0.3rem;
+    gap: 0.3rem;
   }
   
   .referral-label {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    margin-right: 0.2rem;
+    margin-left: 0.2rem;
   }
   
   .referral-usage {
     font-size: 0.7rem;
-    padding: 0.1rem 0.3rem;
+    padding: 0.1rem 0.25rem;
+  }
+
+  .code-copy-group {
+    margin-right: 0.2rem;
   }
   
   .referral-code {
-    font-size: 0.8rem;
-    padding: 0 0.4rem;
-    height: 24px;
+    font-size: 0.75rem;
+    padding: 0 0.3rem;
+    height: 22px;
   }
   
   .copy-button {
-    padding: 0.2rem;
-    height: 24px;
-    width: 24px;
+    height: 22px;
+    width: 22px;
   }
   
   .copy-icon {
