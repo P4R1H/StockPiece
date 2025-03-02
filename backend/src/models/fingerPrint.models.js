@@ -4,8 +4,8 @@ const userFingerprintSchema = new mongoose.Schema({
   fingerprint: {
     type: String,
     unique: true,
-    required: [true,"finger print is required"],
-    trim: true
+    required: [true, "finger print is required"],
+    trim: true,
   },
   count: {
     type: Number,
