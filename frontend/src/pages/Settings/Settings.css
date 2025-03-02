@@ -540,3 +540,23 @@ body {
     height: 32px;
   }
 }
+
+.referral-text {
+  pointer-events: none; /* Ensures text doesn't interfere with button clicks */
+}
+
+/* Update info-icon styles */
+.info-icon {
+  position: relative;
+  z-index: 2; /* Ensure icon stays above button */
+}
+
+/* Ensure button has proper touch target size on mobile */
+@media (max-width: 600px) {
+  .primary-button {
+    min-height: 44px; /* Minimum touch target size */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}

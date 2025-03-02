@@ -58,8 +58,17 @@ const SettingsPage: React.FC = () => {
             <div className="referral-button-container">
               {!showReferralCode ? (
                 <button className="primary-button" onClick={generateReferralCode}>
-                  View Referral Code
-                  <span className="info-icon" onClick={toggleReferralInfo}>?</span>
+                  <span className="referral-text">View Referral Code</span>
+                  <span 
+                    className="info-icon" 
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent button click
+                      e.stopPropagation(); // Stop event propagation
+                      toggleReferralInfo(e);
+                    }}
+                  >
+                    ?
+                  </span>
                 </button>
               ) : (
                 <div className="referral-code-container">
