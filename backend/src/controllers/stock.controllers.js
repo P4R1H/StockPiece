@@ -25,16 +25,13 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapterPromise = ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
-  const userPromise = User.findById(req.user?._id).select(
-    "-password -refreshToken"
-  );
+  const { name, quantity } = req.body;
 
-  const [latestChapter, user] = await Promise.all([
-    latestChapterPromise,
-    userPromise,
+  const [latestChapter, characterStock] = await Promise.all([
+    ChapterRelease.findOne().sort({
+      releaseDate: -1,
+    }),
+    CharacterStock.findOne({ name }),
   ]);
 
   if (!latestChapter) {
@@ -45,22 +42,8 @@ const buyStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(400, "buying window is closed");
   }
 
-  if (!user) {
-    throw new ApiError(400, "no user found");
-  }
-
-  //only allow single logged in user to try
-  if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
-    throw new ApiError(409, "User logged in another session");
-  }
-
-  //now i need to check the price of the stock and check if there is enough balance
-  const { name, quantity } = req.body;
-
   // Use validateTransactionQuantity instead of direct validation
   const validatedQuantity = validateTransactionQuantity(quantity);
-
-  const characterStock = await CharacterStock.findOne({ name });
 
   if (!characterStock || characterStock.isRemoved) {
     throw new ApiError(400, `${name} stock not available`);
@@ -68,57 +51,68 @@ const buyStock = asyncHandler(async (req, res, _) => {
 
   const totalPrice = characterStock.currentValue * validatedQuantity;
 
-  if (user.accountValue < totalPrice) {
-    throw new ApiError(400, "insufficient funds");
-  }
-
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    const transaction = await Transaction.create(
-      [
-        {
-          purchasedBy: user._id,
-          stockID: characterStock._id,
-          quantity: validatedQuantity,
-          value: characterStock.currentValue,
-          type: "buy",
-          chapterPurchasedAt: latestChapter.chapter,
-        },
-      ],
-      { session }
-    );
+    const transaction = await mongoose.connection.transaction(
+      async (session) => {
+        const user = await User.findById(req.user._id)
+          .select("-password -refreshToken")
+          .session(session);
 
-    user.accountValue -= totalPrice;
-    const stockIndex = user.ownedStocks.findIndex(
-      (item) => item.stock.toString() === characterStock._id.toString()
-    );
-    if (stockIndex >= 0) {
-      user.ownedStocks[stockIndex].quantity += validatedQuantity;
-    } else {
-      user.ownedStocks.push({
-        stock: characterStock._id,
-        quantity: validatedQuantity,
-      });
-    }
+        if (!user) {
+          throw new ApiError(400, "user not found");
+        }
 
-    await user.save({ session, validateModifiedOnly: true });
-    await session.commitTransaction();
+        if (user.accountValue < totalPrice) {
+          throw new ApiError(400, "insufficient funds");
+        }
+
+        if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
+          throw new ApiError(409, "User logged in another session");
+        }
+
+        const [createdTransaction] = await Transaction.create(
+          [
+            {
+              purchasedBy: user._id,
+              stockID: characterStock._id,
+              quantity: validatedQuantity,
+              value: characterStock.currentValue,
+              type: "buy",
+              chapterPurchasedAt: latestChapter.chapter,
+            },
+          ],
+          { session }
+        );
+
+        user.accountValue -= totalPrice;
+        const stockIndex = user.ownedStocks.findIndex(
+          (item) => item.stock.toString() === characterStock._id.toString()
+        );
+        if (stockIndex >= 0) {
+          user.ownedStocks[stockIndex].quantity += validatedQuantity;
+        } else {
+          user.ownedStocks.push({
+            stock: characterStock._id,
+            quantity: validatedQuantity,
+          });
+        }
+
+        await user.save({ session, validateModifiedOnly: true });
+
+        return createdTransaction;
+      }
+    );
 
     res
       .status(200)
       .json(new ApiResponse(200, transaction, "stock purchased successfully"));
   } catch (error) {
-    await session.abortTransaction();
     console.log("there was some error while buying rolling back transaction");
     throw new ApiError(
       500,
       "some error occurred while making buy transaction",
       error
     );
-  } finally {
-    session.endSession();
   }
 });
 
@@ -129,16 +123,17 @@ const sellStock = asyncHandler(async (req, res, _) => {
     throw new ApiError(401, "Unauthenticated request");
   }
 
-  const latestChapterPromise = ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
-  const userPromise = User.findById(req.user?._id).select(
-    "-password -refreshToken"
-  );
+  //now i need to check the price of the stock and check if there is enough balance
+  const { name, quantity } = req.body;
 
-  const [latestChapter, user] = await Promise.all([
-    latestChapterPromise,
-    userPromise,
+  // Use validateTransactionQuantity instead of direct validation
+  const validatedQuantity = validateTransactionQuantity(quantity);
+
+  const [latestChapter, characterStock] = await Promise.all([
+    ChapterRelease.findOne().sort({
+      releaseDate: -1,
+    }),
+    CharacterStock.findOne({ name }),
   ]);
 
   if (!latestChapter) {
@@ -146,85 +141,72 @@ const sellStock = asyncHandler(async (req, res, _) => {
   }
 
   if (!isWindowOpen(latestChapter)) {
-    throw new ApiError(400, "buying window is closed");
-  }
-
-  if (!user) {
-    throw new ApiError(400, "no user found");
-  }
-
-  //only allow single logged in user to try
-  if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
-    throw new ApiError(409, "User logged in another session");
-  }
-
-  //now i need to check the price of the stock and check if there is enough balance
-  const { name, quantity } = req.body;
-
-  // Use validateTransactionQuantity instead of direct validation
-  const validatedQuantity = validateTransactionQuantity(quantity);
-
-  const characterStock = await CharacterStock.findOne({ name });
-
-  if (!characterStock || characterStock.isRemoved) {
-    throw new ApiError(400, `${name} stock not available`);
-  }
-
-  const stockIndex = user.ownedStocks.findIndex(
-    (item) => item.stock.toString() === characterStock._id.toString()
-  );
-
-  if (stockIndex < 0) {
-    throw new ApiError(400, "user does not have this stock");
-  }
-
-  //check if the quantity we want to sell is even available
-  if (validatedQuantity > user.ownedStocks[stockIndex].quantity) {
-    throw new ApiError(400, "not enough stock to sell");
+    throw new ApiError(400, "selling window is closed");
   }
 
   const totalPrice = characterStock.currentValue * validatedQuantity;
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
-    const transaction = await Transaction.create(
-      [
-        {
-          purchasedBy: user._id,
-          stockID: characterStock._id,
-          quantity: validatedQuantity,
-          value: characterStock.currentValue,
-          type: "sell",
-          chapterPurchasedAt: latestChapter.chapter,
-        },
-      ],
-      { session }
+    const transaction = await mongoose.connection.transaction(
+      async (session) => {
+        const user = await User.findById(req.user._id)
+          .select("-password -refreshToken")
+          .session(session);
+
+        if (!user) {
+          throw new ApiError(400, "user not found");
+        }
+
+        const stockIndex = user.ownedStocks.findIndex(
+          (item) => item.stock.toString() === characterStock._id.toString()
+        );
+
+        if (stockIndex < 0) {
+          throw new ApiError(400, "user does not have this stock");
+        }
+
+        //check if the quantity we want to sell is even available
+        if (validatedQuantity > user.ownedStocks[stockIndex].quantity) {
+          throw new ApiError(400, "not enough stock to sell");
+        }
+
+        const [createdTransaction] = await Transaction.create(
+          [
+            {
+              purchasedBy: user._id,
+              stockID: characterStock._id,
+              quantity: validatedQuantity,
+              value: characterStock.currentValue,
+              type: "sell",
+              chapterPurchasedAt: latestChapter.chapter,
+            },
+          ],
+          { session }
+        );
+
+        user.accountValue += totalPrice;
+        user.ownedStocks[stockIndex].quantity -= validatedQuantity;
+        //if user does not own any quantity then remove from the owned stock
+        if (user.ownedStocks[stockIndex].quantity === 0) {
+          user.ownedStocks.splice(stockIndex, 1);
+        }
+
+        await user.save({ session, validateModifiedOnly: true });
+
+        return createdTransaction;
+      }
     );
-
-    user.accountValue += totalPrice;
-    user.ownedStocks[stockIndex].quantity -= validatedQuantity;
-    //if user does not own any quantity then remove from the owned stock
-    if (user.ownedStocks[stockIndex].quantity === 0) {
-      user.ownedStocks.splice(stockIndex, 1);
-    }
-
-    await user.save({ session, validateModifiedOnly: true });
-    await session.commitTransaction();
 
     res
       .status(200)
       .json(new ApiResponse(200, transaction, "Stock sold successfully"));
   } catch (error) {
-    await session.abortTransaction();
+    console.log("there was some error while selling rolling back transaction");
     throw new ApiError(
       500,
       "some error occurred while making sell transaction",
       error
     );
-  } finally {
-    session.endSession();
   }
 });
 

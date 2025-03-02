@@ -2,6 +2,7 @@ import asyncHandler from "../utils/asyncHandler.utils.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import Coupon from "../models/coupon.models.js";
+import { MAX_REFERRALS, REFERRAL_BONUS, REFERRER_BONUS } from "../constants.js";
 
 const createCoupon = asyncHandler(async (req, res) => {
   if (!req.admin) {
@@ -115,9 +116,9 @@ const generateReferralCoupon = asyncHandler(async (req, res) => {
   // Create new referral coupon
   const coupon = await Coupon.create({
     code: referralCode,
-    amount: 1000, // Fixed bonus for referred user
-    referrerBonus: 500, // Fixed bonus for referrer
-    maxUsers: 10, // Limit number of referrals
+    amount: REFERRAL_BONUS, // Fixed bonus for referred user
+    referrerBonus: REFERRER_BONUS, // Fixed bonus for referrer
+    maxUsers: MAX_REFERRALS, // Limit number of referrals
     isFirstTimeOnly: true, // Only for new users
     couponType: "REFERRAL",
     createdBy: user._id,

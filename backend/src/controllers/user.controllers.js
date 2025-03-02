@@ -1,5 +1,4 @@
-import { defaultAvatarUrl } from "../constants.js";
-import ChapterRelease from "../models/chapterRelease.models.js";
+import { DAILY_LOGIN_BONUS, defaultAvatarUrl } from "../constants.js";
 import User from "../models/user.models.js";
 import ApiError from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
@@ -9,7 +8,6 @@ import {
   deleteFromCloudinary,
 } from "../utils/cloudinary.utils.js";
 import jwt from "jsonwebtoken";
-import isWindowOpen from "../utils/windowStatus.js";
 import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
@@ -165,26 +163,22 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = tokens;
 
-  //check if the user needs to get extra 100 dollars for daily login
-  const isDailyLoginBonus = checkDailyLogin(user.lastLogin);
-
   const updateObject = {
     $set: {
       lastLogin: Date.now(),
     },
   };
 
-  const totalBonus = (isDailyLoginBonus ? 100 : 0) + couponAmount;
-  if (totalBonus > 0) {
+  if (couponAmount > 0) {
     updateObject.$inc = {
-      accountValue: totalBonus,
+      accountValue: couponAmount,
     };
   }
 
   // If it's a referral coupon, add bonus to referrer's account
   if (coupon?.couponType === "REFERRAL" && coupon?.createdBy) {
     await User.findByIdAndUpdate(coupon.createdBy._id, {
-      $inc: { balance: coupon.referrerBonus },
+      $inc: { accountValue: coupon.referrerBonus },
     });
     //set this user
     updateObject.$set = {
@@ -213,7 +207,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
           accessToken,
           refreshToken,
           bonusApplied: {
-            dailyLogin: isDailyLoginBonus ? 100 : 0,
+            newUserBonus: 5000,
             coupon: couponAmount,
           },
         },
@@ -266,21 +260,11 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   const { accessToken, refreshToken } = await generateAccessRefreshToken(user);
 
-  const midNightTime = () => new Date(new Date().setHours(0, 0, 0, 0));
-  const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
-
   const updateObject = {
     $set: {
       lastLogin: Date.now(),
     },
   };
-
-  // Add bonus if applicable
-  if (isDailyLoginBonus) {
-    updateObject.$inc = {
-      accountValue: 100,
-    };
-  }
 
   const loggedInUser = await User.findByIdAndUpdate(user._id, updateObject, {
     new: true,
@@ -302,9 +286,6 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
           user: loggedInUser,
           accessToken,
           refreshToken: refreshToken,
-          bonusApplied: {
-            dailyLogin: isDailyLoginBonus ? 100 : 0,
-          },
         },
         "User logged in successfully using refresh token"
       )
@@ -359,12 +340,33 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
 //this is just to check whether a user is there or not
 //as requested by the frontend
 const checkLogin = asyncHandler(async (req, res, _) => {
-  if (!req.user) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, false, "no logged in user"));
+  let loginFlag = false;
+  let dailyLoginBonus;
+  if (req.user) {
+    loginFlag = true;
+    const user = req.user;
+    //check if the user needs to get extra 100 dollars for daily login
+    dailyLoginBonus = checkDailyLogin(user.lastLogin) ? DAILY_LOGIN_BONUS : 0;
+
+    if (dailyLoginBonus > 0) {
+      await User.findByIdAndUpdate(user._id, {
+        $inc: {
+          accountValue: dailyLoginBonus,
+        },
+      });
+    }
   }
-  res.status(200).json(new ApiResponse(200, true, "user is logged in"));
+
+  res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        loginStatus: loginFlag,
+        dailyLoginBonus: dailyLoginBonus,
+      },
+      `user is ${loginFlag ? "logged In" : "not logged In"}`
+    )
+  );
 });
 
 const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
