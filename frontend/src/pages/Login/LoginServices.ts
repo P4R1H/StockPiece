@@ -1,3 +1,18 @@
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+
+export const generateFingerprint = async (): Promise<string> => {
+  try {
+    const fpPromise = FingerprintJS.load();
+    const fp = await fpPromise;
+    const result = await fp.get();
+    return result.visitorId;
+
+  } catch (error) {
+    console.error('Error generating fingerprint:', error);
+    return "";
+  }
+};
+
 interface LoginResponse {
   "success": boolean,
   "data": boolean,
@@ -49,14 +64,16 @@ export const loginUser = async (username: string, password: string, couponCode: 
 };
   
 export const registerUser = async (username: string, password: string): Promise<LoginResponse> => {
+    const fingerprint = await generateFingerprint();
+
     const response = await fetch('/api/v1/user/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ username, password, fingerprint }),
     });
-  
+
     const data = await response.json();
   
     if (!response.ok) {
