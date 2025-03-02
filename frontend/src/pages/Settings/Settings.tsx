@@ -68,7 +68,7 @@ const SettingsPage: React.FC = () => {
                   <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
                     {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
                   </button>
-                  <span className="referral-usage">{referralUses}/5</span>
+                  <span className="referral-usage">{referralUses}/10</span>
                 </div>
               )}
               {showReferralInfo && (

@@ -104,7 +104,7 @@ export const loginExists = async(): Promise<LoginResponse> => {
     throw new Error(data.message || 'Failed to refresh token');
   }
 
-  return data;
+  return data.loginStatus;
 };
 
 
