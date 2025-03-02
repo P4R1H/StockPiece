@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "include": ["/*"],
+    "exclude": [],
+    "routes": [
+      {
+        "src": "/api/v1/*",
+        "dest": "https://stockpiece-xadz.onrender.com/api/v1/$1"
+      },
+      {
+        "src": "/*",
+        "dest": "/index.html"
+      }
+    ]
+  }
