@@ -1,15 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  HomeIcon, 
-  TrophyIcon, 
-  SettingsIcon, 
-  LogoutIcon, 
-  LoginIcon, 
-  MenuIcon 
-} from './NavIcons'
+import { HomeIcon, TrophyIcon, SettingsIcon, LogoutIcon, LoginIcon, MenuIcon } from './NavIcons'
 import './Navbar.css'
-
 
 interface NavbarProps {
   isLoggedIn: boolean;
@@ -24,7 +16,6 @@ const Navbar: React.FC<NavbarProps> = ({ isLoggedIn, onLogout }) => {
   useEffect(() => {
     const handleScroll = () => {
       if (window.innerWidth <= 768) {
-        // Hide mobile nav and show the collapse button on scroll
         mobileNavRef.current?.classList.add('hidden');
         collapseBtnRef.current?.classList.add('visible');
         collapseBtnRef.current?.classList.remove('shine');
