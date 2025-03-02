@@ -40,6 +40,6 @@ adminRouter.route("/errors").get(getErrorLogs);
 
 adminRouter.route("/top-traders").get(getTopTradersByChapter);
 
-adminRouter.route("/statistics").get(getChapterStatistics)
+adminRouter.route("/statistics").get(getChapterStatistics);
 
 export default adminRouter;

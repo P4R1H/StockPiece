@@ -33,6 +33,11 @@ const CRON_SCHEDULES = {
   SUNDAY: "0 0 * * 0",
 };
 
+const DAILY_LOGIN_BONUS = 100;
+const REFERRAL_BONUS = 1000;
+const REFERRER_BONUS = 500;
+const MAX_REFERRALS = 5;
+
 export {
   DB_NAME,
   __dirname,
@@ -42,4 +47,8 @@ export {
   decayFactor,
   CACHE_KEYS,
   CRON_SCHEDULES,
+  DAILY_LOGIN_BONUS,
+  REFERRAL_BONUS,
+  REFERRER_BONUS,
+  MAX_REFERRALS
 };
