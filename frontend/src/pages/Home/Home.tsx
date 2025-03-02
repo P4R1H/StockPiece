@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react'; 
+import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import CharacterStockCard from '../../components/Card/CharacterCard';
 import BountyProfileCard from '../../components/Portfolio/Portfolio';
@@ -14,7 +14,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
-  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc'>('alpha-asc');
+  const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc' | 'owned-desc'>('alpha-asc');
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState<boolean>(false);
@@ -28,7 +28,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     const checkStatus = async () => {
       if (isLoggedIn) {
         const windowStatus = await checkWindowStatus();
-        setWindowOpen(windowStatus);        
+        setWindowOpen(windowStatus);
       }
     }
     checkStatus();
@@ -36,7 +36,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   const { data: stocks = [] } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
-    queryFn: async () => { 
+    queryFn: async () => {
       try {
         return await getStockMarketData();
       } catch (error) {
@@ -50,7 +50,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
   });
-  
+
   const { data: portfolio = PLACEHOLDER_PORTFOLIO } = useQuery<UserPortfolio>({
     queryKey: ['portfolio', isLoggedIn],
     queryFn: async () => {
@@ -76,13 +76,13 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const portfolioStats = useMemo(() => {
     const netWorthValue = portfolio.stockValue + portfolio.cash;
     return {
-      netWorth: netWorthValue, 
+      netWorth: netWorthValue,
       cash: portfolio.cash,
-      profitLossOverall: ((netWorthValue - initialInvestment) / initialInvestment) * 100, 
-      profitLossLastChapter: portfolio.profit ?? 0 
+      profitLossOverall: ((netWorthValue - initialInvestment) / initialInvestment) * 100,
+      profitLossLastChapter: portfolio.profit ?? 0
     };
   }, [portfolio]);
-  
+
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned')
@@ -97,26 +97,36 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     });
   }, [stocks, filter, portfolio.stocks]);
 
-  const sortedStocks = useMemo(() => {
-    return filteredStocks
-      .filter(stock =>
-        stock.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .sort((a, b) => {
-        switch (sortOrder) {
-          case 'alpha-asc':
-            return a.name.localeCompare(b.name);
-          case 'alpha-desc':
-            return b.name.localeCompare(a.name);
-          case 'price-asc':
-            return a.currentPrice - b.currentPrice;
-          case 'price-desc':
-            return b.currentPrice - a.currentPrice;
-          default:
-            return 0;
-        }
-      });
-  }, [filteredStocks, searchQuery, sortOrder]);
+const getOwnedQuantity = useCallback((stockId: string): number => {
+  const holding = portfolio.stocks.find(h => h.stock.id === stockId);
+  return holding ? holding.quantity : 0;
+}, [portfolio.stocks]);
+
+const sortedStocks = useMemo(() => {
+  return filteredStocks
+    .filter(stock =>
+      stock.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortOrder) {
+        case 'alpha-asc':
+          return a.name.localeCompare(b.name);
+        case 'alpha-desc':
+          return b.name.localeCompare(a.name);
+        case 'price-asc':
+          return a.currentPrice - b.currentPrice;
+        case 'price-desc':
+          return b.currentPrice - a.currentPrice;
+        case 'owned-desc':
+          // Sort by quantity owned (descending)
+          const quantityA = getOwnedQuantity(a.id);
+          const quantityB = getOwnedQuantity(b.id);
+          return quantityB - quantityA;
+        default:
+          return 0;
+      }
+    });
+}, [filteredStocks, searchQuery, sortOrder, getOwnedQuantity]);
 
   const updateStockVisibility = useCallback(
     (id: string, visibility: 'show' | 'hide' | 'only') => {
@@ -131,7 +141,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     },
     [queryClient]
   );
-  
+
   const showError = (message: string) => {
     setErrorMessage(message);
     setTimeout(() => setErrorMessage(""), 2000);
@@ -146,15 +156,15 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
       showError("To save your progress, Login/Create account, Enjoy testing!");
       setHasShownLoginPrompt(true);
     }
-    
+
     if (isLoggedIn && !windowOpen) {
       showError("To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.");
-      return; 
+      return;
     }
-    
+
     const stock = stocks.find(s => s.name === name);
     if (!stock) return;
-    
+
     // Calculate quantity based on buyAmt
     let quantity: number;
     if (buyAmt === "max" && type === 'buy') {
@@ -193,16 +203,16 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         }
       }
     }
-  
+
     // Apply optimistic update
     const previousPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
     if (!previousPortfolio) return;
-    
+
     const newPortfolio = structuredClone(previousPortfolio); // Deep clone to avoid reference issues
     const holdingIndex = newPortfolio.stocks.findIndex(
       holding => holding.stock.id === stock.id
     );
-  
+
     if (type === 'buy') {
       const totalCost = stock.currentPrice * quantity;
       newPortfolio.cash -= totalCost;
@@ -227,34 +237,34 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         }
       }
     }
-    
+
     // Apply optimistic update to UI
     queryClient.setQueryData(['portfolio', isLoggedIn], newPortfolio);
-  
+
     // Only send backend requests if the user is logged in
     if (isLoggedIn) {
       // Track this transaction in the pending queue
       if (!pendingTransactions.current[stock.id]) {
         pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
       }
-      
+
       // Update the pending transactions for this stock
       pendingTransactions.current[stock.id][type] += quantity;
-  
+
       // Clear any existing timer for this stock
       if (debounceTimers.current[stock.id]) {
         clearTimeout(debounceTimers.current[stock.id]);
       }
-  
+
       // Set up a new debounce timer
       debounceTimers.current[stock.id] = setTimeout(async () => {
         // Calculate net transaction
         const pendingBuy = pendingTransactions.current[stock.id].buy;
         const pendingSell = pendingTransactions.current[stock.id].sell;
-        
+
         // Clear pending transactions before processing
         pendingTransactions.current[stock.id] = { buy: 0, sell: 0 };
-        
+
         try {
           // Determine if it's a net buy or sell
           if (pendingBuy > pendingSell) {
@@ -270,7 +280,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         } catch (error) {
           console.error("Transaction failed:", error);
           showError(error instanceof Error ? error.message : 'Transaction failed');
-          
+
           // Revert only the failed net transaction
           const currentPortfolio = queryClient.getQueryData<UserPortfolio>(['portfolio', isLoggedIn]);
           if (!currentPortfolio) return;
@@ -319,12 +329,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     return Math.floor(portfolio.cash / stock.currentPrice);
   };
 
-  // Get owned quantity for a stock
-  const getOwnedQuantity = (stockId: string): number => {
-    const holding = portfolio.stocks.find(h => h.stock.id === stockId);
-    return holding ? holding.quantity : 0;
-  };
-
   return (
     <div className="dashboard-container">
       <div className="dashboard">
@@ -367,12 +371,13 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
               <select
                 className="stock-sort-btn"
                 value={sortOrder}
-                onChange={e => setSortOrder(e.target.value as 'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc')}
+                onChange={e => setSortOrder(e.target.value as 'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc' | 'owned-desc')}
               >
                 <option value="alpha-asc">Name A-Z</option>
                 <option value="alpha-desc">Name Z-A</option>
                 <option value="price-asc">Price Low-High</option>
                 <option value="price-desc">Price High-Low</option>
+                <option value="owned-desc">Most Owned</option>
               </select>
               <select
                 className="stock-amt-btn"
@@ -404,7 +409,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
             {sortedStocks.map(stock => {
               const ownedQuantity = getOwnedQuantity(stock.id);
               const maxBuyQuantity = getMaxBuyQuantity(stock);
-              
+
               return (
                 <CharacterStockCard
                   key={stock.id}
