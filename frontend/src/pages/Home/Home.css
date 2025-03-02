@@ -287,7 +287,6 @@
 @media (max-width: 1400px) {
   .dashboard {
     flex-wrap: wrap;
-    padding: 0 1.5rem;
   }
   
   .search-controls {
