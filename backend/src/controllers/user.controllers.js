@@ -11,7 +11,7 @@ import jwt from "jsonwebtoken";
 import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
-import UserFingerPrint from "../models/fingerPrint.models.js";
+import UserFingerprint from "../models/fingerPrint.models.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -105,7 +105,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
 
   if (fingerprint) {
     //if finger print provided then we need to check if max 3 accounts created or not for the week
-    const existingFingerPrint = await UserFingerPrint.findOne({ fingerprint });
+    const existingFingerPrint = await UserFingerprint.findOne({ fingerprint });
     if (existingFingerPrint) {
       maxAccountCreated = true;
       if (existingFingerPrint.count >= 3) {
@@ -115,7 +115,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
         existingFingerPrint.save({ validateModifiedOnly: true });
       }
     } else {
-      await UserFingerPrint.create({
+      await UserFingerprint.create({
         fingerprint,
       });
     }

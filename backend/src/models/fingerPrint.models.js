@@ -1,7 +1,7 @@
-import mongoose from 'mongoose'
+import mongoose from "mongoose";
 
 const userFingerprintSchema = new mongoose.Schema({
-  fingerPrint: {
+  fingerprint: {
     type: String,
     unique: true,
     required: true,
@@ -9,15 +9,18 @@ const userFingerprintSchema = new mongoose.Schema({
   count: {
     type: Number,
     default: 1,
-    max: 3
+    max: 3,
   },
   createdAt: {
     type: Date,
-    expires: '7d',
-    default: Date.now
-  }
-})
+    expires: "7d",
+    default: Date.now,
+  },
+});
 
-const UserFingerPrint = mongoose.model("UserFingerPrint",userFingerprintSchema);
+const UserFingerprint = mongoose.model(
+  "UserFingerprint",
+  userFingerprintSchema
+);
 
-export default UserFingerPrint;
+export default UserFingerprint;
