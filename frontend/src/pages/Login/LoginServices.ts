@@ -15,7 +15,10 @@ export const generateFingerprint = async (): Promise<string> => {
 
 interface LoginResponse {
   "success": boolean,
-  "data": boolean,
+  "data": {
+    "loginStatus" : boolean,
+    "dailyLoginBonus" : number
+  },
   "message": string,
   "statusCode": number
 }
@@ -104,7 +107,7 @@ export const loginExists = async(): Promise<LoginResponse> => {
     throw new Error(data.message || 'Failed to refresh token');
   }
 
-  return data.data.loginStatus;
+  return data;
 };
 
 

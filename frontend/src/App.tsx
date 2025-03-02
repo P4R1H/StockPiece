@@ -50,7 +50,7 @@ const App: React.FC = () => {
     const checkLoginStatus = async () => { 
       try { 
         const resp = await loginExists(); 
-        setIsLoggedIn(resp.data); 
+        setIsLoggedIn(resp.data.loginStatus); 
       } catch { 
         setIsLoggedIn(false); 
       } 
