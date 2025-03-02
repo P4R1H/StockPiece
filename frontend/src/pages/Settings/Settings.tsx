@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
+import { getReferralCode } from './SettingsServices';
 import './Settings.css';
 
 const SettingsPage: React.FC = () => {
@@ -8,7 +9,6 @@ const SettingsPage: React.FC = () => {
   const [showReferralCode, setShowReferralCode] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const [copied, setCopied] = useState(false);
-  // Add a usage counter state
   const [referralUses, setReferralUses] = useState(0);
   
   const deleteAccount = () => {
@@ -24,10 +24,10 @@ const SettingsPage: React.FC = () => {
     setShowReferralInfo(!showReferralInfo);
   }
 
-  const generateReferralCode = () => {
-    const code = 'Coming soon!';
-    setReferralCode(code);
-    setReferralUses(Math.floor(Math.random() * 5));
+  const generateReferralCode = async () => {
+    const data = await getReferralCode();
+    setReferralCode(data.code);
+    setReferralUses(data.usedCount);
     setShowReferralCode(true);
   }
 
@@ -63,19 +63,17 @@ const SettingsPage: React.FC = () => {
                 </button>
               ) : (
                 <div className="referral-code-container">
-                  <div className="referral-info-wrapper">
-                    <span className="referral-label">Your code: </span>
-                    <span className="referral-usage" title="uses">{referralUses}/5</span>
-                  </div>
-                  <input type="text" className="referral-code-input" value={referralCode} readOnly />
+                  <span className="referral-label">Your Code:</span>
+                  <span className="referral-code">{referralCode}</span>
                   <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
                     {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
                   </button>
+                  <span className="referral-usage">{referralUses}/5</span>
                 </div>
               )}
               {showReferralInfo && (
                 <div className="referral-info">
-                  <p>Refer and earn! Every friend you bring gets you and your friend 500B, just ask them to enter your referral code while logging in with a new account in the "Enter coupon" field!</p>
+                  <p>Refer and earn! Every friend you bring gets you an extra 500B and your friend an extra 1000! Ask them to enter your referral code while logging in in the "Enter coupon" field.</p>
                 </div>
               )}
             </div>
@@ -195,7 +193,7 @@ const SettingsPage: React.FC = () => {
 
           <hr className="section-divider" />
 
-          {/* Footer Links - updated with titles and hover effects */}
+          {/* Footer Links */}
           <section className="settings-section socials-section">
             <h2>Socials</h2>
             <div className="footer-links">
@@ -234,7 +232,7 @@ const SettingsPage: React.FC = () => {
               >
                 <img 
                   src="/assets/icons/discord.png" 
-                  alt="GitHub" 
+                  alt="Discord" 
                   className="footer-icon" 
                 />
               </a>

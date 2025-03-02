@@ -8,6 +8,7 @@
   --danger-hover: #cc0000;
   --button-font: 'Pirata One';
   --main-font: 'Pirata One', cursive;
+  --gold-color: #d4a93b;
 }
 
 /* General */
@@ -49,7 +50,7 @@ body {
 
 /* Container Title - Scoped to settings-container to avoid conflicts */
 .settings-container .container-title {
-  color: rgb(212, 169, 59);
+  color: var(--gold-color);
   position: absolute;
   top: -20px;
   left: 50%;
@@ -128,7 +129,7 @@ body {
 }
 
 .primary-button {
-  background: var(--primary-color);
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,7 +137,7 @@ body {
 }
 
 .primary-button:hover {
-  background: var(--primary-hover);
+  background: linear-gradient(160deg, #314559 0%, #243952 100%);
 }
 
 .danger-button {
@@ -160,9 +161,10 @@ body {
   align-items: center;
   width: 18px;
   height: 18px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--gold-color);
   border-radius: 50%;
-  color: white;
+  color: var(--gold-color);
   font-size: 0.8rem;
   font-weight: bold;
   margin-left: 5px;
@@ -171,96 +173,108 @@ body {
 }
 
 .info-icon:hover {
-  background: rgba(255, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .referral-info {
   position: absolute;
   top: 100%;
   left: 0;
-  width: 220px;
-  background: rgba(51, 82, 175, 0.9);
-  border: 2px solid var(--primary-hover);
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  border: 1px solid var(--gold-color);
   border-radius: 5px;
-  padding: 8px;
   z-index: 10;
+  padding: 0.3rem;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-  margin-top: 5px;
+  margin-top: 2px;
   color: white;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  width: auto;
+  max-width: 250px;
 }
 
 .referral-info p {
   margin: 0;
   opacity: 0.9;
   font-family: var(--button-font);
+  white-space: normal;
+  word-wrap: break-word;
 }
 
-/* Updated referral code container */
 .referral-code-container {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  background: rgba(32, 71, 200, 0.5);
-  padding: 0.25rem;
-  padding-left: 0.4rem;
-  padding-right: 0.4rem;
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  padding: 0.35rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
   border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  width: 100%;
-  max-width: 220px;
+  width: auto;
+  max-width: fit-content;
   flex-wrap: nowrap;
-}
-
-.referral-info-wrapper {
-  white-space: nowrap;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .referral-label {
   color: white;
-  font-size: 0.8rem;
-  margin-bottom: 2px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  margin-right: 0.5rem; /* Add more space after the label */
+  margin-left: 0.5rem; /* Add more space after the label */
 }
 
 .referral-usage {
-  color: gold;
-  font-size: 0.7rem;
+  color: white;
+  font-size: 0.8rem;
   font-weight: bold;
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1px 4px;
-  border-radius: 3px;
+  background: linear-gradient(160deg, #6b4413 0%, #8b6b31 100%);
+  padding: 0.15rem 0.4rem;
+  border-radius: 12px;
+  border: 1px solid var(--gold-color);
+  white-space: nowrap;
 }
 
-.referral-code-input {
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: gold;
+.referral-code {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
+  color: var(--gold-color);
   font-family: monospace;
-  padding: 0.3rem;
   border-radius: 3px;
   font-weight: bold;
-  flex: 1;
-  min-width: 0;
+  padding: 0 0.5rem;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  margin-right: -0.4rem;
 }
 
 .copy-button {
-  background: rgba(255, 255, 255, 0.2);
-  border: none;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--gold-color);
   padding: 0.3rem;
   border-radius: 3px;
   transition: background 0.2s ease, transform 0.2s ease;
+  height: 28px;
+  width: 28px;
 }
 
 .copy-button:hover {
-  background: rgba(255, 255, 255, 0.4);
-  transform: scale(1.1);
+  background: rgba(0, 0, 0, 0.5);
+  transform: scale(1.05);
+}
+
+.copy-icon {
+  color: var(--gold-color);
 }
 
 /* Crew */
@@ -436,90 +450,30 @@ body {
     flex: 1 0 45%;
   }
   
-  .referral-info {
-    width: 90%;
-    max-width: 220px;
-    padding: 5px;
-    left: 0;
-    right: auto;
-    position: absolute;
-    z-index: 10;
-    height: auto;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    white-space: normal;
-  }
-  
-  .referral-info p {
-    font-size: 0.75rem;
-    word-break: normal;
-    hyphens: auto;
-    overflow-wrap: break-word;
-  }
-  
   .referral-code-container {
-    width: auto;
-    max-width: 185px;
-    padding: 0.3rem;
+    padding: 0.4rem;
+    gap: 0.2rem;
   }
-
-  .referral-info-wrapper {
-    flex-direction: row;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
+  
   .referral-label {
-    font-size: 0.7rem;
-    margin-bottom: 0;
+    font-size: 0.8rem;
   }
-
-  .controls-buttons {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    justify-content: space-between;
-  }
-   
-  .danger-button, 
-  .primary-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
-    flex: 1 0 auto;
-    min-width: unset;
-    max-width: unset;
-  }
-   
-  .referral-button-container {
-    width: auto;
-    max-width: none;
-    white-space: nowrap;
-  }
-   
-  .controls-buttons > .primary-button:not(.referral-button),
-  .controls-buttons > .danger-button:not(.referral-button) {
-    flex: 1 0 45%;
-    min-width: 45%;
-    max-width: calc(50% - 0.15rem);
-  }
- 
-  .referral-button-container .primary-button {
-    width: 100%;
-    max-width: calc(50% - 0.15rem);
-  }
- 
+  
   .referral-usage {
-    font-size: 0.65rem;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.3rem;
   }
-
-  .referral-code-input {
-    padding: 0.2rem;
-    width: 80px;
-    font-size: 0.75rem;
+  
+  .referral-code {
+    font-size: 0.8rem;
+    padding: 0 0.4rem;
+    height: 24px;
   }
   
   .copy-button {
     padding: 0.2rem;
+    height: 24px;
+    width: 24px;
   }
   
   .copy-icon {
@@ -527,6 +481,20 @@ body {
     height: 14px;
   }
   
+  .referral-info {
+    padding: 3px 5px;
+    font-size: 0.7rem;
+    max-width: 200px;
+    margin-top: 1px;
+  }
+  
+  .referral-info p {
+    font-size: 0.7rem;
+    word-break: normal;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
   /* Crew Section */
   .crew-members {
     gap: 0.7rem;
@@ -559,24 +527,5 @@ body {
   .footer-icon {
     width: 32px;
     height: 32px;
-  }
-  
-  .referral-button-container {
-    position: relative;
-    width: 100%;
-    margin-top: 0.5rem;
-  }
-  
-  .referral-button-container .primary-button {
-    width: auto;
-    white-space: nowrap;
-    flex: 0 1 auto;
-  }
-  
-  .controls-buttons > .referral-button-container,
-  .controls-buttons > .referral-button-container .primary-button {
-    flex: 0 0 auto;
-    min-width: auto;
-    max-width: none;
   }
 }
