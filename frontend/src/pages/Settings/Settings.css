@@ -541,22 +541,12 @@ body {
   }
 }
 
-.referral-text {
-  pointer-events: none; /* Ensures text doesn't interfere with button clicks */
+.button-with-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-/* Update info-icon styles */
-.info-icon {
+.info-wrapper {
   position: relative;
-  z-index: 2; /* Ensure icon stays above button */
-}
-
-/* Ensure button has proper touch target size on mobile */
-@media (max-width: 600px) {
-  .primary-button {
-    min-height: 44px; /* Minimum touch target size */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
