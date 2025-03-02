@@ -32,7 +32,7 @@ const CharacterCard: React.FC<CharacterCardProps> = React.memo(
     return (
       <div className="op-stock-card">
         <div className="op-image-container">
-          <img src={image} alt={name} className="op-character-image" loading='lazy' />
+          <img draggable="false" src={image} alt={name} className="op-character-image" loading='lazy' />
           <button
             className="op-visibility-toggle"
             onClick={cycleVisibility}
