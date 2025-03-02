@@ -71,7 +71,7 @@ export const registerUser = async (username: string, password: string): Promise<
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ username, password, fingerprint }),
+      body: JSON.stringify({ username, password }),
     });
 
     const data = await response.json();

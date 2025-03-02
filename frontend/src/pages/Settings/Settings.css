@@ -540,13 +540,3 @@ body {
     height: 32px;
   }
 }
-
-.button-with-info {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.info-wrapper {
-  position: relative;
-}

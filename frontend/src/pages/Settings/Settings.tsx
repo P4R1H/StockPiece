@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { getReferralCode } from './SettingsServices';
@@ -56,33 +57,30 @@ const SettingsPage: React.FC = () => {
               <button className="danger-button">Clear Data</button>
             </div>
             <div className="referral-button-container">
-  {!showReferralCode ? (
-    <div className="button-with-info">
-      <button className="primary-button" onClick={generateReferralCode}>
-        View Referral Code
-      </button>
-      <div className="info-wrapper">
-        <span className="info-icon" onClick={toggleReferralInfo}>?</span>
-        {showReferralInfo && (
-          <div className="referral-info">
-            <p>Refer and earn! Every friend you bring gets you an extra 500B and your friend an extra 1000! Ask them to enter your referral code while logging in in the "Enter coupon" field.</p>
-          </div>
-        )}
-      </div>
-    </div>
-  ) : (
-    <div className="referral-code-container">
-      <span className="referral-label">Your Code:</span>
-      <div className="code-copy-group">
-        <span className="referral-code">{referralCode}</span>
-        <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
-          {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
-        </button>
-      </div>
-      <span className="referral-usage">{referralUses}/10</span>
-    </div>
-  )}
-</div>          </section>
+              {!showReferralCode ? (
+                <button className="primary-button" onClick={generateReferralCode}>
+                  View Referral Code
+                  <span className="info-icon" onClick={toggleReferralInfo}>?</span>
+                </button>
+              ) : (
+                <div className="referral-code-container">
+                  <span className="referral-label">Your Code:</span>
+                  <div className="code-copy-group">
+                    <span className="referral-code">{referralCode}</span>
+                    <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
+                      {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
+                    </button>
+                  </div>
+                  <span className="referral-usage">{referralUses}/10</span>
+                </div>
+              )}
+              {showReferralInfo && (
+                <div className="referral-info">
+                  <p>Refer and earn! Every friend you bring gets you an extra 500B and your friend an extra 1000! Ask them to enter your referral code while logging in in the "Enter coupon" field.</p>
+                </div>
+              )}
+            </div>
+          </section>
 
           <hr className="section-divider" />
 
@@ -248,5 +246,3 @@ const SettingsPage: React.FC = () => {
     </div>
   );
 };
-
-export default SettingsPage
