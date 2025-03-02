@@ -36,7 +36,7 @@ const CRON_SCHEDULES = {
 const DAILY_LOGIN_BONUS = 100;
 const REFERRAL_BONUS = 1000;
 const REFERRER_BONUS = 500;
-const MAX_REFERRALS = 5;
+const MAX_REFERRALS = 10;
 
 export {
   DB_NAME,
