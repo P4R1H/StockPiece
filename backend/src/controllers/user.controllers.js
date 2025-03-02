@@ -95,7 +95,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
   //we need to get the username and password
   //check if it is valid
   //then store tha password
-  const { username, password, fingerPrint } = req.body;
+  const { username, password, fingerprint } = req.body;
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
@@ -103,9 +103,9 @@ const registerUser = asyncHandler(async (req, res, _) => {
 
   let maxAccountCreated = false;
 
-  if (fingerPrint) {
+  if (fingerprint) {
     //if finger print provided then we need to check if max 3 accounts created or not for the week
-    const existingFingerPrint = await UserFingerPrint.findOne({ fingerPrint });
+    const existingFingerPrint = await UserFingerPrint.findOne({ fingerprint });
     if (existingFingerPrint) {
       maxAccountCreated = true;
       if (existingFingerPrint.count >= 3) {
@@ -116,7 +116,7 @@ const registerUser = asyncHandler(async (req, res, _) => {
       }
     } else {
       await UserFingerPrint.create({
-        fingerPrint,
+        fingerprint,
       });
     }
   }
