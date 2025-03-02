@@ -58,6 +58,18 @@ const verifyCoupon = async (couponCode, user) => {
   return coupon;
 };
 
+const checkDailyLogin = (lastLoginDate) => {
+  if (!lastLoginDate) return true; // First time login
+
+  const lastLoginMidnight = new Date(lastLoginDate);
+  lastLoginMidnight.setHours(0, 0, 0, 0);
+
+  const todayMidnight = new Date();
+  todayMidnight.setHours(0, 0, 0, 0);
+
+  return lastLoginMidnight < todayMidnight;
+};
+
 const generateAccessRefreshToken = async (user) => {
   try {
     const accessToken = await user.generateAccessToken();
@@ -154,8 +166,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
   const { accessToken, refreshToken } = tokens;
 
   //check if the user needs to get extra 100 dollars for daily login
-  const midNightTime = () => new Date(new Date().setHours(0, 0, 0, 0));
-  const isDailyLoginBonus = !user.lastLogin || user.lastLogin < midNightTime();
+  const isDailyLoginBonus = checkDailyLogin(user.lastLogin);
 
   const updateObject = {
     $set: {

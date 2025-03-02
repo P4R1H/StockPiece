@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Copy, Check } from 'lucide-react';
 import './Settings.css';
 
 const SettingsPage: React.FC = () => {
-  const [deleteText, setDeleteText] = React.useState("Delete Account");
+  const [deleteText, setDeleteText] = useState("Delete Account");
+  const [showReferralInfo, setShowReferralInfo] = useState(false);
+  const [showReferralCode, setShowReferralCode] = useState(false);
+  const [referralCode, setReferralCode] = useState("");
+  const [copied, setCopied] = useState(false);
+  // Add a usage counter state
+  const [referralUses, setReferralUses] = useState(0);
   
   const deleteAccount = () => {
     if (!deleteText.includes("really")) {
@@ -10,6 +17,26 @@ const SettingsPage: React.FC = () => {
     } else {
       setDeleteText(`Do you ${"really ".repeat(deleteText.split("really").length)} want to delete account`);
     }
+  }
+
+  const toggleReferralInfo = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowReferralInfo(!showReferralInfo);
+  }
+
+  const generateReferralCode = () => {
+    const code = 'Coming soon!';
+    setReferralCode(code);
+    setReferralUses(Math.floor(Math.random() * 5));
+    setShowReferralCode(true);
+  }
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(referralCode);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   }
 
   return (
@@ -28,14 +55,37 @@ const SettingsPage: React.FC = () => {
               <button className="danger-button" onClick={deleteAccount}>{deleteText}</button>
               <button className="danger-button">Clear Data</button>
             </div>
+            <div className="referral-button-container">
+              {!showReferralCode ? (
+                <button className="primary-button" onClick={generateReferralCode}>
+                  View Referral Code
+                  <span className="info-icon" onClick={toggleReferralInfo}>?</span>
+                </button>
+              ) : (
+                <div className="referral-code-container">
+                  <div className="referral-info-wrapper">
+                    <span className="referral-label">Your code: </span>
+                    <span className="referral-usage" title="uses">{referralUses}/5</span>
+                  </div>
+                  <input type="text" className="referral-code-input" value={referralCode} readOnly />
+                  <button className="copy-button" onClick={copyToClipboard} title={copied ? "Copied!" : "Copy to clipboard"}>
+                    {copied ? <Check size={16} className="copy-icon" /> : <Copy size={16} className="copy-icon" />}
+                  </button>
+                </div>
+              )}
+              {showReferralInfo && (
+                <div className="referral-info">
+                  <p>Refer and earn! Every friend you bring gets you and your friend 500B, just ask them to enter your referral code while logging in with a new account in the "Enter coupon" field!</p>
+                </div>
+              )}
+            </div>
           </section>
 
           <hr className="section-divider" />
 
-          {/* Rest of the code remains the same */}
           {/* Crew Section */}
           <section className="settings-section">
-            <h2>Crew</h2>
+            <h2>Crew & Tools</h2>
             <div className="crew-members">
               <div className="crew-member">
                 <img
@@ -54,9 +104,6 @@ const SettingsPage: React.FC = () => {
                       alt="GitHub"
                     />
                   </a>
-                   
-                  {/* Linkedin removed */}
-
                 </div>
               </div>
 
@@ -77,10 +124,7 @@ const SettingsPage: React.FC = () => {
                       alt="GitHub"
                     />
                   </a>
-
-                  {/* Linkedin removed */}
-
-                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -89,7 +133,6 @@ const SettingsPage: React.FC = () => {
 
           {/* Supplies Used Section */}
           <section className="settings-section">
-            <h2>Supplies Used</h2>
             <div className="section-box supplies-box">
               <div className="supplies-icons">
                 <img
@@ -152,41 +195,51 @@ const SettingsPage: React.FC = () => {
 
           <hr className="section-divider" />
 
-          {/* Manifesto Section */}
-          <section className="settings-section">
-            <h2>Manifesto</h2>
-            <div className="section-box">
-              <p className="manifesto-text">
-                This website is a labor of love, built to provide a fun way for
-                everyone to participate in predictions from an interface that is
-                both functional and beautiful. We can't wait to see the 
-                trends. Thank you for being part of our journey!
-              </p>
+          {/* Footer Links - updated with titles and hover effects */}
+          <section className="settings-section socials-section">
+            <h2>Socials</h2>
+            <div className="footer-links">
+              <a
+                href="https://reddit.com/r/stockpiece"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon-link"
+                data-tooltip="r/stockpiece"
+              >
+                <img 
+                  src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Brand/Reddit_Logo.png?width=800&height=800&name=Reddit_Logo.png" 
+                  alt="Reddit" 
+                  className="footer-icon" 
+                />
+              </a>
+              <a
+                href="https://github.com/P4R1H/StockPiece"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon-link"
+                data-tooltip="Contribute"
+              >
+                <img 
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/24/Github_logo_svg.svg" 
+                  alt="GitHub" 
+                  className="footer-icon" 
+                />
+              </a>
+              <a
+                href="https://discord.gg/weFsk76xtq"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="icon-link"
+                data-tooltip="Feedback"
+              >
+                <img 
+                  src="/assets/icons/discord.png" 
+                  alt="GitHub" 
+                  className="footer-icon" 
+                />
+              </a>
             </div>
           </section>
-
-          {/* Footer Links */}
-          <div className="footer-links">
-            <a
-              href="https://reddit.com/r/stockpiece"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Feedback?
-            </a>
-            <a
-              href="https://github.com/p4r1h/stockpiece"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Contribute?
-            </a>
-            <a
-              href="https://discord.gg/weFsk76xtq"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Join Our Discord!</a>
-          </div>
         </div>
       </div>
     </div>
