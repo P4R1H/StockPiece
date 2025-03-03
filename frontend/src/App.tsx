@@ -58,12 +58,14 @@ const App: React.FC = () => {
     checkLoginStatus(); 
   }, []); 
  
-  const handleLogin = () => { 
-    queryClient.invalidateQueries({ queryKey: ['portfolio'] }); 
-    queryClient.invalidateQueries({ queryKey: ['leaderboardData'] }); 
-    setIsLoggedIn(true); 
-  }; 
- 
+  const handleLogin = () => {
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboardData'] });
+      setIsLoggedIn(true);
+    }, 300); // Small delay to allow cookies to be set
+  };
+  
   const handleLogout = async () => { 
     try { 
       await logoutUser(); 
