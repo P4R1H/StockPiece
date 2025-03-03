@@ -378,13 +378,13 @@ const Admin: React.FC = () => {
   const [nextReleaseStatus, setNextReleaseStatus] = useState<boolean>(false);
   const [chapterStats, setChapterStats] = useState<any>(null);
   const [selectedChapterForStats, setSelectedChapterForStats] =
-    useState<number | null>(null);
+  useState<number | null>(null);
   const [selectedChapterForStocks, setSelectedChapterForStocks] =
-    useState<number | null>(null);
+  useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<'create' | 'delete'>('create');
   const [couponCode, setCouponCode] = useState('');
-  const [couponAmount, setCouponAmount] = useState(0);
-  const [couponMaxUsers, setCouponMaxUsers] = useState(0);
+  const [couponAmount, setCouponAmount] = useState<number | ''>('');
+  const [couponMaxUsers, setCouponMaxUsers] = useState<number | ''>('');
   const [couponIsFirstTimeOnly, setCouponIsFirstTimeOnly] = useState(false);
   const [deleteCouponCode, setDeleteCouponCode] = useState('');
   const [usernameForDetails, setUsernameForDetails] = useState('');
@@ -656,13 +656,13 @@ const Admin: React.FC = () => {
       try {
         await createCoupon({
           code: couponCode,
-          amount: couponAmount,
-          maxUsers: couponMaxUsers,
+          amount: typeof couponAmount === 'number' ? couponAmount : 0,
+          maxUsers: typeof couponMaxUsers === 'number' ? couponMaxUsers : 0,
           isFirstTimeOnly: couponIsFirstTimeOnly,
         });
         setCouponCode('');
-        setCouponAmount(0);
-        setCouponMaxUsers(0);
+        setCouponAmount('');
+        setCouponMaxUsers('');
         setCouponIsFirstTimeOnly(false);
       } catch (error) {
         console.error('Failed to create coupon:', error);
@@ -924,22 +924,21 @@ const Admin: React.FC = () => {
                 </label>
               </div>
               <div className="couponFormRow">
-                <input
-                  type="number"
-                  placeholder="Amount ($)"
-                  value={couponAmount}
-                  onChange={(e) => setCouponAmount(Number(e.target.value))}
-                  required
-                />
-                <input
-                  type="number"
-                  placeholder="Max Uses"
-                  value={couponMaxUsers}
-                  onChange={(e) => setCouponMaxUsers(Number(e.target.value))}
-                  required
-                />
-              </div>
-              <button type="submit" className="couponButton">
+  <input
+    type="number"
+    placeholder="Discount Amount ($)"
+    value={couponAmount}
+    onChange={(e) => setCouponAmount(e.target.value === '' ? '' : Number(e.target.value))}
+    required
+  />
+  <input
+    type="number"
+    placeholder="Maximum Uses"
+    value={couponMaxUsers}
+    onChange={(e) => setCouponMaxUsers(e.target.value === '' ? '' : Number(e.target.value))}
+    required
+  />
+</div>              <button type="submit" className="couponButton">
                 Create Coupon
               </button>
             </form>
