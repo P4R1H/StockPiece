@@ -328,7 +328,7 @@ const getUserByUsername = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { username } = req.body;
+  const { username } = req.query;
 
   if (!username?.trim()) {
     throw new ApiError(400, "username is required");
@@ -375,7 +375,7 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { chapterNumber, sortBy = "totalTransactions", limit = 100 } = req.body;
+  const { chapterNumber, sortBy = "totalTransactions", limit = 100 } = req.query;
 
   // Validate sort field
   const validSortFields = [
@@ -515,7 +515,7 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { chapterNumber } = req.body;
+  const { chapterNumber } = req.query;
 
   let targetChapter;
   if (chapterNumber) {

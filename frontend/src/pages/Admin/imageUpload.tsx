@@ -23,7 +23,6 @@ export const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
   const [quality, setQuality] = useState<number>(defaultQuality);
   const [optimizedSize, setOptimizedSize] = useState<number | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [optimizedBlob, setOptimizedBlob] = useState<Blob | null>(null);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -69,7 +68,6 @@ export const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
         canvas.toBlob(
           (blob) => {
             if (blob) {
-              setOptimizedBlob(blob);
               setOptimizedSize(blob.size);
               const optimizedUrl = URL.createObjectURL(blob);
               setPreviewUrl(optimizedUrl);
@@ -148,14 +146,12 @@ export const ImageUploadComponent: React.FC<ImageUploadComponentProps> = ({
   );
 };
 
-// Interface for ImageUpdateModalProps
 export interface ImageUpdateModalProps {
   stock: Stock;
   onClose: () => void;
   onSubmit: (imageFile: File) => void;
 }
 
-// ImageUpdateModal
 export const ImageUpdateModal: React.FC<ImageUpdateModalProps> = ({ stock, onClose, onSubmit }) => {
   const [optimizedFile, setOptimizedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);

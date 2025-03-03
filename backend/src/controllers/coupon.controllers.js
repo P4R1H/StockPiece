@@ -49,7 +49,7 @@ const getAllCoupons = asyncHandler(async (req, res, _next) => {
     throw new ApiError(400, "Unauthorized request");
   }
 
-  const all = req.query.all;
+  const { all } = req.query;
 
   const coupons =
     all === "true"

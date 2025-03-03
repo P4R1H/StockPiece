@@ -12,6 +12,7 @@ import Coupon from "../models/coupon.models.js";
 import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
 import UserFingerprint from "../models/fingerPrint.models.js";
+import ChapterRelease from "../models/chapterRelease.models.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -455,7 +456,7 @@ const getCurrentUserPortfolio = asyncHandler(async (req, res, _) => {
 
 const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   const currentUserId = req.user?._id;
-  const { orderBy = "totalValue" } = req.body;
+  const { orderBy = "totalValue" } = req.query;
   const validOrders = ["accountValue", "stockValue", "totalValue"];
 
   // Validate orderBy parameter
@@ -538,6 +539,69 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   );
 });
 
+const getUserTransaction = asyncHandler ( async (req, res, _next) => {
+  if (!req.admin) {
+    throw new ApiError(400,'unauthorized error');
+  }
+
+  const { username, chapter } = req.query;
+
+  if (!username) {
+    throw new ApiError(400,'need to provide username');
+  }
+
+  let userTransactions;
+
+  if (chapter !== -1) {
+    const chapterDocPromise = 
+    chapter ? 
+    ChapterRelease.findOne({chapter}).lean() :
+    ChapterRelease.findOne().sort({releaseDate: -1}).lean();
+
+    const userPromise = User.findOne({username});
+
+    const [ chapterDoc, user ] = await Promise.all([
+      chapterDocPromise,
+      userPromise
+    ])
+
+    if (!chapterDoc) {
+      throw new ApiError(400,`${chapter || "latest"} chapter not found`);
+    }
+
+    if (!user) {
+      throw new ApiError(400,'no user found');
+    }
+
+    userTransactions = await Transaction.find({ 
+      purchasedBy:user._id,
+      chapterPurchasedAt: chapterDoc.chapter 
+    }).lean();
+
+  } else {
+    const user = await User.findOne({username});
+
+    if (!user) {
+      throw new ApiError(400,'no user found');
+    }
+
+    userTransactions = await Transaction.find(
+      { purchasedBy: user._id }
+    ).lean();
+  }
+
+  res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        userTransactions,
+        `${chapter === -1 ? "All" : "Chapter " + chapter} user transactions fetched successfully`
+      )
+    )
+
+})
+
 export {
   registerUser,
   loginUser,
@@ -547,4 +611,5 @@ export {
   checkLogin,
   getCurrentUserPortfolio,
   getTopUsersByStockValue,
+  getUserTransaction
 };
