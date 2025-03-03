@@ -29,6 +29,7 @@
     0 2px 8px rgba(0, 0, 0, 0.15),
     inset 0 0 0 1px rgba(211, 167, 40, 0.1); /* Subtle inner glow */
   transition: all 0.3s ease;
+  z-index: 2;
   background-image: linear-gradient(
     to bottom right,
     rgba(10, 26, 42, 0.9),
@@ -44,6 +45,7 @@
     0 0 15px rgba(255, 215, 0, 0.2),
     inset 0 0 0 1px rgba(211, 167, 40, 0.2);
 }
+
 
 .op-image-container {
   position: relative;

@@ -1,6 +1,8 @@
 [ ] Bug: If you move to next chapter without forcing price updates, graph shows different price than stock
+[ ] Bug: Daily login needs relogout login
 
 ## Overall Improvements
+- [ ] Show alert after login if coupon or daily
 - [/] Admin Panel Implementation
 - [/] Responsive Design Enhancement
 - [/] codescene review
@@ -12,8 +14,8 @@
 ## Page-Specific Tasks
 
 ### Home Page
-- [ ] Rollback changes after error
-- [ ] Allow buying when logged out (Mock)
+- [/] Rollback changes after error
+- [/] Allow buying when logged out (Mock)
 - [/] Error message better UI
 - [/] Show loading while file is uploading
 - [/] Buying window is closed, stil can't see stocks
@@ -24,7 +26,7 @@
 
 ### Leaderboard 
 - [/] Complete UI overhaul
-- [ ] Touchups
+- [/] Touchups
 - [/] Implement backend data fetching
 
 ### Settings

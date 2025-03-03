@@ -18,9 +18,11 @@ import {
   fetchErrors,
   changeCharacterImage,
   toggleNextRelease,
+  getChapterStatistics,
   getNextReleaseStatus
 } from './AdminServices';
 import './Admin.css'
+
 
 const AdminStockCard: React.FC<AdminStockCardProps> = ({
   stock,
@@ -195,8 +197,10 @@ const Admin: React.FC = () => {
   // Using a refreshCounter instead of a string-based triggerRefresh
   const [refreshCounter, setRefreshCounter] = useState(0);
   
-  // New state for next release status
   const [nextReleaseStatus, setNextReleaseStatus] = useState<boolean>(false);
+  
+  // New state for chapter statistics
+  const [chapterStats, setChapterStats] = useState<any>(null);
   
   // Function to trigger a refresh by incrementing the counter
   const refreshData = () => setRefreshCounter(prev => prev + 1);
@@ -300,6 +304,14 @@ const Admin: React.FC = () => {
           setNextReleaseStatus(autoReleaseStatus);
         } catch (error) {
           console.error('Failed to load next release status:', error);
+        }
+  
+        // Add this new API call for chapter statistics
+        try {
+          const stats = await getChapterStatistics();
+          setChapterStats(stats);
+        } catch (error) {
+          console.error('Failed to load chapter statistics:', error);
         }
       };
       loadData();
@@ -571,6 +583,23 @@ const Admin: React.FC = () => {
             >
               Send
             </button>
+          </div>
+        </div>
+
+        <div className="controlCard">
+          <h3>Chapter Statistics</h3>
+          <div className="statusInfo">
+            {chapterStats ? (
+              <>
+                <p>New Users: <b>{chapterStats.newUsers}</b>/{chapterStats.totalUsers}</p>
+                <p>Market Value: ${chapterStats.marketStats?.totalMarketValue?.toLocaleString()}</p>
+                <p>Chapter volume: ${chapterStats.chapterTransactions?.totalVolume.toLocaleString()}</p>
+                <p>Total purchases: {chapterStats.chapterTransactions?.totalTransactions}</p>
+                <p>Active Stocks: {chapterStats.marketStats?.activeStocks}/ {chapterStats.marketStats?.totalStocks}</p>
+              </>
+            ) : (
+              <p>Loading chapter statistics...</p>
+            )}
           </div>
         </div>
       </div>

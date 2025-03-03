@@ -249,8 +249,8 @@
 .panel-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  gap: 10px;
+  align-items: stretch;
+  gap: 0;
 }
 
 .panel-controls {
@@ -258,6 +258,18 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.panel-header .sidebar-select {
+  border-radius: 5px 0 0 5px;
+}
+
+.panel-header .settings-tooltip-container {
+  border-radius: 0 5px 5px 0;
+}
+
+.panel-header .settings-tooltip-container:hover::after {
+  display: none;
 }
 
 .sidebar-select {
@@ -334,19 +346,7 @@
 }
 
 .settings-tooltip-container:hover::after {
-  content: 'Advanced Options';
-  position: absolute;
-  bottom: -38px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #3e2f28;
-  color: #ffcc00;
-  padding: 5px 10px;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  white-space: nowrap;
-  font-family: 'Pirata One', cursive;
-  z-index: 20;
+  display: none;
 }
 
 /* Wheel */

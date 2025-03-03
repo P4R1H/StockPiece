@@ -14,10 +14,9 @@ export const getStockMarketData = async (): Promise<CharacterStock[]> => {
     image: stock.imageURL,
     currentPrice: stock.currentValue,
     initialValue: stock.initialValue, 
-    popularity: 0,
+    popularity: stock.popularityCount,
     visibility: 'show',
     tickerSymbol: stock.tickerSymbol ? '$' + stock.tickerSymbol : '',
-    valueHistory: stock.valueHistory || [],
   }));
 };
 

@@ -234,7 +234,11 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
   } else {
     //we fetch from the update collection
     const chapterUpdate = await ChapterUpdate.findOne({
+<<<<<<< HEAD
       chapter,
+=======
+      chapter
+>>>>>>> 0e4e74aa4d6ab4ce93a7687228ee139571b0cee4
     })
       .populate({
         path: "updates.stockID",

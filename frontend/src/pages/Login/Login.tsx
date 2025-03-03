@@ -23,8 +23,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
   const isValid = useMemo(() => {
     const errors: { username?: string; password?: string; couponCode?: string } = {};
-    if (formState.username.length < 3 && formState.username.length != 0) errors.username = 'Username must be at least 3 characters long.';
-    if (formState.password.length < 6 && formState.password.length != 0) errors.password = 'Password must be at least 6 characters long.';
+    if (formState.username.length < 3 && formState.username.length != 0) errors.username = 'Username must be at least 3 characters long';
+    if (formState.password.length < 6 && formState.password.length != 0) errors.password = 'Password must be at least 6 characters long';
     setFormState(prev => ({ ...prev, validationErrors: errors }));
     return Object.keys(errors).length === 0;
   }, [formState.username, formState.password]);
@@ -59,9 +59,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         }));
       }
     } catch (err) {
+      // Format error message with only first letter capitalized
+      let errorMsg = err instanceof Error ? err.message : 'An unexpected error occurred';
+      errorMsg = errorMsg.charAt(0).toUpperCase() + errorMsg.slice(1);
+      
       setFormState(prev => ({
         ...prev,
-        error: err instanceof Error ? err.message : 'An unexpected error occurred',
+        error: errorMsg,
         isLoading: false
       }));
     }

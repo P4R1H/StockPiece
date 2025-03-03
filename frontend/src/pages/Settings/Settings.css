@@ -1,19 +1,25 @@
-/* Define CSS Variables */
+/* CSS vars */
 :root {
-  --max-container-width: 500px; /* Adjusted for reduced horizontal space */
+  --max-container-width: 500px;
   --primary-gradient: linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%);
-  
+  --primary-color: #4d79ff;
+  --primary-hover: #3366cc;
+  --danger-color: #ff4d4d;
+  --danger-hover: #cc0000;
+  --button-font: 'Pirata One';
+  --main-font: 'Pirata One', cursive;
+  --gold-color: #d4a93b;
 }
 
-/* General Styles */
+/* General */
 body {
   margin: 0;
   padding: 0;
   background-size: 200% 200%;
-  font-family: 'Pirata One', cursive;
+  font-family: var(--main-font);
 }
 
-/* Page Container */
+/* Containers */
 .main-page-container {
   padding: 0.5rem;
   max-width: var(--max-container-width);
@@ -23,17 +29,13 @@ body {
   overflow-y: auto;
 }
 
-/* Settings Container */
 .settings-container {
   position: relative;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/assets/settings.webp') no-repeat center center ;
-
+    url('/assets/settings.webp') no-repeat center center;
   background-size: cover;
   padding: 20px;
-  
   will-change: transform;
-
   margin: 10px;
   box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
   border: 5px solid transparent;
@@ -46,61 +48,9 @@ body {
   margin-top: 15px;
 }
 
-/* Section Title */
-.settings-section h2 {
-  font-size: 1.4rem;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-}
-
-/* Semi-transparent Box for Section Content */
-.section-box {
-  background: rgba(255, 255, 255, 0.2);
-  padding: 0.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  margin-bottom: 1rem;
-}
-
-/* Specific adjustment for supplies box to reduce horizontal space */
-.supplies-box {
-  max-width: 100%;
-  margin: 0 auto;
-}
-
-/* Section Divider */
-.section-divider {
-  border: none;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.3);
-  margin: 1rem 0;
-}
-
-/* Controls Section */
-.controls-buttons {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.danger-button {
-  background: #ff4d4d;
-  border: none;
-  padding: 0.5rem 1rem;
-  color: #fff;
-  font-family: 'Pirata One', cursive;
-  font-size: 1rem;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s ease;
-}
-
-.danger-button:hover {
-  background: #cc0000;
-}
-
-.container-title {
-  color: rgb(212, 169, 59);
+/* Container Title - Scoped to settings-container to avoid conflicts */
+.settings-container .container-title {
+  color: var(--gold-color);
   position: absolute;
   top: -20px;
   left: 50%;
@@ -112,13 +62,15 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   text-align: center;
 }
-.container-title .main-title {
+
+.settings-container .container-title .main-title {
   font-size: 2.2rem;
   line-height: 1;
   margin: 0;
   display: block;
 }
-.container-title .subtitle {
+
+.settings-container .container-title .subtitle {
   font-size: 0.9rem;
   line-height: 1;
   margin: 0;
@@ -127,7 +79,211 @@ body {
   margin-top: 2px;
 }
 
-/* Crew Section */
+/* Section Styles */
+.settings-section h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+}
+
+.section-box {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-bottom: 1rem;
+}
+
+.section-divider {
+  border: none;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 1rem 0;
+}
+
+.supplies-box {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+/* Controls */
+.controls-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Button Base Styles */
+.primary-button,
+.danger-button {
+  border: none;
+  padding: 0.5rem 1rem;
+  color: #fff;
+  font-family: var(--button-font);
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease;
+}
+
+.primary-button {
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.primary-button:hover {
+  background: linear-gradient(160deg, #314559 0%, #243952 100%);
+}
+
+.danger-button {
+  background: var(--danger-color);
+}
+
+.danger-button:hover {
+  background: var(--danger-hover);
+}
+
+/* Referral */
+.referral-button-container {
+  position: relative;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.info-icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 18px;
+  height: 18px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--gold-color);
+  border-radius: 50%;
+  color: var(--gold-color);
+  font-size: 0.8rem;
+  font-weight: bold;
+  margin-left: 5px;
+  cursor: pointer;
+  font-family: var(--main-font);
+}
+
+.info-icon:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.referral-info {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  border: 1px solid var(--gold-color);
+  border-radius: 5px;
+  z-index: 10;
+  padding: 0.3rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  margin-top: 2px;
+  color: white;
+  font-size: 0.8rem;
+  line-height: 1.1;
+  width: auto;
+  max-width: 250px;
+}
+
+.referral-info p {
+  margin: 0;
+  opacity: 0.9;
+  font-family: var(--button-font);
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+.referral-code-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  padding: 0.35rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  border-radius: 5px;
+  width: auto;
+  max-width: fit-content;
+  flex-wrap: nowrap;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.referral-label {
+  color: white;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+  margin-right: 0.3rem;
+  margin-left: 0.3rem;
+}
+
+.referral-usage {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: linear-gradient(160deg, #6b4413 0%, #8b6b31 100%);
+  padding: 0.15rem 0.4rem;
+  border-radius: 12px;
+  border: 1px solid var(--gold-color);
+  white-space: nowrap;
+}
+
+.code-copy-group {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-right: 0.3rem;
+}
+
+.referral-code {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
+  border-right: none;
+  color: var(--gold-color);
+  font-family: monospace;
+  border-radius: 3px 0 0 3px;
+  font-weight: bold;
+  padding: 0 0.5rem;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.copy-button {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-color);
+  border-radius: 0 3px 3px 0;
+  transition: background 0.2s ease;
+  height: 26px;
+  width: 26px;
+  padding: 0;
+}
+
+.copy-button:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.copy-icon {
+  color: var(--gold-color);
+}
+
+/* Crew */
 .crew-members {
   display: flex;
   gap: 1rem;
@@ -147,7 +303,6 @@ body {
   border: 2px solid gold;
 }
 
-/* Crew Links */
 .crew-links {
   margin-top: 0.5rem;
   display: flex;
@@ -167,7 +322,7 @@ body {
   filter: invert(85%) sepia(15%) saturate(694%) hue-rotate(202deg) brightness(100%) contrast(96%);
 }
 
-/* Supplies Icons Section */
+/* Supplies */
 .supplies-icons {
   display: flex;
   flex-wrap: wrap;
@@ -186,36 +341,58 @@ body {
   transform: scale(1.2);
 }
 
-/* Manifesto Text */
-.manifesto-text {
-  font-size: 0.85rem;
-  line-height: 1.4;
-  color: #fff;
-  opacity: 0.9;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+.socials-section {
+  margin-bottom: 10px;
 }
 
-/* Footer Links */
+/* Footer */
 .footer-links {
   display: flex;
-  gap: 1rem;
+  gap: 2.5rem;
   justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.icon-link {
+  display: inline-block;
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.icon-link::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
   font-size: 0.7rem;
-  margin-top: 1rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
 }
 
-.footer-links a {
-  color: #fff;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: border-bottom 0.2s ease;
+.icon-link:hover::after {
+  opacity: 1;
+  visibility: visible;
 }
 
-.footer-links a:hover {
-  border-bottom: 1px solid #fff;
+.icon-link:hover {
+  transform: scale(1.2);
 }
 
-/* Animation */
+.footer-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  aspect-ratio: 1/1;
+}
+
+/* Animations */
 @keyframes floatIn {
   from {
     opacity: 0;
@@ -227,88 +404,139 @@ body {
   }
 }
 
+/* Mobile */
 @media (max-width: 600px) {
+  /* Title & Layout */
+  .settings-container .container-title {
+    top: -13px;
+  }
+  
+  .settings-container .container-title .main-title {
+    font-size: 1.6rem !important;
+  }
+  
+  .settings-container .container-title .subtitle {
+    font-size: 0.7rem !important; 
+    transition: none !important; 
+  }
 
-  .container-title {
-    top: -15px;
-  }
-  .container-title .main-title {
-    font-size: 1.6rem;
-  }
-  .container-title .subtitle {
-    font-size: 0.7rem;
-  }
-
-  /* Main Page Container: keep top margin intact */
   .main-page-container {
     padding: 0.25rem;
-    max-width: 90%;
-    margin: 1rem auto; /* Top spacing remains unchanged */
+    max-width: 95%;
+    margin: 1rem auto;
   }
-  /* Settings Container: keep component size, just ensure tighter spacing between elements */
+  
   .settings-container {
     padding: 15px;
-    margin: -2px;
-    margin-top: 7px;
+    margin: 5px;
   }
-  /* Section Titles: reduce the gap below the title */
+  
   .settings-section h2 {
     font-size: 1.2rem;
-    margin-bottom: 0rem; /* Slightly reduced gap */
+    margin-bottom: 0.3rem;
   }
-  /* Content Boxes: reduce bottom margin only */
+  
   .section-box {
     padding: 0.4rem;
-    margin-bottom: 0.5rem; /* Reduced vertical gap between boxes */
+    margin-bottom: 0.5rem;
   }
-  /* Controls Section: tighten spacing between buttons */
+  
+  /* Controls & Buttons */
   .controls-buttons {
-    flex-direction: column;
-    gap: 0.3rem; /* Reduced gap */
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    justify-content: space-between;
   }
-  .danger-button {
+  
+  .danger-button, 
+  .primary-button {
     padding: 0.4rem 0.8rem;
     font-size: 0.9rem;
+    flex: 1 0 45%;
   }
-  /* Crew Section: reduce gaps between crew members without resizing them too much */
+  
+  .referral-code-container {
+    padding: 0.3rem;
+    gap: 0.3rem;
+  }
+  
+  .referral-label {
+    font-size: 0.75rem;
+    margin-right: 0.2rem;
+    margin-left: 0.2rem;
+  }
+  
+  .referral-usage {
+    font-size: 0.7rem;
+    padding: 0.1rem 0.25rem;
+  }
+
+  .code-copy-group {
+    margin-right: 0.2rem;
+  }
+  
+  .referral-code {
+    font-size: 0.75rem;
+    padding: 0 0.3rem;
+    height: 22px;
+  }
+  
+  .copy-button {
+    height: 22px;
+    width: 22px;
+  }
+  
+  .copy-icon {
+    width: 14px;
+    height: 14px;
+  }
+  
+  .referral-info {
+    padding: 3px 5px;
+    font-size: 0.7rem;
+    max-width: 200px;
+    margin-top: 1px;
+  }
+  
+  .referral-info p {
+    font-size: 0.7rem;
+    word-break: normal;
+    hyphens: auto;
+    overflow-wrap: break-word;
+  }
+
+  /* Crew Section */
   .crew-members {
-    gap: 0.7rem; /* Reduced gap between crew items */
+    gap: 0.7rem;
   }
+  
   .crew-avatar {
     width: 60px;
     height: 60px;
   }
+  
   .crew-links img {
     width: 18px;
     height: 18px;
   }
-  /* Supplies Icons Section: reduce gap between icons */
+  
+  /* Supplies & Footer */
   .supplies-icons {
-    gap: 0.3rem;
+    gap: 0.2rem;
   }
+  
   .supply-icon {
-    width: 23px;
-    height: 23px;
+    width: 26px;
+    height: 26px;
   }
-  /* Manifesto Text: maintain readability while tightening spacing */
-  .manifesto-text {
-    font-size: 0.5rem;
-  }
-  /* Footer: reduce space before footer links */
+  
   .footer-links {
-    margin-top: 0.5rem;
+    gap: 1.5rem;
   }
-}
-
-@media (max-width: 600px) {
-  /* Ensure buttons stay in a row */
-  .controls-buttons {
-    flex-direction: row; /* Changed from column to row */
-    gap: 0.3rem; /* You can adjust the gap as needed */
-    flex-wrap: nowrap; /* Prevent wrapping */
-  }
-  .danger-button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.9rem;
+  
+  .footer-icon {
+    width: 32px;
+    height: 32px;
   }
 }

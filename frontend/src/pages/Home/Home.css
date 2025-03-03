@@ -34,6 +34,8 @@
   gap: 1rem;
 }
 
+
+
 /* Stock Card Container */
 .stock-card-container {
   animation: floatIn 0.8s ease-out;
@@ -78,6 +80,7 @@
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.1) 10%, transparent 20%),
     linear-gradient(to bottom, transparent 95%, rgba(255, 255, 255, 0.2) 100%);
   pointer-events: none;
+  z-index: 1;
 }
 
 /* Market Controls */
@@ -188,10 +191,10 @@
 
 .ticker-content {
   display: flex;
-  width: 300%;
+  width: 1200%;
   height: 100%;
   transform: translateX(100%);
-  animation: ticker 25s linear infinite;
+  animation: ticker 90s linear infinite;
 }
 
 .ticker-item {
@@ -284,7 +287,6 @@
 @media (max-width: 1400px) {
   .dashboard {
     flex-wrap: wrap;
-    padding: 0 1.5rem;
   }
   
   .search-controls {

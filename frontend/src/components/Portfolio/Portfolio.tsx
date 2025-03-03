@@ -3,26 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { BountyProfileCardProps } from '../../types/Components';
 import './Portfolio.css'
 
-const formatNumber = (value: string | number): string => {
-  const cleanValue = typeof value === 'string' ? value.replace(/,/g, '') : value.toString();
-  const num = parseFloat(cleanValue);
-  
-  if (isNaN(num)) return '0';
-
-  // If the value is a percentage (detected by % in parent component)
-  if (cleanValue.includes('%')) {
-    return num.toLocaleString(undefined, { 
-      minimumFractionDigits: 1,
-      maximumFractionDigits: 1 
-    });
-  }
-
-  // For all other numbers (berries), show no decimals
-  return num.toLocaleString(undefined, { 
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  });
+const formatWorth = (value: number): string => {  
+  return isNaN(value) ? '0' : Math.floor(value).toLocaleString(undefined);
 };
+
+const formatPercentage = (value: number): string => {
+  const truncated = Math.floor(value * 100) / 100;
+  return truncated.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+};
+
 
 const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
   userName,
@@ -130,19 +119,19 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
       <div className="bounty-details">
         <p className="bounty-name">{userName}</p>
         <p className="bounty-net-worth">
-          Net Worth: <span className="highlight">{formatNumber(netWorth)} Berries</span> &nbsp;
-          Cash: <span className="highlight">{formatNumber(cash)} Berries</span>
+          Net Worth: <span className="highlight">{formatWorth(netWorth)} Berries</span> &nbsp;
+          Cash: <span className="highlight">{formatWorth(cash)} Berries</span>
         </p>
         <p className="bounty-profit-loss">
           Profit/Loss Overall: 
-          <span className={`highlight ${parseFloat(String(profitLossOverall)) >= 0 ? 'profit' : 'loss'}`}>
-            {formatNumber(profitLossOverall)}%
+          <span className={`highlight ${profitLossOverall >= 0 ? 'profit' : 'loss'}`}>
+            {formatPercentage(profitLossOverall)}%
           </span>
           <span className="profit-loss-last-chapter">
             {' '}
             (Last Chapter: 
-            <span className={`highlight ${parseFloat(String(profitLossLastChapter)) >= 0 ? 'profit' : 'loss'}`}>
-              {formatNumber(profitLossLastChapter)}%
+            <span className={`highlight ${profitLossLastChapter >= 0 ? 'profit' : 'loss'}`}>
+              {formatPercentage(profitLossLastChapter)}%
             </span>)
           </span>
         </p>

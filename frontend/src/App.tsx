@@ -50,7 +50,7 @@ const App: React.FC = () => {
     const checkLoginStatus = async () => { 
       try { 
         const resp = await loginExists(); 
-        setIsLoggedIn(resp.data); 
+        setIsLoggedIn(resp.data.loginStatus); 
       } catch { 
         setIsLoggedIn(false); 
       } 
@@ -58,13 +58,14 @@ const App: React.FC = () => {
     checkLoginStatus(); 
   }, []); 
  
-  const handleLogin = () => { 
-    queryClient.invalidateQueries({ queryKey: ['portfolio'] }); 
-    queryClient.invalidateQueries({ queryKey: ['leaderboardData'] }); 
-    setIsLoggedIn(true); 
-  }; 
- 
-  const handleLogout = async () => { 
+  const handleLogin = () => {
+    setTimeout(() => {
+      queryClient.invalidateQueries({ queryKey: ['portfolio'] });
+      queryClient.invalidateQueries({ queryKey: ['leaderboardData'] });
+      setIsLoggedIn(true);
+    }, 300);
+  };
+    const handleLogout = async () => { 
     try { 
       await logoutUser(); 
       queryClient.invalidateQueries({ queryKey: ['portfolio'] }); 

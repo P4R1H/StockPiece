@@ -19,7 +19,7 @@
   background: url('/assets/bounty-template.webp') no-repeat center center, #d9ccbc;
   background-size: contain;
   width: min(90vw, 400px);
-  min-height: min(132vw, 585px);
+  min-height: min(132vw, 589px);
   aspect-ratio: 3/4;
   font-family: var(--font-family);
   position: relative;
@@ -204,14 +204,40 @@
 
 /* Media Queries */
 @media (max-width: 500px) {
+
   .bounty-card {
-    width: 90vw;
-    min-height: 120vw;
+    width: 100%;
+    border-radius: 15px; 
   }
+
   .bounty-image-container {
-    width: 80%;
-    height: 45vw;
+    width: 85%; 
+    height: 45vw; 
+    top: 25%;
   }
+
+  .bounty-details {
+    bottom: 12%; 
+  }
+
+  .bounty-name {
+    font-size: clamp(28px, 6vw, 32px);
+  }
+
+  .bounty-status {
+    font-size: clamp(16px, 4.5vw, 24px); 
+  }
+
+  .bounty-net-worth,
+  .bounty-profit-loss,
+  .bounty-cash {
+    font-size: clamp(14px, 3.5vw, 20px); 
+  }
+
+  .profit-loss-last-chapter {
+    font-size: clamp(12px, 3vw, 16px); 
+  }
+
 }
 
 
@@ -249,9 +275,3 @@
   }
 }
 
-@media (max-width: 500px) {
-  .bounty-name {
-    font-size: clamp(25px, 5.5vw, 32px); 
-  }
-
-}
