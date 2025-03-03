@@ -1,3 +1,4 @@
+/* Admin.css */
 .adminContainer {
   background-color: #000;
   min-height: 100vh;
@@ -17,7 +18,7 @@
 
 .loginCard {
   background: rgba(20, 9, 9, 0.5);
-  border: 1px rgb(119, 7, 7) solid;
+  border: 1px solid rgb(119, 7, 7);
   padding: 2rem;
   border-radius: 12px;
   width: 350px;
@@ -57,7 +58,6 @@
 .loginButton:hover {
   background: rgba(47, 16, 3, 0.2);
   border: 1px solid #b31313;
-
 }
 
 .loginButton:focus {
@@ -69,10 +69,17 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 10, 10, 0.95);
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.3);
   border-radius: 12px;
-  backdrop-filter: blur(10px);
   margin-bottom: 2rem;
+}
+
+.leftSide {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .logo {
@@ -99,6 +106,66 @@
   background: rgba(255, 215, 0, 0.2);
 }
 
+.moduleSearchGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.searchInput {
+  width: 240px;
+  height: 40px;
+  padding: 0 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.searchInput:focus {
+  border-color: rgba(255, 215, 0, 0.6);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+}
+
+.chapterSearchForm {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.chapterInput {
+  width: 120px;
+  height: 40px;
+  padding: 0 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* Fixed search button with icon */
+.searchButton {
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 0 6px 6px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  padding: 0;
+}
+
+.searchButton:hover {
+  background: rgba(255, 215, 0, 0.2);
+}
+
 .controlsRow {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -107,7 +174,7 @@
 }
 
 .controlCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(16, 16, 16, 0.5);
   border-radius: 12px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
@@ -131,7 +198,7 @@
   border: 1px solid rgba(255, 215, 0, 0.3);
   color: #fff;
   padding: 10px;
-  flex: 1 0 calc(50% - 0.8rem); 
+  flex: 1 0 calc(50% - 0.8rem);
   min-width: 120px;
   border-radius: 8px;
   cursor: pointer;
@@ -144,11 +211,6 @@
   background: rgba(255, 215, 0, 0.1);
 }
 
-.statusInfo p {
-  font-size: 1.2rem;
-  margin: 0.5rem 0;
-  color: #add8e6;
-}
 
 .marketStatusOpen {
   color: #4CAF50;
@@ -194,10 +256,11 @@
 }
 
 .stocksSection {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(16, 16, 16, 0.5);
   border-radius: 12px;
   padding: 1.5rem;
   backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 215, 0, 0.1);
 }
 
 .stocksHeader {
@@ -219,17 +282,6 @@
   gap: 0.5rem;
 }
 
-.searchInput {
-  font-size: 1.2rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #fff;
-  padding: 12px;
-  border-radius: 8px;
-  min-width: 400px;
-  height: 48px;
-}
-
 .addButton {
   background: rgba(255, 215, 0, 0.1);
   border: 1px solid rgba(255, 215, 0, 0.3);
@@ -240,6 +292,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.addButton:hover {
+  background: rgba(255, 215, 0, 0.2);
 }
 
 .adminStockCard {
@@ -249,6 +308,10 @@
   border: 1px solid rgba(255, 215, 0, 0.1);
   position: relative;
   backdrop-filter: blur(10px);
+}
+
+.adminStockCard:hover {
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
 }
 
 .cardHeader {
@@ -404,12 +467,12 @@
 }
 
 .modalContent {
-  background: rgba(0, 0, 0, 0.85); /* Changed from red to black */
+  background: rgba(0, 0, 0, 0.85);
   padding: 2rem;
   border-radius: 12px;
   width: 90%;
   max-width: 500px;
-  border: 1px solid rgb(255, 215, 0, 0.5);
+  border: 1px solid rgba(255, 215, 0, 0.5);
   backdrop-filter: blur(10px);
   color: #fff;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -642,7 +705,6 @@
   cursor: not-allowed;
 }
 
-/* Status Messages */
 .statusMessage {
   padding: 10px;
   border-radius: 6px;
@@ -667,7 +729,7 @@
   background: rgba(255, 0, 0, 0.1) !important;
   border: 1px solid rgba(255, 0, 0, 0.3) !important;
   color: #cc7474 !important;
-  flex: 1 0 100%; 
+  flex: 1 0 100%;
   margin-top: 0.4rem;
 }
 
@@ -675,7 +737,6 @@
   background: rgba(255, 0, 0, 0.2) !important;
 }
 
-/* Add these new styles */
 .imageContainer {
   position: relative;
   cursor: pointer;
@@ -709,31 +770,6 @@
   border: 1px solid rgba(255, 215, 0, 0.3);
 }
 
-/* Add these styles to your existing Admin.css file */
-
-/* Top bar modifications */
-.topBar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.leftSide {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.logo {
-  height: 40px;
-}
-
-/* Error Button in Navbar */
 .errorButton {
   position: relative;
   background: linear-gradient(145deg, rgba(20, 20, 20, 0.8), rgba(30, 30, 30, 0.8));
@@ -770,7 +806,6 @@
   box-shadow: 0 0 8px #ff3c3c;
 }
 
-/* Error Modal */
 .errorModalOverlay {
   position: fixed;
   top: 0;
@@ -947,20 +982,6 @@
   word-break: break-all;
 }
 
-/* Pulse animation for error button */
-@keyframes pulseOutline {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(255, 60, 60, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 60, 60, 0);
-  }
-}
-
-/* Additional styles for the error management system */
 .errorControls {
   display: flex;
   justify-content: space-between;
@@ -1065,7 +1086,6 @@
   font-size: 0.9rem;
 }
 
-/* Expandable/collapsible error details */
 .errorToggle {
   background: none;
   border: none;
@@ -1090,7 +1110,6 @@
   transition: all 0.3s ease;
 }
 
-/* Status indicators for errors */
 .errorStatus {
   display: inline-block;
   padding: 0.15rem 0.5rem;
@@ -1118,7 +1137,6 @@
   border: 1px solid rgba(100, 50, 0, 0.3);
 }
 
-/* Error count badge for the error button */
 .errorCount {
   position: absolute;
   top: -8px;
@@ -1132,7 +1150,6 @@
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
 }
 
-/* Search in error modal */
 .errorSearch {
   padding: 0.75rem 1.5rem;
   background: rgba(25, 25, 25, 0.7);
@@ -1159,7 +1176,6 @@
   color: #777;
 }
 
-/* Error type badges */
 .errorTypeBadge {
   display: inline-block;
   padding: 0.15rem 0.4rem;
@@ -1194,7 +1210,6 @@
   border: 1px solid rgba(0, 132, 132, 0.4);
 }
 
-/* Loading state for error modal */
 .errorLoading {
   display: flex;
   flex-direction: column;
@@ -1214,7 +1229,392 @@
   animation: spin 1s linear infinite;
 }
 
+.inlineForm {
+  display: flex;
+  gap: 0;
+}
+
+.smallInput {
+  width: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px 0 0 6px;
+  font-size: 1rem;
+  height: 40px;
+}
+
+.searchStocks input {
+  width: 200px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+  height: 40px;
+}
+
+.tabContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.tabButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tabButton.active {
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+}
+
+.tabButton:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.couponForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.couponInput {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #add8e6;
+}
+
+.couponButton {
+  background: rgba(16, 16, 16, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.couponButton:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.userForm {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.userInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.userButton {
+  background: rgba(16, 16, 16, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.userButton:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.userDetails {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.userDetails p {
+  margin: 0.5rem 0;
+  color: #add8e6;
+}
+
+.stocksButton {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.stocksButton:hover {
+  background: rgba(255, 215, 0, 0.2);
+}
+
+.stocksList {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.stocksList li {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  color: #add8e6;
+}
+
+.closeModalButton {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.closeModalButton:hover {
+  background: rgba(255, 215, 0, 0.2);
+}
+
+/* Animations */
+@keyframes pulseOutline {
+  0% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0.7); }
+  70% { box-shadow: 0 0 0 6px rgba(255, 60, 60, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 60, 60, 0); }
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+
+
+
+
+/* Fixed chapter statistics search alignment */
+.headerWithSearch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem; /* Reduced from 1rem to 0.5rem to decrease gap between heading and content */
+  gap: 0.5rem; /* Reduced from 1rem to 0.5rem to bring elements closer together */
+}
+
+.headerWithSearch h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #ffd700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.headerWithSearch .inlineForm {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 24px; /* Added explicit height to match the height of the heading */
+}
+
+.headerWithSearch .chapterInput {
+  width: 80px;
+  height: 24px;
+  padding: 0 0.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-right: none;
+  border-radius: 4px 0 0 4px;
+  color: #fff;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.headerWithSearch .searchButton {
+  width: 24px;
+  height: 24px;
+  border-radius: 0 4px 4px 0;
+  padding: 0;
+}
+
+.headerWithSearch .searchButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.statusInfo p {
+  font-size: 1.2rem;
+  margin: 0.3rem 0; 
+  color: #add8e6;
+}
+
+.statusInfo p {
+  font-size: 1.2rem;
+  margin: 0.3rem 0; 
+  color: #add8e6;
+}
+
+/* Improved coupon management styling */
+.couponHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.couponHeader h3 {
+  margin: 0;
+  color: #ffd700;
+}
+
+.tabContainer {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.couponHeader .tabContainer {
+  margin-bottom: 0;
+}
+
+.tabButton {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.tabButton.active {
+  background: rgba(255, 215, 0, 0.2);
+  color: #fff;
+}
+
+.tabButton:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+.couponForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0;
+}
+
+.couponFormRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.couponFormRow input[type="text"],
+.couponFormRow input[type="number"] {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  height: 36px;
+}
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #add8e6;
+  font-size: 0.9rem;
+}
+
+.couponButton {
+  background: rgba(16, 16, 16, 0.7);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.25rem;
+}
+
+.couponButton:hover {
+  background: rgba(255, 215, 0, 0.1);
+}
+
+/* Reduced height user details modal */
+.userDetails {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.userDetails p {
+  margin: 0.25rem 0;
+  color: #add8e6;
+  font-size: 0.95rem;
+}
+
+.stocksButton {
+  background: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  color: #ffd700;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.stocksButton:hover {
+  background: rgba(255, 215, 0, 0.2);
+}
+
+/* Compact user stocks modal */
+.stocksList {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.stocksList li {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 0.6rem;
+  margin: 0.3rem 0;
+  border-radius: 4px;
+  color: #add8e6;
+  font-size: 0.9rem;
 }
