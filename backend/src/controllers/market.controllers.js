@@ -94,13 +94,6 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 });
 
 const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
-  const latestChapterDoc = await ChapterRelease.findOne().sort({
-    releaseDate: -1,
-  });
-
-  if (!latestChapterDoc) {
-    throw new ApiError(400, "no chapter has been released yet");
-  }
 
   if (!req.admin) {
     const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
@@ -115,6 +108,14 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
           )
         );
     }
+  }
+
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+
+  if (!latestChapterDoc) {
+    throw new ApiError(400, "no chapter has been released yet");
   }
 
   // Define the projection based on admin status
@@ -190,7 +191,12 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
   const chapterUpdatesObject = {};
 
   chapterUpdatesGrouped.forEach((item) => {
-    chapterUpdatesObject[item.chapter] = item.updates;
+    if (
+      latestChapterDoc.chapter !== item.chapter ||
+      latestChapterDoc.isPriceUpdated
+    ) {
+      chapterUpdatesObject[item.chapter] = item.updates;
+    }
   });
 
   if (!req.admin) {
