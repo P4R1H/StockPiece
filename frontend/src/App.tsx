@@ -11,6 +11,7 @@ const LoginPage = React.lazy(() => import('./pages/Login/Login'));
 const SettingsPage = React.lazy(() => import('./pages/Settings/Settings'));
 const AdminPanel = React.lazy(() => import('./pages/Admin/Admin'));
 const NotFound = React.lazy(() => import('./pages/NotFound/NotFound'));
+export const API_BASE_URL = 'https://stockpiece-xadz.onrender.com';
 
 interface OnePieceStockMarketProps { 
   isLoggedIn: boolean; 
