@@ -141,7 +141,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     // Lookup to join with the CharacterStock collection
     {
       $lookup: {
-        from: "characterstocks", // collection name (usually the lowercase, plural model name)
+        from: "characterstocks", // collection name 
         localField: "updates.stockID",
         foreignField: "_id",
         as: "stockDetails",
@@ -208,7 +208,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     );
 });
 
-const getStockStatistics = asyncHandler(async (req, res, _next) => {
+const getStockUpdateStatistics = asyncHandler(async (req, res, _next) => {
   if (!req?.admin) {
     throw new ApiError(400, "unauthorized request");
   }
@@ -233,14 +233,16 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
     response = Array.from(statistics.values());
   } else {
     //we fetch from the update collection
+    const chapterToFetch = chapter || latestChapter;
     const chapterUpdate = await ChapterUpdate.findOne({
-      chapter
+      chapter: chapterToFetch
     })
       .populate({
         path: "updates.stockID",
         select: "name", // Only fetch the 'name' field
       })
       .lean();
+
     if (!chapterUpdate) {
       throw new ApiError(400, "wrong chapter requested");
     }
@@ -429,7 +431,7 @@ export {
   // getPriceUpdatesByAlgorithm,
   getAllStockStatistics,
   priceUpdateManual,
-  getStockStatistics,
+  getStockUpdateStatistics,
   postUpdatePrice,
   openMarket,
 };

@@ -1,7 +1,7 @@
 import express from "express";
 import {
   getLatestChapter,
-  getStockStatistics,
+  getStockUpdateStatistics,
   getMarketStatus,
   closeMarket,
   priceUpdateManual,
@@ -31,7 +31,8 @@ marketRouter.route("/open").patch(openMarket);
 //   .post(priceUpdateByAlgorithm); //done
 marketRouter.route("/update-price").post(postUpdatePrice);
 marketRouter.route("/price-updates/manual").post(priceUpdateManual); //done
-marketRouter.route("/statistics").get(getStockStatistics); //done
+//this is the one used to fetch chapter wise updates
+marketRouter.route("/statistics").get(getStockUpdateStatistics); //done
 marketRouter.route("/statistics/all").get(getAllStockStatistics);
 marketRouter
   .route("/chapters/next-release")
