@@ -34,75 +34,6 @@
 }
 
 
-
-
-/* Market Controls */
-.market-controls-wrapper {
-  display: flex;
-  width: 100%;
-  border-bottom: 3px solid #3e2f28;
-  background: #111;
-  min-height: 40px;
-}
-
-.search-controls {
-  display: flex;
-  min-width: fit-content;
-  background: linear-gradient(145deg, #c49247, #e4b267);
-  height: 40px;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.stock-search {
-  border: none;
-  padding: 0.4rem 0.8rem;
-  font-size: 1rem;
-  width: 160px;
-  outline: none;
-  background: rgba(244, 241, 234, 0.9);
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  height: 100%;
-}
-
-.stock-filter-btn,
-.stock-sort-btn,
-.stock-amt-btn {
-  border: none;
-  border-left: 2px solid #3e2f28;
-  background: transparent;
-  padding: 0 0.6rem;
-  cursor: pointer;
-  font-family: 'Pirata One', cursive;
-  color: #3e2f28;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  height: 100%;
-  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.2);
-}
-
-/* Adjust base sorting button width */
-.stock-sort-btn {
-  min-width: 120px;
-  /* Reduced from 140px */
-  font-size: 0.9rem;
-}
-
-.stock-filter-btn:hover,
-.stock-sort-btn:hover,
-.stock-amt-btn:hover {
-  background: rgba(139, 69, 19, 0.8);
-  color: #fff;
-  text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-}
-
-/* Add this to fix font consistency across browsers */
-.stock-sort-btn option {
-  font-family: 'Pirata One', cursive;
-  background: rgba(244, 241, 234, 0.9);
-  color: #3e2f28;
-}
-
 /* Ensure Firefox specific styling */
 @-moz-document url-prefix() {
   .stock-sort-btn option {
@@ -110,73 +41,7 @@
   }
 }
 
-/* News Ticker */
-.news-ticker {
-  flex-grow: 1;
-  background: #1a0808;
-  overflow: hidden;
-  position: relative;
-  border-left: 3px solid #3e2f28;
-  height: 40px;
-}
 
-.news-ticker::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image:
-    radial-gradient(circle at 5px 5px, rgba(255, 0, 0, 0.1) 1px, transparent 2px);
-  background-size: 8px 8px;
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0, 0, 0, 0.7) 10%, rgba(0, 0, 0, 0.7) 90%, transparent 100%);
-}
-
-.news-ticker::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.ticker-content {
-  display: flex;
-  width: 1200%;
-  height: 100%;
-  transform: translateX(100%);
-  animation: ticker 90s linear infinite;
-}
-
-.ticker-item {
-  font-family: 'VT323', monospace;
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  color: #ff4444;
-  font-size: 1.1rem;
-  text-shadow: 0 0 8px rgba(255, 68, 68, 0.8);
-  letter-spacing: 1px;
-  padding: 0 10px;
-  white-space: nowrap;
-  margin-right: 300px;
-  /* Reduced from 200px since we now have separators on both sides */
-}
-
-.ticker-item::before {
-  content: '***';
-  color: #ff4444;
-  margin-right: 10px;
-}
-
-.ticker-item::after {
-  content: '***';
-  color: #ff4444;
-  margin-left: 10px;
-}
 
 
 /* Animations */
