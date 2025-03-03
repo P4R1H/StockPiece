@@ -371,20 +371,23 @@ const updateAvatar = asyncHandler(async (req, res, _) => {
 //as requested by the frontend
 const checkLogin = asyncHandler(async (req, res, _) => {
   let loginFlag = false;
-  let dailyLoginBonus;
+  let dailyLoginBonus = 0;
   if (req.user) {
     loginFlag = true;
-    const user = req.user;
-    //check if the user needs to get extra 100 dollars for daily login
-    dailyLoginBonus = checkDailyLogin(user.lastLogin) ? DAILY_LOGIN_BONUS : 0;
+    // const user = req.user;
+    // //check if the user needs to get extra 100 dollars for daily login
+    // dailyLoginBonus = checkDailyLogin(user.lastLogin) ? DAILY_LOGIN_BONUS : 0;
 
-    if (dailyLoginBonus > 0) {
-      await User.findByIdAndUpdate(user._id, {
-        $inc: {
-          accountValue: dailyLoginBonus,
-        },
-      });
-    }
+    // if (dailyLoginBonus > 0) {
+    //   await User.findByIdAndUpdate(user._id, {
+    //     $inc: {
+    //       accountValue: dailyLoginBonus,
+    //     },
+    //     $set: {
+    //       lastLogin: Date.now(),
+    //     },
+    //   });
+    // }
   }
 
   res.status(200).json(
