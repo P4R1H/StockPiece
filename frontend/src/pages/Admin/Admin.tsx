@@ -926,7 +926,7 @@ const Admin: React.FC = () => {
               <div className="couponFormRow">
   <input
     type="number"
-    placeholder="Discount Amount ($)"
+    placeholder="Amount"
     value={couponAmount}
     onChange={(e) => setCouponAmount(e.target.value === '' ? '' : Number(e.target.value))}
     required
