@@ -1,6 +1,4 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { API_BASE_URL } from '../../App';
-
 
 export const generateFingerprint = async (): Promise<string> => {
   try {
@@ -51,7 +49,7 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const loginUser = async (username: string, password: string, couponCode: string): Promise<LoginResponse> => {
-    const response = await fetch(`${API_BASE_URL}/api/v1/user/auth/login`, {
+    const response = await fetch('/api/v1/user/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

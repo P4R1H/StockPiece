@@ -1,9 +1,8 @@
 // AdminServices.tsx
 import { ErrorLog } from "../../types/Pages";
-import { API_BASE_URL } from "../../App";
 
 export const adminLogin = async (username: string, password: string): Promise<boolean> => {
-  const response = await fetch(`${API_BASE_URL}/api/v1/admin/auth/login`, {
+  const response = await fetch('/api/v1/admin/auth/login', {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
