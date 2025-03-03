@@ -377,10 +377,12 @@ const Admin: React.FC = () => {
   const [refreshCounter, setRefreshCounter] = useState(0);
   const [nextReleaseStatus, setNextReleaseStatus] = useState<boolean>(false);
   const [chapterStats, setChapterStats] = useState<any>(null);
-  const [selectedChapterForStats, setSelectedChapterForStats] =
-  useState<number | null>(null);
-  const [selectedChapterForStocks, setSelectedChapterForStocks] =
-  useState<number | null>(null);
+  const [selectedChapterForStats, setSelectedChapterForStats] = useState<
+    number | null
+  >(null);
+  const [selectedChapterForStocks, setSelectedChapterForStocks] = useState<
+    number | null
+  >(null);
   const [activeTab, setActiveTab] = useState<'create' | 'delete'>('create');
   const [couponCode, setCouponCode] = useState('');
   const [couponAmount, setCouponAmount] = useState<number | ''>('');
@@ -392,7 +394,24 @@ const Admin: React.FC = () => {
   const [showUserStocksModal, setShowUserStocksModal] = useState(false);
   const [chapterStatsInput, setChapterStatsInput] = useState<string>('');
   const [stockStatsInput, setStockStatsInput] = useState<string>('');
-  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState(searchQuery);
+  const [debouncedSearchQuery, setDebouncedSearchQuery] =
+    useState(searchQuery);
+
+  // New state for sorting
+  const [sortOption, setSortOption] = useState('nameAsc');
+
+  // Define sorting options
+  const sortOptions = [
+    { value: 'nameAsc', label: 'Name (A-Z)' },
+    { value: 'currentPriceDesc', label: 'Current Price (High to Low)' },
+    { value: 'currentPriceAsc', label: 'Current Price (Low to High)' },
+    { value: 'nextPriceDesc', label: 'Next Price (High to Low)' },
+    { value: 'nextPriceAsc', label: 'Next Price (Low to High)' },
+    { value: 'buysDesc', label: 'Most Bought' },
+    { value: 'buysAsc', label: 'Least Bought' },
+    { value: 'totalQuantityDesc', label: 'Most Currently Owned' },
+    { value: 'totalQuantityAsc', label: 'Least Currently Owned' },
+  ];
 
   // Debounce search input
   useEffect(() => {
@@ -443,7 +462,6 @@ const Admin: React.FC = () => {
     []
   );
 
-  // New: Fetch backend errors when opening the error modal.
   const handleOpenErrorModal = useCallback(async () => {
     try {
       const errors = await fetchErrors();
@@ -490,7 +508,6 @@ const Admin: React.FC = () => {
     }
   }, [isLoggedIn, selectedChapterForStats, refreshCounter]);
 
-  // Fetch market statistics automatically.
   useEffect(() => {
     if (isLoggedIn) {
       const fetchMarketStats = async () => {
@@ -515,13 +532,42 @@ const Admin: React.FC = () => {
     }
   }, [isLoggedIn, selectedChapterForStocks, refreshCounter, latestChapter]);
 
-  const filteredStocks = useMemo(
-    () =>
-      stocks.filter((stock) =>
-        stock.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-      ),
-    [stocks, debouncedSearchQuery]
-  );
+  // Compute sorted stocks
+  const sortedStocks = useMemo(() => {
+    const filtered = stocks.filter((stock) =>
+      stock.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+    );
+    return [...filtered].sort((a, b) => {
+      switch (sortOption) {
+        case 'nameAsc':
+          return a.name.localeCompare(b.name);
+        case 'currentPriceDesc':
+          return b.currentPrice - a.currentPrice;
+        case 'currentPriceAsc':
+          return a.currentPrice - b.currentPrice;
+        case 'nextPriceDesc': {
+          const aNext = stats[a.name]?.newValue ?? a.currentPrice;
+          const bNext = stats[b.name]?.newValue ?? b.currentPrice;
+          return bNext - aNext;
+        }
+        case 'nextPriceAsc': {
+          const aNext = stats[a.name]?.newValue ?? a.currentPrice;
+          const bNext = stats[b.name]?.newValue ?? b.currentPrice;
+          return aNext - bNext;
+        }
+        case 'buysDesc':
+          return (stats[b.name]?.buys ?? 0) - (stats[a.name]?.buys ?? 0);
+        case 'buysAsc':
+          return (stats[a.name]?.buys ?? 0) - (stats[b.name]?.buys ?? 0);
+        case 'totalQuantityDesc':
+          return (stats[b.name]?.totalQuantity ?? 0) - (stats[a.name]?.totalQuantity ?? 0);
+        case 'totalQuantityAsc':
+          return (stats[a.name]?.totalQuantity ?? 0) - (stats[b.name]?.totalQuantity ?? 0);
+        default:
+          return 0;
+      }
+    });
+  }, [stocks, debouncedSearchQuery, sortOption, stats]);
 
   const handleLogin = useCallback(
     async (e: React.FormEvent) => {
@@ -700,7 +746,9 @@ const Admin: React.FC = () => {
   const handleChapterStatsSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      setSelectedChapterForStats(chapterStatsInput ? Number(chapterStatsInput) : null);
+      setSelectedChapterForStats(
+        chapterStatsInput ? Number(chapterStatsInput) : null
+      );
       refreshData();
     },
     [chapterStatsInput, refreshData]
@@ -709,7 +757,9 @@ const Admin: React.FC = () => {
   const handleStockStatsSubmit = useCallback(
     (e: React.FormEvent) => {
       e.preventDefault();
-      setSelectedChapterForStocks(stockStatsInput ? Number(stockStatsInput) : null);
+      setSelectedChapterForStocks(
+        stockStatsInput ? Number(stockStatsInput) : null
+      );
       refreshData();
     },
     [stockStatsInput, refreshData]
@@ -747,7 +797,8 @@ const Admin: React.FC = () => {
             onClick={handleOpenErrorModal}
             className={`errorButton ${hasFrontendErrors ? 'hasErrors' : ''}`}
           >
-            Errors {hasFrontendErrors && <span className="errorIndicator"></span>}
+            Errors{' '}
+            {hasFrontendErrors && <span className="errorIndicator"></span>}
           </button>
         </div>
         <div className="adminInfo">
@@ -870,7 +921,8 @@ const Admin: React.FC = () => {
                   {chapterStats.chapterTransactions?.totalTransactions}
                 </p>
                 <p>
-                  Active Stocks: {chapterStats.marketStats?.activeStocks}/ {chapterStats.marketStats?.totalStocks}
+                  Active Stocks: {chapterStats.marketStats?.activeStocks}/{' '}
+                  {chapterStats.marketStats?.totalStocks}
                 </p>
               </>
             ) : (
@@ -924,21 +976,30 @@ const Admin: React.FC = () => {
                 </label>
               </div>
               <div className="couponFormRow">
-  <input
-    type="number"
-    placeholder="Amount"
-    value={couponAmount}
-    onChange={(e) => setCouponAmount(e.target.value === '' ? '' : Number(e.target.value))}
-    required
-  />
-  <input
-    type="number"
-    placeholder="Maximum Uses"
-    value={couponMaxUsers}
-    onChange={(e) => setCouponMaxUsers(e.target.value === '' ? '' : Number(e.target.value))}
-    required
-  />
-</div>              <button type="submit" className="couponButton">
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={couponAmount}
+                  onChange={(e) =>
+                    setCouponAmount(
+                      e.target.value === '' ? '' : Number(e.target.value)
+                    )
+                  }
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Maximum Uses"
+                  value={couponMaxUsers}
+                  onChange={(e) =>
+                    setCouponMaxUsers(
+                      e.target.value === '' ? '' : Number(e.target.value)
+                    )
+                  }
+                  required
+                />
+              </div>
+              <button type="submit" className="couponButton">
                 Create Coupon
               </button>
             </form>
@@ -1017,6 +1078,17 @@ const Admin: React.FC = () => {
                 className="smallInput"
               />
             </div>
+            <select
+              value={sortOption}
+              onChange={(e) => setSortOption(e.target.value)}
+              className="sortSelect"
+            >
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
             <button onClick={() => setShowAddModal(true)} className="addButton">
               Add stock
             </button>
@@ -1024,7 +1096,7 @@ const Admin: React.FC = () => {
         </div>
 
         <div className="stocksGrid">
-          {filteredStocks.map((stock) => (
+          {sortedStocks.map((stock) => (
             <AdminStockCard
               key={stock.id}
               stock={stock}
@@ -1038,7 +1110,10 @@ const Admin: React.FC = () => {
       </div>
 
       {showAddModal && (
-        <AddStockModal onClose={() => setShowAddModal(false)} onSubmit={handleAddStock} />
+        <AddStockModal
+          onClose={() => setShowAddModal(false)}
+          onSubmit={handleAddStock}
+        />
       )}
       {showImageUpdateModal && selectedStock && (
         <ImageUpdateModal
