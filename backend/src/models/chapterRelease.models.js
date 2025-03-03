@@ -26,7 +26,7 @@ const chapterReleaseSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-});
+},{timestamps: true});
 
 const ChapterRelease = mongoose.model("ChapterRelease", chapterReleaseSchema);
 

@@ -25,7 +25,9 @@ const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 app.use(
   cors({
     origin: ["https://stockpiece.fun","https://admin.stockpiece.fun","https://stockpiece.pages.dev"],
-    credentials: true, 
+    credentials: true,
+    sameSite: "None",
+    secure: true
   })
 );
 app.use(cookieParser());

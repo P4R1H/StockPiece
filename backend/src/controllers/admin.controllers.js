@@ -13,6 +13,7 @@ import Transaction from "../models/transaction.models.js";
 import User from "../models/user.models.js";
 import ChapterRelease from "../models/chapterRelease.models.js";
 //the super admin has already been registered we only need to have login
+
 const adminLogin = asyncHandler(async (req, res, _) => {
   const { username, password } = req.body;
 
@@ -746,6 +747,67 @@ const getChapterStatistics = asyncHandler(async (req, res) => {
     );
 });
 
+const validateTransactionQuantity = (quantity) => {
+  const parsedQuantity = Number(quantity);
+
+  if (!Number.isInteger(parsedQuantity) || parsedQuantity <= 0) {
+    throw new ApiError(400, "Invalid quantity. Must be a positive integer");
+  }
+  return parsedQuantity;
+};
+
+const createTransaction = asyncHandler( async (req, res, _next) => {
+  if (!req.admin) {
+    throw new ApiError(400,'unauthorized error');
+  }
+
+  const { username, stockname, quantity, type } = req.body;
+
+  const allowedTypes = ["buy", "sell"];
+
+  if (!allowedTypes.includes(type)) {
+    throw new ApiError(400,'only buy and sell allowed');
+  }
+
+  const stockPromise = CharacterStock.findOne({name: stockname}).lean();
+  const userPromise = CharacterStock.findOne({username}).lean();
+  const latestChapterPromise = ChapterRelease.findOne().sort({releaseDate: -1}).lean();
+
+  const { stock, user, latestChapterDoc } = await Promise.all([
+    stockPromise,
+    userPromise,
+    latestChapterPromise
+  ])
+
+  if (!user) {
+    throw new ApiError(400,'user not found');
+  }
+
+  if (!stock) {
+    throw new ApiError(400,'stock not found');
+  }
+
+  if (!latestChapterDoc) {
+    throw new ApiError(400,'no chapter released');
+  }
+
+  const validatedQuantity = validateTransactionQuantity(quantity);
+
+  const transaction = await Transaction.create({
+    purchasedBy: user._id,
+    stockID: stock._id,
+    quantity: validatedQuantity,
+    value: stock.currentValue,
+    type,
+    chapterPurchasedAt: latestChapterDoc.chapter
+  })
+
+  res
+    .status(200)
+    .json(new ApiResponse(200,'transaction created successfully'));
+
+})
+
 export {
   adminLogin,
   getChapterStatistics,
@@ -758,4 +820,5 @@ export {
   getErrorLogs,
   getUserByUsername,
   getTopTradersByChapter,
+  createTransaction
 };

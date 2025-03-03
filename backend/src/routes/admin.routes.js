@@ -11,6 +11,7 @@ import {
   getUserByUsername,
   getTopTradersByChapter,
   getChapterStatistics,
+  createTransaction,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 import upload from "../middlewares/multer.middlewares.js";
@@ -44,5 +45,7 @@ adminRouter.route("/top-traders").get(getTopTradersByChapter);
 adminRouter.route("/statistics").get(getChapterStatistics);
 
 adminRouter.route("/transactions/user").get(getUserTransaction);
+
+adminRouter.route("/transactions").post(createTransaction);
 
 export default adminRouter;
