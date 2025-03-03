@@ -30,7 +30,7 @@ const transactionSchema = new mongoose.Schema({
     required: true,
     index: true,
   },
-});
+},{timestamps: true});
 
 // transactionSchema.plugin()
 

@@ -214,10 +214,6 @@ const sellStock = asyncHandler(async (req, res, _) => {
   }
 });
 
-//so i have to update this based on the popularity
-//i am thinking of using aggregation pipline and sorting it based on the number of
-//transaction made per chapter for that i need to attach the aggregation plugin maybe
-
 const getAllStocks = asyncHandler(async (req, res, _) => {
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,

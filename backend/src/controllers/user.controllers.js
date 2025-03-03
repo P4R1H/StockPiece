@@ -36,8 +36,7 @@ const verifyCoupon = async (couponCode, user) => {
 
   // Check if coupon is first-time only
   if (coupon.isFirstTimeOnly) {
-    const hasTransactions = await Transaction.exists({ purchasedBy: user._id });
-    if (hasTransactions) {
+    if (user.lastLogin) {
       throw new ApiError(400, "This coupon is for first-time users only");
     }
   }
@@ -539,68 +538,76 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
   );
 });
 
-const getUserTransaction = asyncHandler ( async (req, res, _next) => {
+const getUserTransaction = asyncHandler(async (req, res, _next) => {
+  // Authentication check
   if (!req.admin) {
-    throw new ApiError(400,'unauthorized error');
+    throw new ApiError(401, 'Unauthorized access');
   }
 
-  const { username, chapter } = req.query;
+  // Input validation
+  const { username, chapter = "-1" } = req.query;
 
-  if (!username) {
-    throw new ApiError(400,'need to provide username');
+  if (!username?.trim()) {
+    throw new ApiError(400, 'Username is required');
+  }
+
+  // Parse chapter number
+  const chapterNumber = Number(chapter);
+  if (isNaN(chapterNumber)) {
+    throw new ApiError(400, 'Invalid chapter number');
+  }
+
+  // Find user
+  const user = await User.findOne({ username: username.trim() });
+  if (!user) {
+    throw new ApiError(404, 'User not found');
   }
 
   let userTransactions;
 
-  if (chapter !== -1) {
-    const chapterDocPromise = 
-    chapter ? 
-    ChapterRelease.findOne({chapter}).lean() :
-    ChapterRelease.findOne().sort({releaseDate: -1}).lean();
-
-    const userPromise = User.findOne({username});
-
-    const [ chapterDoc, user ] = await Promise.all([
-      chapterDocPromise,
-      userPromise
-    ])
+  if (chapterNumber === -1) {
+    // Get all transactions
+    userTransactions = await Transaction.find({ 
+      purchasedBy: user._id 
+    })
+    .sort({ createdAt: -1 })
+    .lean();
+  } else {
+    // Get chapter-specific transactions
+    const chapterDoc = await ChapterRelease.findOne(
+      chapterNumber ? { chapter: chapterNumber } : {}
+    )
+    .sort({ releaseDate: -1 })
+    .lean();
 
     if (!chapterDoc) {
-      throw new ApiError(400,`${chapter || "latest"} chapter not found`);
-    }
-
-    if (!user) {
-      throw new ApiError(400,'no user found');
+      throw new ApiError(404, `Chapter ${chapterNumber || "latest"} not found`);
     }
 
     userTransactions = await Transaction.find({ 
-      purchasedBy:user._id,
+      purchasedBy: user._id,
       chapterPurchasedAt: chapterDoc.chapter 
-    }).lean();
-
-  } else {
-    const user = await User.findOne({username});
-
-    if (!user) {
-      throw new ApiError(400,'no user found');
-    }
-
-    userTransactions = await Transaction.find(
-      { purchasedBy: user._id }
-    ).lean();
+    })
+    .sort({ createdAt: -1 })
+    .lean();
   }
 
-  res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        userTransactions,
-        `${chapter === -1 ? "All" : "Chapter " + chapter} user transactions fetched successfully`
-      )
+  // Response
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      {
+        transactions: userTransactions,
+        user: { 
+          username: user.username,
+          id: user._id 
+        },
+        chapter: chapterNumber === -1 ? 'all' : chapterNumber
+      },
+      `${chapterNumber === -1 ? "All" : `Chapter ${chapterNumber}`} transactions fetched successfully`
     )
-
-})
+  );
+});
 
 export {
   registerUser,

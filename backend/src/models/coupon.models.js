@@ -37,9 +37,7 @@ const couponSchema = new mongoose.Schema(
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: function () {
-        return this.couponType === "REFERRAL";
-      },
+      required: true
     },
     usedBy: [
       {

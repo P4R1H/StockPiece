@@ -26,17 +26,12 @@ const createCoupon = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid coupon code format");
   }
 
-  // Check max coupons limit
-  const activeCoupons = await Coupon.countDocuments({ isActive: true });
-  if (activeCoupons >= 10) {
-    throw new ApiError(400, "Maximum active coupons limit reached");
-  }
-
   const coupon = await Coupon.create({
     code: code.toUpperCase(),
     amount,
     maxUsers,
     isFirstTimeOnly: isFirstTimeOnly || false,
+    createdBy: req.admin._id
   });
 
   res
@@ -97,8 +92,7 @@ const generateReferralCoupon = asyncHandler(async (req, res) => {
   // Check if user already has an active referral coupon
   const existingCoupon = await Coupon.findOne({
     createdBy: user._id,
-    couponType: "REFERRAL",
-    isActive: true,
+    couponType: "REFERRAL"
   });
 
   if (existingCoupon) {
