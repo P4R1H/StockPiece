@@ -170,6 +170,10 @@ const sellStock = asyncHandler(async (req, res, _) => {
           throw new ApiError(400, "not enough stock to sell");
         }
 
+        if (req.user.lastLogin.getTime() != user.lastLogin.getTime()) {
+          throw new ApiError(409, "User logged in another session");
+        }
+
         const [createdTransaction] = await Transaction.create(
           [
             {

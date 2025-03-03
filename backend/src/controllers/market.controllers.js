@@ -234,7 +234,7 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
   } else {
     //we fetch from the update collection
     const chapterUpdate = await ChapterUpdate.findOne({
-      chapter: latestChapter,
+      chapter,
     })
       .populate({
         path: "updates.stockID",

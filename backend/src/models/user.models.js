@@ -52,6 +52,10 @@ const userSchema = new mongoose.Schema(
     lastLogin: {
       type: Date,
     },
+    lastDailyBonus: {
+      type: Date,
+      default: null
+    },
     refreshToken: {
       type: String,
     },
@@ -99,6 +103,7 @@ userSchema.methods.generateAccessToken = function () {
       avatar: this.avatar,
       lastLogin: this.lastLogin,
       accountValue: this.accountValue,
+      lastDailyBonus: this.lastDailyBonus
     },
     process.env.ACCESS_TOKEN_SECRET,
     {

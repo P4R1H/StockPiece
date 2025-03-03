@@ -57,16 +57,19 @@ const verifyCoupon = async (couponCode, user) => {
   return coupon;
 };
 
-const checkDailyLogin = (lastLoginDate) => {
-  if (!lastLoginDate) return true; // First time login
+const checkDailyLogin = (lastDailyLoginDate) => {
+  if (!lastDailyLoginDate) return true; // First time login
 
-  const lastLoginMidnight = new Date(lastLoginDate);
-  lastLoginMidnight.setHours(0, 0, 0, 0);
+  //get last midnight
+  const lastDailyLoginMidnight = new Date(lastDailyLoginDate);
+  lastDailyLoginMidnight.setHours(0, 0, 0, 0);
 
+  //get current midnight
   const todayMidnight = new Date();
   todayMidnight.setHours(0, 0, 0, 0);
 
-  return lastLoginMidnight < todayMidnight;
+  //return true if the last midnight was before today's midnight
+  return lastDailyLoginMidnight < todayMidnight;
 };
 
 const generateAccessRefreshToken = async (user) => {
@@ -195,7 +198,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   const updateObject = {
     $set: {
-      lastLogin: Date.now(),
+      lastLogin: new Date()
     },
   };
 
@@ -292,7 +295,7 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   const updateObject = {
     $set: {
-      lastLogin: Date.now(),
+      lastLogin: new Date(),
     },
   };
 
@@ -374,20 +377,20 @@ const checkLogin = asyncHandler(async (req, res, _) => {
   let dailyLoginBonus = 0;
   if (req.user) {
     loginFlag = true;
-    // const user = req.user;
-    // //check if the user needs to get extra 100 dollars for daily login
-    // dailyLoginBonus = checkDailyLogin(user.lastLogin) ? DAILY_LOGIN_BONUS : 0;
+    const user = req.user;
+    //check if the user needs to get extra 100 dollars for daily login
+    dailyLoginBonus = checkDailyLogin(user.lastDailyBonus) ? DAILY_LOGIN_BONUS : 0;
 
-    // if (dailyLoginBonus > 0) {
-    //   await User.findByIdAndUpdate(user._id, {
-    //     $inc: {
-    //       accountValue: dailyLoginBonus,
-    //     },
-    //     $set: {
-    //       lastLogin: Date.now(),
-    //     },
-    //   });
-    // }
+    if (dailyLoginBonus > 0) {
+      await User.findByIdAndUpdate(user._id, {
+        $inc: {
+          accountValue: dailyLoginBonus,
+        },
+        $set: {
+          lastDailyBonus: new Date(),
+        },
+      });
+    }
   }
 
   res.status(200).json(
