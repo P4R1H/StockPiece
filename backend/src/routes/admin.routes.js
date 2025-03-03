@@ -10,7 +10,7 @@ import {
   getErrorLogs,
   getUserByUsername,
   getTopTradersByChapter,
-  getChapterStatistics,
+  getChapterAnalytics,
   createTransaction,
 } from "../controllers/admin.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
@@ -41,8 +41,8 @@ adminRouter.route("/users").get(getUserByUsername);
 adminRouter.route("/errors").get(getErrorLogs);
 
 adminRouter.route("/top-traders").get(getTopTradersByChapter);
-
-adminRouter.route("/statistics").get(getChapterStatistics);
+//this is used to fetch transaction and those type of stats this is working fine
+adminRouter.route("/statistics").get(getChapterAnalalytics);
 
 adminRouter.route("/transactions/user").get(getUserTransaction);
 

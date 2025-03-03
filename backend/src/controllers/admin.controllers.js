@@ -511,7 +511,7 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
   );
 });
 
-const getChapterStatistics = asyncHandler(async (req, res) => {
+const getChapterAnalytics= asyncHandler(async (req, res) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -814,7 +814,7 @@ const createTransaction = asyncHandler( async (req, res, _next) => {
 
 export {
   adminLogin,
-  getChapterStatistics,
+  getChapterAnalytics,
   updateStockImage,
   createAdmin,
   createCharacterStock,
