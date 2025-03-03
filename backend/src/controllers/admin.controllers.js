@@ -763,6 +763,10 @@ const createTransaction = asyncHandler( async (req, res, _next) => {
 
   const { username, stockname, quantity, type } = req.body;
 
+  if (!username?.trim() || !stockname?.trim() || !quantity || !type?.trim()) {
+    throw new ApiError(400, 'All fields are required');
+  }
+
   const allowedTypes = ["buy", "sell"];
 
   if (!allowedTypes.includes(type)) {
@@ -770,10 +774,10 @@ const createTransaction = asyncHandler( async (req, res, _next) => {
   }
 
   const stockPromise = CharacterStock.findOne({name: stockname}).lean();
-  const userPromise = CharacterStock.findOne({username}).lean();
+  const userPromise = User.findOne({username: username.trim()}).lean();
   const latestChapterPromise = ChapterRelease.findOne().sort({releaseDate: -1}).lean();
 
-  const { stock, user, latestChapterDoc } = await Promise.all([
+  const [stock, user, latestChapterDoc] = await Promise.all([
     stockPromise,
     userPromise,
     latestChapterPromise
