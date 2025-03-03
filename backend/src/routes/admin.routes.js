@@ -42,7 +42,7 @@ adminRouter.route("/errors").get(getErrorLogs);
 
 adminRouter.route("/top-traders").get(getTopTradersByChapter);
 //this is used to fetch transaction and those type of stats this is working fine
-adminRouter.route("/statistics").get(getChapterAnalalytics);
+adminRouter.route("/statistics").get(getChapterAnalytics);
 
 adminRouter.route("/transactions/user").get(getUserTransaction);
 
