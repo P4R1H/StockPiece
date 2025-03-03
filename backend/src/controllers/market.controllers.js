@@ -221,7 +221,7 @@ const getStockStatistics = asyncHandler(async (req, res, _next) => {
   }
 
   const latestChapter = latestChapterDoc.chapter;
-  const chapter = req.body.chapter;
+  const { chapter } = req.query;
 
   //if the window is open and we need the latest chapter
   let response;
@@ -273,11 +273,6 @@ const priceUpdateManual = asyncHandler(async (req, res, _) => {
   }
 
   const latestChapter = latestChapterDoc.chapter;
-
-  //we also need the map for stock and its corresponding new price
-  //then we will form bulk operations for that we need stock ids
-  //so we also have to fetch all stocks from database
-  //why just form the bulkops togethor after fetching all stock
 
   const stockMap = await stockStatistics(latestChapter);
 
