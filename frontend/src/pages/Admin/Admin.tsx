@@ -495,11 +495,7 @@ const Admin: React.FC = () => {
     if (isLoggedIn) {
       const fetchMarketStats = async () => {
         try {
-          // If no chapter is selected, use the latest chapter (if available)
-          const chapterNumber =
-            selectedChapterForStocks ?? (latestChapter ? latestChapter.chapter : null);
-          if (chapterNumber === null) return;
-          const statistics = await getMarketStatistics(chapterNumber);
+          const statistics = await getMarketStatistics();
           const processedStats: Stats = {};
           statistics.forEach((stat: StockStats) => {
             processedStats[stat.name] = {
