@@ -156,8 +156,9 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
 
     // Check if data is empty (no chapters or empty chapters)
-    const hasData = Object.keys(stockHistoryData.data).length > 0;
-
+    const hasData = false;
+    //hasData = Object.keys(stockHistoryData.data).length > 0;
+    
     if (!hasData) {
       setUsingMockData(true);
       return generateMockStockHistory();
