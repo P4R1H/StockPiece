@@ -156,8 +156,11 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
 
     // Check if data is empty (no chapters or empty chapters)
-    const hasData = false;
-    //hasData = Object.keys(stockHistoryData.data).length > 0;
+    ////////// TO REMOVE ///////////////
+
+    const hasData =  false; 
+    // const hasData = Object.keys(stockHistoryData.data).length > 0;
+
     
     if (!hasData) {
       setUsingMockData(true);
@@ -201,8 +204,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   useEffect(() => {
     if (stockHistoryData?.success) {
       const chapters = Object.keys(stockHistoryData.data);
-
-      if (chapters.length === 0) {
+////////// TO REMOVE ///////////////
+      if (chapters.length === 1) { // == 0
         // No real data available, use mock data chapters
         const mockChapters = Array.from({ length: 20 }, (_, i) => i + 1);
         setAvailableChapters(mockChapters);
@@ -226,7 +229,9 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           setChapterEnd(sortedChapters[sortedChapters.length - 1]);
         }
       }
-    } else if (usingMockData && availableChapters.length === 0) {
+    } 
+    ////////// TO REMOVE ///////////////
+    else if (usingMockData ) { // && availableChapters.length === 0
       // Set mock chapters for when API response failed
       const mockChapters = Array.from({ length: 20 }, (_, i) => i + 1);
       setAvailableChapters(mockChapters);
