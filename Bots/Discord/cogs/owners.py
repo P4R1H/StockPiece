@@ -163,10 +163,6 @@ class Owners(commands.Cog, name="Owner Commands"):
             except ValueError:
                 await interaction.response.send_message("Invalid color format. Use hex format like #7289DA.", ephemeral=True)
                 return
-
-        if not str(embed_form.titlex) and not str(embed_form.desc) and str(embed_form.titlex).split("||")[0] != "":
-            await interaction.response.send_message("No title or description given!", ephemeral=True)
-            return
         embed = discord.Embed(
             description=str(embed_form.desc) or None,
             color=color
@@ -230,8 +226,8 @@ class Owners(commands.Cog, name="Owner Commands"):
                 value = parts[1].strip()
                 inline = parts[2].strip().lower() == "true" if len(parts) == 3 else False
                 embed.add_field(name=name, value=value, inline=inline)
-        if embed.description == None and embed.title == None:
-            await interaction.response.send_message("No title or description given!", ephemeral=True)
+        if embed.description == None and embed.title == None and embed.image == None:
+            await interaction.response.send_message("No title, description or image given!", ephemeral=True)
             return
         if add_role_button:
             button = RoleSearchButton()

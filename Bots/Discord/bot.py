@@ -107,7 +107,7 @@ class DiscordBot(commands.Bot):
         try:
             synced = await self.tree.sync()
             print(f"Synced {len(synced)} command(s)")
-            synced = await bot.tree.sync(guild=discord.Object(id=716538413397835796) )
+            synced = await bot.tree.sync(guild=discord.Object(id=config["main_guild_id"]) )
             print(f"Synced {len(synced)} guild command(s)")
         except Exception as e:
             print(f"Failed to sync commands: {e}")

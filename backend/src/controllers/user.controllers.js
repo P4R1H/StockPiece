@@ -187,6 +187,8 @@ const loginUser = asyncHandler(async (req, res, _) => {
     throw new ApiError(500, "Unexpected Error: user verification failed");
   }
 
+  const firstTimeLogin = user.lastLogin ? false : true;
+
   const [tokens, coupon] = await Promise.all([
     generateAccessRefreshToken(user),
     couponCode?.trim() ? verifyCoupon(couponCode, user) : Promise.resolve(0),
@@ -243,6 +245,7 @@ const loginUser = asyncHandler(async (req, res, _) => {
             newUserBonus: 5000,
             coupon: couponAmount,
           },
+          firstTimeLogin
         },
         "user logged in successfully"
       )
