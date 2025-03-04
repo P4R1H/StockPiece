@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/v1/:path*",
-        "destination": "https://backend.stockpiece.fun/:path*"
+        "destination": "https://backend.stockpiece.fun/api/v1/:path*"
       },
       {
         "source": "/:path*",
