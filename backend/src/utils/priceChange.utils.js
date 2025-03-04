@@ -44,7 +44,7 @@ const priceChangeByAlgorithm = async (chapter) => {
         totalSells: stockStats.totalSells,
       };
 
-      priceUpdateMap.set(stockID, priceUpdate);
+      priceUpdateMap.set(stockID, priceUpdate/2);
     });
 
     return priceUpdateMap;
