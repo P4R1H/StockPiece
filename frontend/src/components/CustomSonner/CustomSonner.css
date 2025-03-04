@@ -72,9 +72,21 @@
     opacity: 0.85;
 }
 
-/* Toast icon color */
+/* Toast icon color and positioning */
+[data-sonner-toast][data-type] [data-icon],
 [data-sonner-toast] [data-icon] {
     color: var(--toast-border) !important;
     align-self: flex-start !important;
     margin-top: 4px !important;
+    position: relative !important;
+    top: 0 !important;
+    transform: none !important;
+}
+
+/* Additional specificity for production */
+[data-sonner-toaster] [data-sonner-toast] [data-icon] {
+    align-self: flex-start !important;
+    position: relative !important;
+    top: 0 !important;
+    transform: none !important;
 }
