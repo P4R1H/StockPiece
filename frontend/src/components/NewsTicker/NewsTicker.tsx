@@ -3,7 +3,7 @@ import './NewsTicker.css';
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 
 // Market status enum
-export enum MarketStatus {
+enum MarketStatus {
   CLOSED = 'closed',
   OPEN = 'open',
   UPDATING = 'updating'
