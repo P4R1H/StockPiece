@@ -76,7 +76,7 @@ const NewsTicker: React.FC<NewsTickerProps> = ({
   }, [marketStatusOverride, marketStatus]);
   
   return (
-    <div className={"news-ticker market-updating"}>
+    <div className={`news-ticker market-${marketStatus.toLowerCase()}`}>
       <div className="ticker-content">
         {newsItems.map((item, index) => (
           <span key={index} className="ticker-item">
