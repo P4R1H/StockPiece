@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "stockpiecebot"
+version = "0.1.0"
+description = ""
+authors = ["Aman25ta"]
+package-mode = false
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+discord = "^2.3.2"
+dotenv = "^0.9.9"
+datetime = "^5.5"
+
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
