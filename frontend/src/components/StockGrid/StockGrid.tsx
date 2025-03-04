@@ -1,7 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { CharacterStock } from '../../types/Stocks';
 import CharacterStockCard from '../CharacterCards/CharacterCard';
-import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
+import NewsTicker from '../NewsTicker/NewsTicker';
+import { MarketStatus } from '../../utils/MarketStatus';
 import './StockGrid.css';
 
 interface StockGridProps {
@@ -13,10 +14,10 @@ interface StockGridProps {
   onBuy: (stockName: string, quantity: number) => Promise<void>;
   onSell: (stockName: string, quantity: number) => Promise<void>;
   onVisibilityChange: (id: string, visibility: 'show' | 'hide' | 'only') => void;
-  errorMessage: string;
   showError: (message: string) => void;
   filter: 'All' | 'Owned' | 'Popular';
   onFilterChange: (filter: 'All' | 'Owned' | 'Popular') => void;
+  marketStatus: MarketStatus;
 }
 
 const StockGrid: React.FC<StockGridProps> = ({
@@ -28,10 +29,10 @@ const StockGrid: React.FC<StockGridProps> = ({
   onBuy,
   onSell,
   onVisibilityChange,
-  errorMessage,
   showError,
   filter,
-  onFilterChange
+  onFilterChange,
+  marketStatus
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
@@ -83,7 +84,7 @@ const StockGrid: React.FC<StockGridProps> = ({
       });
   }, [filteredStocks, searchQuery, sortOrder, getOwnedQuantity]);
 
-  // Handle stock transactions
+  // Handle stock transactions - similar to original behavior
   const handleStockTransaction = useCallback(
     async (type: 'buy' | 'sell', name: string) => {
       const stock = stocks.find(s => s.name === name);
@@ -127,14 +128,18 @@ const StockGrid: React.FC<StockGridProps> = ({
         }
       }
 
-      // Call the parent handler to process the transaction
-      if (type === 'buy') {
-        await onBuy(name, quantity);
-      } else {
-        await onSell(name, quantity);
+      try {
+        // Call the parent handler to process the transaction
+        if (type === 'buy') {
+          await onBuy(name, quantity);
+        } else {
+          await onSell(name, quantity);
+        }
+      } catch (error) {
+        showError(`Transaction failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
     },
-    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError]
+    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError, isLoggedIn]
   );
 
   return (
@@ -184,15 +189,7 @@ const StockGrid: React.FC<StockGridProps> = ({
             <option value="max">Qty: Max</option>
           </select>
         </div>
-        <div className="news-ticker">
-          <div className="ticker-content">
-            {(isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS).map((item, index) => (
-              <span key={index} className="ticker-item">
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
+        <NewsTicker isLoggedIn={isLoggedIn} marketStatus={marketStatus} />
       </div>
       <div className="stock-grid">
         {sortedStocks.map(stock => (
@@ -207,9 +204,6 @@ const StockGrid: React.FC<StockGridProps> = ({
             ownedQuantity={ownedQuantities[stock.id] || 0}
           />
         ))}
-      </div>
-      <div className={`window-overlay ${errorMessage ? 'active' : ''}`}>
-        <span>{errorMessage}</span>
       </div>
     </div>
   );

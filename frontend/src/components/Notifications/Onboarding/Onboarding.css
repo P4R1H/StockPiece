@@ -1,0 +1,187 @@
+/* Overlay covering the whole viewport */
+.tutorial-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(10, 26, 42, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+}
+
+/* Refined modal popup */
+.tutorial-content {
+    background-image: 
+        linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%),
+        radial-gradient(circle at 80% 10%, rgba(211, 167, 40, 0.15) 0%, transparent 30%);
+    border: 3px solid black;
+    border-radius: 10px;
+    padding: 1.5rem;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    position: relative;
+    animation: slideUp 0.3s ease;
+    color: #f1f1f1;
+    font-family: 'Pirata One', Helvetica, Arial, sans-serif;
+    letter-spacing: 0.3px;
+}
+.close {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.2rem;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: transparent;
+    border: 1px solid gold;
+    color: gold;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+}
+
+/* Header for the section */
+.tutorial-steps h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.8rem;
+    color: #ddd;
+}
+
+/* List styling with increased font size and reduced spacing */
+.info-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    line-height: 1.4;
+}
+
+.info-list li {
+    margin-bottom: 0.3rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Section titles with refined spacing */
+.section-title {
+    font-size: 1.5rem;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+    color: #ccc;
+    font-weight: 700;
+}
+
+/* Status badges with subtle background hues */
+.ticker-status {
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.9rem;
+    margin-right: 0.3rem;
+}
+
+
+/* Refined start button */
+.start-button {
+    width: 100%;
+    padding: 0.8rem;
+    background: #ffd700;
+    border: none;
+    border-radius: 5px;
+    color: #222;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+}
+
+.start-button:hover {
+    background: #e6c200;
+}
+
+/* Entrance animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 480px) {
+    .tutorial-content {
+        padding: 1rem;
+        max-width: 90%;
+    }
+    .tutorial-steps h3 {
+        font-size: 1.3rem;
+    }
+    .info-list {
+        font-size: 1rem;
+    }
+    .section-title {
+        font-size: 1.1rem;
+    }
+    .start-button {
+        font-size: 1rem;
+        padding: 0.7rem;
+    }
+}
+
+.welcome-section {
+    align-items: left;
+}
+
+.logo-image {
+    height: 60px;
+    margin: 0 auto;
+}
+/* Market status button-like elements */
+.market-status {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    margin-right: 0.3rem;
+    border-radius: 3px;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    cursor: default;
+    width: auto;
+  }
+  
+  .market-status:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+  }
+  
+  .market-green {
+    background: rgb(3, 36, 3, 0.8);
+    color: #98ff98;
+    border: 1px solid rgba(0, 255, 0, 0.3);
+  }
+  
+  .market-red {
+    background: rgb(121, 2, 2, 0.8);
+    color: #ff9898;
+    border: 1px solid rgba(255, 0, 0, 0.3);
+  }
+  
+  .market-blue {
+    background: rgb(1, 39, 96, 0.8);
+    color: #98c8ff;
+    border: 1px solid rgba(0, 100, 255, 0.3);
+  }

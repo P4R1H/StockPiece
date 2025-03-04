@@ -10,7 +10,7 @@ const SettingsPage: React.FC = () => {
   const [referralCode, setReferralCode] = useState("");
   const [copied, setCopied] = useState(false);
   const [referralUses, setReferralUses] = useState(0);
-  
+
   const deleteAccount = () => {
     if (!deleteText.includes("really")) {
       setDeleteText("Do you really want to delete account");
@@ -126,6 +126,47 @@ const SettingsPage: React.FC = () => {
                   </a>
                 </div>
               </div>
+
+              <div className="crew-member">
+                <img
+                  src="https://avatars.githubusercontent.com/u/93423572"
+                  alt="Developer 3"
+                  className="crew-avatar"
+                />
+                <div className="crew-links">
+                  <a
+                    href="https://github.com/s000ik"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
+                      alt="GitHub"
+                    />
+                  </a>
+
+                  </div>
+              </div>
+                  <div className="crew-member">
+                    <img
+                      src="https://avatars.githubusercontent.com/u/49344791"
+                      alt="Developer 3"
+                      className="crew-avatar"
+                    />
+                    <div className="crew-links">
+                      <a
+                        href="https://github.com/Aman25ta"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
+                          alt="GitHub"
+                        />
+                      </a>
+                    </div>
+
+                </div>
             </div>
           </section>
 
@@ -206,10 +247,10 @@ const SettingsPage: React.FC = () => {
                 className="icon-link"
                 data-tooltip="r/stockpiece"
               >
-                <img 
-                  src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Brand/Reddit_Logo.png?width=800&height=800&name=Reddit_Logo.png" 
-                  alt="Reddit" 
-                  className="footer-icon" 
+                <img
+                  src="https://redditinc.com/hs-fs/hubfs/Reddit%20Inc/Brand/Reddit_Logo.png?width=800&height=800&name=Reddit_Logo.png"
+                  alt="Reddit"
+                  className="footer-icon"
                 />
               </a>
               <a
@@ -219,10 +260,10 @@ const SettingsPage: React.FC = () => {
                 className="icon-link"
                 data-tooltip="Contribute"
               >
-                <img 
-                  src="https://upload.wikimedia.org/wikipedia/commons/2/24/Github_logo_svg.svg" 
-                  alt="GitHub" 
-                  className="footer-icon" 
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/2/24/Github_logo_svg.svg"
+                  alt="GitHub"
+                  className="footer-icon"
                 />
               </a>
               <a
@@ -232,10 +273,10 @@ const SettingsPage: React.FC = () => {
                 className="icon-link"
                 data-tooltip="Feedback"
               >
-                <img 
-                  src="/assets/icons/discord.png" 
-                  alt="Discord" 
-                  className="footer-icon" 
+                <img
+                  src="/assets/icons/discord.png"
+                  alt="Discord"
+                  className="footer-icon"
                 />
               </a>
             </div>

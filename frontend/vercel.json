@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/v1/:path*",
-        "destination": "https://stockpiece-xadz.onrender.com/api/v1/:path*"
+        "destination": "https://backend.stockpiece.fun/api/v1/:path*"
       },
       {
         "source": "/:path*",
