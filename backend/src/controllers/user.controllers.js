@@ -14,6 +14,7 @@ import Transaction from "../models/transaction.models.js";
 import UserFingerprint from "../models/fingerPrint.models.js";
 import ChapterRelease from "../models/chapterRelease.models.js";
 import { CACHE_KEYS } from "../constants.js";
+import cache from "../utils/cache.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
