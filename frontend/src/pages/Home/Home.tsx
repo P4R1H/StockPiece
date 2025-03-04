@@ -12,12 +12,14 @@ import { getMarketStatusInfo, MarketStatus } from '../../utils/MarketStatus';
 import './Home.css';
 import { toastMarketStatus } from '../../components/Notifications/CustomSonner/CustomSonner';
 
+// Define this outside the component so it persists across mounts until page reload
+let hasShownMarketStatus = false;
+
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState<boolean>(false);
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const [marketStatus, setMarketStatus] = useState<MarketStatus>('closed');
-  const hasShownMarketStatus = useRef(false);
 
   const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
   const pendingTransactions = useRef<{ [stockId: string]: { buy: number; sell: number } }>({});
@@ -36,26 +38,24 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const marketInfo = getMarketStatusInfo();
-    setMarketStatus(marketInfo.status);
-
-    if (!hasShownMarketStatus.current) {
-      const statusClass = {
-        open: 'market-green',
-        closed: 'market-red',
-        updating: 'market-blue',
-      };
-
-      toastMarketStatus({
-        status: marketInfo.status,
-        nextStatus: marketInfo.nextStatus,
-        timeUntilNext: marketInfo.timeUntilNext,
-        statusClass,
-      });
-
-      hasShownMarketStatus.current = true;
+    if (!hasShownMarketStatus) {
+      setTimeout(() => {
+        toastMarketStatus({
+          status: marketInfo.status,
+          nextStatus: marketInfo.nextStatus,
+          timeUntilNext: marketInfo.timeUntilNext,
+          statusClass: {
+            open: 'market-green',
+            closed: 'market-red',
+            updating: 'market-blue',
+          },
+        });
+        hasShownMarketStatus = true;
+      }, 0); // Runs after current execution stack
     }
   }, []);
 
+  
   const { data: stocks = [] } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
     queryFn: async () => {
