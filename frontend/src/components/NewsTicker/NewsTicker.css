@@ -1,6 +1,6 @@
 /* News Ticker Theme Variables */
-/* Closed Market Theme - Red */
-.news-ticker {
+:root {
+  /* Closed Market Theme - Red */
   --closed-primary: #e02a42;
   --closed-secondary: #aa2222;
   --closed-background: #1a0808;
@@ -16,7 +16,7 @@
   --open-glow: rgba(0, 255, 0, 0.4);
   --open-dot: rgba(68, 255, 68, 0.2);
 
-  /* Updating Market Theme - Twitter Blue */
+/* Updating Market Theme - Twitter Blue */
   --updating-primary: #1888ce;
   --updating-secondary: #0c7bc0;
   --updating-background: #0a1722;
