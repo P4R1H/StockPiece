@@ -8,10 +8,10 @@ import { CharacterStock, UserPortfolio } from '../../types/Stocks';
 import { HomePageProps } from '../../types/Pages';
 import { getStockMarketData, getPortfolioData, checkWindowStatus, buyStock, sellStock } from './HomeServices';
 import './Home.css';
+import { toast } from 'sonner';
 
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
-  const [errorMessage, setErrorMessage] = useState<string>("");
   const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState<boolean>(false);
   const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
   const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
@@ -108,8 +108,9 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   };
 
   const showError = (message: string) => {
-    setErrorMessage(message);
-    setTimeout(() => setErrorMessage(""), 2000);
+    toast.error(message, {
+      duration: 5000,
+    });
   };
 
   const handleBuyStock = async (name: string, quantity: number) => {
@@ -307,7 +308,6 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
         onBuy={handleBuyStock}
         onSell={handleSellStock}
         onVisibilityChange={updateStockVisibility}
-        errorMessage={errorMessage}
         showError={showError}
         filter={filter}
         onFilterChange={setFilter}

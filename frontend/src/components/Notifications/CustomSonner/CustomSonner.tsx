@@ -31,7 +31,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
           cancelButton: "group-[.toast]:bg-gray-200 group-[.toast]:text-brown",
         },
-        duration: 5000, // Changed to 5 seconds (5000ms)
+        duration: 3500,
       }}
       {...props}
     />
