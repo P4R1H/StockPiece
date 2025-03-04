@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { CharacterStock } from '../../types/Stocks';
 import CharacterStockCard from '../CharacterCards/CharacterCard';
-import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
+import NewsTicker from '../NewsTicker/NewsTicker';
 import './StockGrid.css';
 
 interface StockGridProps {
@@ -137,6 +137,7 @@ const StockGrid: React.FC<StockGridProps> = ({
     [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError]
   );
 
+
   return (
     <div className="stock-grid-container">
       <div className="stock-grid-header">
@@ -184,15 +185,7 @@ const StockGrid: React.FC<StockGridProps> = ({
             <option value="max">Qty: Max</option>
           </select>
         </div>
-        <div className="news-ticker">
-          <div className="ticker-content">
-            {(isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS).map((item, index) => (
-              <span key={index} className="ticker-item">
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
+        <NewsTicker isLoggedIn={isLoggedIn} />
       </div>
       <div className="stock-grid">
         {sortedStocks.map(stock => (

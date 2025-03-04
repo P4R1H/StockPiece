@@ -120,72 +120,6 @@
   }
 }
 
-/* News Ticker */
-.news-ticker {
-  flex-grow: 1;
-  background: #1a0808;
-  overflow: hidden;
-  position: relative;
-  border-left: 3px solid #3e2f28;
-  height: 40px;
-}
-
-.news-ticker::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    radial-gradient(circle at 5px 5px, rgba(255, 0, 0, 0.1) 1px, transparent 2px);
-  background-size: 8px 8px;
-  mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0.7) 90%, transparent 100%);
-}
-
-.news-ticker::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.ticker-content {
-  display: flex;
-  width: 1200%;
-  height: 100%;
-  transform: translateX(100%);
-  animation: ticker 90s linear infinite;
-}
-
-.ticker-item {
-  font-family: 'VT323', monospace;
-  flex: 0 0 auto; 
-  display: flex;
-  align-items: center;
-  color: #ff4444;
-  font-size: 1.1rem;
-  text-shadow: 0 0 8px rgba(255, 68, 68, 0.8);
-  letter-spacing: 1px;
-  padding: 0 10px;
-  white-space: nowrap;
-  margin-right: 300px;
-}
-
-.ticker-item::before {
-  content: '***';
-  color: #ff4444;
-  margin-right: 10px;
-}
-
-.ticker-item::after {
-  content: '***';
-  color: #ff4444;
-  margin-left: 10px;
-}
 
 /* Stock Grid */
 .stock-grid {
@@ -243,11 +177,6 @@
   }
 }
 
-@keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-100%); }
-}
-
 @keyframes waveGlow {
   0% { background-position: 0 0; }
   100% { background-position: 200% 0; }
@@ -302,21 +231,6 @@
     white-space: nowrap;
   }
 
-  .news-ticker {
-    height: 30px;
-  }
-
-  .ticker-content {
-    width: 1200%;
-    animation: ticker 45s linear infinite;
-  }
-
-  .ticker-item {
-    flex: 0 0 8.33%;
-    font-size: 0.9rem;
-    padding: 0 15px;
-  }
-
   .stock-grid-header {
     flex-direction: column;
     min-height: auto;
@@ -327,22 +241,6 @@
     flex-wrap: nowrap;
     border-right: none;
     border-bottom: 3px solid #3e2f28;
-  }
-
-  .news-ticker {
-    width: 100%;
-    height: 30px;
-    border-left: none;
-  }
-
-  .ticker-content {
-    width: 1200%;
-  }
-
-  .ticker-item {
-    flex: 0 0 8.33%;
-    font-size: 0.9rem;
-    padding: 0 15px;
   }
 
   .stock-search {
