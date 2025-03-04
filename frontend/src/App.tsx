@@ -6,7 +6,7 @@ import { loginExists, logoutUser } from './pages/Login/LoginServices';
 import Navbar from './components/Navbar/Navbar'; 
 import HomePage from './pages/Home/Home'; 
 import { LoginResponse } from './pages/Login/LoginServices';
-import { Toaster } from './components/Notifications/CustomSonner/CustomSonner'; // Use your existing Toaster component
+import { Toaster, toastMarketStatus } from './components/Notifications/CustomSonner/CustomSonner';
 
 const TutorialOverlay = React.lazy(()  => import('./components/Notifications/Onboarding'));
 const LeaderboardPage = React.lazy(() => import('./pages/Leaderboard/Leaderboard'));

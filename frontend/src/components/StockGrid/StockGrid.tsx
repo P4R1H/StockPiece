@@ -2,6 +2,7 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { CharacterStock } from '../../types/Stocks';
 import CharacterStockCard from '../CharacterCards/CharacterCard';
 import NewsTicker from '../NewsTicker/NewsTicker';
+import { MarketStatus } from '../../utils/MarketStatus';
 import './StockGrid.css';
 
 interface StockGridProps {
@@ -16,6 +17,7 @@ interface StockGridProps {
   showError: (message: string) => void;
   filter: 'All' | 'Owned' | 'Popular';
   onFilterChange: (filter: 'All' | 'Owned' | 'Popular') => void;
+  marketStatus: MarketStatus;
 }
 
 const StockGrid: React.FC<StockGridProps> = ({
@@ -29,7 +31,8 @@ const StockGrid: React.FC<StockGridProps> = ({
   onVisibilityChange,
   showError,
   filter,
-  onFilterChange
+  onFilterChange,
+  marketStatus
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
@@ -186,7 +189,7 @@ const StockGrid: React.FC<StockGridProps> = ({
             <option value="max">Qty: Max</option>
           </select>
         </div>
-        <NewsTicker isLoggedIn={isLoggedIn} />
+        <NewsTicker isLoggedIn={isLoggedIn} marketStatus={marketStatus} />
       </div>
       <div className="stock-grid">
         {sortedStocks.map(stock => (

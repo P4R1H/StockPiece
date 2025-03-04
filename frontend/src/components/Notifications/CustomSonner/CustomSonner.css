@@ -1,92 +1,188 @@
-/* Custom styling for toast notifications */
+/* styles.css */
+
+/* Base toaster styling */
 .toaster {
-    --toast-bg: #e2cfaa;
-    /* Parchment beige */
-    --toast-border: #3e2f28;
-    /* Brown border color from portfolio */
-    --toast-text: #3e2f28;
-    /* Primary text color from portfolio */
+  --toast-bg: #e2cfaa; /* Parchment beige */
+  --toast-border: #3e2f28; /* Brown border color */
+  --toast-text: #3e2f28; /* Primary text color */
 }
 
-/* Applying pirate/parchment styling to the toasts */
+/* Pirate-themed toast styling */
 .pirate-toast {
-    background: var(--toast-bg) !important;
-    color: var(--toast-text) !important;
-    border: 1px solid var(--toast-border) !important;
-    outline: 3px solid var(--toast-border) !important;
-    font-family: 'Pirata One', cursive !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-    padding: 12px !important;
-    font-size: 120% !important;
-    letter-spacing: 0.01rem !important;
+  background: var(--toast-bg) !important;
+  color: var(--toast-text) !important;
+  border: 1px solid var(--toast-border) !important;
+  outline: 3px solid var(--toast-border) !important;
+  font-family: "Pirata One", cursive !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+  padding: 8px 12px !important; /* Reduced padding */
+  font-size: 120% !important;
+  letter-spacing: 0.01rem !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
 }
 
-/* Adding a subtle parchment texture */
 .pirate-toast::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    opacity: 0.05;
-    pointer-events: none;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.05;
+  pointer-events: none;
 }
 
-/* Responsive adjustments */
+/* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
-    .pirate-toast {
-        max-width: 90% !important;
-        margin: 0 auto !important;
-        font-size: 100% !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        position: fixed !important;
-        top: 20px !important;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
-        animation: slideDown 0.5s ease-out !important;
+  .pirate-toast {
+    max-width: 90% !important;
+    margin: 0 auto !important;
+    font-size: 100% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    position: fixed !important;
+    top: 20px !important;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+    animation: slideDown 0.5s ease-out !important;
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translate(-50%, -100%);
+      opacity: 0;
     }
-
-    @keyframes slideDown {
-        from {
-            transform: translate(-50%, -100%);
-            opacity: 0;
-        }
-
-        to {
-            transform: translate(-50%, 0);
-            opacity: 1;
-        }
+    to {
+      transform: translate(-50%, 0);
+      opacity: 1;
     }
-
-    /* Preserve animation with custom keyframes */
-    [data-sonner-toaster][data-position^='top'] {
-        transform: translate(-50%, 0) !important;
-    }
+  }
+  
+  [data-sonner-toaster][data-position^="top"] {
+    transform: translate(-50%, 0) !important;
+  }
 }
 
-/* Ensure text is readable */
+/* Ensure description text is readable */
 [data-sonner-toast] [data-description] {
-
-    color: var(--toast-text) !important;
-    opacity: 0.85;
+  color: var(--toast-text) !important;
+  opacity: 0.85;
 }
 
 /* Toast icon color and positioning */
 [data-sonner-toast][data-type] [data-icon],
 [data-sonner-toast] [data-icon] {
-    color: var(--toast-border) !important;
-    align-self: flex-start !important;
-    margin-top: 4px !important;
-    position: relative !important;
-    top: 0 !important;
-    transform: none !important;
+  color: var(--toast-border) !important;
+  align-self: flex-start !important;
+  margin-top: 4px !important;
+  position: relative !important;
+  top: 0 !important;
+  transform: none !important;
 }
 
-/* Additional specificity for production */
 [data-sonner-toaster] [data-sonner-toast] [data-icon] {
-    align-self: flex-start !important;
-    position: relative !important;
-    top: 0 !important;
-    transform: none !important;
+  align-self: flex-start !important;
+  position: relative !important;
+  top: 0 !important;
+  transform: none !important;
 }
+
+/* Market status toast styles */
+.market-status-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center the content */
+  gap: 0.25rem; /* tighter vertical spacing */
+  margin: 0;
+  padding: 0;
+}
+
+.market-status-title {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem; /* space between label and status */
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.market-status {
+  padding: 0.2rem 0.4rem;
+  border-radius: 5px;
+  font-weight: bold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.market-status:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+/* Status color themes */
+.market-green {
+  background: rgba(3, 36, 3, 0.8);
+  color: #98ff98;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+}
+
+.market-red {
+  background: rgba(121, 2, 2, 0.8);
+  color: #ff9898;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+}
+
+.market-blue {
+  background: rgba(1, 39, 96, 0.8);
+  color: #98c8ff;
+  border: 1px solid rgba(0, 100, 255, 0.3);
+}
+
+
+.market-status-toast-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.25rem;
+    text-align: left;
+  }
+  
+  .market-status-current,
+  .market-status-next {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .market-status-toast {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 8px 12px !important;
+  }
+  
+  .market-status {
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+  }
+  
+  .market-status:hover {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  
+  /* Existing status color themes remain the same */
+.market-status:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* Existing status color themes remain the same */
