@@ -45,7 +45,7 @@ const startServer = async () => {
 const setupCronJobs = () => {
   // Release chapter at 00:00AM every Thursday
   cron.schedule(
-    CRON_SCHEDULES.THURSDAY,
+    CRON_SCHEDULES.FRIDAY,
     async () => {
       try {
         console.log("Starting release chapter service...");
@@ -107,7 +107,7 @@ const setupCronJobs = () => {
 
   // Update price at 00:00 every Wednesday
   cron.schedule(
-    CRON_SCHEDULES.WEDNESDAY,
+    CRON_SCHEDULES.THURSDAY,
     async () => {
       try {
         console.log("Starting update price service...");
