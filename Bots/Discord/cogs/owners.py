@@ -64,7 +64,7 @@ class EmbedForm(discord.ui.Modal, title="Embed creation form"):
         self.interaction = interaction
         self.stop()
 
-
+''' //old code for role button -> dropdown w/ search func
 class RoleSearchModal(discord.ui.Modal,title="Search for roles:"):
     
     query = discord.ui.TextInput(
@@ -139,6 +139,8 @@ class RoleSearchButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         await interaction.response.send_modal(RoleSearchModal())
 
+'''
+
 class Owners(commands.Cog, name="Owner Commands"):
     def __init__(self, bot) -> None:
         self.bot = bot
@@ -149,7 +151,7 @@ class Owners(commands.Cog, name="Owner Commands"):
     )
     @app_commands.check(check_owner)
     @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
-    async def create_embed(self, interaction: discord.Interaction ,channel: discord.TextChannel, colorx: str="",add_role_button: bool=False) -> None:
+    async def create_embed(self, interaction: discord.Interaction ,channel: discord.TextChannel, colorx: str="") -> None:
         embed_form = EmbedForm()
         await interaction.response.send_modal(embed_form)
         await embed_form.wait()
@@ -229,6 +231,7 @@ class Owners(commands.Cog, name="Owner Commands"):
         if embed.description == None and embed.title == None and embed.image == None:
             await interaction.response.send_message("No title, description or image given!", ephemeral=True)
             return
+        '''
         if add_role_button:
             button = RoleSearchButton()
             view = discord.ui.View(timeout=None)
@@ -236,14 +239,38 @@ class Owners(commands.Cog, name="Owner Commands"):
             await channel.send(embed=embed,view=view)
         else:
             await channel.send(embed=embed)
-
+        '''
         await interaction.response.send_message("Embed created!", ephemeral=True)
         
+    @app_commands.command(
+        name="role",
+        description="Create an embed (Main stockpiece server admin-only).",
+    )
+    @app_commands.check(check_owner)
+    @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
+    async def role(self, interaction: discord.Interaction,rolen: discord.Role):
 
+        rolename = rolen.name.lower().strip()
+
+        for role in interaction.guild.roles:
+            if role.id == config["role_breakoff_id"]:
+                await interaction.response.send_message("No matching roles found.", ephemeral=True)
+                return
+            if role.name.lower().strip() == rolename and role.hoist==False and role.is_assignable():
+                matching_roles = role
+
+        if not matching_roles:
+            await interaction.response.send_message("No matching roles found.", ephemeral=True)
+            return
+        
+        
+        await interaction.response.send_message(f"Found role {matching_roles.name}, Adding!",ephemeral=True)
 
 async def setup(bot) -> None:
     await bot.add_cog(Owners(bot))
+    '''
     button = RoleSearchButton()
     view = discord.ui.View(timeout=None)
     view.add_item(button)
     bot.add_view(view)
+    '''

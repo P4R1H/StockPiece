@@ -1,6 +1,5 @@
 .env
 .git
-config.json
 poetry.lock
 cogs/__pycache__
 discord.log
