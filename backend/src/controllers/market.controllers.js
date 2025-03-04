@@ -95,20 +95,20 @@ const closeMarket = asyncHandler(async (req, res, _) => {
 
 const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
 
-  // if (!req.admin) {
-  //   const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
-  //   if (cachedData) {
-  //     return res
-  //       .status(200)
-  //       .json(
-  //         new ApiResponse(
-  //           200,
-  //           {},
-  //           "stock stats fetched successfully from cache"
-  //         )
-  //       );
-  //   }
-  // }
+  if (!req.admin) {
+    const cachedData = cache.get(CACHE_KEYS.STOCK_STATISTICS);
+    if (cachedData) {
+      return res
+        .status(200)
+        .json(
+          new ApiResponse(
+            200,
+            {},
+            "stock stats fetched successfully from cache"
+          )
+        );
+    }
+  }
 
   const latestChapterDoc = await ChapterRelease.findOne().sort({
     releaseDate: -1,
@@ -199,9 +199,9 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     }
   });
 
-  // if (!req.admin) {
-  //   cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
-  // }
+  if (!req.admin) {
+    cache.set(CACHE_KEYS.STOCK_STATISTICS, chapterUpdatesObject, 3600);
+  }
 
   res
     .status(200)
