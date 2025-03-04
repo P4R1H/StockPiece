@@ -208,7 +208,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     .json(
       new ApiResponse(
         200,
-        chapterUpdatesObject,
+        {},
         "chapter update history fetched successfully"
       )
     );
