@@ -244,13 +244,13 @@ class Owners(commands.Cog, name="Owner Commands"):
         
     @app_commands.command(
         name="role",
-        description="Create an embed (Main stockpiece server admin-only).",
+        description="Add role.",
     )
     @app_commands.check(check_owner)
     @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
-    async def role(self, interaction: discord.Interaction,rolen: discord.Role):
+    async def role(self, interaction: discord.Interaction,role: discord.Role):
 
-        rolename = rolen.name.lower().strip()
+        rolename = role.name.lower().strip()
 
         for role in interaction.guild.roles:
             if role.id == config["role_breakoff_id"]:

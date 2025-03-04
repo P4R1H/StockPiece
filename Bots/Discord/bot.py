@@ -101,7 +101,7 @@ class DiscordBot(commands.Bot):
         )
         self.logger.info("-------------------")
         await self.load_cogs()
-        await self.sync_cmds()
+        #await self.sync_cmds()
 
     async def sync_cmds(self) -> None:
         try:
