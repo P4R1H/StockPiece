@@ -9,17 +9,6 @@ interface LeaderboardAPIResponse {
   currentUser: LeaderboardEntry;
 }
 
-const LuffyLoader: React.FC = () => {
-  return (
-    <div className="luffy-loader-container">
-      <div className="luffy-logo">
-        <img className="bottom-img" src="/assets/luffy.png" />
-        <img className="top-img" src="/assets/luffy.png" />
-      </div>
-    </div>
-  );
-};
-
 const LeaderboardPage: React.FC = () => {
   
   const { data, isLoading } = useQuery<
@@ -60,7 +49,11 @@ const LeaderboardPage: React.FC = () => {
   });
 
   if (isLoading) {
-    return <LuffyLoader />;
+    return (
+      <div className="center-spinner-container">
+        <div className="spinner"></div>
+      </div>
+    );
   }
 
   if (!data) return null;
@@ -80,62 +73,62 @@ const LeaderboardPage: React.FC = () => {
 
         <div className="combined-leaderboard">
           <div className="top-three-container">
-            <div className="luffy-background">
-              {/* Render #2 first */}
-              {topUsers[1] && (
-                <div key={topUsers[1].username} className="top-three-card rank-2">
-                  <div className="rank-badge">#{topUsers[1].rank}</div>
-                  <div className="user-details">
-                    <h3 className="username">{topUsers[1].username}</h3>
-                    <div className="user-stats">
-                      <div className="stat-item">
-                        <span className="stat-label">Bounty</span>
-                        <span className="stat-value">
-                          {topUsers[1].totalValue.toLocaleString()} ₿
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Render #1 second */}
-              {topUsers[0] && (
-                <div key={topUsers[0].username} className="top-three-card rank-1">
-                  <div className="rank-badge">#{topUsers[0].rank}</div>
-                  <div className="user-details">
-                    <h3 className="username">{topUsers[0].username}</h3>
-                    <div className="user-stats">
-                      <div className="stat-item">
-                        <span className="stat-label">Bounty</span>
-                        <span className="stat-value">
-                          {topUsers[0].totalValue.toLocaleString()} ₿
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-              
-              {/* Render #3 last */}
-              {topUsers[2] && (
-                <div key={topUsers[2].username} className="top-three-card rank-3">
-                  <div className="rank-badge">#{topUsers[2].rank}</div>
-                  <div className="user-details">
-                    <h3 className="username">{topUsers[2].username}</h3>
-                    <div className="user-stats">
-                      <div className="stat-item">
-                        <span className="stat-label">Bounty</span>
-                        <span className="stat-value">
-                          {topUsers[2].totalValue.toLocaleString()} ₿
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+{/* Replace your existing top users mapping */}
+<div className="luffy-background">
+  {/* Render #2 first */}
+  {topUsers[1] && (
+    <div key={topUsers[1].username} className="top-three-card rank-2">
+      <div className="rank-badge">#{topUsers[1].rank}</div>
+      <div className="user-details">
+        <h3 className="username">{topUsers[1].username}</h3>
+        <div className="user-stats">
+          <div className="stat-item">
+            <span className="stat-label">Bounty</span>
+            <span className="stat-value">
+              {topUsers[1].totalValue.toLocaleString()} ₿
+            </span>
           </div>
+        </div>
+      </div>
+    </div>
+  )}
+  
+  {/* Render #1 second */}
+  {topUsers[0] && (
+    <div key={topUsers[0].username} className="top-three-card rank-1">
+      <div className="rank-badge">#{topUsers[0].rank}</div>
+      <div className="user-details">
+        <h3 className="username">{topUsers[0].username}</h3>
+        <div className="user-stats">
+          <div className="stat-item">
+            <span className="stat-label">Bounty</span>
+            <span className="stat-value">
+              {topUsers[0].totalValue.toLocaleString()} ₿
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+  
+  {/* Render #3 last */}
+  {topUsers[2] && (
+    <div key={topUsers[2].username} className="top-three-card rank-3">
+      <div className="rank-badge">#{topUsers[2].rank}</div>
+      <div className="user-details">
+        <h3 className="username">{topUsers[2].username}</h3>
+        <div className="user-stats">
+          <div className="stat-item">
+            <span className="stat-label">Bounty</span>
+            <span className="stat-value">
+              {topUsers[2].totalValue.toLocaleString()} ₿
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )}
+</div>          </div>
 
           <div className="leaderboard-table-container scrollable-list">
             <table className="leaderboard-table">
