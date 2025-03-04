@@ -1,0 +1,80 @@
+/* Custom styling for toast notifications */
+.toaster {
+    --toast-bg: #e2cfaa;
+    /* Parchment beige */
+    --toast-border: #3e2f28;
+    /* Brown border color from portfolio */
+    --toast-text: #3e2f28;
+    /* Primary text color from portfolio */
+}
+
+/* Applying pirate/parchment styling to the toasts */
+.pirate-toast {
+    background: var(--toast-bg) !important;
+    color: var(--toast-text) !important;
+    border: 1px solid var(--toast-border) !important;
+    outline: 3px solid var(--toast-border) !important;
+    font-family: 'Pirata One', cursive !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+    padding: 12px !important;
+    font-size: 120% !important;
+    letter-spacing: 0.01rem !important;
+}
+
+/* Adding a subtle parchment texture */
+.pirate-toast::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.05;
+    pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .pirate-toast {
+        max-width: 90% !important;
+        margin: 0 auto !important;
+        font-size: 100% !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        position: fixed !important;
+        top: 20px !important;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15) !important;
+        animation: slideDown 0.5s ease-out !important;
+    }
+
+    @keyframes slideDown {
+        from {
+            transform: translate(-50%, -100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translate(-50%, 0);
+            opacity: 1;
+        }
+    }
+
+    /* Preserve animation with custom keyframes */
+    [data-sonner-toaster][data-position^='top'] {
+        transform: translate(-50%, 0) !important;
+    }
+}
+
+/* Ensure text is readable */
+[data-sonner-toast] [data-description] {
+
+    color: var(--toast-text) !important;
+    opacity: 0.85;
+}
+
+/* Toast icon color */
+[data-sonner-toast] [data-icon] {
+    color: var(--toast-border) !important;
+    align-self: flex-start !important;
+    margin-top: 4px !important;
+}

@@ -1,8 +1,9 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { CharacterStock } from '../../types/Stocks';
 import CharacterStockCard from '../CharacterCards/CharacterCard';
 import NewsTicker from '../NewsTicker/NewsTicker';
 import './StockGrid.css';
+import { toast } from 'sonner';
 
 interface StockGridProps {
   stocks: CharacterStock[];
@@ -36,6 +37,16 @@ const StockGrid: React.FC<StockGridProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
   const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc' | 'owned-desc'>('alpha-asc');
+  const [hasShownLoginMessage, setHasShownLoginMessage] = useState(false); // Track if login message was shown
+  
+  // Display toast whenever errorMessage changes
+  useEffect(() => {
+    if (errorMessage) {
+      toast.error(errorMessage, {
+        duration: 5000,
+      });
+    }
+  }, [errorMessage]);
 
   // Helper function to get owned quantity
   const getOwnedQuantity = useCallback((stockId: string): number => {
@@ -83,9 +94,18 @@ const StockGrid: React.FC<StockGridProps> = ({
       });
   }, [filteredStocks, searchQuery, sortOrder, getOwnedQuantity]);
 
-  // Handle stock transactions
+  // Handle stock transactions - similar to original behavior
   const handleStockTransaction = useCallback(
     async (type: 'buy' | 'sell', name: string) => {
+      // Check login status only once
+      if (!isLoggedIn) {
+        if (!hasShownLoginMessage) {
+          showError("To save your progress, Login / Create account, Enjoy Testing!");
+          setHasShownLoginMessage(true);
+        }
+        // Don't return early for non-logged in users - allow mock transactions
+      }
+      
       const stock = stocks.find(s => s.name === name);
       if (!stock) return;
 
@@ -127,16 +147,19 @@ const StockGrid: React.FC<StockGridProps> = ({
         }
       }
 
-      // Call the parent handler to process the transaction
-      if (type === 'buy') {
-        await onBuy(name, quantity);
-      } else {
-        await onSell(name, quantity);
+      try {
+        // Call the parent handler to process the transaction
+        if (type === 'buy') {
+          await onBuy(name, quantity);
+        } else {
+          await onSell(name, quantity);
+        }
+      } catch (error) {
+        showError(`Transaction failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
     },
-    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError]
+    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError, isLoggedIn, hasShownLoginMessage]
   );
-
 
   return (
     <div className="stock-grid-container">

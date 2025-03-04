@@ -5,6 +5,7 @@ import './App.css';
 import { loginExists, logoutUser } from './pages/Login/LoginServices'; 
 import Navbar from './components/Navbar/Navbar'; 
 import HomePage from './pages/Home/Home'; 
+import { Toaster } from './components/CustomSonner/CustomSonner'; // Use your existing Toaster component
 
 const LeaderboardPage = React.lazy(() => import('./pages/Leaderboard/Leaderboard'));
 const LoginPage = React.lazy(() => import('./pages/Login/Login'));
@@ -80,28 +81,31 @@ const App: React.FC = () => {
   const isAdminDomain = window.location.host.includes('admin.'); 
  
   return ( 
-    <Router> 
-      <Routes> 
-        {isAdminDomain ? ( 
-          <Route path="/*" element={
-              <AdminPanel />
-          } /> 
-        ) : ( 
-          <> 
-            <Route 
-              path="/login" 
-              element={isLoggedIn ? <Navigate to="/" /> : (
-                  <LoginPage onLogin={handleLogin} />
-              )} 
-            /> 
-            <Route 
-              path="/*" 
-              element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
-            /> 
-          </> 
-        )} 
-      </Routes>
-    </Router> 
+    <>
+      <Router> 
+        <Routes> 
+          {isAdminDomain ? ( 
+            <Route path="/*" element={
+                <AdminPanel />
+            } /> 
+          ) : ( 
+            <> 
+              <Route 
+                path="/login" 
+                element={isLoggedIn ? <Navigate to="/" /> : (
+                    <LoginPage onLogin={handleLogin} />
+                )} 
+              /> 
+              <Route 
+                path="/*" 
+                element={<OnePieceStockMarket isLoggedIn={isLoggedIn} onLogout={handleLogout} />} 
+              /> 
+            </> 
+          )} 
+        </Routes>
+      </Router> 
+      <Toaster />
+    </>
   ); 
 }; 
  
