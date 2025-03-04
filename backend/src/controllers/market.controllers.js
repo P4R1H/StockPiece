@@ -132,6 +132,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     : {
         name: "$stockName",
         newValue: "$updates.newValue",
+        oldValue: "$updates.oldValue",
       };
 
   // Use aggregation to group updates by chapter
@@ -196,6 +197,16 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
       latestChapterDoc.isPriceUpdated
     ) {
       chapterUpdatesObject[item.chapter] = item.updates;
+    }
+    if (item.chapter === latestChapterDoc.chapter) {
+      const tempupdates = []
+      item.updates.forEach(element => {
+        tempupdates.push({
+          name: element.name,
+          newValue: element.oldValue
+        })
+      });
+      chapterUpdatesObject[1140] = tempupdates;
     }
   });
 
