@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { CharacterStock } from '../../types/Stocks';
 import CharacterStockCard from '../CharacterCards/CharacterCard';
 import NewsTicker from '../NewsTicker/NewsTicker';
 import './StockGrid.css';
-import { toast } from 'sonner';
 
 interface StockGridProps {
   stocks: CharacterStock[];
@@ -14,7 +13,6 @@ interface StockGridProps {
   onBuy: (stockName: string, quantity: number) => Promise<void>;
   onSell: (stockName: string, quantity: number) => Promise<void>;
   onVisibilityChange: (id: string, visibility: 'show' | 'hide' | 'only') => void;
-  errorMessage: string;
   showError: (message: string) => void;
   filter: 'All' | 'Owned' | 'Popular';
   onFilterChange: (filter: 'All' | 'Owned' | 'Popular') => void;
@@ -29,7 +27,6 @@ const StockGrid: React.FC<StockGridProps> = ({
   onBuy,
   onSell,
   onVisibilityChange,
-  errorMessage,
   showError,
   filter,
   onFilterChange
@@ -37,16 +34,6 @@ const StockGrid: React.FC<StockGridProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [buyAmt, setBuyAmt] = useState<"1" | "5" | "10" | "25" | "50" | "100" | "max">("1");
   const [sortOrder, setSortOrder] = useState<'alpha-asc' | 'alpha-desc' | 'price-asc' | 'price-desc' | 'owned-desc'>('alpha-asc');
-  const [hasShownLoginMessage, setHasShownLoginMessage] = useState(false); // Track if login message was shown
-  
-  // Display toast whenever errorMessage changes
-  useEffect(() => {
-    if (errorMessage) {
-      toast.error(errorMessage, {
-        duration: 5000,
-      });
-    }
-  }, [errorMessage]);
 
   // Helper function to get owned quantity
   const getOwnedQuantity = useCallback((stockId: string): number => {
@@ -97,15 +84,6 @@ const StockGrid: React.FC<StockGridProps> = ({
   // Handle stock transactions - similar to original behavior
   const handleStockTransaction = useCallback(
     async (type: 'buy' | 'sell', name: string) => {
-      // Check login status only once
-      if (!isLoggedIn) {
-        if (!hasShownLoginMessage) {
-          showError("To save your progress, Login / Create account, Enjoy Testing!");
-          setHasShownLoginMessage(true);
-        }
-        // Don't return early for non-logged in users - allow mock transactions
-      }
-      
       const stock = stocks.find(s => s.name === name);
       if (!stock) return;
 
@@ -158,7 +136,7 @@ const StockGrid: React.FC<StockGridProps> = ({
         showError(`Transaction failed: ${error instanceof Error ? error.message : "Unknown error"}`);
       }
     },
-    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError, isLoggedIn, hasShownLoginMessage]
+    [stocks, buyAmt, maxBuyQuantities, ownedQuantities, cash, onBuy, onSell, showError, isLoggedIn]
   );
 
   return (
@@ -223,9 +201,6 @@ const StockGrid: React.FC<StockGridProps> = ({
             ownedQuantity={ownedQuantities[stock.id] || 0}
           />
         ))}
-      </div>
-      <div className={`window-overlay ${errorMessage ? 'active' : ''}`}>
-        <span>{errorMessage}</span>
       </div>
     </div>
   );
