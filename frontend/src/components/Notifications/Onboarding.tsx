@@ -40,7 +40,7 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ onClose }) => {
         </div>
 
         <button className="start-button" onClick={onClose}>
-          I LOVE Gambling
+          yeah man i know this shit already
         </button>
       </div>
     </div>

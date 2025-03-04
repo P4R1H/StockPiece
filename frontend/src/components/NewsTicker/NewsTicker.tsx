@@ -1,22 +1,24 @@
 import React, { useState, useEffect } from 'react';
-/* Important: CSS import order */
 import './NewsTicker.css';
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 
 interface NewsTickerProps {
   isLoggedIn?: boolean;
-  marketStatusOverride?: 'closed' | 'open' | 'updating';
+  // Optional override for market status (for testing)
+  marketStatusOverride?: string;
 }
 
-const NewsTicker: React.FC<NewsTickerProps> = ({ 
+const NewsTicker: React.FC<NewsTickerProps> = ({
   isLoggedIn = false,
-  marketStatusOverride 
+  marketStatusOverride,
 }) => {
   const newsItems = isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS;
   
-  const [marketStatus, setMarketStatus] = useState<'closed' | 'open' | 'updating'>('closed');
+  // Using string state directly; default is "closed"
+  const [marketStatus, setMarketStatus] = useState('closed');
 
   useEffect(() => {
+    // If an override is provided, use it
     if (marketStatusOverride !== undefined) {
       setMarketStatus(marketStatusOverride);
       return;
@@ -24,46 +26,62 @@ const NewsTicker: React.FC<NewsTickerProps> = ({
 
     const determineMarketStatus = () => {
       const now = new Date();
-      const dayOfWeek = now.getDay(); // 0 is Sunday, 6 is Saturday
-      const hours = now.getUTCHours(); // IST is UTC+5:30
-      const minutes = now.getUTCMinutes();
-      
-      // Convert current time to IST (UTC+5:30)
-      let istHours = (hours + 5) % 24;
-      const istMinutes = (minutes + 30) % 60;
-      // If minutes overflow, add an hour
-      if (minutes + 30 >= 60) {
-        istHours = (istHours + 1) % 24;
-      }
+      // Convert current time to IST using the Asia/Kolkata time zone
+      const istTime = new Date(
+        now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
+      // JS getDay() returns: 0 = Sunday, 1 = Monday, 2 = Tuesday, 3 = Wednesday, 4 = Thursday, 5 = Friday, 6 = Saturday
+      const day = istTime.getDay();
+      const hours = istTime.getHours();
+      const minutes = istTime.getMinutes();
+      const currentMinutes = hours * 60 + minutes;
+      const boundary = 23 * 60 + 59; // 11:59 PM = 1439 minutes
 
-      // Monday 11:59 PM IST - Market Opens
-      if (dayOfWeek === 1 && istHours === 23 && istMinutes === 59) {
+      // Open period: from Thursday 11:59 PM to Monday 11:59 PM
+      // (Thursday: if time >= 11:59, Friday, Saturday, Sunday,
+      //  Monday: if time is before 11:59)
+      if (
+        (day === 4 && currentMinutes >= boundary) ||
+        day === 5 ||
+        day === 6 ||
+        day === 0 ||
+        (day === 1 && currentMinutes < boundary)
+      ) {
         return 'open';
       }
-      // Tuesday 11:59 PM IST - Market Updates
-      else if (dayOfWeek === 2 && istHours === 23 && istMinutes === 59) {
+
+      // Updating period: from Monday 11:59 PM to Tuesday 11:59 PM
+      if (
+        (day === 1 && currentMinutes >= boundary) ||
+        (day === 2 && currentMinutes < boundary)
+      ) {
         return 'updating';
       }
-      // Thursday 11:59 PM IST - Market Closes
-      else if (dayOfWeek === 4 && istHours === 23 && istMinutes === 59) {
+
+      // Closed period: from Tuesday 11:59 PM to Thursday 11:59 PM
+      if (
+        (day === 2 && currentMinutes >= boundary) ||
+        day === 3 ||
+        (day === 4 && currentMinutes < boundary)
+      ) {
         return 'closed';
       }
-      
-      // Otherwise, keep current status
-      return marketStatus;
+
+      // Default to closed
+      return 'closed';
     };
-    
-    // Set initial market status
+
+    // Set the initial market status
     setMarketStatus(determineMarketStatus());
-    
-    // Update market status every minute
+
+    // Update the market status every minute
     const intervalId = setInterval(() => {
       setMarketStatus(determineMarketStatus());
     }, 60000);
-    
+
     return () => clearInterval(intervalId);
-  }, [marketStatusOverride, marketStatus]);
-  
+  }, [marketStatusOverride]);
+
   return (
     <div className={`news-ticker market-${marketStatus}`}>
       <div className="ticker-content">
