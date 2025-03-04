@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from './LoginServices';
+import { LoginResponse } from './LoginServices';
 import './Login.css';
 
 interface LoginPageProps {
-  onLogin: () => void;
+  onLogin: (response: LoginResponse) => void;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
@@ -43,8 +44,8 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
 
     try {
       if (formState.activeTab === 'login') {
-        await loginUser(formState.username, formState.password, formState.couponCode);
-        onLogin();
+        const response = await loginUser(formState.username, formState.password, formState.couponCode);
+        onLogin(response);
         navigate('/');
       } else {
         await registerUser(formState.username, formState.password);

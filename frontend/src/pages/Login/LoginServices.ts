@@ -13,16 +13,16 @@ export const generateFingerprint = async (): Promise<string> => {
   }
 };
 
-interface LoginResponse {
-  "success": boolean,
-  "data": {
-    "loginStatus" : boolean,
-    "dailyLoginBonus" : number
-  },
-  "message": string,
-  "statusCode": number
-}
-  
+export interface LoginResponse {
+  success: boolean;
+  data: {
+    loginStatus: boolean;
+    dailyLoginBonus: number;
+    firstTimeLogin?: boolean;
+  };
+  message: string;
+  statusCode: number;
+}  
 
 export const logoutUser = async (): Promise<void> => {
   try {
