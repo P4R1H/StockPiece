@@ -236,7 +236,7 @@ const getStockUpdateStatistics = asyncHandler(async (req, res, _next) => {
   ) {
     const statistics = await priceChangeByAlgorithm(latestChapter);
     response = Array.from(statistics.values());
-    console.log(response);
+    
   } else {
     //we fetch from the update collection
     const chapterToFetch = chapter || latestChapter;
