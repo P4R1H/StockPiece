@@ -179,10 +179,8 @@
     opacity: 0.9;
   }
   
-  /* Existing status color themes remain the same */
 .market-status:hover {
   transform: scale(1.05);
   opacity: 0.9;
 }
 
-/* Existing status color themes remain the same */
