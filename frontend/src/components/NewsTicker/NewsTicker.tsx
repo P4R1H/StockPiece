@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+/* Important: CSS import order */
 import './NewsTicker.css';
 import { NEWS_ITEMS, LOGGED_OUT_ITEMS } from '../../assets/data/newsItems';
 
