@@ -468,18 +468,18 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid orderBy parameter");
   }
 
-  const cachedData = cache.get(CACHE_KEYS.LEADER_BOARD);
-  if (cachedData) {
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(
-          200,
-          cachedData,
-          "stock stats fetched successfully from cache"
-        )
-      );
-  }
+  // const cachedData = cache.get(CACHE_KEYS.LEADER_BOARD);
+  // if (cachedData) {
+  //   return res
+  //     .status(200)
+  //     .json(
+  //       new ApiResponse(
+  //         200,
+  //         cachedData,
+  //         "stock stats fetched successfully from cache"
+  //       )
+  //     );
+  // }
 
   // Get all users with populated stock data
   const allUsers = await User.find({})
@@ -539,7 +539,7 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     };
   }
 
-  cache.set(CACHE_KEYS.STOCK_STATISTICS, {
+  cache.set(CACHE_KEYS.LEADER_BOARD, {
     topUsers,
     currentUser: currentUserData,
   }, 3600);
