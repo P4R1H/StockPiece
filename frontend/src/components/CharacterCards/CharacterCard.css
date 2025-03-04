@@ -13,48 +13,41 @@
   --sell-hover-start: #a00000;
   --sell-hover-end: #8b0000;
   --text-primary: #ffd700;
-  --text-secondary: #4CAF50;
+  --text-secondary: #4caf50;
   --text-tertiary: #add8e6;
 }
 
-.op-stock-card {
-  width: 100%; 
-  margin: 0 auto; /* Center the card */
+/* Card Container */
+.stock-card {
+  z-index: 2;
+  width: 100%;
+  margin: 0 auto;
   background: var(--primary-bg);
   border-radius: 10px;
   overflow: hidden;
   position: relative;
-  border: 1px solid rgba(211, 167, 40, 0.25); /* More translucent border */
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.15),
-    inset 0 0 0 1px rgba(211, 167, 40, 0.1); /* Subtle inner glow */
+  border: 1px solid rgba(211, 167, 40, 0.25);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), inset 0 0 0 1px rgba(211, 167, 40, 0.1);
   transition: all 0.3s ease;
-  z-index: 2;
-  background-image: linear-gradient(
-    to bottom right,
-    rgba(10, 26, 42, 0.9),
-    rgba(16, 42, 67, 0.9)
-  );
+  background-image: linear-gradient(to bottom right, rgba(10, 26, 42, 0.9), rgba(16, 42, 67, 0.9));
 }
 
-.op-stock-card:hover {
+.stock-card:hover {
   transform: translateY(-3px);
-  border-color: rgba(211, 167, 40, 0.6); /* Slightly more visible on hover */
-  box-shadow: 
-    0 4px 12px rgba(0, 0, 0, 0.3),
-    0 0 15px rgba(255, 215, 0, 0.2),
+  border-color: rgba(211, 167, 40, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 215, 0, 0.2),
     inset 0 0 0 1px rgba(211, 167, 40, 0.2);
 }
 
-
-.op-image-container {
+/* Image Section */
+.image-container {
   position: relative;
-  height: 120px;
+  height: 110px;
   background: var(--secondary-bg);
   border-bottom: 2px solid var(--accent);
 }
 
-.op-character-image {
+.character-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -62,7 +55,7 @@
   border-radius: 8px 8px 0 0;
 }
 
-.op-visibility-toggle {
+.visibility-toggle {
   position: absolute;
   top: 6px;
   right: 6px;
@@ -80,158 +73,62 @@
   padding: 0;
 }
 
-.op-visibility-toggle[data-visibility="only"] {
+.visibility-toggle[data-visibility='only'] {
   background: var(--accent-light);
 }
 
-.op-visibility-toggle:hover {
+.visibility-toggle:hover {
   background: var(--accent-dark);
   transform: scale(1.1);
 }
 
-.op-divider {
+/* Divider */
+.divider {
   height: 2px;
   background: repeating-linear-gradient(
     90deg,
-    transparent,
-    transparent 3px,
-    var(--accent) 3px,
-    var(--accent) 6px
+    transparent 0 3px,
+    var(--accent) 3px 6px
   );
   margin: 4px 0;
 }
 
-/* Card body spacing */
-.op-card-body {
-  padding: 4px 10px 10px 10px;
+/* Card Body */
+.card-body {
   padding: 7px;
-  padding-top: 4px; /* Reduce top padding */
-
-  display: flex;
-  flex-direction: column;
-  gap: 8px; /* Consistent gap throughout card */
+  padding-top: 4px;
 }
 
-/* Header section */
-.op-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px; /* Match card body gap */
-  margin-bottom: 0; /* Remove margin, use gap instead */
+/* Header Section */
+.header {
+  margin-bottom: 6px;
 }
 
-/* Meta section */
-.op-meta {
+.character-name {
   display: flex;
-  flex-direction: column;
-  gap: 8px; /* Match other gaps */
-}
-
-.op-character-name {
-  width: 100%;
-  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  margin: 0;
+  margin-bottom: 4px;
+}
+
+.name-text {
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 1.1rem;
   color: var(--text-primary);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   text-shadow: 0 0 5px rgba(255, 215, 0, 0.3);
-  position: relative;
-  margin-bottom: 6px;
 }
 
-
-/* Price styling */
-.op-character-price {
-  font-size: 1.2rem;
-  color: var(--text-secondary);
-  font-weight: bold;
-  font-family: 'Courier New', monospace;
-  text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
-  text-align: left;
-  margin-bottom: -10px;
-  margin-top: -4px;
-  letter-spacing: 0.05em;
-}
-
-.op-base-price {
-  font-size: 0.8rem;
-  color: var(--text-tertiary);
-  font-weight: 500;
-  text-align: left;
-  opacity: 0.8;
-  margin-top: -4px;
-  margin-left: -4px;
-  margin-bottom: 0;
-  font-family: 'Courier New', monospace;
-}
-
-.op-owned {
-  font-size: 1rem;
-  color: var(--text-tertiary);
-  font-weight: 600;
-  letter-spacing: 0.05rem;
-  text-align: left;
-  margin-top: 0px;
-  padding-bottom: 4px;
-  text-shadow: 0 0 6px rgba(173, 216, 230, 0.5);
-  transition: all 0.2s ease;
-}
-
-
-/* Actions section */
-.op-actions {
-  display: flex;
-  gap: 4px; /* Reduced from 8px */
-}
-
-.op-buy-button:focus,
-.op-sell-button:focus {
-  outline: none;
-}
-
-.op-buy-button, 
-.op-sell-button {
-  flex: 1;
-  padding: 4px 6px; /* Reduced horizontal padding from 12px to 6px */
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem; /* Slightly smaller font */
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.02em; /* Reduced letter spacing */
-  white-space: nowrap; /* Prevent text wrapping */
-  overflow: hidden;
-  text-overflow: ellipsis; /* Show ellipsis if text overflows */
-  min-width: 0; /* Allow flex shrinking */
-}
-
-.op-buy-button {
-  background: linear-gradient(to bottom, var(--buy-bg-start), var(--buy-bg-end));
-  color: var(--text-primary);
-  border: 1px solid #3a5a7a;
-}
-
-.op-buy-button:hover {
-  background: linear-gradient(to bottom, var(--buy-hover-start), var(--buy-hover-end));
-}
-
-.op-sell-button {
-  background: linear-gradient(to bottom, var(--sell-bg-start), var(--sell-bg-end));
-  color: #ff8080;
-  border: 1px solid #7a3a3a;
-}
-
-.op-sell-button:hover {
-  background: linear-gradient(to bottom, var(--sell-hover-start), var(--sell-hover-end));
-}
-
-.op-ticker-symbol {
+.ticker-symbol {
+  flex: 0 0 auto;
   color: var(--text-tertiary);
   font-size: 0.7rem;
   font-weight: 600;
@@ -245,67 +142,122 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease;
   text-shadow: 0 0 3px rgba(173, 216, 230, 0.3);
-  margin-left: 8px;
 }
 
-.op-character-name:hover .op-ticker-symbol {
-  background: rgba(211, 167, 40, 0.3);
-  border-color: var(--accent-light);
-  box-shadow: 0 0 8px var(--accent-light);
-  color: var(--accent-light);
+.character-price {
+  display: block;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.5);
+  text-align: left;
+  margin-bottom: -2px;
+  letter-spacing: 0.05em;
 }
 
+.base-price {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-align: left;
+  opacity: 0.8;
+  margin-top: -2px;
+  font-family: 'Courier New', monospace;
+}
 
+.owned-quantity {
+  display: block;
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  letter-spacing: 0.05rem;
+  text-align: left;
+  margin-bottom: 10px;
+  text-shadow: 0 0 6px rgba(173, 216, 230, 0.5);
+  transition: all 0.2s ease;
+}
 
+.actions {
+  display: flex;
+}
+
+.buy-button {
+  margin-right: 4px;
+}
+
+.buy-button,
+.sell-button {
+  flex: 1;
+  padding: 4px 6px;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+
+.buy-button {
+  background: linear-gradient(to bottom, var(--buy-bg-start), var(--buy-bg-end));
+  color: var(--text-primary);
+  border: 1px solid #3a5a7a;
+}
+
+.buy-button:hover {
+  background: linear-gradient(to bottom, var(--buy-hover-start), var(--buy-hover-end));
+}
+
+.sell-button {
+  background: linear-gradient(to bottom, var(--sell-bg-start), var(--sell-bg-end));
+  color: #ff8080;
+  border: 1px solid #7a3a3a;
+}
+
+.sell-button:hover {
+  background: linear-gradient(to bottom, var(--sell-hover-start), var(--sell-hover-end));
+}
+
+/* Responsive Adjustments */
 @media (max-width: 480px) {
-
-  
-  .op-card-body {
-    gap: 4px;
-  }
-
-  .op-ticker-symbol {
-    font-size: 0.5rem;
-  }
-
-  .op-character-name {
-    font-size: 0.8rem  !important;
-    margin-bottom: -2px;
-  }
-
-  .op-character-price {
-    font-size: 1rem !important;
-  }
-
-  .op-owned {
+  .name-text {
     font-size: 0.8rem !important;
   }
 
-  .op-actions {
-    flex-direction: row !important;
+  .ticker-symbol {
+    font-size: 0.5rem;
   }
 
-  .op-buy-button,
-  .op-sell-button {
-    padding: 6px 8px;
-    font-size: 0.9rem;
-    min-height: 32px;
-    outline: none;
+  .character-price {
+    font-size: 1rem !important;
   }
 
-  .op-base-price {
+  .base-price {
     font-size: 0.7rem;
   }
 
-  .op-image-container {
-    height: 100px;
+  .owned-quantity {
+    font-size: 0.8rem !important;
   }
-}
 
-.op-sell-info {
-  font-size: 0.75rem;
-  color: #888;
-  text-align: right;
-  padding-top: 4px;
-  margin-top: 2px;
+  .buy-button,
+  .sell-button {
+    padding: 6px 8px;
+    font-size: 0.9rem;
+    min-height: 34px;
+    white-space: normal;
+    line-height: 1.2;
+
+  }
+
+  .image-container {
+    height: 85px;
+  }
 }
