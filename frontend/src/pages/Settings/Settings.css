@@ -219,14 +219,14 @@ body {
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  background-color: #2a3b4d;
-  padding: 0.8rem;
-  border-radius: 6px;
+  background: linear-gradient(160deg, #2a3b4d 0%, #1c2e45 100%);
+  padding: 0.35rem;
+  padding-bottom: 0.3rem;
+  padding-top: 0.3rem;
+  border-radius: 5px;
   width: auto;
   max-width: fit-content;
   flex-wrap: nowrap;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  border: 2px solid var(--gold-color);
 }
 
 .referral-label {
@@ -257,8 +257,9 @@ body {
 }
 
 .referral-code {
-  background: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--gold-color);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
+  border-right: none;
   color: var(--gold-color);
   font-family: monospace;
   border-radius: 3px 0 0 3px;
@@ -269,29 +270,25 @@ body {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 0.5rem 1rem;
-  font-size: 1.1rem;
-  letter-spacing: 1px;
 }
 
 .copy-button {
-  background-color: rgba(0, 0, 0, 0.4);
-  border: 2px solid var(--gold-color);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(212, 169, 59, 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   color: var(--gold-color);
-  border-radius: 0 4px 4px 0;
-  transition: all 0.2s ease;
+  border-radius: 0 3px 3px 0;
+  transition: background 0.2s ease;
   height: 26px;
   width: 26px;
-  padding: 0.5rem;
+  padding: 0;
 }
 
 .copy-button:hover {
-  background-color: rgba(0, 0, 0, 0.6);
-  transform: translateY(-1px);
+  background: rgba(0, 0, 0, 0.5);
 }
 
 .copy-icon {
