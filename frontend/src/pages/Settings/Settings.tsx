@@ -126,8 +126,6 @@ const SettingsPage: React.FC = () => {
                   </a>
                 </div>
               </div>
-
-                </div>
             </div>
           </section>
 
@@ -248,4 +246,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage
+export default SettingsPage;
