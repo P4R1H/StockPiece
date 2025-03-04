@@ -12,8 +12,8 @@ import { getMarketStatusInfo, MarketStatus } from '../../utils/MarketStatus';
 import './Home.css';
 import { toastMarketStatus } from '../../components/Notifications/CustomSonner/CustomSonner';
 
-// Define this outside the component so it persists across mounts until page reload
-let hasShownMarketStatus = false;
+// Module-level variable to track whether the market status toast has been shown.
+let marketStatusToastShown = false;
 
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
@@ -38,24 +38,29 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
   useEffect(() => {
     const marketInfo = getMarketStatusInfo();
-    if (!hasShownMarketStatus) {
+    setMarketStatus(marketInfo.status);
+
+    if (!marketStatusToastShown) {
+      // Delay the toast call to ensure the toast container is mounted.
       setTimeout(() => {
+        const statusClass = {
+          open: 'market-green',
+          closed: 'market-red',
+          updating: 'market-blue',
+        };
+
         toastMarketStatus({
           status: marketInfo.status,
           nextStatus: marketInfo.nextStatus,
           timeUntilNext: marketInfo.timeUntilNext,
-          statusClass: {
-            open: 'market-green',
-            closed: 'market-red',
-            updating: 'market-blue',
-          },
+          statusClass,
         });
-        hasShownMarketStatus = true;
-      }, 0); // Runs after current execution stack
+
+        marketStatusToastShown = true;
+      }, 100);
     }
   }, []);
 
-  
   const { data: stocks = [] } = useQuery<CharacterStock[]>({
     queryKey: ['stocks'],
     queryFn: async () => {
