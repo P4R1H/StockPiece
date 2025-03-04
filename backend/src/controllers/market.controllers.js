@@ -103,7 +103,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
         .json(
           new ApiResponse(
             200,
-            cachedData,
+            {},
             "stock stats fetched successfully from cache"
           )
         );
