@@ -232,11 +232,11 @@ const getStockUpdateStatistics = asyncHandler(async (req, res, _next) => {
   //if the window is open and we need the latest chapter
   let response;
   if (
-    true
+    (!chapter || latestChapter === chapter) &&
+    isWindowOpen(latestChapterDoc)
   ) {
     const statistics = await priceChangeByAlgorithm(latestChapter);
     response = Array.from(statistics.values());
-    
   } else {
     //we fetch from the update collection
     const chapterToFetch = chapter || latestChapter;
