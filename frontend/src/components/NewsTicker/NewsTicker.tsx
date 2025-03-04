@@ -26,7 +26,6 @@ const NewsTicker: React.FC<NewsTickerProps> = ({
 
     const determineMarketStatus = () => {
       const now = new Date();
-      // Convert current time to IST using the Asia/Kolkata time zone
       const istTime = new Date(
         now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
       );
@@ -83,7 +82,11 @@ const NewsTicker: React.FC<NewsTickerProps> = ({
   }, [marketStatusOverride]);
 
   return (
-    <div className={`news-ticker market-${marketStatus}`}>
+    <div className={marketStatus === 'open' 
+      ? 'news-ticker market-open' 
+      : marketStatus === 'updating' 
+        ? 'news-ticker market-updating' 
+        : 'news-ticker market-closed'}>
       <div className="ticker-content">
         {newsItems.map((item, index) => (
           <span key={index} className="ticker-item">
