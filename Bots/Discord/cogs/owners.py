@@ -64,82 +64,40 @@ class EmbedForm(discord.ui.Modal, title="Embed creation form"):
         self.interaction = interaction
         self.stop()
 
-''' //old code for role button -> dropdown w/ search func
-class RoleSearchModal(discord.ui.Modal,title="Search for roles:"):
+
+class RoleTransformer(app_commands.Transformer):
+    def __init__(self, breakoff_role_id: int):
+        self.breakoff_role_id = breakoff_role_id
     
-    query = discord.ui.TextInput(
-        label="Enter role name to search",
-        placeholder="Type a role name...",
-        style=discord.TextStyle.short,
-        required=True,
-        max_length=100,
-    )
-
-    async def on_submit(self, interaction: discord.Interaction):
-        role_name = str(self.query).lower()
-
-        matching_roles = []
-        for role in interaction.guild.roles:
-            if role.id == config["role_breakoff_id"]:
-                break
-            if role.name.lower().startswith(role_name) and role.hoist==False and role.is_assignable():
-                matching_roles.append(role)
-
-        if not matching_roles:
-            self.stop()
-            await interaction.response.send_message("No matching roles found.", ephemeral=True)
-            return
+    async def transform(self, interaction: discord.Interaction, role: discord.Role) -> discord.Role:
+        # role = discord.utils.get(interaction.guild.roles, id=int(role_id))
+        breakoff_role = discord.utils.get(interaction.guild.roles, id=self.breakoff_role_id)
         
-        view = discord.ui.View()
-        view.add_item(PostSearchSelect(self.query,matching_roles[0:25],interaction.user.roles))
-        await interaction.response.send_message(
-            "Found roles! Click the button below to proceed:",
-            view=view,
-            ephemeral=True,
-        )
+        if not role or not breakoff_role:
+            raise app_commands.TransformerError("Invalid role.")
         
-
-
-class PostSearchSelect(discord.ui.Select):
-    def __init__(self,queryx: str,rolelist: list,userroles: list):
-        super().__init__(placeholder=f"Role searched for: {queryx}",max_values=len(rolelist),min_values=0)
-        self.queryx = queryx
-        self.rolelist = rolelist
+        if (role.position >= breakoff_role.position or role.hoist or not role.is_assignable()):
+            raise app_commands.TransformerError("You cannot assign this role.")
         
-        for i in rolelist:
-            self.add_option(
-                label=i.name,
-                value=i.id,
-                default=True if i in userroles else False
-            )
-
-    async def callback(self, interaction: discord.Interaction):
+        return role
+    
+    async def autocomplete(self, interaction, current: str):
+        breakoff_role = discord.utils.get(interaction.guild.roles, id=self.breakoff_role_id)
         
-        selected = []
-        for id in self.values:
-            role = interaction.guild.get_role(int(id)) 
-            if role is None:
-                role = next((r for r in interaction.guild.roles if r.id == int(id)), None)
-            if role:
-                selected.append(role)
-
-        await interaction.user.add_roles(*selected)
-        desel = [x for x in self.rolelist if x not in selected]
-        await interaction.user.remove_roles(*desel)
-
-        await interaction.response.send_message("Added/Removed roles!",ephemeral=True)
-
+        if not breakoff_role:
+            return []
+        
+        filtered_roles = [
+            role for role in interaction.guild.roles
+            if role.position < breakoff_role.position
+            and not role.hoist
+            and role.is_assignable()
+            and current.lower() in role.name.lower()
+        ]
+        
+        return [app_commands.Choice(name=role.name, value=str(role.id)) for role in filtered_roles[:25]]
 
 
-
-class RoleSearchButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(label="Search Roles",custom_id=config["custom_id_hardcode"])
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_modal(RoleSearchModal())
-
-'''
 
 class Owners(commands.Cog, name="Owner Commands"):
     def __init__(self, bot) -> None:
@@ -231,46 +189,28 @@ class Owners(commands.Cog, name="Owner Commands"):
         if embed.description == None and embed.title == None and embed.image == None:
             await interaction.response.send_message("No title, description or image given!", ephemeral=True)
             return
-        '''
-        if add_role_button:
-            button = RoleSearchButton()
-            view = discord.ui.View(timeout=None)
-            view.add_item(button)
-            await channel.send(embed=embed,view=view)
-        else:
-            await channel.send(embed=embed)
-        '''
         await interaction.response.send_message("Embed created!", ephemeral=True)
         
     @app_commands.command(
         name="role",
-        description="Add role.",
+        description="Add/Remove role.",
     )
     @app_commands.check(check_owner)
     @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
-    async def role(self, interaction: discord.Interaction,role: discord.Role):
+    @app_commands.describe(role="Role you want to add/remove")
+    #add transformer here to filter roles.
+    async def role(self, interaction: discord.Interaction,role: app_commands.Transform[discord.Role, RoleTransformer(config["role_breakoff_id"])]):
 
-        rolename = role.name.lower().strip()
-
-        for role in interaction.guild.roles:
-            if role.id == config["role_breakoff_id"]:
-                await interaction.response.send_message("No matching roles found.", ephemeral=True)
-                return
-            if role.name.lower().strip() == rolename and role.hoist==False and role.is_assignable():
-                matching_roles = role
-
-        if not matching_roles:
+        if not role:
             await interaction.response.send_message("No matching roles found.", ephemeral=True)
             return
         
-        
-        await interaction.response.send_message(f"Found role {matching_roles.name}, Adding!",ephemeral=True)
+        if role in interaction.user.roles:
+            await interaction.user.remove_roles(role)
+            await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
+        else:
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
 
 async def setup(bot) -> None:
     await bot.add_cog(Owners(bot))
-    '''
-    button = RoleSearchButton()
-    view = discord.ui.View(timeout=None)
-    view.add_item(button)
-    bot.add_view(view)
-    '''
