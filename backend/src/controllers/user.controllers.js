@@ -13,6 +13,8 @@ import containsProfanity from "../utils/profanity.utils.js";
 import Transaction from "../models/transaction.models.js";
 import UserFingerprint from "../models/fingerPrint.models.js";
 import ChapterRelease from "../models/chapterRelease.models.js";
+import { CACHE_KEYS } from "../constants.js";
+import cache from "../utils/cache.js";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -466,9 +468,17 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid orderBy parameter");
   }
 
-  //since we want guests to also have a look at the leader board
-  // if (!currentUserId) {
-  //   throw new ApiError(401, "Unauthenticated request");
+  // const cachedData = cache.get(CACHE_KEYS.LEADER_BOARD);
+  // if (cachedData) {
+  //   return res
+  //     .status(200)
+  //     .json(
+  //       new ApiResponse(
+  //         200,
+  //         cachedData,
+  //         "stock stats fetched successfully from cache"
+  //       )
+  //     );
   // }
 
   // Get all users with populated stock data
@@ -528,6 +538,11 @@ const getTopUsersByStockValue = asyncHandler(async (req, res) => {
       rank: currentUserIndex + 1,
     };
   }
+
+  // cache.set(CACHE_KEYS.LEADER_BOARD, {
+  //   topUsers,
+  //   currentUser: currentUserData,
+  // }, 3600);
 
   res.status(200).json(
     new ApiResponse(

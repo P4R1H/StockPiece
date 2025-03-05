@@ -103,7 +103,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
         .json(
           new ApiResponse(
             200,
-            {},
+            cachedData,
             "stock stats fetched successfully from cache"
           )
         );
@@ -132,6 +132,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     : {
         name: "$stockName",
         newValue: "$updates.newValue",
+        oldValue: "$updates.oldValue",
       };
 
   // Use aggregation to group updates by chapter
@@ -197,6 +198,16 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     ) {
       chapterUpdatesObject[item.chapter] = item.updates;
     }
+    if (item.chapter === latestChapterDoc.chapter) {
+      const tempupdates = []
+      item.updates.forEach(element => {
+        tempupdates.push({
+          name: element.name,
+          newValue: element.oldValue
+        })
+      });
+      chapterUpdatesObject[1140] = tempupdates;
+    }
   });
 
   if (!req.admin) {
@@ -208,7 +219,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     .json(
       new ApiResponse(
         200,
-        {},
+        chapterUpdatesObject,
         "chapter update history fetched successfully"
       )
     );

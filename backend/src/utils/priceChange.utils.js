@@ -44,7 +44,7 @@ const priceChangeByAlgorithm = async (chapter) => {
         totalSells: stockStats.totalSells,
       };
 
-      priceUpdateMap.set(stockID, Math.max(10, priceUpdate/2));
+      priceUpdateMap.set(stockID, priceUpdate);
     });
 
     return priceUpdateMap;
@@ -97,7 +97,7 @@ function calculatePriceUpdate(
     percentChange = Math.max(rawPercentChange, -maxDropPercent);
   }
 
-  return Math.max(currentPrice * (1 + percentChange / 100), MIN_PRICE);
+  return Math.max(currentPrice * (1 + percentChange / 100) / 2, MIN_PRICE);
 }
 
 export default priceChangeByAlgorithm;

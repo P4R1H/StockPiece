@@ -21,6 +21,7 @@ const defaultAvatarUrl = cloudinary.url(defaultAvatarpublidId);
 
 const CACHE_KEYS = {
   STOCK_STATISTICS: "stock_statistics_public",
+  LEADER_BOARD: "topuser_leader_board"
 };
 
 const CRON_SCHEDULES = {

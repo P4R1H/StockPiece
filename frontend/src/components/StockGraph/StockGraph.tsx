@@ -156,8 +156,8 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
     }
 
 
-    const hasData = 0;
-    // Object.keys(stockHistoryData.data).length > 0;
+    const hasData = Object.keys(stockHistoryData.data).length > 0;
+    // 
     // TO REMOVE
 
     
@@ -203,7 +203,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   useEffect(() => {
     if (stockHistoryData?.success) {
       const chapters = Object.keys(stockHistoryData.data);
-      if (1) {  //chapters.length === 0 TO REMOVE
+      if (chapters.length === 0) {  // TO REMOVE
         // No real data available, use mock data chapters
         const mockChapters = Array.from({ length: 20 }, (_, i) => i + 1);
         setAvailableChapters(mockChapters);
@@ -228,8 +228,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
         }
       }
     } 
-    else if (usingMockData ) { //  && availableChapters.length === 0 TO REMOVE
-      // Set mock chapters for when API response failed
+    else if (usingMockData && availableChapters.length === 0 ) {
       const mockChapters = Array.from({ length: 20 }, (_, i) => i + 1);
       setAvailableChapters(mockChapters);
 
@@ -282,7 +281,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
       if (filter === 'owned')
         return ownedStocks.includes(stock.id) ? stock.visibility === 'show' : stock.visibility === 'hide'
       if (filter === 'popular')
-        return stock.popularity > 7 ? stock.visibility === 'show' : stock.visibility === 'hide'
+        return stock.popularity > 7 ? stock.visibility === 'show' : 'hide'
       if (filter === 'unowned')
         return !ownedStocks.includes(stock.id) ? stock.visibility === 'show' : stock.visibility === 'hide'
       return true
@@ -312,8 +311,12 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
             newVisibility = !ownedStocks.includes(stock.id) ? 'show' : 'hide'
             break
           case 'popular':
-            newVisibility = stock.popularity > 7 ? 'show' : 'hide'
-            break
+            // Select top 20% of stocks by popularity
+            const topCount = Math.ceil(stocks.length * 0.2);
+            const sortedByPopularity = [...stocks].sort((a, b) => b.popularity - a.popularity);
+            const topStockIds = sortedByPopularity.slice(0, topCount).map(s => s.id);
+            newVisibility = topStockIds.includes(stock.id) ? 'show' : 'hide';
+            break;
         }
         onVisibilityChange(stock.id, newVisibility)
       })

@@ -126,47 +126,6 @@ const SettingsPage: React.FC = () => {
                   </a>
                 </div>
               </div>
-
-              <div className="crew-member">
-                <img
-                  src="https://avatars.githubusercontent.com/u/93423572"
-                  alt="Developer 3"
-                  className="crew-avatar"
-                />
-                <div className="crew-links">
-                  <a
-                    href="https://github.com/s000ik"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
-                      alt="GitHub"
-                    />
-                  </a>
-
-                  </div>
-              </div>
-                  <div className="crew-member">
-                    <img
-                      src="https://avatars.githubusercontent.com/u/49344791"
-                      alt="Developer 3"
-                      className="crew-avatar"
-                    />
-                    <div className="crew-links">
-                      <a
-                        href="https://github.com/Aman25ta"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
-                          alt="GitHub"
-                        />
-                      </a>
-                    </div>
-
-                </div>
             </div>
           </section>
 
@@ -287,4 +246,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage
+export default SettingsPage;
