@@ -3,7 +3,7 @@
 import { Toaster as Sonner, toast } from "sonner";
 import { useEffect, useState } from "react";
 import "./CustomSonner.css";
-import { ChartSpline } from 'lucide-react';
+import { Clock } from 'lucide-react';
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -54,25 +54,28 @@ export const toastMarketStatus = ({
 }: MarketStatusToastOptions) => {
   toast(
     <div className="market-status-toast-content">
-      <div className="market-status-current">
-        Current Market Status: {" "}
+      <div className="market-status-message">
+        The market is currently{" "}
         <span className={`market-status ${statusClass[status]}`}>
           {status.toUpperCase()}
-        </span>
-      </div>
-      <div className="market-status-next">
-        Next: {" "}
+        </span> 
+        &nbsp;.  It will{" "}
         <span className={`market-status ${statusClass[nextStatus]}`}>
-          {nextStatus.toUpperCase()}
-        </span>{" "}
-        in {timeUntilNext}
+          {nextStatus.toUpperCase() === 'UPDATING' ? 'UPDATE' : nextStatus.toUpperCase()}
+        </span> again
+        {" "}in{" "}
+        <span className="time-until">
+          {parseInt(timeUntilNext) >= 60 
+            ? `${Math.floor(parseInt(timeUntilNext) / 60)} hours and ${parseInt(timeUntilNext) % 60} minutes`
+            : `${timeUntilNext} minutes`}.
+        </span>
       </div>
     </div>,
     {
       className: "group toast pirate-toast market-status-toast",
       duration: 3500,
       id: "market-status",
-      icon: <ChartSpline size={18} />
+      icon: <Clock size={20} />
     }
   );
 };
