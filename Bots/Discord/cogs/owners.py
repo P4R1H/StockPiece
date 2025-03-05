@@ -69,8 +69,8 @@ class RoleTransformer(app_commands.Transformer):
     def __init__(self, breakoff_role_id: int):
         self.breakoff_role_id = breakoff_role_id
     
-    async def transform(self, interaction: discord.Interaction, role: discord.Role) -> discord.Role:
-        # role = discord.utils.get(interaction.guild.roles, id=int(role_id))
+    async def transform(self, interaction: discord.Interaction, role_id: str) -> discord.Role:
+        role = discord.utils.get(interaction.guild.roles, id=int(role_id))
         breakoff_role = discord.utils.get(interaction.guild.roles, id=self.breakoff_role_id)
         
         if not role or not breakoff_role:
@@ -95,7 +95,7 @@ class RoleTransformer(app_commands.Transformer):
             and current.lower() in role.name.lower()
         ]
         
-        return [app_commands.Choice(name=role.name, value=str(role.id)) for role in filtered_roles[:25]]
+        return [app_commands.Choice(name='@'+role.name, value=str(role.id)) for role in filtered_roles[:25]]
 
 
 
