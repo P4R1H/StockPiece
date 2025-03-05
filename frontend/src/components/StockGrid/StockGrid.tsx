@@ -43,7 +43,7 @@ const StockGrid: React.FC<StockGridProps> = ({
     return ownedQuantities[stockId] || 0;
   }, [ownedQuantities]);
 
-  // Filter and sort stocks
+  // Filter stocks based on the filter prop (unchanged)
   const filteredStocks = useMemo(() => {
     return stocks.filter(stock => {
       if (filter === 'Owned')
@@ -58,31 +58,37 @@ const StockGrid: React.FC<StockGridProps> = ({
     });
   }, [stocks, filter, ownedQuantities]);
 
-  const sortedStocks = useMemo(() => {
-    return filteredStocks
-      .filter(stock =>
+  const stocksToDisplay = useMemo(() => {
+    if (searchQuery) {
+      return stocks.filter(stock =>
         stock.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .sort((a, b) => {
-        switch (sortOrder) {
-          case 'alpha-asc':
-            return a.name.localeCompare(b.name);
-          case 'alpha-desc':
-            return b.name.localeCompare(a.name);
-          case 'price-asc':
-            return a.currentPrice - b.currentPrice;
-          case 'price-desc':
-            return b.currentPrice - a.currentPrice;
-          case 'owned-desc':
-            // Sort by quantity owned (descending)
-            const quantityA = getOwnedQuantity(a.id);
-            const quantityB = getOwnedQuantity(b.id);
-            return quantityB - quantityA;
-          default:
-            return 0;
-        }
-      });
-  }, [filteredStocks, searchQuery, sortOrder, getOwnedQuantity]);
+      );
+    } else {
+      return filteredStocks;
+    }
+  }, [stocks, filteredStocks, searchQuery]);
+
+  const sortedStocks = useMemo(() => {
+    return [...stocksToDisplay].sort((a, b) => {
+      switch (sortOrder) {
+        case 'alpha-asc':
+          return a.name.localeCompare(b.name);
+        case 'alpha-desc':
+          return b.name.localeCompare(a.name);
+        case 'price-asc':
+          return a.currentPrice - b.currentPrice;
+        case 'price-desc':
+          return b.currentPrice - a.currentPrice;
+        case 'owned-desc':
+          const quantityA = getOwnedQuantity(a.id);
+          const quantityB = getOwnedQuantity(b.id);
+          return quantityB - quantityA;
+        default:
+          return 0;
+      }
+    });
+  }, [stocksToDisplay, sortOrder, getOwnedQuantity]);
+
 
   // Handle stock transactions - similar to original behavior
   const handleStockTransaction = useCallback(
