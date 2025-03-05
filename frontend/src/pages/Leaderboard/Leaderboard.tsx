@@ -27,7 +27,7 @@ const TopThreeCards: React.FC<TopThreeCardsProps> = ({ topThree }) => (
   <div className="top-three-cards">
     {topThree[1] && (
       <div className="top-card top-card--silver">
-        <div className="top-card__rank">#{topThree[1].rank}</div>
+        <div className="top-card__rank">Admiral</div>
         <div className="top-card__name">{topThree[1].username}</div>
         <div className="top-card__bounty">
           {topThree[1].totalValue.toLocaleString()} ₿
@@ -36,7 +36,7 @@ const TopThreeCards: React.FC<TopThreeCardsProps> = ({ topThree }) => (
     )}
     {topThree[0] && (
       <div className="top-card top-card--gold">
-        <div className="top-card__rank">#{topThree[0].rank}</div>
+        <div className="top-card__rank">Fleet Admiral</div>
         <div className="top-card__name">{topThree[0].username}</div>
         <div className="top-card__bounty">
           {topThree[0].totalValue.toLocaleString()} ₿
@@ -45,7 +45,7 @@ const TopThreeCards: React.FC<TopThreeCardsProps> = ({ topThree }) => (
     )}
     {topThree[2] && (
       <div className="top-card top-card--bronze">
-        <div className="top-card__rank">#{topThree[2].rank}</div>
+        <div className="top-card__rank">Admiral</div>
         <div className="top-card__name">{topThree[2].username}</div>
         <div className="top-card__bounty">
           {topThree[2].totalValue.toLocaleString()} ₿
@@ -65,8 +65,8 @@ const LeaderboardList: React.FC<LeaderboardListProps> = ({ entries }) => (
       <thead>
         <tr>
           <th className="leaderboard-table__header">Rank</th>
-          <th className="leaderboard-table__header">Pirate Name</th>
-          <th className="leaderboard-table__header">Treasure</th>
+          <th className="leaderboard-table__header">Officer Name</th>
+          <th className="leaderboard-table__header">Seized Bounty</th>
         </tr>
       </thead>
       <tbody>
@@ -98,7 +98,7 @@ const YourRankCard: React.FC<YourRankCardProps> = ({ currentUser }) => (
       <span className="your-rank-card__value">#{currentUser.rank}</span>
     </div>
     <div className="your-rank-card__item">
-      <span className="your-rank-card__label">Total Treasure:</span>
+      <span className="your-rank-card__label">Seized Bounty:</span>
       <span className="your-rank-card__value">
         {currentUser.totalValue.toLocaleString()} ₿
       </span>
@@ -153,10 +153,10 @@ const LeaderboardPage: React.FC = () => {
       <header className="leaderboard-header">
         <div className="header-board">
           <h1 className="header-board__title">
-            Most Wanted
+            Fleet Order
           </h1>
           <span className="header-board__subtitle">
-            (for tax evasion)
+            Grand Line Authority
           </span>
         </div>
       </header>

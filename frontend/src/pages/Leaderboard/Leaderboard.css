@@ -1,3 +1,23 @@
+/* Add this at the start of the file */
+body {
+  background: url('/assets/raw/emptythrone.png') no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Optional: Add an overlay to improve readability */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  z-index: 0;
+}
+
 /* Luffy Loader with Shimmer Effect */
 .luffy-loader-container {
   display: flex;
@@ -556,12 +576,12 @@
 
 .leaderboard-table__header:nth-child(2),
 .leaderboard-table__cell:nth-child(2) {
-  width: 65%;
+  width: 55%;
 }
 
 .leaderboard-table__header:nth-child(3),
 .leaderboard-table__cell:nth-child(3) {
-  width: 20%;
+  width: 30%;
 }
 
 .table-row--highlight .leaderboard-table__cell {
