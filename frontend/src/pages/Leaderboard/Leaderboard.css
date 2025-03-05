@@ -609,12 +609,12 @@ body::before {
 
   .leaderboard-table__header:nth-child(2),
   .leaderboard-table__cell:nth-child(2) {
-    width: 60%;
+    width: 50%;
   }
 
   .leaderboard-table__header:nth-child(3),
   .leaderboard-table__cell:nth-child(3) {
-    width: 25%;
+    width: 35%;
   }
 
   .leaderboard-list-section {
