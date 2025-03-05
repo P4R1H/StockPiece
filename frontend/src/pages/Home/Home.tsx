@@ -18,7 +18,7 @@ let marketStatusToastShown = false;
 const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const [windowOpen, setWindowOpen] = useState<Boolean>(true);
   const [hasShownLoginPrompt, setHasShownLoginPrompt] = useState<boolean>(false);
-  const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('All');
+  const [filter, setFilter] = useState<'All' | 'Owned' | 'Popular'>('Popular');
   const [marketStatus, setMarketStatus] = useState<MarketStatus>('closed');
 
   const debounceTimers = useRef<{ [stockId: string]: NodeJS.Timeout }>({});
