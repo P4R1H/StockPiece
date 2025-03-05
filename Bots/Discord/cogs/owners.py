@@ -210,7 +210,7 @@ class Owners(commands.Cog, name="Owner Commands"):
             await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
         else:
             await interaction.user.add_roles(role)
-            await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
+            await interaction.response.send_message(f"Found role {role.name}, Adding!",ephemeral=True)
 
 async def setup(bot) -> None:
     await bot.add_cog(Owners(bot))
