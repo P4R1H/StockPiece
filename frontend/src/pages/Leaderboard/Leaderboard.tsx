@@ -4,33 +4,127 @@ import { fetchLeaderboard } from './LeaderboardServices';
 import { LeaderboardResponse, LeaderboardEntry } from '../../types/Pages';
 import './Leaderboard.css';
 
-interface LeaderboardAPIResponse {
-  leaderboardData: LeaderboardEntry[];
+interface APILeaderboardResponse {
+  topUsers: LeaderboardEntry[];
   currentUser: LeaderboardEntry;
 }
 
+// Luffy Loader with shimmer effect
+const LuffyLoader: React.FC = () => (
+  <div className="luffy-loader-container">
+    <div className="luffy-logo">
+      <img src="/assets/luffy.png" alt="" className="bottom-img" />
+      <img src="/assets/luffy.png" alt="" className="top-img" />
+    </div>
+  </div>
+);
+
+interface TopThreeCardsProps {
+  topThree: LeaderboardEntry[];
+}
+
+const TopThreeCards: React.FC<TopThreeCardsProps> = ({ topThree }) => (
+  <div className="top-three-cards">
+    {topThree[1] && (
+      <div className="top-card top-card--silver">
+        <div className="top-card__rank">Admiral</div>
+        <div className="top-card__name">{topThree[1].username}</div>
+        <div className="top-card__bounty">
+          {topThree[1].totalValue.toLocaleString()} ₿
+        </div>
+      </div>
+    )}
+    {topThree[0] && (
+      <div className="top-card top-card--gold">
+        <div className="top-card__rank">Fleet Admiral</div>
+        <div className="top-card__name">{topThree[0].username}</div>
+        <div className="top-card__bounty">
+          {topThree[0].totalValue.toLocaleString()} ₿
+        </div>
+      </div>
+    )}
+    {topThree[2] && (
+      <div className="top-card top-card--bronze">
+        <div className="top-card__rank">Admiral</div>
+        <div className="top-card__name">{topThree[2].username}</div>
+        <div className="top-card__bounty">
+          {topThree[2].totalValue.toLocaleString()} ₿
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+interface LeaderboardListProps {
+  entries: LeaderboardEntry[];
+}
+
+const LeaderboardList: React.FC<LeaderboardListProps> = ({ entries }) => (
+  <div className="leaderboard-list-container">
+    <table className="leaderboard-table">
+      <thead>
+        <tr>
+          <th className="leaderboard-table__header">Rank</th>
+          <th className="leaderboard-table__header">Officer Name</th>
+          <th className="leaderboard-table__header">Seized Bounty</th>
+        </tr>
+      </thead>
+      <tbody>
+        {entries.map((entry, index) => (
+          <tr
+            key={entry.rank ?? index}
+            className={`table-row ${index < 7 ? 'table-row--highlight' : ''}`}
+          >
+            <td className="leaderboard-table__cell">#{entry.rank}</td>
+            <td className="leaderboard-table__cell">{entry.username}</td>
+            <td className="leaderboard-table__cell">
+              {entry.totalValue.toLocaleString()} ₿
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+interface YourRankCardProps {
+  currentUser: LeaderboardEntry;
+}
+
+const YourRankCard: React.FC<YourRankCardProps> = ({ currentUser }) => (
+  <div className="your-rank-card">
+    <div className="your-rank-card__item">
+      <span className="your-rank-card__label">Your Rank:</span>
+      <span className="your-rank-card__value">#{currentUser.rank}</span>
+    </div>
+    <div className="your-rank-card__item">
+      <span className="your-rank-card__label">Seized Bounty:</span>
+      <span className="your-rank-card__value">
+        {currentUser.totalValue.toLocaleString()} ₿
+      </span>
+    </div>
+  </div>
+);
+
 const LeaderboardPage: React.FC = () => {
-  
   const { data, isLoading } = useQuery<
-    LeaderboardResponse, 
+    LeaderboardResponse,
     Error,
-    LeaderboardAPIResponse
+    APILeaderboardResponse
   >({
     queryKey: ['leaderboardData'],
     queryFn: fetchLeaderboard,
     staleTime: 1000 * 60 * 30,
     gcTime: 1000 * 60 * 15,
-    select: (response: LeaderboardResponse): LeaderboardAPIResponse => {
-      const leaderboardData: LeaderboardEntry[] = response.data.topUsers.map(
-        (user, index) => ({
-          rank: index + 1,
-          username: user.name,
-          totalValue: Math.floor(user.totalValue),
-        })
-      );
+    select: (response: LeaderboardResponse): APILeaderboardResponse => {
+      const topUsers: LeaderboardEntry[] = response.data.topUsers.map((user, index) => ({
+        rank: index + 1,
+        username: user.name,
+        totalValue: Math.floor(user.totalValue),
+      }));
 
       let currentUser: LeaderboardEntry;
-      if(response.data.currentUser!=null) {
+      if (response.data.currentUser != null) {
         currentUser = {
           rank: response.data.currentUser.rank,
           username: response.data.currentUser.name,
@@ -38,141 +132,43 @@ const LeaderboardPage: React.FC = () => {
         };
       } else {
         currentUser = {
-          rank: "🐀",
-          username: "Could be you if you logged in",
+          rank: '🐀',
+          username: 'Log in to claim your spot',
           totalValue: 0,
         };
       }
-
-      return { leaderboardData, currentUser };
+      return { topUsers, currentUser };
     },
   });
 
-  if (isLoading) {
-    return (
-      <div className="center-spinner-container">
-        <div className="spinner"></div>
-      </div>
-    );
-  }
-
+  if (isLoading) return <LuffyLoader />;
   if (!data) return null;
-  
-  const { leaderboardData, currentUser } = data;
-  const topUsers = leaderboardData.slice(0, 3);
+
+  const { topUsers, currentUser } = data;
+  const topThree = topUsers.slice(0, 3);
+  const listEntries = topUsers.slice(3, 103); // ranks 4–100
 
   return (
-    <div className="page-container">
-      <div className="leaderboard-container">
-        <div className="container-title">
-          <h1 className="leaderboard-title">
-            <span className="main-title">Most wanted</span>
-            <span className="subtitle">for tax evasion</span>
+    <div className="leaderboard-wrapper">
+      <header className="leaderboard-header">
+        <div className="header-board">
+          <h1 className="header-board__title">
+            Fleet Order
           </h1>
+          <span className="header-board__subtitle">
+            Grand Line Authority
+          </span>
         </div>
-
-        <div className="combined-leaderboard">
-          <div className="top-three-container">
-{/* Replace your existing top users mapping */}
-<div className="luffy-background">
-  {/* Render #2 first */}
-  {topUsers[1] && (
-    <div key={topUsers[1].username} className="top-three-card rank-2">
-      <div className="rank-badge">#{topUsers[1].rank}</div>
-      <div className="user-details">
-        <h3 className="username">{topUsers[1].username}</h3>
-        <div className="user-stats">
-          <div className="stat-item">
-            <span className="stat-label">Bounty</span>
-            <span className="stat-value">
-              {topUsers[1].totalValue.toLocaleString()} ₿
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-  
-  {/* Render #1 second */}
-  {topUsers[0] && (
-    <div key={topUsers[0].username} className="top-three-card rank-1">
-      <div className="rank-badge">#{topUsers[0].rank}</div>
-      <div className="user-details">
-        <h3 className="username">{topUsers[0].username}</h3>
-        <div className="user-stats">
-          <div className="stat-item">
-            <span className="stat-label">Bounty</span>
-            <span className="stat-value">
-              {topUsers[0].totalValue.toLocaleString()} ₿
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-  
-  {/* Render #3 last */}
-  {topUsers[2] && (
-    <div key={topUsers[2].username} className="top-three-card rank-3">
-      <div className="rank-badge">#{topUsers[2].rank}</div>
-      <div className="user-details">
-        <h3 className="username">{topUsers[2].username}</h3>
-        <div className="user-stats">
-          <div className="stat-item">
-            <span className="stat-label">Bounty</span>
-            <span className="stat-value">
-              {topUsers[2].totalValue.toLocaleString()} ₿
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  )}
-</div>          </div>
-
-          <div className="leaderboard-table-container scrollable-list">
-            <table className="leaderboard-table">
-              <thead>
-                <tr>
-                  <th className="left-col">Rank</th>
-                  <th className="left-col">Pirate Name</th>
-                  <th className="left-col"></th>
-                  <th className="right-col">Total Treasure</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboardData.slice(3).map((entry) => (
-                  <tr key={entry.rank ?? 0} className={(Number(entry.rank) || Infinity) <= 10 ? 'top-rank' : 'rest'}>
-                    <td className="left-col">
-                      <span className="entry-rank">#{entry.rank}</span>
-                    </td>
-                    <td className="left-col">
-                      <span className="entry-rank">{entry.username}</span>
-                    </td>
-                    <td className="left-col"></td>
-                    <td className="right-col">
-                      {entry.totalValue.toLocaleString()} ₿
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="current-user-rank">
-            <div className="user-rank-details">
-              <span>Your Rank</span>
-              <h3>#{currentUser.rank}</h3>
-            </div>
-            <div className="user-rank-stats">
-              <div className="stat">
-                <span>Total Treasure</span>
-                <span>{currentUser.totalValue.toLocaleString()} ₿</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </header>
+      <section className="leaderboard-top-section">
+        <TopThreeCards topThree={topThree} />
+      </section>
+      <section className="leaderboard-list-section">
+        <LeaderboardList entries={listEntries} />
+      </section>
+      <section className="leaderboard-your-rank-section">
+        <YourRankCard currentUser={currentUser} />
+      </section>
     </div>
   );
 };
