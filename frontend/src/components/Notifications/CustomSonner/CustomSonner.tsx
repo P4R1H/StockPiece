@@ -65,9 +65,12 @@ export const toastMarketStatus = ({
         </span> again
         {" "}in{" "}
         <span className="time-until">
-          {parseInt(timeUntilNext) >= 60 
-            ? `${Math.floor(parseInt(timeUntilNext) / 60)} hours and ${parseInt(timeUntilNext) % 60} minutes`
-            : `${timeUntilNext} minutes`}.
+          {timeUntilNext.includes('minutes') || timeUntilNext.includes('hours') || timeUntilNext.includes('days') 
+            ? timeUntilNext
+            : parseInt(timeUntilNext) >= 60 
+              ? `${Math.floor(parseInt(timeUntilNext) / 60)} hours and ${parseInt(timeUntilNext) % 60} minutes`
+              : `${timeUntilNext} minutes`
+          }.
         </span>
       </div>
     </div>,
