@@ -1,22 +1,13 @@
-import os
 import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
 import datetime
 import re
-import json
-import sys
+from shared_functions import check_admin,check_guild,get_config
 
 
-if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/../config.json"):
-    sys.exit("'config.json' not found.")
-else:
-    with open(f"{os.path.realpath(os.path.dirname(__file__))}/../config.json") as file:
-        config = json.load(file)
 
-def check_owner(interaction: discord.Interaction) -> bool:
-    return interaction.user.id in config["owner_command_users"] and interaction.guild.id == config["main_guild_id"] #checks if cmd is used in stockpiece server + is one of the owner accounts
 
 class EmbedForm(discord.ui.Modal, title="Embed creation form"):
     
@@ -66,8 +57,8 @@ class EmbedForm(discord.ui.Modal, title="Embed creation form"):
 
 
 class RoleTransformer(app_commands.Transformer):
-    def __init__(self, breakoff_role_id: int):
-        self.breakoff_role_id = breakoff_role_id
+    def __init__(self):
+        self.breakoff_role_id = get_config("role_breakoff_id")
     
     async def transform(self, interaction: discord.Interaction, role_id: str) -> discord.Role:
         role = discord.utils.get(interaction.guild.roles, id=int(role_id))
@@ -92,7 +83,8 @@ class RoleTransformer(app_commands.Transformer):
             if role.position < breakoff_role.position
             and not role.hoist
             and role.is_assignable()
-            and current.lower() in role.name.lower()
+            and current.lower() in role.name.lower() 
+            and (role.permissions.value & discord.Permissions.elevated().value)==0
         ]
         
         return [app_commands.Choice(name='@'+role.name, value=str(role.id)) for role in filtered_roles[:25]]
@@ -107,8 +99,8 @@ class Owners(commands.Cog, name="Owner Commands"):
         name="create_embed",
         description="Create an embed (Main stockpiece server admin-only).",
     )
-    @app_commands.check(check_owner)
-    @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
+    @app_commands.check(check_admin)
+    @app_commands.guilds(discord.Object(id=get_config("main_guild_id")))
     async def create_embed(self, interaction: discord.Interaction ,channel: discord.TextChannel, colorx: str="") -> None:
         embed_form = EmbedForm()
         await interaction.response.send_modal(embed_form)
@@ -195,22 +187,25 @@ class Owners(commands.Cog, name="Owner Commands"):
         name="role",
         description="Add/Remove role.",
     )
-    @app_commands.check(check_owner)
-    @app_commands.guilds(discord.Object(id=config["main_guild_id"]))
+    @app_commands.check(check_guild)
+    @app_commands.guilds(discord.Object(id=get_config("main_guild_id")))
     @app_commands.describe(role="Role you want to add/remove")
-    #add transformer here to filter roles.
-    async def role(self, interaction: discord.Interaction,role: app_commands.Transform[discord.Role, RoleTransformer(config["role_breakoff_id"])]):
-
+    async def role(self, interaction: discord.Interaction,role: app_commands.Transform[discord.Role, RoleTransformer()]):
+        #recheck everything to be sure
+        #add perm checks incase (admin,manage,etc)
         if not role:
             await interaction.response.send_message("No matching roles found.", ephemeral=True)
             return
-        
-        if role in interaction.user.roles:
+        breakoff_role = discord.utils.get(interaction.guild.roles, id=get_config("role_breakoff_id"))
+        if role.position < breakoff_role.position and not role.hoist and role.is_assignable() and (role.permissions.value & discord.Permissions.elevated().value) !=0:
+            await interaction.response.send_message(f"Not allowed to add this role!",ephemeral=True)
+            return
+        elif role in interaction.user.roles:
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
         else:
             await interaction.user.add_roles(role)
             await interaction.response.send_message(f"Found role {role.name}, Adding!",ephemeral=True)
-
+        
 async def setup(bot) -> None:
     await bot.add_cog(Owners(bot))
