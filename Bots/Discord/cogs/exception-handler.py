@@ -20,7 +20,7 @@ class ExceptionHandler(commands.Cog, name="ErrorHandler"):
                 color=0xE02B2B
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
-            self.logger.info(f"{interaction.user} (ID: {interaction.user.id}) attempted to run an app command they do not have permission for in the guild {interaction.guild.name} (ID: {interaction.guild.id}).")
+            self.logger.debug(f"{interaction.user} (ID: {interaction.user.id}) attempted to run an app command they do not have permission for in the guild {interaction.guild.name} (ID: {interaction.guild.id}).")
         # Handle other types of errors here (e.g., MissingPermissions, BotMissingPermissions)
         elif isinstance(error, commands.CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)

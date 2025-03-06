@@ -181,6 +181,7 @@ class Owners(commands.Cog, name="Owner Commands"):
         if embed.description == None and embed.title == None and embed.image == None:
             await interaction.response.send_message("No title, description or image given!", ephemeral=True)
             return
+        await channel.send(embed=embed)
         await interaction.response.send_message("Embed created!", ephemeral=True)
         
     @app_commands.command(
@@ -200,10 +201,10 @@ class Owners(commands.Cog, name="Owner Commands"):
             return
         elif role in interaction.user.roles:
             await interaction.user.remove_roles(role)
-            await interaction.response.send_message(f"Found role {role.name}, Removing!",ephemeral=True)
+            await interaction.response.send_message(f"Removing role {role.name}.",ephemeral=True)
         else:
             await interaction.user.add_roles(role)
-            await interaction.response.send_message(f"Found role {role.name}, Adding!",ephemeral=True)
+            await interaction.response.send_message(f"Adding role {role.name}.",ephemeral=True)
         
 async def setup(bot) -> None:
     await bot.add_cog(Owners(bot))
