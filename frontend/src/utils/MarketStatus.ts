@@ -1,5 +1,6 @@
 // src/utils/marketStatus.ts
-export type MarketStatus = 'open' | 'closed' | 'updating';
+// export type MarketStatus = 'open' | 'closed' | 'updating';
+export type MarketStatus = any
 
 export interface MarketStatusInfo {
   status: MarketStatus;
@@ -76,6 +77,10 @@ export function getMarketStatusInfo(): MarketStatusInfo {
       timeUntilNext = `${daysUntilThursday} day${daysUntilThursday > 1 ? 's' : ''}`;
     }
   }
+
+  status = 'Closed';
+   nextStatus = 'Open';
+  timeUntilNext = 'Dont know, Fixing issues, Sorry!';
 
   return { status, nextStatus, timeUntilNext };
 }
