@@ -638,7 +638,7 @@ const updatePreviousNetworth = asyncHandler(async (req, res, _next) => {
     async (session) => {
       
       // Update all users' prevNetWorth with their current total value
-      const users = User
+      const users = await User
       .find({})
       .populate({
         path: "ownedStocks.stock",
