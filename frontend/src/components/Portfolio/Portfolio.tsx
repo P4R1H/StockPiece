@@ -131,7 +131,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
             {' '}
             (Last Chapter: 
             <span className={`highlight ${profitLossLastChapter >= 0 ? 'profit' : 'loss'}`}>
-              {formatPercentage(0)}%
+              {formatPercentage(profitLossLastChapter)}%
             </span>)
           </span>
         </p>
