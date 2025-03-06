@@ -93,6 +93,30 @@ const closeMarket = asyncHandler(async (req, res, _) => {
   res.status(200).json(new ApiResponse(200, "market closed successfully"));
 });
 
+
+const tempCloseMarket = asyncHandler(async (req, res, _) => {
+  if (!req?.admin) {
+    throw new ApiError(400, "unauthorized request");
+  }
+
+  const latestChapterDoc = await ChapterRelease.findOne().sort({
+    releaseDate: -1,
+  });
+  //if the market has already been closed then that's an error
+  if (latestChapterDoc?.isWindowClosed) {
+    throw new ApiError(400, "market is already closed");
+  }
+
+  latestChapterDoc.isWindowClosed = true;
+  await latestChapterDoc.save({ validateModifiedOnly: true });
+
+  if (!closeMarketSuccess) {
+    throw new ApiError(500, "not able to close market");
+  }
+
+  res.status(200).json(new ApiResponse(200, "market closed temporarily"));
+})
+
 const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
 
   if (!req.admin) {
@@ -451,4 +475,5 @@ export {
   getStockUpdateStatistics,
   postUpdatePrice,
   openMarket,
+  tempCloseMarket
 };
