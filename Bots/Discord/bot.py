@@ -9,14 +9,10 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
 
+from shared_functions import get_config
+
 intents = discord.Intents.default()
 intents.message_content = True
-
-if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
-    sys.exit("'config.json' not found.")
-else:
-    with open(f"{os.path.realpath(os.path.dirname(__file__))}/config.json") as file:
-        config = json.load(file)
 
 class LoggingFormatter(logging.Formatter):
     # Colors
@@ -69,14 +65,13 @@ logger.addHandler(file_handler)
 class DiscordBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=commands.when_mentioned_or(config["prefix"]),
+            command_prefix=commands.when_mentioned_or(get_config("prefix")),
             intents=intents,
             help_command=None,
         )
 
         self.logger = logger
-        self.prefix = config["prefix"]
-        self.config = config
+        self.prefix = get_config("prefix")
 
     async def load_cogs(self) -> None:
         for file in os.listdir(f"{os.path.realpath(os.path.dirname(__file__))}/cogs"):
@@ -107,7 +102,7 @@ class DiscordBot(commands.Bot):
         try:
             synced = await self.tree.sync()
             print(f"Synced {len(synced)} command(s)")
-            synced = await bot.tree.sync(guild=discord.Object(id=config["main_guild_id"]) )
+            synced = await bot.tree.sync(guild=discord.Object(id=get_config("main_guild_id")))
             print(f"Synced {len(synced)} guild command(s)")
         except Exception as e:
             print(f"Failed to sync commands: {e}")
