@@ -26,10 +26,6 @@ const releaseChapterService = async () => {
   const windowEndDate = new Date(releaseDate);
   windowEndDate.setDate(windowEndDate.getDate() + 3);
 
-  // Start a session for the transaction
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
   try {
     const transaction = await mongoose.connection.transaction(
       async (session) => {
