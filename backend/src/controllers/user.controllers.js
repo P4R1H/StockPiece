@@ -15,6 +15,7 @@ import UserFingerprint from "../models/fingerPrint.models.js";
 import ChapterRelease from "../models/chapterRelease.models.js";
 import { CACHE_KEYS } from "../constants.js";
 import cache from "../utils/cache.js";
+import mongoose from "mongoose";
 
 const verifyCoupon = async (couponCode, user) => {
   const coupon = await Coupon.findOne({
@@ -628,6 +629,68 @@ const getUserTransaction = asyncHandler(async (req, res, _next) => {
   );
 });
 
+const updatePreviousNetworth = asyncHandler(async (req, res, _next) => {
+  if (!req.admin) {
+    throw new ApiError(400,'unauthorized error');
+  }
+
+  const _transaction = await mongoose.connection.transaction(
+    async (session) => {
+      
+      // Update all users' prevNetWorth with their current total value
+      const users = User
+      .find({})
+      .populate({
+        path: "ownedStocks.stock",
+        select: "currentValue",
+      })
+      .session(session)
+      .cursor();
+
+      let bulkOps = [];
+
+      for await (const user of users) {
+        const stockValue = user.ownedStocks.reduce(
+          (total, stock) => total + stock.stock.currentValue * stock.quantity,
+          0
+        );
+        const currentNetWorth = user.accountValue + stockValue;
+
+        bulkOps.push({
+          updateOne: {
+            filter: {_id: user._id},
+            update: {
+              $set: {
+                prevNetWorth: currentNetWorth
+              }
+            }
+          }
+        })
+
+        if (bulkOps.length === 1000) {
+          await User.bulkWrite(bulkOps, {session});
+          bulkOps = [];
+        }
+      }
+
+      if (bulkOps.length > 0) {
+        await User.bulkWrite(bulkOps, {session});
+      }
+
+    }
+  )
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        null,
+        'user prev net worth updated successfully'
+      )
+    )
+});
+
 export {
   registerUser,
   loginUser,
@@ -637,5 +700,6 @@ export {
   checkLogin,
   getCurrentUserPortfolio,
   getTopUsersByStockValue,
-  getUserTransaction
+  getUserTransaction,
+  updatePreviousNetworth
 };
