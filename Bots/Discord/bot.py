@@ -1,15 +1,14 @@
-import json
+import asyncio
 import logging
 import os
 import platform
-import sys
 
 import discord
 from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
 
-from shared_functions import get_config,check_emid
+from shared_functions import get_config
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -69,9 +68,10 @@ class DiscordBot(commands.Bot):
             intents=intents,
             help_command=None,
         )
-
+        cembed_id = []
         self.logger = logger
         self.prefix = get_config("prefix")
+        self.cembed_id = cembed_id
 
     async def load_cogs(self) -> None:
         for file in os.listdir(f"{os.path.realpath(os.path.dirname(__file__))}/cogs"):
@@ -117,7 +117,7 @@ class DiscordBot(commands.Bot):
         else:
             self.logger.debug(f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs")
 
-    async def on_command_error(self, context: Context, error) -> None:
+    async def on_command_error(self, context: Context, error) -> None: #TODO eventually will need to move this whole func to exception-handler (change file name to camelcase also maybe)
         if isinstance(error, commands.CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
@@ -133,13 +133,9 @@ class DiscordBot(commands.Bot):
             )
             await context.send(embed=embed)
             if context.guild:
-                self.logger.warning(
-                    f"{context.author} (ID: {context.author.id}) tried to execute an owner only command in the guild {context.guild.name} (ID: {context.guild.id}), but the user is not an owner of the bot."
-                )
+                self.logger.debug(f"{context.author} (ID: {context.author.id}) tried to execute an owner only command in the guild {context.guild.name} (ID: {context.guild.id}), but the user is not an owner of the bot.")
             else:
-                self.logger.warning(
-                    f"{context.author} (ID: {context.author.id}) tried to execute an owner only command in the bot's DMs, but the user is not an owner of the bot."
-                )
+                self.logger.debug(f"{context.author} (ID: {context.author.id}) tried to execute an owner only command in the bot's DMs, but the user is not an owner of the bot.")
         elif isinstance(error, commands.MissingPermissions):
             embed = discord.Embed(
                 description="You are missing the permission(s) `"
@@ -155,11 +151,11 @@ class DiscordBot(commands.Bot):
             )
             await context.send(embed=embed)
             if context.guild:
-                self.logger.info(
+                self.logger.debug(
                     f"{context.author} (ID: {context.author.id}) attempted to run a command they do not have permission for in the guild {context.guild.name} (ID: {context.guild.id})."
                 )
             else:
-                self.logger.info(
+                self.logger.debug(
                     f"{context.author} (ID: {context.author.id}) attempted to run a command they do not have permission for in the bot's DMs."
                 )
         elif isinstance(error, commands.BotMissingPermissions):
@@ -177,12 +173,23 @@ class DiscordBot(commands.Bot):
                 color=0xE02B2B,
             )
             await context.send(embed=embed)
+        elif isinstance(error, commands.CommandNotFound):
+            self.logger.debug(f"Unknown command attempted: {context.message.content}. Error: {error}")
         else:
             raise error
 
     
     async def on_message(self, message: discord.Message) -> None:
-        if message.channel.id == get_config("autodelete_channel") and not check_emid(message.id):
+        if message.author.id == self.user.id:
+            await asyncio.sleep(2) #allow msg some time to be sent and logged before deletion, to see if it was an embed cmd created msg.
+            if message.id not in self.cembed_id:
+                try:
+                    await message.delete()
+                except discord.errors.NotFound:
+                    self.logger.debug(f"Tried to delete a message that no longer exists: {message.id}") #weird error where tries to delete nonexistent/ephermal msg
+                except Exception as e:
+                    self.logger.debug(f"Error in on_message: {e}")
+        elif message.channel.id == get_config("autodelete_channel") and message.id not in self.cembed_id:
             await message.delete()
 
         await self.process_commands(message)
