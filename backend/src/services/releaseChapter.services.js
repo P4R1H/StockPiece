@@ -31,54 +31,54 @@ const releaseChapterService = async () => {
   session.startTransaction();
 
   try {
-    // Create new chapter
-    const newChapter = await ChapterRelease.create(
-      [
-        {
-          chapter: newChapterNumber,
-          releaseDate,
-          windowEndDate,
-        },
-      ],
-      { session }
-    );
-
-    if (!newChapter?.[0]) {
-      throw new Error("problem releasing chapter");
-    }
-
-    // Update all users' prevNetWorth with their current total value
-    const users = await User.find({})
-      .populate({
-        path: "ownedStocks.stock",
-        select: "currentValue",
-      })
-      .session(session);
-
-    for (const user of users) {
-      const stockValue = user.ownedStocks.reduce(
-        (total, stock) => total + stock.stock.currentValue * stock.quantity,
-        0
-      );
-      const currentNetWorth = user.accountValue + stockValue;
-
-      await User.findByIdAndUpdate(
-        user._id,
-        {
-          prevNetWorth: currentNetWorth,
-        },
-        { session }
-      );
-    }
-
-    await session.commitTransaction();
-    console.log(`new chapter ${newChapterNumber} released`);
-    return newChapterNumber;
+    const transaction = await mongoose.connection.transaction(
+      async (session) => {
+        const newChapter = await ChapterRelease.create(
+          [
+            {
+              chapter: newChapterNumber,
+              releaseDate,
+              windowEndDate,
+            },
+          ],
+          { session }
+        );
+    
+        if (!newChapter?.[0]) {
+          throw new Error("problem releasing chapter");
+        }
+    
+        // Update all users' prevNetWorth with their current total value
+        const users = await User.find({})
+          .populate({
+            path: "ownedStocks.stock",
+            select: "currentValue",
+          })
+          .session(session);
+    
+        for (const user of users) {
+          const stockValue = user.ownedStocks.reduce(
+            (total, stock) => total + stock.stock.currentValue * stock.quantity,
+            0
+          );
+          const currentNetWorth = user.accountValue + stockValue;
+    
+          await User.findByIdAndUpdate(
+            user._id,
+            {
+              prevNetWorth: currentNetWorth,
+            },
+            { session }
+          );
+        }
+        console.log(`new chapter ${newChapterNumber} released`);
+        return newChapterNumber;
+      }
+    )
+  
   } catch (error) {
-    await session.abortTransaction();
+    console.log(`there was some error while releasing chapter`)
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
