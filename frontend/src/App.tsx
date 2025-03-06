@@ -54,20 +54,22 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
   ); 
 }; 
  
+
 const App: React.FC = () => { 
   const queryClient = useQueryClient(); 
   const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [showTutorial, setShowTutorial] = useState(false);
 
+  const checkLoginStatus = async () => { 
+    try { 
+      const resp = await loginExists(); 
+      setIsLoggedIn(resp.data.loginStatus); 
+    } catch { 
+      setIsLoggedIn(false); 
+    } 
+  }; 
+
   useEffect(() => { 
-    const checkLoginStatus = async () => { 
-      try { 
-        const resp = await loginExists(); 
-        setIsLoggedIn(resp.data.loginStatus); 
-      } catch { 
-        setIsLoggedIn(false); 
-      } 
-    }; 
     checkLoginStatus(); 
   }, []); 
  
@@ -75,7 +77,7 @@ const App: React.FC = () => {
     setTimeout(() => {
       queryClient.invalidateQueries({ queryKey: ['portfolio'] });
       queryClient.invalidateQueries({ queryKey: ['leaderboardData'] });
-      setIsLoggedIn(true);
+      checkLoginStatus();
       
       if (loginResponse.data.firstTimeLogin) {
         setShowTutorial(true);
