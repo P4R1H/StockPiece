@@ -110,10 +110,6 @@ const tempCloseMarket = asyncHandler(async (req, res, _) => {
   latestChapterDoc.isWindowClosed = true;
   await latestChapterDoc.save({ validateModifiedOnly: true });
 
-  if (!closeMarketSuccess) {
-    throw new ApiError(500, "not able to close market");
-  }
-
   res.status(200).json(new ApiResponse(200, "market closed temporarily"));
 })
 
