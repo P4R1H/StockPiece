@@ -76,8 +76,10 @@ const checkDailyLogin = (lastDailyLoginDate) => {
 
 const generateAccessRefreshToken = async (user) => {
   try {
-    const accessToken = await user.generateAccessToken();
-    const refreshToken = await user.generateRefreshToken();
+    const [ accessToken, refreshToken ] = await Promise.all([
+      user.generateAccessToken(),
+      user.generateRefreshToken()
+    ])
 
     const _updatedUser = await User.findByIdAndUpdate(user._id, {
       $set: {
@@ -90,40 +92,28 @@ const generateAccessRefreshToken = async (user) => {
     throw new ApiError(
       500,
       "something went wrong while generating access and refresh token",
-      error.message,
+      error,
       error.stack
     );
   }
 };
 
 const registerUser = asyncHandler(async (req, res, _) => {
-  //we need to get the username and password
-  //check if it is valid
-  //then store tha password
   const { username, password, fingerprint } = req.body;
 
   if (!username?.trim() || !password?.trim()) {
     throw new ApiError(400, "username and password required");
   }
 
-  let maxAccountCreated = false;
-
+  let existingFingerPrint;
   if (fingerprint?.trim()) {
     //if finger print provided then we need to check if max 3 accounts created or not for the week
-    const existingFingerPrint = await UserFingerprint.findOne({ fingerprint });
-    if (existingFingerPrint) {
-      maxAccountCreated = true;
-      if (existingFingerPrint.count >= 3) {
-        throw new ApiError(429, "max accounts created for your device");
-      } else {
-        existingFingerPrint.count += 1;
-        existingFingerPrint.save({ validateModifiedOnly: true });
-      }
-    } else {
-      await UserFingerprint.create({
-        fingerprint: fingerprint.trim(),
-      });
+    existingFingerPrint = await UserFingerprint.findOne({ fingerprint });
+
+    if (existingFingerPrint?.count >= 3) {
+      throw new ApiError(429, "max accounts created for your device");
     }
+    
   }
 
   // Check for profanity in username
@@ -162,12 +152,23 @@ const registerUser = asyncHandler(async (req, res, _) => {
     throw new ApiError(500, "some error occurred while creating user");
   }
 
+  if (fingerprint?.trim()) {
+    if (existingFingerPrint) {
+      existingFingerPrint.count += 1;
+      existingFingerPrint.save({ validateModifiedOnly: true });
+    } else {
+      const _createdFingerPrint = await UserFingerprint.create({
+        fingerprint: fingerprint.trim(),
+      });
+    }
+  }
+
   res.status(200).json(
     new ApiResponse(
       200,
       {
         createdUser,
-        maxAccountCreated,
+        maxAccountCreated: false,
       },
       "user created successfully"
     )

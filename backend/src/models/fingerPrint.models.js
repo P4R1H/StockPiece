@@ -10,7 +10,7 @@ const userFingerprintSchema = new mongoose.Schema({
   count: {
     type: Number,
     default: 1,
-    max: 3,
+    max: [3,'maximum account created'],
   },
   createdAt: {
     type: Date,
