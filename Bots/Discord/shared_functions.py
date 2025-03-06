@@ -21,6 +21,15 @@ def check_admin(interaction: discord.Interaction) -> bool:
 def check_guild(interaction: discord.Interaction) -> bool:
     return not interaction.guild is None and interaction.guild.id == config["main_guild_id"] #checks if cmd is used in stockpiece server
 
-
 def get_config(x):
     return config[x]
+
+cembed_ids = []
+
+def add_emid(id: int) -> None:
+    cembed_ids.append(id)
+
+def check_emid(id: int) -> bool:
+    if id in cembed_ids: 
+        return True 
+    return False

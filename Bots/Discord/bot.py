@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
 
-from shared_functions import get_config
+from shared_functions import get_config,check_emid
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -182,7 +182,7 @@ class DiscordBot(commands.Bot):
 
     
     async def on_message(self, message: discord.Message) -> None:
-        if message.channel.id == get_config("autodelete_channel"):
+        if message.channel.id == get_config("autodelete_channel") and not check_emid(message.id):
             await message.delete()
 
         await self.process_commands(message)

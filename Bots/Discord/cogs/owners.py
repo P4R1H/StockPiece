@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.ext.commands import Context
 import datetime
 import re
-from shared_functions import check_admin,check_guild,get_config
+from shared_functions import check_admin,check_guild,get_config,add_emid
 
 
 
@@ -181,7 +181,8 @@ class Owners(commands.Cog, name="Owner Commands"):
         if embed.description == None and embed.title == None and embed.image == None:
             await interaction.response.send_message("No title, description or image given!", ephemeral=True)
             return
-        await channel.send(embed=embed)
+        m = await channel.send(embed=embed)
+        add_emid(m.id)
         await interaction.response.send_message("Embed created!", ephemeral=True)
         
     @app_commands.command(
