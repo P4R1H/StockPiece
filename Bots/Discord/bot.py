@@ -9,14 +9,10 @@ from discord.ext import commands, tasks
 from discord.ext.commands import Context
 from dotenv import load_dotenv
 
+from shared_functions import get_config
+
 intents = discord.Intents.default()
 intents.message_content = True
-
-if not os.path.isfile(f"{os.path.realpath(os.path.dirname(__file__))}/config.json"):
-    sys.exit("'config.json' not found.")
-else:
-    with open(f"{os.path.realpath(os.path.dirname(__file__))}/config.json") as file:
-        config = json.load(file)
 
 class LoggingFormatter(logging.Formatter):
     # Colors
@@ -69,14 +65,13 @@ logger.addHandler(file_handler)
 class DiscordBot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
-            command_prefix=commands.when_mentioned_or(config["prefix"]),
+            command_prefix=commands.when_mentioned_or(get_config("prefix")),
             intents=intents,
             help_command=None,
         )
 
         self.logger = logger
-        self.prefix = config["prefix"]
-        self.config = config
+        self.prefix = get_config("prefix")
 
     async def load_cogs(self) -> None:
         for file in os.listdir(f"{os.path.realpath(os.path.dirname(__file__))}/cogs"):
@@ -101,13 +96,13 @@ class DiscordBot(commands.Bot):
         )
         self.logger.info("-------------------")
         await self.load_cogs()
-        await self.sync_cmds()
+        #await self.sync_cmds()
 
     async def sync_cmds(self) -> None:
         try:
             synced = await self.tree.sync()
             print(f"Synced {len(synced)} command(s)")
-            synced = await bot.tree.sync(guild=discord.Object(id=config["main_guild_id"]) )
+            synced = await bot.tree.sync(guild=discord.Object(id=get_config("main_guild_id")))
             print(f"Synced {len(synced)} guild command(s)")
         except Exception as e:
             print(f"Failed to sync commands: {e}")
@@ -118,16 +113,11 @@ class DiscordBot(commands.Bot):
         split = full_command_name.split(" ")
         executed_command = str(split[0])
         if context.guild is not None:
-            self.logger.debug(
-                f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {context.author} (ID: {context.author.id})"
-            )
+            self.logger.debug(f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {context.author} (ID: {context.author.id})")
         else:
-            self.logger.debug(
-                f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs"
-            )
+            self.logger.debug(f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs")
 
     async def on_command_error(self, context: Context, error) -> None:
-
         if isinstance(error, commands.CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
@@ -191,7 +181,11 @@ class DiscordBot(commands.Bot):
             raise error
 
     
+    async def on_message(self, message: discord.Message) -> None:
+        if message.channel.id == get_config("autodelete_channel"):
+            await message.delete()
 
+        await self.process_commands(message)
 
 load_dotenv()
 

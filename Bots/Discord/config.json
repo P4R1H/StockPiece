@@ -2,9 +2,11 @@
     "prefix": ">>",
     "inv_link": "",
     "website_link": "https://www.stockpiece.fun/",
-    "server_link": "",
+    "server_link": "https://discord.gg/Ckfsgq4AjH",
     "owner_command_users": [602569683543130113,633313464227594280,0],
     "main_guild_id": 1344608286745301014,
     "custom_id_hardcode": "zVaoe2ztI1",
-    "role_breakoff_id": 1344614379022192763
+    "role_breakoff_id": 1344614379022192763,
+    "admin_role_id": 1344608549384491069,
+    "autodelete_channel": 1344611734329233469
 }

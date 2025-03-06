@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import Context
-
+from shared_functions import get_config
 
 class General(commands.Cog, name="general"):
     def __init__(self, bot) -> None:
@@ -30,21 +30,7 @@ class General(commands.Cog, name="general"):
                 embed.add_field(
                     name=i.capitalize(), value=f"```{help_text}```", inline=False
                 )
-        embed.set_footer(text=self.bot.config["website_link"])
-        await context.send(embed=embed)
-
-
-    @commands.hybrid_command(
-        name="ping",
-        description="Check if the bot is alive.",
-    )
-    @commands.is_owner()
-    async def ping(self, context: Context) -> None:
-        embed = discord.Embed(
-            title="Latency check",
-            description=f"The bot latency is {round(self.bot.latency * 1000)}ms.",
-            color=0xBEBEFE,
-        )
+        embed.set_footer(text=get_config("website_link"))
         await context.send(embed=embed)
 
     @commands.hybrid_command(
@@ -54,10 +40,10 @@ class General(commands.Cog, name="general"):
     async def invite(self, context: Context) -> None:
 
         embed = discord.Embed(
-            description=f"Invite me by clicking [here]({self.bot.config["inv_link"]}).",
+            description=f"Invite me by clicking [here]({get_config("inv_link")}).",
             color=0xD75BF4,
         )
-        embed.set_footer(text=self.bot.config["website_link"])
+        embed.set_footer(text=get_config("website_link"))
         await context.send(embed=embed)
 
     @commands.hybrid_command(
@@ -67,10 +53,10 @@ class General(commands.Cog, name="general"):
     async def server(self, context: Context) -> None:
 
         embed = discord.Embed(
-            description=f"Join the support server for the bot by clicking [here]({self.bot.config["server_link"]}).",
+            description=f"Join the support server for the bot by clicking [here]({get_config("server_link")}).",
             color=0xD75BF4,
         )
-        embed.set_footer(text=self.bot.config["website_link"])
+        embed.set_footer(text=get_config("website_link"))
         await context.send(embed=embed)
 
 
