@@ -12,6 +12,7 @@ import {
   toggleNextChapterRelease,
   getNextChapterReleaseStatus,
   getAllChapters,
+  tempCloseMarket,
 } from "../controllers/market.controllers.js";
 import { verifyAdminJWT } from "../middlewares/auth.middlewares.js";
 
@@ -24,6 +25,7 @@ marketRouter.route("/status").get(getMarketStatus);
 marketRouter.use(verifyAdminJWT);
 marketRouter.route("/chapters/release").post(releaseChapter);
 marketRouter.route("/close").patch(closeMarket);
+marketRouter.route("/close/temp").patch(tempCloseMarket);
 marketRouter.route("/open").patch(openMarket);
 // marketRouter
 //   .route("/price-updates/algorithm")

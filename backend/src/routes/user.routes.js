@@ -7,6 +7,7 @@ import {
   logoutUser,
   refreshAccessToken,
   updateAvatar,
+  updatePreviousNetworth,
 } from "../controllers/user.controllers.js";
 import upload from "../middlewares/multer.middlewares.js";
 import { registerUser } from "../controllers/user.controllers.js";
@@ -38,5 +39,6 @@ userRouter.route("/auth/logout").post(logoutUser);
 userRouter.route("/profile/login-status").get(checkLogin);
 userRouter.route("/portfolio").get(getCurrentUserPortfolio);
 userRouter.route("/leaderboard").get(getTopUsersByStockValue);
+userRouter.route("/networth/prev").patch(updatePreviousNetworth);
 
 export default userRouter;
