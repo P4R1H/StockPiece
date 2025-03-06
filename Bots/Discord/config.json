@@ -7,5 +7,6 @@
     "main_guild_id": 1344608286745301014,
     "custom_id_hardcode": "zVaoe2ztI1",
     "role_breakoff_id": 1344614379022192763,
-    "admin_role_id": 1344608549384491069
+    "admin_role_id": 1344608549384491069,
+    "autodelete_channel": 1344611734329233469
 }

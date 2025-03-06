@@ -113,16 +113,11 @@ class DiscordBot(commands.Bot):
         split = full_command_name.split(" ")
         executed_command = str(split[0])
         if context.guild is not None:
-            self.logger.debug(
-                f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {context.author} (ID: {context.author.id})"
-            )
+            self.logger.debug(f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {context.author} (ID: {context.author.id})")
         else:
-            self.logger.debug(
-                f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs"
-            )
+            self.logger.debug(f"Executed {executed_command} command by {context.author} (ID: {context.author.id}) in DMs")
 
     async def on_command_error(self, context: Context, error) -> None:
-
         if isinstance(error, commands.CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
@@ -186,7 +181,11 @@ class DiscordBot(commands.Bot):
             raise error
 
     
+    async def on_message(self, message: discord.Message) -> None:
+        if message.channel.id == get_config("autodelete_channel"):
+            await message.delete()
 
+        await self.process_commands(message)
 
 load_dotenv()
 
