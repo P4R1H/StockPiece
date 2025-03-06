@@ -218,7 +218,7 @@ const getAllStockStatistics = asyncHandler(async (req, res, _next) => {
     ) {
       chapterUpdatesObject[item.chapter] = item.updates;
     }
-    if (item.chapter === latestChapterDoc.chapter) {
+    if (item.chapter === 1141) {
       const tempupdates = []
       item.updates.forEach(element => {
         tempupdates.push({
