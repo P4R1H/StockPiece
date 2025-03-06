@@ -191,8 +191,6 @@ class Owners(commands.Cog, name="Owner Commands"):
     @app_commands.guilds(discord.Object(id=get_config("main_guild_id")))
     @app_commands.describe(role="Role you want to add/remove")
     async def role(self, interaction: discord.Interaction,role: app_commands.Transform[discord.Role, RoleTransformer()]):
-        #recheck everything to be sure
-        #add perm checks incase (admin,manage,etc)
         if not role:
             await interaction.response.send_message("No matching roles found.", ephemeral=True)
             return
