@@ -11,7 +11,7 @@ import {
 } from "../controllers/user.controllers.js";
 import upload from "../middlewares/multer.middlewares.js";
 import { registerUser } from "../controllers/user.controllers.js";
-import { verifyJWT } from "../middlewares/auth.middlewares.js";
+import { verifyAdminJWT, verifyJWT } from "../middlewares/auth.middlewares.js";
 import {
   globalRequestLimiter,
 } from "../middlewares/requestLimit.middlewares.js";
@@ -30,6 +30,8 @@ userRouter.route("/auth/login").post(loginUser);
 //secure routes
 userRouter.route("/auth/refresh").post(refreshAccessToken);
 
+userRouter.route("/networth/prev").patch(verifyAdminJWT,updatePreviousNetworth);
+
 userRouter.use(verifyJWT);
 
 userRouter
@@ -39,6 +41,5 @@ userRouter.route("/auth/logout").post(logoutUser);
 userRouter.route("/profile/login-status").get(checkLogin);
 userRouter.route("/portfolio").get(getCurrentUserPortfolio);
 userRouter.route("/leaderboard").get(getTopUsersByStockValue);
-userRouter.route("/networth/prev").patch(updatePreviousNetworth);
 
 export default userRouter;
