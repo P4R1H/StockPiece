@@ -52,6 +52,28 @@ export const toastMarketStatus = ({
   timeUntilNext,
   statusClass,
 }: MarketStatusToastOptions) => {
+  const formatTimeDisplay = (timeStr: string) => {
+    if (timeStr.includes('minute') || timeStr.includes('hour') || timeStr.includes('day')) {
+      return timeStr;
+    }
+    
+    const minutes = parseInt(timeStr, 10);
+    if (isNaN(minutes)) return timeStr; 
+    
+    if (minutes >= 60) {
+      const hours = Math.floor(minutes / 60);
+      const remainingMinutes = minutes % 60;
+      
+      if (remainingMinutes === 0) {
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'}`;
+      } else {
+        return `${hours} ${hours === 1 ? 'hour' : 'hours'} and ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+      }
+    } else {
+      return `${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+    }
+  };
+
   toast(
     <div className="market-status-toast-content">
       <div className="market-status-message">
@@ -65,9 +87,7 @@ export const toastMarketStatus = ({
         </span> again
         {" "}in{" "}
         <span className="time-until">
-          {parseInt(timeUntilNext) >= 60 
-            ? `${Math.floor(parseInt(timeUntilNext) / 60)} hours and ${parseInt(timeUntilNext) % 60} minutes`
-            : `${timeUntilNext} minutes`}.
+          {formatTimeDisplay(timeUntilNext)}.
         </span>
       </div>
     </div>,
