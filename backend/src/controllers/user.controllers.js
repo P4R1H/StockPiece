@@ -645,11 +645,10 @@ const updatePreviousNetworth = asyncHandler(async (req, res, _next) => {
         select: "currentValue",
       })
       .session(session)
-      .cursor();
 
       let bulkOps = [];
 
-      for await (const user of users) {
+      for (const user of users) {
         const stockValue = user.ownedStocks.reduce(
           (total, stock) => total + stock.stock.currentValue * stock.quantity,
           0
