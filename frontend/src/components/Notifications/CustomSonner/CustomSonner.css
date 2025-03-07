@@ -96,7 +96,7 @@
   color: var(--toast-border) !important;
   position: absolute !important;
   top: 12px !important; /* Position at the top */
-  left: 10px !important; /* Position on the left */
+  left: 9px !important; /* Position on the left */
   transform: none !important; /* Remove any transforms */
   margin: 0 !important;
   align-self: flex-start !important;
