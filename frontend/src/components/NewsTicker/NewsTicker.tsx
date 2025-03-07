@@ -13,13 +13,13 @@ const NewsTicker: React.FC<NewsTickerProps> = ({
   marketStatus
 }) => {
   const newsItems = isLoggedIn ? NEWS_ITEMS : LOGGED_OUT_ITEMS;
-  
+
   return (
     <div className={
-      marketStatus === 'open' 
-        ? 'news-ticker market-open' 
-        : marketStatus === 'updating' 
-          ? 'news-ticker market-updating' 
+      marketStatus === 'open'
+        ? 'news-ticker market-open'
+        : marketStatus === 'updating'
+          ? 'news-ticker market-updating'
           : 'news-ticker market-closed'
     }>
       <div className="ticker-content">

@@ -14,7 +14,8 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Dark overlay */
+  background: rgba(0, 0, 0, 0.5);
+  /* Dark overlay */
   z-index: 0;
 }
 
@@ -94,7 +95,8 @@ body::before {
 
 /* Main Wrapper – Stock Grid Container with Dark Blue Gradient */
 .leaderboard-wrapper {
-  margin: 4.5rem auto 1.5rem; /* Increased top margin to make room for header */
+  margin: 4.5rem auto 1.5rem;
+  /* Increased top margin to make room for header */
   max-width: 520px;
   width: 95%;
   animation: floatIn 0.8s ease-out;
@@ -104,13 +106,15 @@ body::before {
     linear-gradient(160deg, #0a1a2a 20%, #12355b 50%, #1a4a7c 80%),
     repeating-linear-gradient(-45deg, transparent, transparent 2px, rgba(173, 216, 230, 0.1) 3px, rgba(173, 216, 230, 0.1) 5px),
     radial-gradient(circle at 80% 10%, rgba(211, 167, 40, 0.15) 0%, transparent 30%);
-  overflow: visible; /* Changed from hidden to visible */
+  overflow: visible;
+  /* Changed from hidden to visible */
   position: relative;
   box-shadow:
     0 4px 15px rgba(0, 20, 40, 0.4),
     inset 0 0 20px rgba(16, 66, 133, 0.3);
   padding: 1rem;
-  padding-top: 2rem; /* Added padding to prevent content from going under header */
+  padding-top: 2rem;
+  /* Added padding to prevent content from going under header */
 }
 
 
@@ -135,7 +139,8 @@ body::before {
 
 @media screen and (max-width: 480px) {
   .leaderboard-wrapper {
-    margin-top: 3rem; /* Adjusted for mobile */
+    margin-top: 3rem;
+    /* Adjusted for mobile */
     margin-bottom: 1rem;
     width: 96%;
     padding: 0.5rem;
@@ -148,11 +153,14 @@ body::before {
   text-align: center;
   margin-bottom: 1.5rem;
   position: absolute;
-  top: -3.5rem; /* Move it higher up */
+  top: -3.5rem;
+  /* Move it higher up */
   left: 50%;
   transform: translateX(-50%);
-  width: 60%; /* Adjust width as needed */
-  z-index: 2; /* Ensure it's above other elements */
+  width: 60%;
+  /* Adjust width as needed */
+  z-index: 2;
+  /* Ensure it's above other elements */
 }
 
 .header-board {
@@ -161,10 +169,11 @@ body::before {
   padding: 1rem 2rem;
   border: 2px solid #301909;
   border-radius: 5px;
-  box-shadow: 
+  box-shadow:
     0 4px 8px rgba(0, 0, 0, 0.5),
     0 0 20px rgba(0, 0, 0, 0.3);
-  position: relative; /* Add this to ensure proper stacking */
+  position: relative;
+  /* Add this to ensure proper stacking */
 }
 
 .header-board__title {
@@ -182,7 +191,7 @@ body::before {
   overflow: hidden;
 }
 
-.header-board__subtitle{
+.header-board__subtitle {
   font-size: 0.85rem;
   color: #ffd900e5;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
@@ -217,7 +226,7 @@ body::before {
 
 /* Top Three Cards */
 .leaderboard-top-section {
-  margin-top: 2rem ;
+  margin-top: 2rem;
   margin-bottom: 1.5rem;
 }
 
@@ -337,7 +346,8 @@ body::before {
   width: 36%;
   margin-bottom: 0.5rem;
   position: relative;
-  overflow: visible; /* Change from hidden to visible */
+  overflow: visible;
+  /* Change from hidden to visible */
 }
 
 /* Update gum-gum fruit styles */
@@ -350,9 +360,8 @@ body::before {
   width: 60px;
   height: 60px;
   background: url('/assets/raw/gumgumfruit.png') no-repeat center/contain;
-  filter: 
-    drop-shadow(0 0 8px rgba(255, 215, 0, 0.6))
-    brightness(1.1);
+  filter:
+    drop-shadow(0 0 8px rgba(255, 215, 0, 0.6)) brightness(1.1);
   animation: levitate 3s ease-in-out infinite;
   z-index: 10;
   pointer-events: none;
@@ -360,10 +369,13 @@ body::before {
 
 /* Add levitation animation */
 @keyframes levitate {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateX(-50%) translateY(0);
     filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
   }
+
   50% {
     transform: translateX(-50%) translateY(-10px);
     filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.8));
@@ -398,9 +410,8 @@ body::before {
   width: 60px;
   height: 60px;
   background: url('/assets/raw/firefirefruit.png') no-repeat center/contain;
-  filter: 
-    drop-shadow(0 0 8px rgba(255, 69, 0, 0.6))
-    brightness(1.1);
+  filter:
+    drop-shadow(0 0 8px rgba(255, 69, 0, 0.6)) brightness(1.1);
   animation: levitate 3s ease-in-out infinite;
   z-index: 10;
   pointer-events: none;
@@ -424,16 +435,17 @@ body::before {
   width: 60px;
   height: 60px;
   background: url('/assets/raw/enelsfruit.png') no-repeat center/contain;
-  filter: 
-    drop-shadow(0 0 8px rgba(255, 255, 0, 0.6))
-    brightness(1.1);
-  animation: levitate 3s ease-in-out infinite 0.5s; /* Added 0.5s delay for varied animation */
+  filter:
+    drop-shadow(0 0 8px rgba(255, 255, 0, 0.6)) brightness(1.1);
+  animation: levitate 3s ease-in-out infinite 0.5s;
+  /* Added 0.5s delay for varied animation */
   z-index: 10;
   pointer-events: none;
 }
 
 /* Add media query for mobile responsiveness */
 @media screen and (max-width: 480px) {
+
   .top-card--silver::after,
   .top-card--bronze::after {
     width: 40px;
