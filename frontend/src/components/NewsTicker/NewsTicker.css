@@ -63,6 +63,11 @@
     animation: ticker 90s linear infinite;
   }
   
+  /* Add hover pause */
+  .news-ticker:hover .ticker-content {
+    animation-play-state: paused;
+  }
+  
   /* Market Status - CLOSED Theme */
   .market-closed {
     background: var(--closed-background);
