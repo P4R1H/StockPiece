@@ -22,7 +22,7 @@ class ExceptionHandler(commands.Cog, name="ErrorHandler"):
             await interaction.response.send_message(embed=embed, ephemeral=True)
             self.logger.debug(f"{interaction.user} (ID: {interaction.user.id}) attempted to run an app command they do not have permission for in the guild {interaction.guild.name} (ID: {interaction.guild.id}).")
         # Handle other types of errors here (e.g., MissingPermissions, BotMissingPermissions)
-        elif isinstance(error, commands.CommandOnCooldown):
+        elif isinstance(error, discord.app_commands.CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
             hours = hours % 24
@@ -33,7 +33,7 @@ class ExceptionHandler(commands.Cog, name="ErrorHandler"):
                 color=0xE02B2B,
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif isinstance(error, commands.MissingPermissions):
+        elif isinstance(error, discord.app_commands.MissingPermissions):
             self.logger.debug(f"{interaction.user} (ID: {interaction.user.id})  {interaction.guild.name} (ID: {interaction.guild.id}). Error: {error}")
             embed = discord.Embed(
                 title="Error!",
@@ -43,7 +43,7 @@ class ExceptionHandler(commands.Cog, name="ErrorHandler"):
                 color=0xE02B2B,
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif isinstance(error, commands.BotMissingPermissions):
+        elif isinstance(error, discord.app_commands.BotMissingPermissions):
             self.logger.debug(f"{interaction.user} (ID: {interaction.user.id})  {interaction.guild.name} (ID: {interaction.guild.id}). Error: {error}")
             embed = discord.Embed(
                 title="Error!",
@@ -53,7 +53,8 @@ class ExceptionHandler(commands.Cog, name="ErrorHandler"):
                 color=0xE02B2B,
             )
             await interaction.response.send_message(embed=embed, ephemeral=True)
-        elif isinstance(error, commands.MissingRequiredArgument):
+        
+        elif isinstance(error, discord.app_commands.MissingRequiredArgument):
             self.logger.debug(f"{interaction.user} (ID: {interaction.user.id})  {interaction.guild.name} (ID: {interaction.guild.id}). Error: {error}")
             embed = discord.Embed(
                 title="Error!",
