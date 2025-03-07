@@ -13,7 +13,7 @@
   outline: 3px solid var(--toast-border) !important;
   font-family: "Pirata One", cursive !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-  padding: 8px 12px !important; /* Reduced padding */
+  padding: 8px 12px 8px 36px !important; /* Add left padding for icon */
   font-size: 120% !important;
   letter-spacing: 0.01rem !important;
   display: inline-flex;
@@ -75,8 +75,9 @@
   color: var(--toast-border) !important;
   align-self: flex-start !important;
   margin-top: 4px !important;
-  position: relative !important;
-  top: 0 !important;
+  position: absolute !important; /* Change to absolute */
+  top: 10px !important; /* Specific top value */
+  left: 0px !important; /* Specific left value */
   transform: none !important;
 }
 
