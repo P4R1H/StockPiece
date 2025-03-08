@@ -40,7 +40,7 @@ const TutorialOverlay: React.FC<TutorialOverlayProps> = ({ onClose }) => {
         </div>
 
         <button className="start-button" onClick={onClose}>
-          yeah man i know this shit already
+          Got it!
         </button>
       </div>
     </div>
