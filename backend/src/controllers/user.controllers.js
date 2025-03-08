@@ -55,7 +55,7 @@ const verifyCoupon = async (couponCode, user) => {
   if (coupon.usedCount >= coupon.maxUsers) {
     coupon.isActive = false;
   }
-  await coupon.save();
+  await coupon.save({validateModifiedOnly: true});
 
   return coupon;
 };
