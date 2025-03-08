@@ -48,16 +48,13 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         onLogin(response);
         navigate('/');
       } else {
+        // Register first
         await registerUser(formState.username, formState.password);
-        setFormState(prev => ({
-          ...prev,
-          activeTab: 'login',
-          username: '',
-          password: '',
-          couponCode: '',
-          isCouponActive: false,
-          isLoading: false
-        }));
+        
+        // Then automatically log in with the same credentials and pass the coupon code
+        const loginResponse = await loginUser(formState.username, formState.password, formState.couponCode);
+        onLogin(loginResponse);
+        navigate('/');
       }
     } catch (err) {
       // Format error message with only first letter capitalized
@@ -148,34 +145,32 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           </button>
         </form>
 
-        {formState.activeTab === 'login' && (
-          <div className={`coupon-container ${formState.isCouponActive ? 'active' : ''}`}>
-            {!formState.isCouponActive ? (
-              <div className="coupon-toggle" onClick={toggleCouponField}>
-          Have a coupon?
-              </div>
-            ) : (
-              <div className="coupon-input-container">
-          <input
-            type="text"
-            value={formState.couponCode}
-            onChange={(e) => setFormState(prev => ({ ...prev, couponCode: e.target.value }))}
-            placeholder="Enter coupon code"
-            className="coupon-field"
-            autoFocus
-            onBlur={() => {
-              if (!formState.couponCode.trim()) {
-                setFormState(prev => ({ ...prev, isCouponActive: false }));
-              }
-            }}
-          />
-          {formState.validationErrors.couponCode && (
-            <div className="tooltip">{formState.validationErrors.couponCode}</div>
+        <div className={`coupon-container ${formState.isCouponActive ? 'active' : ''}`}>
+          {!formState.isCouponActive ? (
+            <div className="coupon-toggle" onClick={toggleCouponField}>
+              Have a coupon?
+            </div>
+          ) : (
+            <div className="coupon-input-container">
+              <input
+                type="text"
+                value={formState.couponCode}
+                onChange={(e) => setFormState(prev => ({ ...prev, couponCode: e.target.value }))}
+                placeholder="Enter coupon code"
+                className="coupon-field"
+                autoFocus
+                onBlur={() => {
+                  if (!formState.couponCode.trim()) {
+                    setFormState(prev => ({ ...prev, isCouponActive: false }));
+                  }
+                }}
+              />
+              {formState.validationErrors.couponCode && (
+                <div className="tooltip">{formState.validationErrors.couponCode}</div>
+              )}
+            </div>
           )}
-              </div>
-            )}
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
