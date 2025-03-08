@@ -3,7 +3,10 @@
   src: url('/fonts/PirataOne-Regular.ttf') format('truetype');
 }
 
-/* Disable tap highlights and text selection on buttons and images */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 button, img {
   -webkit-tap-highlight-color: transparent;  /* for iOS Safari */
   user-select: none;                         /* prevents text selection */
