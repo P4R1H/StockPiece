@@ -83,7 +83,7 @@ class RoleTransformer(app_commands.Transformer):
             if role.position < breakoff_role.position
             and not role.hoist
             and role.is_assignable()
-            and current.lower() in role.name.lower() 
+            and current.strip('@').lower() in role.name.lower() 
             and (role.permissions.value & discord.Permissions.elevated().value)==0
         ]
         
@@ -108,7 +108,7 @@ class Owners(commands.Cog, name="Owner Commands"):
         interaction = embed_form.interaction
 
         # Parse the color, default is lime green
-        color = discord.Color.from_rgb(50, 205, 50)
+        color = discord.Color(int("EFBF04", 16))
         if colorx != "":
             try:
                 color = discord.Color(int(colorx.strip("#"), 16))
