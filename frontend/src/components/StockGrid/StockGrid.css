@@ -49,6 +49,7 @@
 
 /* Market Controls */
 .stock-grid-header {
+  position: sticky;
   display: flex;
   width: 100%;
   border-bottom: 3px solid #3e2f28;
