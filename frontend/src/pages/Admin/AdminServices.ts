@@ -41,7 +41,7 @@ export const closeMarket = async (): Promise<void> => {
 };
 
 export const getStocks = async (): Promise<any[]> => {
-  const response = await fetch('https://backend.stockpiece.fun/api/v1/stock/stocks', {
+  const response = await fetch('/api/v1/stock/stocks', {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
