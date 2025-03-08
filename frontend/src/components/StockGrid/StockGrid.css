@@ -182,6 +182,20 @@
   100% { background-position: 200% 0; }
 }
 
+
+.stock-grid-wrapper {
+  height: calc(100vh);
+  overflow-y: auto;
+  position: relative;
+  margin: 10px;
+}
+
+.stock-grid-row {
+  display: grid;
+  gap: 0.1rem;
+}
+
+
 /* Media Queries */
 @media (max-width: 1400px) {
   .stock-grid-header-controls {
@@ -205,6 +219,21 @@
 
 /* Mobile Optimization */
 @media (max-width: 500px) {
+
+  .stock-grid-wrapper {
+    height: calc(100vh);
+    overflow-y: auto;
+    position: relative;
+    margin: 0px;
+  }
+
+  .stock-grid-row {
+    margin-bottom: 4px;
+    margin-top: 4px;
+
+  }
+    
+  
   .stock-grid {
     grid-template-columns: repeat(3, 1fr);
     column-gap: 0.1rem;
