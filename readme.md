@@ -142,19 +142,3 @@ This fan-made simulation game is not affiliated with or endorsed by the official
 
 StockPiece is a non-profit project created for entertainment purposes only. No copyright infringement is intended.  
 For concerns regarding copyrighted content, please contact us immediately at stockpieceofficial@gmail.com.
-
----
-
-## Screenshots
-
-### Desktop
-Home
-![Desktop Screenshot 1](https://i.imgur.com/oMC0xTX.jpeg)  
-Login
-![Desktop Screenshot 2](https://i.imgur.com/CPVUUCe.png)
-
-### Mobile
-<p float="left">
-    <img src="https://i.imgur.com/9vuvyEb.png" width="45%" />
-    <img src="https://i.imgur.com/6P8LLlT.png" width="45%" />
-
