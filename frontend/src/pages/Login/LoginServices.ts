@@ -13,6 +13,7 @@ export const generateFingerprint = async (): Promise<string> => {
   }
 };
 
+
 export interface LoginResponse {
   success: boolean;
   data: {
