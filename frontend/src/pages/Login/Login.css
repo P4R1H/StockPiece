@@ -467,7 +467,7 @@
     width: 30px;
     height: 30px;
     padding: 8px;
-    opacity: 0.9; /* Increase opacity for better visibility */
+    opacity: 0.9; 
   }
   
   .password-icon {
@@ -476,7 +476,7 @@
   }
   
   .password-input-container input {
-    padding-right: 60px; /* Increase to accommodate the larger toggle */
+    padding-right: 60px;
   }
 
 }
