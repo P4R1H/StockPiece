@@ -55,6 +55,7 @@ export const loginUser = async (username: string, password: string, couponCode: 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ username, password, couponCode }),
+      credentials: 'include',
     });
   
     const data = await response.json();
