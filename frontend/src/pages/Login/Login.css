@@ -341,6 +341,48 @@
   z-index: 1;
 }
 
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+.password-toggle:hover {
+  opacity: 1;
+}
+
+.password-toggle:focus {
+  outline: none;
+}
+
+.password-icon {
+  color: var(--gold);
+  pointer-events: none;
+}
+.password-toggle {
+  position: absolute;
+  right: 10px; 
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px; 
+  color: var(--gold);
+  opacity: 0.7;
+  transition: opacity 0.3s ease;
+  z-index: 2;
+}
+
+.password-input-container input {
+  padding-right: 50px; 
+}
+
+
+
 @keyframes sail-ship {
   from { right: -50%; }
   to { right: 100%; }
@@ -420,5 +462,22 @@
     outline: none;
   }
   
+  .password-toggle {
+    right: 12px;
+    width: 30px;
+    height: 30px;
+    padding: 8px;
+    opacity: 0.9; /* Increase opacity for better visibility */
+  }
+  
+  .password-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .password-input-container input {
+    padding-right: 60px; /* Increase to accommodate the larger toggle */
+  }
+
 }
 
