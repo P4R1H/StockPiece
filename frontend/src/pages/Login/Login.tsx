@@ -2,6 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, registerUser } from './LoginServices';
 import { LoginResponse } from './LoginServices';
+import { Eye, EyeOff } from 'lucide-react';
 import './Login.css';
 
 interface LoginPageProps {
@@ -17,6 +18,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     activeTab: 'login' as 'login' | 'register',
     isLoading: false,
     error: null as string | null,
+    showPassword: false,
     validationErrors: {} as { username?: string; password?: string; couponCode?: string }
   });
 
@@ -35,6 +37,10 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
       setFormState(prev => ({ ...prev, isCouponActive: true }));
     }
   }, [formState.isCouponActive]);
+
+  const togglePasswordVisibility = useCallback(() => {
+    setFormState(prev => ({ ...prev, showPassword: !prev.showPassword }));
+  }, []);
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,13 +133,26 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
           </div>
 
           <div className="input-group pirate-input">
-            <input
-              type="password"
-              value={formState.password}
-              onChange={(e) => setFormState(prev => ({ ...prev, password: e.target.value, error: null }))}
-              placeholder="Password"
-              required
-            />
+            <div className="password-input-container">
+              <input
+                type={formState.showPassword ? "text" : "password"}
+                value={formState.password}
+                onChange={(e) => setFormState(prev => ({ ...prev, password: e.target.value, error: null }))}
+                placeholder="Password"
+                required
+              />
+              <button 
+                type="button"
+                className="password-toggle"
+                onClick={togglePasswordVisibility}
+                aria-label={formState.showPassword ? "Hide password" : "Show password"}
+              >
+                {formState.showPassword ? 
+                  <Eye size={18} className="password-icon" /> : 
+                  <EyeOff size={18} className="password-icon" />
+                }
+              </button>
+            </div>
             {formState.validationErrors.password && (
               <div className="tooltip">{formState.validationErrors.password}</div>
             )}
