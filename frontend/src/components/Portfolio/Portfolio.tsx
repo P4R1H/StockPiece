@@ -51,7 +51,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-      const response = await fetch(`${server}/api/v1/user/profile/avatar`, {
+      const response = await fetch(`https://backend.stockpiece.fun/api/v1/user/profile/avatar`, {
         method: 'PATCH',
         body: formData,
         credentials: 'include',
