@@ -13,6 +13,7 @@ export const generateFingerprint = async (): Promise<string> => {
   }
 };
 
+
 export interface LoginResponse {
   success: boolean;
   data: {
@@ -26,7 +27,7 @@ export interface LoginResponse {
 
 export const logoutUser = async (): Promise<void> => {
   try {
-    const response = await fetch('/api/v1/user/auth/logout', {
+    const response = await fetch('https://backend.stockpiece.fun/api/v1/user/auth/logout', {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -49,12 +50,13 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const loginUser = async (username: string, password: string, couponCode: string): Promise<LoginResponse> => {
-    const response = await fetch('/api/v1/user/auth/login', {
+    const response = await fetch('https://backend.stockpiece.fun/api/v1/user/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ username, password, couponCode }),
+      credentials: 'include',
     });
   
     const data = await response.json();
@@ -69,7 +71,7 @@ export const loginUser = async (username: string, password: string, couponCode: 
 export const registerUser = async (username: string, password: string): Promise<LoginResponse> => {
     const fingerprint = await generateFingerprint();
 
-    const response = await fetch('/api/v1/user/auth/register', {
+    const response = await fetch('https://backend.stockpiece.fun/api/v1/user/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ export const registerUser = async (username: string, password: string): Promise<
 };
 
 export const loginExists = async(): Promise<LoginResponse> => {
-  const response = await fetch('/api/v1/user/profile/login-status', {
+  const response = await fetch('https://backend.stockpiece.fun/api/v1/user/profile/login-status', {
     method: 'GET',
     credentials: 'include',
     headers: {
@@ -113,7 +115,7 @@ export const loginExists = async(): Promise<LoginResponse> => {
 
 export const refreshToken = async(): Promise<LoginResponse> => {
   try {
-    const response = await fetch('/api/v1/user/auth/refresh', {
+    const response = await fetch('https://backend.stockpiece.fun/api/v1/user/auth/refresh', {
       method: 'POST',
       credentials: 'include',
       headers: {
