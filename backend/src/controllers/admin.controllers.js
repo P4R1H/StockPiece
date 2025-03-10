@@ -39,6 +39,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     httpOnly: true,
     secure: true,
     maxAge: 900000,
+    sameSite: "None"
   };
 
   res
@@ -62,6 +63,7 @@ const adminLogout = asyncHandler(async (req, res, _) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "None"
   };
 
   res

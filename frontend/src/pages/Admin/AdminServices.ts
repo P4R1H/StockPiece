@@ -1,5 +1,5 @@
-// AdminServices.tsx
 import { ErrorLog } from "../../types/Pages";
+import { server } from '../../App.tsx'
 
 export const adminLogin = async (username: string, password: string): Promise<boolean> => {
   const response = await fetch('https://backend.stockpiece.fun/api/v1/admin/auth/login', {

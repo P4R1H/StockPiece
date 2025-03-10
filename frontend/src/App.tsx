@@ -8,6 +8,8 @@ import HomePage from './pages/Home/Home';
 import { LoginResponse } from './pages/Login/LoginServices';
 import { Toaster } from './components/Notifications/CustomSonner/CustomSonner';
 
+export const server : string = "https://backend.stockpiece.fun";
+
 const TutorialOverlay = React.lazy(()  => import('./components/Notifications/Onboarding/Onboarding'));
 const LeaderboardPage = React.lazy(() => import('./pages/Leaderboard/Leaderboard'));
 const LoginPage = React.lazy(() => import('./pages/Login/Login'));
@@ -21,7 +23,9 @@ interface OnePieceStockMarketProps {
   showTutorial: boolean; // Add to props
   setShowTutorial: (show: boolean) => void; // Add to props
 } 
- 
+
+
+
 const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout, showTutorial, setShowTutorial }) => { 
 
   return ( 

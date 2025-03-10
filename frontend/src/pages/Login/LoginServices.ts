@@ -1,4 +1,5 @@
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { server } from '../../App.tsx'
 
 export const generateFingerprint = async (): Promise<string> => {
   try {

@@ -52,15 +52,26 @@ export const toastMarketStatus = ({
   timeUntilNext,
   statusClass,
 }: MarketStatusToastOptions) => {
-  const formatTimeDisplay = (timeStr: string) => {
-    if (timeStr.includes('minute') || timeStr.includes('hour') || timeStr.includes('day')) {
-      return timeStr;
-    }
-    
+  const formatTimeDisplay = (timeStr: string) => {    
     const minutes = parseInt(timeStr, 10);
     if (isNaN(minutes)) return timeStr; 
     
-    if (minutes >= 60) {
+    // Calculate days, hours, minutes
+    if (minutes >= 1440) { // 24 hours * 60 minutes
+      const days = Math.floor(minutes / 1440);
+      const remainingHours = Math.floor((minutes % 1440) / 60);
+      const remainingMinutes = minutes % 60;
+      
+      if (remainingHours === 0 && remainingMinutes === 0) {
+        return `${days} ${days === 1 ? 'day' : 'days'}`;
+      } else if (remainingMinutes === 0) {
+        return `${days} ${days === 1 ? 'day' : 'days'} and ${remainingHours} ${remainingHours === 1 ? 'hour' : 'hours'}`;
+      } else if (remainingHours === 0) {
+        return `${days} ${days === 1 ? 'day' : 'days'} and ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+      } else {
+        return `${days} ${days === 1 ? 'day' : 'days'}, ${remainingHours} ${remainingHours === 1 ? 'hour' : 'hours'} and ${remainingMinutes} ${remainingMinutes === 1 ? 'minute' : 'minutes'}`;
+      }
+    } else if (minutes >= 60) {
       const hours = Math.floor(minutes / 60);
       const remainingMinutes = minutes % 60;
       

@@ -1,5 +1,6 @@
 import { LeaderboardResponse } from "../../types/Pages";
 import { mockLeaderboardFallback } from "../../assets/data/sampleLb";
+import { server } from '../../App.tsx'
 
 
 export const fetchLeaderboard = async (): Promise<LeaderboardResponse> => {
