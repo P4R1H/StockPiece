@@ -135,7 +135,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const { data: stockHistoryData, isLoading } = useQuery<StockHistoryResponse>({
     queryKey: ['stockHistory'],
     queryFn: async () => {
-      const response = await fetch('/api/v1/market/statistics/all')
+      const response = await fetch('https://backend.stockpiece.fun/api/v1/market/statistics/all')
       if (!response.ok) {
         throw new Error('Failed to fetch stock history')
       }

@@ -21,7 +21,9 @@ interface OnePieceStockMarketProps {
   showTutorial: boolean; // Add to props
   setShowTutorial: (show: boolean) => void; // Add to props
 } 
- 
+
+
+
 const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout, showTutorial, setShowTutorial }) => { 
 
   return ( 
