@@ -38,11 +38,11 @@ export function getMarketStatusInfo(): MarketStatusInfo {
     // Calculate time until updating
     if (day === 1) {
       // On Monday, time until end of day
-      timeUntilNext = `${boundary - currentMinutes} minutes`;
+      timeUntilNext = `${boundary - currentMinutes}`;  // Return just the minutes
     } else {
       // Calculate days until Monday
       const daysUntilMonday = day === 0 ? 1 : 8 - day;
-      timeUntilNext = `${daysUntilMonday} day${daysUntilMonday > 1 ? 's' : ''}`;
+      timeUntilNext = `${daysUntilMonday * 1440}`;  // Convert days to minutes
     }
   }
   // Updating period: from Monday 11:59 PM to Tuesday 11:59 PM
@@ -56,9 +56,9 @@ export function getMarketStatusInfo(): MarketStatusInfo {
     // Calculate time until closed
     if (day === 2) {
       // On Tuesday, time until end of day
-      timeUntilNext = `${boundary - currentMinutes} minutes`;
+      timeUntilNext = `${boundary - currentMinutes}`;  // Return just the minutes
     } else {
-      timeUntilNext = "1 day";
+      timeUntilNext = `${1440}`;  // Convert days to minutes
     }
   }
   // Closed period: from Tuesday 11:59 PM to Thursday 11:59 PM
@@ -69,11 +69,11 @@ export function getMarketStatusInfo(): MarketStatusInfo {
     // Calculate time until open
     if (day === 4) {
       // On Thursday, time until end of day
-      timeUntilNext = `${boundary - currentMinutes} minutes`;
+      timeUntilNext = `${boundary - currentMinutes}`;  // Return just the minutes
     } else {
       // Calculate days until Thursday
       const daysUntilThursday = day === 3 ? 1 : 4 - day;
-      timeUntilNext = `${daysUntilThursday} day${daysUntilThursday > 1 ? 's' : ''}`;
+      timeUntilNext = `${daysUntilThursday * 1440}`;  // Convert days to minutes
     }
   }
 

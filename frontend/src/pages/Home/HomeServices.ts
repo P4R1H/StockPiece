@@ -1,7 +1,8 @@
 import { CharacterStock, UserPortfolio } from "../../types/Stocks";
+import { server } from '../../App.tsx'
 
 export const getStockMarketData = async (): Promise<CharacterStock[]> => {
-  const response = await fetch('https://backend.stockpiece.fun/api/v1/stock/stocks', {
+  const response = await fetch(`${server}/api/v1/stock/stocks`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
@@ -21,7 +22,11 @@ export const getStockMarketData = async (): Promise<CharacterStock[]> => {
 };
 
 export const checkWindowStatus = async(): Promise<Boolean> => {
+<<<<<<< HEAD
   const response = await fetch('https://backend.stockpiece.fun/api/v1/market/status', {
+=======
+  const response = await fetch(`${server}/api/v1/market/status`, {
+>>>>>>> cft
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   })
@@ -34,7 +39,11 @@ export const checkWindowStatus = async(): Promise<Boolean> => {
 }
 
 export const getPortfolioData = async (): Promise<UserPortfolio> => {
+<<<<<<< HEAD
   const response = await fetch('https://backend.stockpiece.fun/api/v1/user/portfolio', {
+=======
+  const response = await fetch(`${server}/api/v1/user/portfolio`, {
+>>>>>>> cft
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' }
@@ -71,7 +80,11 @@ export const getPortfolioData = async (): Promise<UserPortfolio> => {
 
 
 export const buyStock = async (name: string, quantity: number) => {
+<<<<<<< HEAD
   const response = await fetch('https://backend.stockpiece.fun/api/v1/stock/transactions/buy', {
+=======
+  const response = await fetch(`${server}/api/v1/stock/transactions/buy`, {
+>>>>>>> cft
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -83,7 +96,11 @@ export const buyStock = async (name: string, quantity: number) => {
 };
 
 export const sellStock = async (name: string, quantity: number) => {
+<<<<<<< HEAD
   const response = await fetch('https://backend.stockpiece.fun/api/v1/stock/transactions/sell', {
+=======
+  const response = await fetch(`${server}/api/v1/stock/transactions/sell`, {
+>>>>>>> cft
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },

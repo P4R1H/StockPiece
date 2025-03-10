@@ -24,15 +24,14 @@ const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
   cors({
-    origin: ["https://stockpiece.fun","https://admin.stockpiece.fun","https://stockpiece.pages.dev","https://www.stockpiece.fun"],
-    credentials: true,
-    sameSite: "None",
-    secure: true
+    origin: ["https://stockpiece.fun","https://admin.stockpiece.fun","https://stockpiece.pages.dev","https://www.stockpiece.fun","https://www.stockpiece.pages.dev",".stockpiece.fun"],
+    credentials: true
   })
 );
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "../public")));
 app.use(compression());
+app.set("trust proxy", true);
 
 import userRouter from "./routes/user.routes.js";
 import adminRouter from "./routes/admin.routes.js";
