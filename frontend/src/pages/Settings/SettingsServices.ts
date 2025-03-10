@@ -1,5 +1,3 @@
-import { server } from '../../App.tsx'
-
 interface ReferralCodeResponse {
     code: string;
     usedCount: number;

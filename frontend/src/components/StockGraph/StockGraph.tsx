@@ -17,7 +17,6 @@ import { PriceHistoryGraphProps } from '../../types/Components'
 import { Expand, Shrink } from 'lucide-react'
 import './StockGraph.css'
 import { mockHistory } from '../../assets/data/sampleStocks'
-import { server } from '../../App.tsx'
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend)
 
