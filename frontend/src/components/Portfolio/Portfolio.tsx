@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { BountyProfileCardProps } from '../../types/Components';
 import './Portfolio.css'
 
+import { server } from '../../App.tsx'
+
 const formatWorth = (value: number): string => {  
   return isNaN(value) ? '0' : Math.floor(value).toLocaleString(undefined);
 };
@@ -51,7 +53,7 @@ const BountyProfileCard: React.FC<BountyProfileCardProps> = ({
     const formData = new FormData();
     formData.append('avatar', file);
     try {
-      const response = await fetch('/api/v1/user/profile/avatar', {
+      const response = await fetch(`${server}/api/v1/user/profile/avatar`, {
         method: 'PATCH',
         body: formData,
         credentials: 'include',

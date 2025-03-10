@@ -1,8 +1,8 @@
-// AdminServices.tsx
 import { ErrorLog } from "../../types/Pages";
+import { server } from '../../App.tsx'
 
 export const adminLogin = async (username: string, password: string): Promise<boolean> => {
-  const response = await fetch('/api/v1/admin/auth/login', {
+  const response = await fetch(`${server}/api/v1/admin/auth/login`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -14,7 +14,7 @@ export const adminLogin = async (username: string, password: string): Promise<bo
 };
 
 export const adminLogout = async (): Promise<void> => {
-  const response = await fetch('/api/v1/admin/auth/logout', {
+  const response = await fetch(`${server}/api/v1/admin/auth/logout`, {
     method: 'POST',
     credentials: 'include',
   });
@@ -22,26 +22,26 @@ export const adminLogout = async (): Promise<void> => {
 };
 
 export const getMarketStatus = async (): Promise<string> => {
-  const response = await fetch('/api/v1/market/status', { method: 'GET', credentials: 'include' });
+  const response = await fetch(`${server}/api/v1/market/status`, { method: 'GET', credentials: 'include' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch market status');
   return data.data;
 };
 
 export const openMarket = async (): Promise<void> => {
-  const response = await fetch('/api/v1/market/open', { method: 'PATCH', credentials: 'include' });
+  const response = await fetch(`${server}/api/v1/market/open`, { method: 'PATCH', credentials: 'include' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to open market');
 };
 
 export const closeMarket = async (): Promise<void> => {
-  const response = await fetch('/api/v1/market/close', { method: 'PATCH', credentials: 'include' });
+  const response = await fetch(`${server}/api/v1/market/close`, { method: 'PATCH', credentials: 'include' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to close market');
 };
 
 export const getStocks = async (): Promise<any[]> => {
-  const response = await fetch('/api/v1/stock/stocks', {
+  const response = await fetch(`${server}/api/v1/stock/stocks`, {
     method: 'GET',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -69,7 +69,7 @@ export const addCharacterStock = async (
   formData.append('initialValue', initialValue.toString());
   formData.append('tickerSymbol', tickerSymbol);
   formData.append('imageURL', imageFile);
-  const response = await fetch('/api/v1/admin/character-stocks', {
+  const response = await fetch(`${server}/api/v1/admin/character-stocks`, {
     method: 'POST',
     credentials: 'include',
     body: formData,
@@ -82,7 +82,7 @@ export const changeCharacterImage = async (stockID: string, imageFile: File): Pr
   const formData = new FormData();
   formData.append('stockId', stockID);
   formData.append('imageURL', imageFile);
-  const response = await fetch('/api/v1/admin/character-stocks/image', {
+  const response = await fetch(`${server}/api/v1/admin/character-stocks/image`, {
     method: 'PATCH',
     credentials: 'include',
     body: formData,
@@ -93,7 +93,7 @@ export const changeCharacterImage = async (stockID: string, imageFile: File): Pr
 };
 
 export const removeCharacterStock = async (name: string): Promise<void> => {
-  const response = await fetch('/api/v1/admin/character-stocks', {
+  const response = await fetch(`${server}/api/v1/admin/character-stocks`, {
     method: 'DELETE',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -104,7 +104,7 @@ export const removeCharacterStock = async (name: string): Promise<void> => {
 };
 
 export const manualPriceUpdate = async (update: { name: string; value: string }): Promise<void> => {
-  const response = await fetch('/api/v1/stock/value', {
+  const response = await fetch(`${server}/api/v1/stock/value`, {
     method: 'PATCH',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -116,8 +116,8 @@ export const manualPriceUpdate = async (update: { name: string; value: string })
 
 export const getMarketStatistics = async (chapter?: number): Promise<any> => {
   const url = chapter
-    ? `/api/v1/market/statistics?chapter=${chapter}`
-    : '/api/v1/market/statistics';
+    ? `${server}/api/v1/market/statistics?chapter=${chapter}`
+    : `${server}/api/v1/market/statistics`;
   const response = await fetch(url, { method: 'GET', credentials: 'include' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch market statistics');
@@ -126,8 +126,8 @@ export const getMarketStatistics = async (chapter?: number): Promise<any> => {
 
 export const getChapterStatistics = async (chapter: number | null): Promise<any> => {
   const url = chapter
-    ? `/api/v1/admin/statistics?chapterNumber=${chapter}`
-    : '/api/v1/admin/statistics';
+    ? `${server}/api/v1/admin/statistics?chapterNumber=${chapter}`
+    : `${server}/api/v1/admin/statistics`;
   const response = await fetch(url, { method: 'GET', credentials: 'include' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch chapter statistics');
@@ -135,14 +135,14 @@ export const getChapterStatistics = async (chapter: number | null): Promise<any>
 };
 
 export const getLatestChapter = async (): Promise<any> => {
-  const response = await fetch('/api/v1/market/chapters/latest', { method: 'GET' });
+  const response = await fetch(`${server}/api/v1/market/chapters/latest`, { method: 'GET' });
   const data = await response.json();
   if (!response.ok) throw new Error(data.message || 'Failed to fetch latest chapter');
   return data.data;
 };
 
 export const releaseNewChapter = async (): Promise<void> => {
-  const response = await fetch('/api/v1/market/chapters/release', {
+  const response = await fetch(`${server}/api/v1/market/chapters/release`, {
     method: 'POST',
     credentials: 'include',
   });
@@ -151,7 +151,7 @@ export const releaseNewChapter = async (): Promise<void> => {
 };
 
 export const forcePriceUpdates = async (): Promise<boolean> => {
-  const response = await fetch('/api/v1/market/update-price', {
+  const response = await fetch(`${server}/api/v1/market/update-price`, {
     method: 'POST',
     credentials: 'include',
   });
@@ -162,7 +162,7 @@ export const forcePriceUpdates = async (): Promise<boolean> => {
 
 export const fetchErrors = async (type: string = 'all'): Promise<ErrorLog[]> => {
   try {
-    const response = await fetch(`/api/v1/admin/errors?type=${type}`);
+    const response = await fetch(`${server}/api/v1/admin/errors?type=${type}`);
     const data = await response.json();
     if (data.success) return data.data.errors;
     throw new Error(data.message || 'Failed to fetch errors');
@@ -173,7 +173,7 @@ export const fetchErrors = async (type: string = 'all'): Promise<ErrorLog[]> => 
 };
 
 export const toggleNextRelease = async (): Promise<boolean> => {
-  const response = await fetch('/api/v1/market/chapters/next-release', {
+  const response = await fetch(`${server}/api/v1/market/chapters/next-release`, {
     method: 'PATCH',
     credentials: 'include',
   });
@@ -183,7 +183,7 @@ export const toggleNextRelease = async (): Promise<boolean> => {
 };
 
 export const getNextReleaseStatus = async (): Promise<boolean> => {
-  const response = await fetch('/api/v1/market/chapters/next-release', {
+  const response = await fetch(`${server}/api/v1/market/chapters/next-release`, {
     method: 'GET',
     credentials: 'include',
   });
@@ -198,7 +198,7 @@ export const createCoupon = async (couponData: {
   maxUsers: number;
   isFirstTimeOnly: boolean;
 }): Promise<void> => {
-  const response = await fetch('/api/v1/coupon/coupons', {
+  const response = await fetch(`${server}/api/v1/coupon/coupons`, {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -209,7 +209,7 @@ export const createCoupon = async (couponData: {
 };
 
 export const deleteCoupon = async (code: string): Promise<void> => {
-  const response = await fetch('/api/v1/coupon/coupons', {
+  const response = await fetch(`${server}/api/v1/coupon/coupons`, {
     method: 'DELETE',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
@@ -220,7 +220,7 @@ export const deleteCoupon = async (code: string): Promise<void> => {
 };
 
 export const getUserDetails = async (username: string): Promise<any> => {
-  const response = await fetch(`/api/v1/admin/users?username=${encodeURIComponent(username)}`, {
+  const response = await fetch(`${server}/api/v1/admin/users?username=${encodeURIComponent(username)}`, {
     method: 'GET',
     credentials: 'include',
   });

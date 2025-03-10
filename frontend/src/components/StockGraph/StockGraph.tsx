@@ -17,6 +17,7 @@ import { PriceHistoryGraphProps } from '../../types/Components'
 import { Expand, Shrink } from 'lucide-react'
 import './StockGraph.css'
 import { mockHistory } from '../../assets/data/sampleStocks'
+import { server } from '../../App.tsx'
 
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend)
 
@@ -135,7 +136,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
   const { data: stockHistoryData, isLoading } = useQuery<StockHistoryResponse>({
     queryKey: ['stockHistory'],
     queryFn: async () => {
-      const response = await fetch('/api/v1/market/statistics/all')
+      const response = await fetch(`${server}/api/v1/market/statistics/all`)
       if (!response.ok) {
         throw new Error('Failed to fetch stock history')
       }

@@ -1,10 +1,12 @@
+import { server } from '../../App.tsx'
+
 interface ReferralCodeResponse {
     code: string;
     usedCount: number;
 }
 
 export const getReferralCode = async(): Promise<ReferralCodeResponse> => {
-        const response = await fetch('/api/v1/coupon/coupons/referral', {
+        const response = await fetch(`${server}/api/v1/coupon/coupons/referral`, {
                 method: 'POST',
                 credentials: 'include'
         });
