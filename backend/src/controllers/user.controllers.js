@@ -237,8 +237,8 @@ const loginUser = asyncHandler(async (req, res, _) => {
 
   res
     .status(200)
-    .cookie("accessToken", accessToken, { options, maxAge: 86400000, sameSite: "none", secure: true })
-    .cookie("refreshToken", refreshToken, { options, maxAge: 864000000, sameSite: "none", secure: true })
+    .cookie("accessToken", accessToken, { ...options, maxAge: 86400000 })
+    .cookie("refreshToken", refreshToken, { ...options, maxAge: 864000000 })
     .json(
       new ApiResponse(
         200,
@@ -320,8 +320,8 @@ const refreshAccessToken = asyncHandler(async (req, res, _) => {
 
   res
     .status(200)
-    .cookie("accessToken", accessToken, { options, maxAge: 86400000 })
-    .cookie("refreshToken", refreshToken, { options, maxAge: 864000000 })
+    .cookie("accessToken", accessToken, { ...options, maxAge: 86400000 })
+    .cookie("refreshToken", refreshToken, { ...options, maxAge: 864000000 })
     .json(
       new ApiResponse(
         200,
