@@ -1,17 +1,23 @@
 import mongoose from "mongoose";
-import { DB_NAME } from "../constants.js";
-import { URL } from "node:url";
 
 const connectDB = async () => {
   try {
-    const url = new URL(`${process.env.MONGO_URI}/${DB_NAME}`);
-    console.log(url.toString());
-    const connectionInstance = await mongoose.connect(url.toString());
+    // Use the connection string directly
+    const connectionString = process.env.MONGO_URI;
+    
+    // Add authSource=admin if it's not already in the connection string
+    const finalConnectionString = connectionString.includes('authSource=') 
+      ? connectionString 
+      : `${connectionString}&authSource=admin`;
+    
+    console.log("Connecting to:", finalConnectionString);
+    
+    const connectionInstance = await mongoose.connect(finalConnectionString);
     console.log(
-      `MONGODB connected host:${connectionInstance.connection.host} `
+      `MONGODB connected host`
     );
   } catch (error) {
-    console.log(`MONGODB connection failed: ${error}`);
+    console.log(`MONGODB connection failed:`, error);
     process.exit(1);
   }
 };
