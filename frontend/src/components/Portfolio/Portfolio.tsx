@@ -3,8 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { BountyProfileCardProps } from '../../types/Components';
 import './Portfolio.css'
 
-import { server } from '../../App.tsx'
-
 const formatWorth = (value: number): string => {  
   return isNaN(value) ? '0' : Math.floor(value).toLocaleString(undefined);
 };
