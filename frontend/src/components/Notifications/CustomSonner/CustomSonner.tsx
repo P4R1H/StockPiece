@@ -1,6 +1,3 @@
-
-
-
 "use client";
 
 import { Toaster as Sonner, toast } from "sonner";
@@ -11,37 +8,33 @@ import { Clock } from 'lucide-react';
 // Define detailed type interfaces
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
-
 interface MarketStatusToastOptions {
   status: string;
   nextStatus: string;
   timeUntilNext: string;
   statusClass: Record<string, string>;
 }
+
 interface TimeBreakdown {
   days: number;
   hours: number;
   minutes: number;
 }
 
-// Separate component for handling mobile responsiveness
+// Hook for detecting mobile screens
 const useIsMobileScreen = (): boolean => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
+  
   useEffect(() => {
-    // Function to check if screen is mobile width
     const checkIfMobile = (): void => {
       const mobileBreakpoint: number = 768;
       const currentScreenWidth: number = window.innerWidth;
       setIsMobile(currentScreenWidth <= mobileBreakpoint);
     };
 
-    // Initial check
     checkIfMobile();
-
-    // Add event listener for window resize
     window.addEventListener("resize", checkIfMobile);
-
-    // Cleanup function
+    
     return () => {
       window.removeEventListener("resize", checkIfMobile);
     };
@@ -113,6 +106,7 @@ const Toaster = ({ ...props }: ToasterProps): JSX.Element => {
     actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
     cancelButton: "group-[.toast]:bg-gray-200 group-[.toast]:text-brown",
   };
+
   return (
     <Sonner
       className="toaster group"
@@ -125,7 +119,6 @@ const Toaster = ({ ...props }: ToasterProps): JSX.Element => {
     />
   );
 };
-
 
 // Market status toast function
 export const toastMarketStatus = ({
@@ -144,7 +137,7 @@ export const toastMarketStatus = ({
         <span className={`market-status ${statusClass[status]}`}>
           {status.toUpperCase()}
         </span>
-        &nbsp;.  It will{" "}
+         . It will{" "}
         <span className={`market-status ${statusClass[nextStatus]}`}>
           {formattedNextStatus}
         </span>
@@ -155,6 +148,7 @@ export const toastMarketStatus = ({
       </div>
     </div>
   );
+
   const toastOptions = {
     className: "group toast pirate-toast market-status-toast",
     duration: 3500,
@@ -164,6 +158,5 @@ export const toastMarketStatus = ({
 
   toast(<ToastContent />, toastOptions);
 };
-
 
 export { Toaster };

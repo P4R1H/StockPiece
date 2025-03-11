@@ -1,3 +1,4 @@
+
 /* Base toaster styling */
 .toaster {
   --toast-bg: #e2cfaa; /* Parchment beige */
@@ -13,7 +14,7 @@
   outline: 3px solid var(--toast-border) !important;
   font-family: "Pirata One", cursive !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
-  padding: 8px 12px 8px 40px !important; /* Increased left padding from 36px to 40px */
+  padding: 8px 12px 8px 40px !important; /* Increased left padding for icon space */
   font-size: 120% !important;
   letter-spacing: 0.01rem !important;
   display: inline-flex;
@@ -31,6 +32,24 @@
   bottom: 0;
   opacity: 0.05;
   pointer-events: none;
+}
+
+/* Toast icon color and positioning */
+.toaster .pirate-toast [data-icon] {
+  position: absolute !important;
+  top: 12px !important;
+  left: 8px !important;
+  color: var(--toast-border) !important;
+  transform: none !important;
+  margin: 0 !important;
+  height: 20px !important;
+  width: 20px !important;
+}
+
+/* Ensure content doesn’t overlap with icon */
+[data-sonner-toast] [data-content] {
+  margin-left: 24px !important;
+  padding-left: 0 !important;
 }
 
 /* Responsive adjustments for smaller screens */
@@ -69,54 +88,12 @@
   opacity: 0.85;
 }
 
-/* Toast icon color and positioning */
-[data-sonner-toast][data-type] [data-icon],
-[data-sonner-toast] [data-icon] {
-  color: var(--toast-border) !important;
-  align-self: flex-start !important;
-  margin-top: 4px !important;
-  position: absolute !important; /* Change to absolute */
-  top: 10px !important; /* Specific top value */
-  left: 0px !important; /* Specific left value */
-  transform: none !important;
-}
-
-[data-sonner-toaster] [data-sonner-toast] [data-icon] {
-  align-self: flex-start !important;
-  position: relative !important;
-  top: 2px !important;
-  transform: none !important;
-}
-
-/* Toast icon color and positioning - top left positioning */
-[data-sonner-toast][data-type] [data-icon],
-[data-sonner-toast] [data-icon],
-[data-sonner-toaster] [data-sonner-toast] [data-icon],
-.toaster [data-sonner-toast] [data-icon] {
-  color: var(--toast-border) !important;
-  position: absolute !important;
-  top: 12px !important; /* Position at the top */
-  left: 9px !important; /* Position on the left */
-  transform: none !important; /* Remove any transforms */
-  margin: 0 !important;
-  align-self: flex-start !important;
-  height: 20px !important;
-  width: 20px !important;
-}
-
-/* Fix potential overrides */
-[data-sonner-toast] [data-icon] > *,
-[data-sonner-toast][data-type] [data-icon] > * {
-  vertical-align: top !important;
-  display: block !important;
-}
-
 /* Market status toast styles */
 .market-status-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* center the content */
-  gap: 0.25rem; /* tighter vertical spacing */
+  align-items: center;
+  gap: 0.25rem;
   margin: 0;
   padding: 0;
 }
@@ -124,7 +101,7 @@
 .market-status-title {
   display: flex;
   align-items: center;
-  gap: 0.3rem; /* space between label and status */
+  gap: 0.3rem;
   padding: 0.2rem 0.4rem;
   border-radius: 3px;
   font-weight: bold;
@@ -166,44 +143,38 @@
   box-shadow: 0 0 10px rgba(0, 149, 255, 0.1);
 }
 
-
 .market-status-toast-content {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 0.25rem;
-    text-align: left;
-  }
-  
-  .market-status-current,
-  .market-status-next {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-weight: 600;
-  }
-  
-  .market-status-toast {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 8px 12px !important;
-  }
-  
-  .market-status {
-    padding: 0.15rem 0.35rem;
-    border-radius: 4px;
-    font-size: 0.9em;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    transition: all 0.2s ease;
-  }
-  
-  .market-status:hover {
-    transform: scale(1.05);
-    opacity: 0.9;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.market-status-current,
+.market-status-next {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.market-status-toast {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 8px 12px !important;
+}
+
+.market-status {
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.2s ease;
+}
+
 .market-status:hover {
   transform: scale(1.05);
   opacity: 0.9;
@@ -214,36 +185,10 @@
   font-weight: 700;
 }
 
-/* Market status toast styles */
+/* Additional market status toast styling */
 .market-status-toast {
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-/* Status badge hover effects */
-.market-status:hover {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-}
-
-/* Also ensure any text or content inside the toast has proper spacing */
-[data-sonner-toast] [data-title],
-[data-sonner-toast] [data-description] {
-  padding-left: 0px !important; /* Reset any padding that might be inherited */
-  margin-left: 0px !important; /* Reset any margin that might be inherited */
-}
-
-/* Fix overlapping text and icon */
-[data-sonner-toast] [data-content] {
-  margin-left: 24px !important; /* Add space for the icon */
-  padding-left: 0 !important;
-}
-
-/* Also ensure any text or content inside the toast has proper spacing */
-[data-sonner-toast] [data-title],
-[data-sonner-toast] [data-description] {
-  padding-left: 0px !important; /* Reset any padding that might be inherited */
-  margin-left: 0px !important; /* Reset any margin that might be inherited */
 }
 
 
