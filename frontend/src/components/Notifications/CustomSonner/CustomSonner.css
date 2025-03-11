@@ -46,11 +46,17 @@
   width: 20px !important;
 }
 
-/* Ensure content doesn't overlap with icon */
-[data-sonner-toast] [data-content] {
+/* This should target the market status toast specifically */
+[data-sonner-toast][class*="market-status-toast"] [data-content] {
   margin-left: 24px !important;
   padding-left: 0 !important;
 }
+
+/* Regular toasts should continue to have no left margin */
+[data-sonner-toast]:not([class*="market-status-toast"]) [data-content] {
+  margin-left: 0 !important;
+}
+
 
 /* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
