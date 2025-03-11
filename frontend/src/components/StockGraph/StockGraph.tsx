@@ -346,7 +346,7 @@ const PriceHistoryGraph: React.FC<PriceHistoryGraphProps> = ({ stocks, ownedStoc
           borderColor: getColorForCharacter(stock.name),
           borderWidth: 2,
           pointRadius: 0,
-          tension: 0.4,
+          tension: 0.1,
           image: images[stock.id]
         }
       })
