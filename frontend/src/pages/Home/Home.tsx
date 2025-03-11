@@ -41,8 +41,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
     setMarketStatus(marketInfo.status);
 
     if (!marketStatusToastShown) {
-      // Delay the toast call to ensure the toast container is mounted.
-      setTimeout(() => {
+      const showToast = () => {
         const statusClass = {
           open: 'market-green',
           closed: 'market-red',
@@ -55,9 +54,15 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
           timeUntilNext: marketInfo.timeUntilNext,
           statusClass,
         });
-
+        
         marketStatusToastShown = true;
-      }, 100);
+      };
+      
+      if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(showToast);
+      } else {
+        setTimeout(showToast, 100);
+      }
     }
   }, []);
 
