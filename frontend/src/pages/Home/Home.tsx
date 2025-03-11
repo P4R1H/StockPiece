@@ -151,7 +151,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
 
     if (isLoggedIn && !windowOpen) {
       showError(
-        'To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.'
+        'To prevent insider trading the buying / selling window is closed. It will open on TCB chapter release.'
       );
       return;
     }
@@ -189,7 +189,7 @@ const HomePage: React.FC<HomePageProps> = ({ isLoggedIn }) => {
   const handleSellStock = async (name: string, quantity: number) => {
     if (isLoggedIn && !windowOpen) {
       showError(
-        'To prevent insider trading the buying/selling window is closed. It will open on TCB chapter release.'
+        'To prevent insider trading the buying / selling window is closed. It will open on TCB chapter release.'
       );
       return;
     }

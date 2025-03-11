@@ -46,7 +46,7 @@
   width: 20px !important;
 }
 
-/* Ensure content doesn’t overlap with icon */
+/* Ensure content doesn't overlap with icon */
 [data-sonner-toast] [data-content] {
   margin-left: 24px !important;
   padding-left: 0 !important;
