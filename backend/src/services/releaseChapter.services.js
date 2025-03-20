@@ -29,58 +29,48 @@ const releaseChapterService = async () => {
   try {
     const _transaction = await mongoose.connection.transaction(
       async (session) => {
-        const newChapter = await ChapterRelease.create(
-          [
-            {
-              chapter: newChapterNumber,
-              releaseDate,
-              windowEndDate,
-            },
-          ],
-          { session }
-        );
-    
+        
         // Update all users' prevNetWorth with their current total value
-        const users = User
+        const users = await User
         .find({})
         .populate({
           path: "ownedStocks.stock",
           select: "currentValue",
         })
-        .cursor();
-
+        .session(session)
+  
         let bulkOps = [];
-
-        for await (const user of users) {
+  
+        for (const user of users) {
           const stockValue = user.ownedStocks.reduce(
             (total, stock) => total + stock.stock.currentValue * stock.quantity,
             0
           );
           const currentNetWorth = user.accountValue + stockValue;
-
+  
           bulkOps.push({
             updateOne: {
               filter: {_id: user._id},
-              $update: {
+              update: {
                 $set: {
                   prevNetWorth: currentNetWorth
                 }
               }
             }
           })
-
+  
           if (bulkOps.length === 1000) {
             await User.bulkWrite(bulkOps, {session});
             bulkOps = [];
           }
         }
-
+  
         if (bulkOps.length > 0) {
           await User.bulkWrite(bulkOps, {session});
         }
 
         console.log(`new chapter ${newChapterNumber} released`);
-        return newChapterNumber;
+  
       }
     )
   
