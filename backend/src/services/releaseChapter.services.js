@@ -69,6 +69,13 @@ const releaseChapterService = async () => {
           await User.bulkWrite(bulkOps, {session});
         }
 
+        //now i forgot to release the chapter here
+        await ChapterRelease.create({
+          chapter: newChapterNumber,
+          releaseDate,
+          windowEndDate,
+        })
+
         console.log(`new chapter ${newChapterNumber} released`);
   
       }
