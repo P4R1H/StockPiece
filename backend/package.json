@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "argon2": "^0.41.1",
+    "cheerio": "^1.0.0",
     "cloudinary": "^2.5.1",
     "cloudinary-build-url": "^0.2.4",
     "compression": "^1.8.0",
