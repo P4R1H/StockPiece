@@ -24,8 +24,15 @@ const allowedOrigins = process.env.CORS_ORIGIN.split(",");
 
 app.use(
   cors({
-    origin: ["https://stockpiece.fun","https://admin.stockpiece.fun","https://stockpiece.pages.dev","https://www.stockpiece.fun","https://www.stockpiece.pages.dev",".stockpiece.fun"],
-    credentials: true
+    origin: [
+      "https://stockpiece.fun",
+      "https://admin.stockpiece.fun",
+      "https://stockpiece.pages.dev",
+      "https://www.stockpiece.fun",
+      "https://www.stockpiece.pages.dev",
+      ".stockpiece.fun",
+    ],
+    credentials: true,
   })
 );
 app.use(cookieParser());
@@ -45,9 +52,9 @@ app.use("/api/v1/stock", stockRouter);
 app.use("/api/v1/market", marketRoute);
 app.use("/api/v1/coupon", couponRouter);
 
-app.get("/api/v1",(_req, res, _next) => {
-  res.status(200).json('hello')
-})
+app.get("/api/v1", (_req, res, _next) => {
+  res.status(200).json("hello");
+});
 
 app.use(errorHandler);
 
