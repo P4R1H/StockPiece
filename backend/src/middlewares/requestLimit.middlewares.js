@@ -117,6 +117,5 @@ function globalWaitlistEmailLimiter(req, res, next) {
 export {
   globalRequestLimiter,
   registrationLimiter,
-  waitlistEmailLimiter,
   globalWaitlistEmailLimiter,
 };
