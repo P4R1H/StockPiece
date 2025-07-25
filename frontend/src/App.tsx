@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'; 
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'; 
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'; 
 import { useQueryClient } from '@tanstack/react-query'; 
 import './App.css'; 
 import { loginExists, logoutUser } from './pages/Login/LoginServices'; 
 import Navbar from './components/Navbar/Navbar'; 
 import HomePage from './pages/Home/Home'; 
+import WaitlistPage from './pages/Waitlist/Waitlist';
 import { LoginResponse } from './pages/Login/LoginServices';
 import { Toaster } from './components/Notifications/CustomSonner/CustomSonner';
 
@@ -25,10 +26,12 @@ interface OnePieceStockMarketProps {
 
 
 const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout, showTutorial, setShowTutorial }) => { 
+  const location = useLocation();
+  const isWaitlistPage = location.pathname === '/';
 
   return ( 
     <div className="one-piece-stock-market"> 
-      <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} /> 
+      {!isWaitlistPage && <Navbar isLoggedIn={isLoggedIn} onLogout={onLogout} />} 
       
       {showTutorial && (
         <TutorialOverlay 
@@ -37,7 +40,9 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       )}
 
       <Routes> 
-        <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} /> 
+        <Route path="/" element={<WaitlistPage />} /> 
+        {/* <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} /> */}
+        <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={
             <LeaderboardPage />
         } /> 
@@ -49,9 +54,11 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
         } />
       </Routes>
  
-      <footer className="market-footer"> 
-        <p>© {new Date().getFullYear()} StockPiece. Sailing the Seas of Profit!</p> 
-      </footer> 
+      {!isWaitlistPage && (
+        <footer className="market-footer"> 
+          <p>© {new Date().getFullYear()} StockPiece. Sailing the Seas of Profit!</p> 
+        </footer>
+      )}
     </div> 
   ); 
 }; 

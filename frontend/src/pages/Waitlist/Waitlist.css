@@ -1,0 +1,375 @@
+/* Root Variables */
+:root {
+  --gold: #FFD700;
+  --deep-blue: #003366;
+  --blood-red: #AA0000;
+  --wood-brown: #6B4423;
+}
+
+/* Waitlist Container */
+.waitlist-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(45deg, var(--deep-blue), #000033);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Ocean Background and Waves */
+.ocean-background {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  bottom: 0;
+  left: 0;
+}
+
+.wave {
+  background: rgba(0, 102, 255, 0.2);
+  position: absolute;
+  bottom: -25%;
+  width: 200%;
+  height: 200px;
+  border-radius: 40%;
+  animation: drift 15s infinite linear;
+}
+
+.wave:nth-child(1) {
+  animation-delay: -5s;
+  opacity: 0.7;
+}
+
+.wave:nth-child(2) {
+  animation-delay: -10s;
+  opacity: 0.5;
+}
+
+@keyframes drift {
+  from { transform: rotate(0deg) translateX(-50%); }
+  to { transform: rotate(360deg) translateX(50%); }
+}
+
+/* Sun Beam */
+.sun-beam {
+  position: absolute;
+  top: -50vh;
+  left: -50vw;
+  width: 200vw;
+  height: 200vh;
+  background: radial-gradient(circle at center, rgba(255,215,0,0.1) 0%, rgba(255,215,0,0) 70%);
+  animation: sun-glow 8s infinite ease-in-out;
+}
+
+@keyframes sun-glow {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.5; }
+}
+
+/* Waitlist Box */
+.waitlist-box {
+  background: rgba(0, 0, 0, 0.8);
+  padding: 2rem 3rem 2.5rem;
+  border-radius: 15px;
+  box-shadow: 0 0 50px rgba(255,215,0,0.3);
+  position: relative;
+  z-index: 2;
+  border: 2px solid var(--gold);
+  max-width: 420px;
+  width: 90%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Jolly Roger */
+.jolly-roger-container {
+  position: relative;
+  width: 150px;
+  margin: -100px auto 20px;
+}
+
+.jolly-roger {
+  width: 100%;
+  filter: drop-shadow(0 0 10px var(--gold));
+  animation: float 3s ease-in-out infinite;
+}
+
+.jolly-roger-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,215,0,0.4) 0%, rgba(255,215,0,0) 70%);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Waitlist Title and Subtitle */
+.waitlist-title {
+  font-family: 'Pirata One', cursive;
+  color: var(--gold);
+  text-align: center;
+  font-size: 2.2rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
+
+.waitlist-title span {
+  margin-top: -10px;
+  display: block;
+  line-height: 1.2;
+}
+
+.waitlist-subtitle {
+  font-family: 'Pirata One', cursive;
+  color: var(--gold);
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 8px rgba(255,215,0,0.4);
+  opacity: 0.9;
+}
+
+.waitlist-description {
+  font-family: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+  color: var(--gold);
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
+  font-weight: 300;
+}
+
+/* Pirate Input */
+.pirate-input {
+  position: relative;
+  margin-bottom: 1.2rem;
+  width: 100%;
+}
+
+.email-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.email-icon {
+  position: absolute;
+  left: 1rem;
+  color: var(--gold);
+  opacity: 0.7;
+  z-index: 2;
+}
+
+.pirate-input input {
+  font-family: 'Pirata One', monospace;
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 3rem;
+  background: rgba(0, 0, 0, 0.7);
+  border: 2px solid rgba(255, 215, 0, 0.5);
+  border-radius: 5px;
+  color: var(--gold);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.pirate-input input:hover {
+  border-color: rgba(255, 215, 0, 0.75);
+}
+
+.pirate-input input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 10px var(--gold);
+}
+
+.pirate-input input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Pirate Button */
+.pirate-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(45deg, var(--wood-brown), #8B5A3C);
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  padding: 0.75rem 2rem;
+  font-family: 'Pirata One', cursive;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 5px;
+  width: 100%;
+  font-weight: bold;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+.pirate-button:hover:not(:disabled) {
+  background: linear-gradient(45deg, #8B5A3C, var(--wood-brown));
+  box-shadow: 0 0 15px var(--gold);
+  transform: translateY(-2px);
+}
+
+.pirate-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.button-sheen {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.pirate-button:hover:not(:disabled) .button-sheen {
+  left: 100%;
+}
+
+/* Success Container */
+.success-container {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.success-icon {
+  color: #4CAF50;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px #4CAF50);
+}
+
+.success-title {
+  font-family: 'Pirata One', cursive;
+  color: var(--gold);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 8px rgba(255,215,0,0.4);
+}
+
+.success-message {
+  color: var(--gold);
+  opacity: 0.9;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+}
+
+.success-button {
+  margin-top: 1rem;
+}
+
+/* Error Message and Tooltip */
+.error-message {
+  font-family: 'Courier New', Courier, monospace;
+  color: #ff6b6b;
+  margin-bottom: 15px;
+  text-align: center;
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-weight: 500;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tooltip {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  color: #ff6b6b;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  text-transform: capitalize;
+  text-align: left;
+}
+
+/* Waitlist Ship */
+.waitlist-ship {
+  position: absolute;
+  bottom: -35px;
+  width: 1000px;
+  height: 500px;
+  background: url('/assets/shipSunny.webp') no-repeat center/contain;
+  opacity: 0.5;
+  right: -100%;
+  animation: 
+    sail-ship 45s linear infinite,
+    ship-sway 5s ease-in-out infinite;
+  z-index: 1;
+}
+
+@keyframes sail-ship {
+  from { right: -50%; }
+  to { right: 100%; }
+}
+
+@keyframes ship-sway {
+  0%, 100% { transform: rotate(-2deg) translateY(0); }
+  50% { transform: rotate(2deg) translateY(-15px); }
+}
+
+/* Media Queries */
+@media (max-width: 480px) {
+  .waitlist-box {
+    padding: 1.5rem 2rem;
+    max-width: 350px;
+  }
+
+  .waitlist-title {
+    font-size: 2.2rem;
+  }
+
+  .waitlist-subtitle {
+    font-size: 1.4rem;
+  }
+
+  .waitlist-description {
+    font-size: 1rem;
+  }
+
+  .jolly-roger-container {
+    width: 120px;
+    margin: -80px auto 15px;
+  }
+
+  .pirate-input input {
+    padding: 0.65rem 1rem 0.65rem 2.8rem;
+    font-size: 0.95rem;
+  }
+
+  .email-icon {
+    left: 0.8rem;
+    width: 18px;
+    height: 18px;
+  }
+
+  .pirate-button {
+    padding: 0.65rem 1.5rem;
+    font-size: 1.1rem;
+  }
+
+  .success-title {
+    font-size: 1.5rem;
+  }
+
+  .success-message {
+    font-size: 0.95rem;
+  }
+}
