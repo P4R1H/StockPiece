@@ -103,18 +103,10 @@ const WaitlistPage: React.FC = () => {
 
         {formState.isSuccess ? (
           <div className="success-container">
-            <CheckCircle size={48} className="success-icon" />
-            <h3 className="success-title">Welcome aboard!</h3>
+            <CheckCircle size={24} className="success-icon" />
             <p className="success-message">
               You'll be notified as soon as we relaunch in September 2025.
             </p>
-            <button 
-              className="success-button pirate-button"
-              onClick={() => setFormState(prev => ({ ...prev, isSuccess: false }))}
-            >
-              Add Another Email
-              <div className="button-sheen"></div>
-            </button>
           </div>
         ) : (
           <>
