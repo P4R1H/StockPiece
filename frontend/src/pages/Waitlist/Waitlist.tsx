@@ -42,7 +42,7 @@ const WaitlistPage: React.FC = () => {
     setFormState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await fetch('https://backend.stockpiece.fun/api/v1/waitlist-email/subscribe', {
+      const response = await fetch('https://backend.stockpiece.fun/api/waitlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
