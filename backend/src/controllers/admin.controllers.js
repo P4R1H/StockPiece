@@ -39,7 +39,7 @@ const adminLogin = asyncHandler(async (req, res, _) => {
     httpOnly: true,
     secure: true,
     maxAge: 900000,
-    sameSite: "None"
+    sameSite: "None",
   };
 
   res
@@ -63,7 +63,7 @@ const adminLogout = asyncHandler(async (req, res, _) => {
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: "None"
+    sameSite: "None",
   };
 
   res
@@ -260,14 +260,6 @@ const updateStockImage = asyncHandler(async (req, res, _) => {
     throw new ApiError(404, "stock not found");
   }
 
-  const oldImageUrl = stock.imageURL;
-  if (oldImageUrl != defaultAvatarUrl) {
-    const result = await deleteFromCloudinary(oldImageUrl);
-    if (!result || result === "error") {
-      throw new ApiError(500, "error in deleting the old image", result);
-    }
-  }
-
   const newImageUrl = await uploadOnCloudinary(imageLocalPath, true);
   if (!newImageUrl) {
     throw new ApiError(500, "not able to upload new image");
@@ -378,7 +370,11 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
     throw new ApiError(401, "unauthenticated request");
   }
 
-  const { chapterNumber, sortBy = "totalTransactions", limit = 100 } = req.query;
+  const {
+    chapterNumber,
+    sortBy = "totalTransactions",
+    limit = 100,
+  } = req.query;
 
   // Validate sort field
   const validSortFields = [
@@ -513,7 +509,7 @@ const getTopTradersByChapter = asyncHandler(async (req, res) => {
   );
 });
 
-const getChapterAnalytics= asyncHandler(async (req, res) => {
+const getChapterAnalytics = asyncHandler(async (req, res) => {
   if (!req.admin) {
     throw new ApiError(401, "unauthenticated request");
   }
@@ -758,43 +754,45 @@ const validateTransactionQuantity = (quantity) => {
   return parsedQuantity;
 };
 
-const createTransaction = asyncHandler( async (req, res, _next) => {
+const createTransaction = asyncHandler(async (req, res, _next) => {
   if (!req.admin) {
-    throw new ApiError(400,'unauthorized error');
+    throw new ApiError(400, "unauthorized error");
   }
 
   const { username, stockname, quantity, type } = req.body;
 
   if (!username?.trim() || !stockname?.trim() || !quantity || !type?.trim()) {
-    throw new ApiError(400, 'All fields are required');
+    throw new ApiError(400, "All fields are required");
   }
 
   const allowedTypes = ["buy", "sell"];
 
   if (!allowedTypes.includes(type)) {
-    throw new ApiError(400,'only buy and sell allowed');
+    throw new ApiError(400, "only buy and sell allowed");
   }
 
-  const stockPromise = CharacterStock.findOne({name: stockname}).lean();
-  const userPromise = User.findOne({username: username.trim()}).lean();
-  const latestChapterPromise = ChapterRelease.findOne().sort({releaseDate: -1}).lean();
+  const stockPromise = CharacterStock.findOne({ name: stockname }).lean();
+  const userPromise = User.findOne({ username: username.trim() }).lean();
+  const latestChapterPromise = ChapterRelease.findOne()
+    .sort({ releaseDate: -1 })
+    .lean();
 
   const [stock, user, latestChapterDoc] = await Promise.all([
     stockPromise,
     userPromise,
-    latestChapterPromise
-  ])
+    latestChapterPromise,
+  ]);
 
   if (!user) {
-    throw new ApiError(400,'user not found');
+    throw new ApiError(400, "user not found");
   }
 
   if (!stock) {
-    throw new ApiError(400,'stock not found');
+    throw new ApiError(400, "stock not found");
   }
 
   if (!latestChapterDoc) {
-    throw new ApiError(400,'no chapter released');
+    throw new ApiError(400, "no chapter released");
   }
 
   const validatedQuantity = validateTransactionQuantity(quantity);
@@ -805,14 +803,13 @@ const createTransaction = asyncHandler( async (req, res, _next) => {
     quantity: validatedQuantity,
     value: stock.currentValue,
     type,
-    chapterPurchasedAt: latestChapterDoc.chapter
-  })
+    chapterPurchasedAt: latestChapterDoc.chapter,
+  });
 
   res
     .status(200)
-    .json(new ApiResponse(200,'transaction created successfully'));
-
-})
+    .json(new ApiResponse(200, "transaction created successfully"));
+});
 
 export {
   adminLogin,
@@ -826,5 +823,5 @@ export {
   getErrorLogs,
   getUserByUsername,
   getTopTradersByChapter,
-  createTransaction
+  createTransaction,
 };
