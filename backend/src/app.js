@@ -45,14 +45,12 @@ import adminRouter from "./routes/admin.routes.js";
 import stockRouter from "./routes/stock.routes.js";
 import marketRoute from "./routes/market.routes.js";
 import couponRouter from "./routes/coupon.routes.js";
-import waitlistEmailRouter from "./routes/waitlistEmail.routes.js";
 
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/stock", stockRouter);
 app.use("/api/v1/market", marketRoute);
 app.use("/api/v1/coupon", couponRouter);
-app.use("/api/v1/waitlist-email", waitlistEmailRouter);
 
 app.get("/api/v1", (_req, res, _next) => {
   res.status(200).json("hello");
