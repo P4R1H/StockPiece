@@ -27,7 +27,7 @@ interface OnePieceStockMarketProps {
 
 const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, onLogout, showTutorial, setShowTutorial }) => { 
   const location = useLocation();
-  const isWaitlistPage = location.pathname === '/';
+  const isWaitlistPage = location.pathname === '/waitlist';
 
   return ( 
     <div className="one-piece-stock-market"> 
@@ -40,8 +40,8 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       )}
 
       <Routes> 
-        <Route path="/" element={<WaitlistPage />} /> 
-        {/* <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} /> */}
+        <Route path="/" element={<Navigate to="/home" />} /> 
+        <Route path="/waitlist" element={<WaitlistPage />} />
         <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={
             <LeaderboardPage />
