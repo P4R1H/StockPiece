@@ -40,9 +40,8 @@ const OnePieceStockMarket: React.FC<OnePieceStockMarketProps> = ({ isLoggedIn, o
       )}
 
       <Routes> 
-        <Route path="/" element={<Navigate to="/home" />} /> 
+        <Route path="/" element={<HomePage isLoggedIn={isLoggedIn} />} /> 
         <Route path="/waitlist" element={<WaitlistPage />} />
-        <Route path="/home" element={<HomePage isLoggedIn={isLoggedIn} />} />
         <Route path="/leaderboard" element={
             <LeaderboardPage />
         } /> 
