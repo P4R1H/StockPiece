@@ -27,9 +27,9 @@ userRouter.use((req, res, next) => {
   next();
 });
 
-userRouter
-  .route("/auth/register")
-  .post(globalRequestLimiter, upload.single("avatar"), registerUser);
+// userRouter
+//   .route("/auth/register")
+//   .post(globalRequestLimiter, upload.single("avatar"), registerUser);
 userRouter.route("/auth/login").post(loginUser);
 
 //secure routes
