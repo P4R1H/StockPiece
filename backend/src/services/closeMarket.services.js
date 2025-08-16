@@ -7,6 +7,7 @@ import ChapterUpdate from "../models/chapterUpdate.models.js";
 import isWindowOpen from "../utils/windowStatus.js";
 import cache from "../utils/cache.js";
 import { CACHE_KEYS } from "../constants.js";
+import { appearanceTax } from "./appearanceTax.services.js";
 
 const updatePriceService = async () => {
   cache.del(CACHE_KEYS.STOCK_STATISTICS);
@@ -50,6 +51,9 @@ const updatePriceService = async () => {
     });
   });
 
+  const charactersThatAppearedThisChapter =
+    await appearanceTax(latestChapterNumber);
+
   //i can do the update without it but for extra safety i am including it
   //since this is not a very frequent operation i can afford this
   const allStocks = await CharacterStock.find();
@@ -60,8 +64,22 @@ const updatePriceService = async () => {
 
   const bulkOps = allStocks.map((stock) => {
     const stockID = stock._id.toString();
-    const newValue = chapterUpdateMap.get(stockID)?.newValue || 0;
+    let newValue = chapterUpdateMap.get(stockID)?.newValue || 0;
     const totalQuantity = chapterUpdateMap.get(stockID)?.totalQuantity || 0;
+
+    // Because it's common for the strawhats to be at every chapter that's why they get less tax than other characters ... I also thought about doing a bit more complex system where I would store each character appearances and do a streak and sudden appearance tax but that would require to mess around with the DB/schema and I don't want to do that
+    if (
+      charactersThatAppearedThisChapter["Straw Hat Pirates"].includes(
+        stock.name
+      )
+    ) {
+      newValue += 1;
+    }
+
+    if (charactersThatAppearedThisChapter["Others"].includes(stock.name)) {
+      newValue += 10;
+    }
+
     return {
       updateOne: {
         filter: { _id: stock._id },
