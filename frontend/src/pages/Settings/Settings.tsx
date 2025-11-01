@@ -126,6 +126,26 @@ const SettingsPage: React.FC = () => {
                   </a>
                 </div>
               </div>
+
+              <div className="crew-member">
+                <img
+                  src="https://avatars.githubusercontent.com/u/93423572?v=4"
+                  alt="Developer 3"
+                  className="crew-avatar"
+                />
+                <div className="crew-links">
+                  <a
+                    href="https://github.com/ssatwik975"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Github_logo_svg.svg/1200px-Github_logo_svg.svg.png?20230420150203"
+                      alt="GitHub"
+                    />
+                  </a>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -178,7 +198,7 @@ const SettingsPage: React.FC = () => {
                   className="supply-icon"
                 />
                 <img
-                  src="https://static-00.iconduck.com/assets.00/node-js-icon-1817x2048-g8tzf91e.png"
+                  src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/Node.js_logo.svg/2560px-Node.js_logo.svg.png"
                   alt="Node.js"
                   title="Node.js"
                   className="supply-icon"

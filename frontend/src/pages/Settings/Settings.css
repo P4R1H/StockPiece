@@ -346,6 +346,7 @@ body {
 .supply-icon {
   width: 35px;
   height: 35px;
+  object-fit: contain;
   transition: transform 0.2s ease;
 }
 
@@ -549,6 +550,7 @@ body {
   .supply-icon {
     width: 26px;
     height: 26px;
+    object-fit: contain;
   }
   
   .footer-links {
